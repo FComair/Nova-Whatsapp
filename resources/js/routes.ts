@@ -1,0 +1,45 @@
+/** Chemins de l'espace client (doivent rester alignés sur routes/web.php). */
+export const routes = {
+    login: '/connexion',
+    register: '/inscription',
+    forgotPassword: '/mot-de-passe-oublie',
+    resetPassword: '/reinitialiser-mot-de-passe',
+    verificationSend: '/verification-email/renvoi',
+    phoneVerify: '/verification-telephone',
+    phoneSend: '/verification-telephone/renvoi',
+    logout: '/deconnexion',
+    locale: '/langue',
+    dashboard: '/tableau-de-bord',
+    onboarding: '/configuration/assistant',
+    planning: '/planning',
+    customers: '/clients',
+    calendars: '/calendriers',
+    billing: '/facturation',
+    accountData: '/compte/donnees',
+    accountExport: '/compte/donnees/export',
+    accountDeletion: '/compte/suppression',
+    accountPause: '/compte/pause',
+    whatsapp: '/whatsapp',
+    whatsappEmbedded: '/whatsapp/meta',
+    whatsappTemplates: '/whatsapp/modeles',
+    whatsappTemplatesSync: '/whatsapp/modeles/synchroniser',
+    twoFactorChallenge: '/connexion/verification',
+    security: {
+        show: '/securite',
+        password: '/securite/mot-de-passe',
+        sessions: '/securite/sessions/fermer',
+        email: '/securite/email',
+        phone: '/securite/telephone',
+        phoneConfirm: '/securite/telephone/confirmer',
+        twoFactor: '/securite/2fa',
+        twoFactorConfirm: '/securite/2fa/confirmer',
+        twoFactorCodes: '/securite/2fa/codes',
+    },
+} as const;
+
+/** Chemin d'une étape de l'assistant, à partir de son segment d'URL. */
+export function onboardingStep(slug: string, query: Record<string, string> = {}): string {
+    const search = new URLSearchParams(query).toString();
+
+    return `${routes.onboarding}/${slug}${search ? `?${search}` : ''}`;
+}

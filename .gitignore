@@ -1,0 +1,43 @@
+# DÃ©pendances et builds
+/vendor/
+/node_modules/
+/public/build/
+/public/css/filament
+/public/fonts/filament
+/public/hot
+/public/js/filament
+/storage/*.key
+/storage/logs/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+
+# Secrets et environnement local (jamais versionnÃ©s)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# DonnÃ©es locales
+/storage/app/private/
+/storage/app/public/
+*.sqlite
+docker/data/
+
+# Outils
+.phpunit.result.cache
+.phpunit.cache/
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+
+# Assets Filament générés (filament:upgrade)
+/public/css/filament/
+/public/js/filament/
+/public/fonts/filament/
+
+# Fichiers locaux de dÃ©veloppement (identifiants de test, outils)
+*.local.txt
+/storage/inertia-devtools/

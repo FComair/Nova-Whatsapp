@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Middleware;
+
+use App\Modules\Tenancy\Support\CurrentTenant;
+use Illuminate\Http\Request;
+use Inertia\Middleware;
+
+final class HandleInertiaRequests extends Middleware
+{
+    protected $rootView = 'app';
+
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Données partagées avec toutes les pages. Aucune donnée sensible : ni hachage, ni jeton.
+     *
+     * @return array<string, mixed>
+     */
+    public function share(Request $request): array
+    {
+        $locale = app()->getLocale();
+
+        return [
+            ...parent::share($request),
+            'locale' => $locale,
+            'locales' => config('nova.locales'),
+            // Groupe de traductions « ui » (lang/{locale}/ui.php) fourni tel quel au front ; les e-mails restent côté serveur.
+            'translations' => fn (): array => app('translator')->getLoader()->load($locale, 'ui'),
+            // Évalué au rendu de la page, DANS le contexte d'organisation : share() est appelé avant les middlewares de route,
+            // à un moment où l'organisation courante n'est pas encore posée.
+            'auth' => function () use ($request): array {
+                $current = app(CurrentTenant::class);
+                $organization = $current->organization();
+
+                return [
+                    'user' => $request->user() === null ? null : [
+                        'id' => $request->user()->id,
+                        'email' => $request->user()->email,
+                        'locale' => $request->user()->locale,
+                    ],
+                    'organization' => $organization === null ? null : [
+                        'id' => $organization->id,
+                        'name' => $organization->name,
+                        'status' => $organization->status,
+                        'role' => $current->role(),
+                    ],
+                ];
+            },
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+                'warning' => fn () => $request->session()->get('warning'),
+                'suggestions' => fn () => $request->session()->get('suggestions', []),
+                'first_login' => fn () => (bool) $request->session()->get('first_login'),
+            ],
+        ];
+    }
+}

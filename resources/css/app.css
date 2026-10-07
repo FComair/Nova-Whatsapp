@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+/* Police Inter auto-hébergée (aucun CDN externe : pas de transfert d'adresse IP à un tiers, RGPD). */
+@import '@fontsource-variable/inter';
+
+@source '../js/**/*.vue';
+
+/*
+ * Jetons de design Nova (docs/03-identite-visuelle-et-structure-projet.md §A.1).
+ * Contrastes visés : WCAG 2.2 AA. Ne jamais utiliser la couleur seule pour porter une information.
+ */
+@theme {
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    --color-nova-900: #14213d;
+    --color-nova-700: #1f3a6b;
+
+    --color-primary-50: #eef3fe;
+    --color-primary-100: #dbe6fd;
+    --color-primary-600: #2a5bd7;
+    --color-primary-700: #2249b0;
+
+    --color-accent-500: #12a594;
+    --color-accent-700: #0b7a6d;
+
+    --color-success-50: #ecfdf3;
+    --color-success-600: #15803d;
+    --color-warning-50: #fffbeb;
+    --color-warning-600: #b45309;
+    --color-danger-50: #fef2f2;
+    --color-danger-600: #dc2626;
+    --color-danger-700: #b91c1c;
+
+    /* Neutres « ardoise » */
+    --color-neutral-50: #f8fafc;
+    --color-neutral-100: #f1f5f9;
+    --color-neutral-200: #e2e8f0;
+    --color-neutral-300: #cbd5e1;
+    --color-neutral-400: #94a3b8;
+    --color-neutral-500: #64748b;
+    --color-neutral-600: #475569;
+    --color-neutral-700: #334155;
+    --color-neutral-800: #1e293b;
+    --color-neutral-900: #0f172a;
+
+    --radius-card: 0.5rem;
+}
+
+@layer base {
+    html {
+        font-family: var(--font-sans);
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* Focus visible et cohérent sur tous les éléments interactifs (navigation au clavier). */
+    :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+        outline: 3px solid var(--color-primary-600);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}

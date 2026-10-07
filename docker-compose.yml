@@ -1,0 +1,75 @@
+name: nova
+
+# Environnement de développement local. Aucun secret réel ici : les valeurs sont des valeurs de dev jetables.
+services:
+  app:
+    build: ./docker/php
+    image: nova-php:dev
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8000:8000"
+    environment:
+      # Le serveur PHP intégré traite une requête à la fois par défaut : plusieurs workers pour le développement.
+      PHP_CLI_SERVER_WORKERS: 4
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  # Worker de file d'attente (QUEUE_CONNECTION=redis) : traite les messages WhatsApp entrants et les envois.
+  queue:
+    image: nova-php:dev
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: php artisan queue:work --sleep=1 --tries=3 --max-time=3600
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  node:
+    image: node:24
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: nova
+      POSTGRES_USER: nova_owner
+      POSTGRES_PASSWORD: nova_dev_only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nova_owner -d nova"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  pgdata:
