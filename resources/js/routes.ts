@@ -15,6 +15,8 @@ export const routes = {
     customers: '/clients',
     calendars: '/calendriers',
     billing: '/facturation',
+    profile: '/reglages/profil',
+    profileCompany: '/reglages/profil/entreprise',
     accountData: '/compte/donnees',
     accountExport: '/compte/donnees/export',
     accountDeletion: '/compte/suppression',

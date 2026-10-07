@@ -404,10 +404,24 @@ return [
         ],
     ],
 
+    'account_profile' => [
+        'nav' => 'Profile',
+        'title' => 'Profile',
+        'intro' => 'Your contact details and your business information, in one place.',
+        'personal_title' => 'Personal information',
+        'personal_intro' => 'These details are only used for your own account.',
+        'language' => 'My language',
+        'language_hint' => 'The language of Nova for you. The language used with your customers is set in the company information below.',
+        'company_title' => 'Company information',
+        'company_intro' => 'Used on your account and as the default language of messages to your customers.',
+        'company_readonly' => 'Only the owner can change the company information.',
+        'save' => 'Save changes',
+        'company_saved' => 'Company information saved.',
+    ],
     'settings' => [
         'nav' => 'Settings',
         'menu' => 'Settings sections',
-        'groups' => ['integrations' => 'Integrations', 'privacy' => 'Privacy & data'],
+        'groups' => ['account' => 'Account', 'integrations' => 'Integrations', 'privacy' => 'Privacy & data'],
         'status' => ['connected' => 'Connected', 'two_factor' => '2-step on'],
     ],
 

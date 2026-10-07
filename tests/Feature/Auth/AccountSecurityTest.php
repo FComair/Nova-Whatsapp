@@ -49,7 +49,6 @@ describe('page Sécurité', function (): void {
     it('s\'affiche pour tous les rôles avec l\'état de la double authentification', function (): void {
         $this->signedIn($this->user, $this->org)->get('/securite')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('Account/Security')
-            ->where('email', 'proprio@example.com')
             ->where('twoFactor.enabled', false)
             ->where('twoFactor.setup', null));
     });
@@ -333,7 +332,7 @@ describe('adresse e-mail', function (): void {
         Notification::assertSentTo($this->user, EmailChangeNoticeNotification::class);
         expect($this->user->refresh()->email)->toBe('proprio@example.com');
 
-        $this->get('/securite')->assertInertia(fn (Assert $page) => $page->where('pendingEmail', 'nouvelle@example.com'));
+        $this->get('/reglages/profil')->assertInertia(fn (Assert $page) => $page->where('personal.pendingEmail', 'nouvelle@example.com'));
     });
 
     it('refuse un mauvais mot de passe, une adresse déjà utilisée ou identique', function (): void {
@@ -355,7 +354,7 @@ describe('adresse e-mail', function (): void {
             return true;
         });
 
-        $this->get(URL::temporarySignedRoute('security.email.confirm', now()->addHour(), ['token' => $tokens[0]]))->assertRedirect('/securite')->assertSessionHas('status');
+        $this->get(URL::temporarySignedRoute('security.email.confirm', now()->addHour(), ['token' => $tokens[0]]))->assertRedirect('/reglages/profil')->assertSessionHas('status');
 
         expect($this->user->refresh()->email)->toBe('nouvelle@example.com')->and($this->user->email_verified_at)->not->toBeNull();
         Notification::assertSentOnDemand(EmailChangeNoticeNotification::class, fn ($n, $c, $notifiable) => $notifiable->routes['mail'] === 'proprio@example.com');
@@ -367,7 +366,7 @@ describe('adresse e-mail', function (): void {
         $this->signedIn($this->user, $this->org)->post('/securite/email', ['current_password' => CURRENT_PASSWORD, 'email' => 'nouvelle@example.com']);
 
         $this->get('/securite/email/confirmer/nimportequoi')->assertForbidden();
-        $this->get(URL::temporarySignedRoute('security.email.confirm', now()->addHour(), ['token' => 'faux']))->assertRedirect('/securite')->assertSessionHasErrors('email');
+        $this->get(URL::temporarySignedRoute('security.email.confirm', now()->addHour(), ['token' => 'faux']))->assertRedirect('/reglages/profil')->assertSessionHasErrors('email');
 
         DB::connection('pgsql_owner')->table('email_changes')->update(['expires_at' => now()->subMinute()]);
         expect($this->user->refresh()->email)->toBe('proprio@example.com');
@@ -402,7 +401,7 @@ describe('téléphone', function (): void {
         $this->signedIn($this->user, $this->org)->post('/securite/telephone', ['current_password' => CURRENT_PASSWORD, 'phone' => '+32 470 22 22 22'])->assertSessionHasNoErrors();
 
         expect($this->sender->lastCode())->toMatch('/^\d{6}$/')->and($this->user->refresh()->phone_e164)->toBe('+32470111111');
-        $this->get('/securite')->assertInertia(fn (Assert $page) => $page->where('pendingPhone', '+32470222222'));
+        $this->get('/reglages/profil')->assertInertia(fn (Assert $page) => $page->where('personal.pendingPhone', '+32470222222'));
     });
 
     it('change le numéro avec le bon code', function (): void {

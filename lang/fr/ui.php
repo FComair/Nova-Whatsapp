@@ -404,10 +404,24 @@ return [
         ],
     ],
 
+    'account_profile' => [
+        'nav' => 'Profil',
+        'title' => 'Profil',
+        'intro' => 'Vos coordonnées et les informations de votre entreprise, au même endroit.',
+        'personal_title' => 'Informations personnelles',
+        'personal_intro' => 'Ces informations ne servent qu\'à votre propre compte.',
+        'language' => 'Ma langue',
+        'language_hint' => 'La langue de Nova pour vous. La langue utilisée avec vos clients se règle dans les informations de l\'entreprise ci-dessous.',
+        'company_title' => 'Informations de l\'entreprise',
+        'company_intro' => 'Utilisées sur votre compte et comme langue par défaut des messages envoyés à vos clients.',
+        'company_readonly' => 'Seul le propriétaire peut modifier les informations de l\'entreprise.',
+        'save' => 'Enregistrer',
+        'company_saved' => 'Informations de l\'entreprise enregistrées.',
+    ],
     'settings' => [
         'nav' => 'Réglages',
         'menu' => 'Sections des réglages',
-        'groups' => ['integrations' => 'Intégrations', 'privacy' => 'Confidentialité et données'],
+        'groups' => ['account' => 'Compte', 'integrations' => 'Intégrations', 'privacy' => 'Confidentialité et données'],
         'status' => ['connected' => 'Connecté', 'two_factor' => '2FA activée'],
     ],
 

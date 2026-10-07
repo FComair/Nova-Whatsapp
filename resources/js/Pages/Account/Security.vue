@@ -9,11 +9,7 @@ import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
 
-const props = defineProps<{
-    email: string;
-    pendingEmail: string | null;
-    phone: string | null;
-    pendingPhone: string | null;
+defineProps<{
     passwordChangedAt: string | null;
     passwordOld: boolean;
     twoFactor: {
@@ -30,9 +26,6 @@ const page = usePage<SharedProps>();
 const errors = computed(() => page.props.errors as Record<string, string | undefined>);
 
 const password = useForm({ current_password: '', password: '', password_confirmation: '' });
-const emailForm = useForm({ current_password: '', email: '' });
-const phoneForm = useForm({ current_password: '', phone: '' });
-const phoneCode = useForm({ code: '' });
 const sessions = useForm({ current_password: '' });
 const confirmTwoFactor = useForm({ code: '' });
 const disableTwoFactor = useForm({ current_password: '', code: '' });
@@ -41,18 +34,6 @@ const begin = useForm({});
 
 function changePassword(): void {
     password.put(routes.security.password, { preserveScroll: true, onSuccess: () => password.reset() });
-}
-
-function requestEmail(): void {
-    emailForm.post(routes.security.email, { preserveScroll: true, onSuccess: () => emailForm.reset() });
-}
-
-function requestPhone(): void {
-    phoneForm.post(routes.security.phone, { preserveScroll: true, onSuccess: () => phoneForm.reset() });
-}
-
-function confirmPhone(): void {
-    phoneCode.post(routes.security.phoneConfirm, { preserveScroll: true, onSuccess: () => phoneCode.reset() });
 }
 
 function closeSessions(): void {
@@ -83,7 +64,6 @@ function newCodes(): void {
 
         <AlertBox v-if="page.props.flash.warning" variant="warning" class="mt-4 max-w-2xl">{{ page.props.flash.warning }}</AlertBox>
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-2xl">{{ page.props.flash.status }}</AlertBox>
-        <AlertBox v-if="errors.email && !emailForm.errors.email" variant="error" class="mt-4 max-w-2xl">{{ errors.email }}</AlertBox>
         <AlertBox v-if="errors.two_factor" variant="error" class="mt-4 max-w-2xl">{{ errors.two_factor }}</AlertBox>
 
         <!-- Double authentification -->
@@ -194,71 +174,6 @@ function newCodes(): void {
                     required
                 />
                 <BaseButton type="submit" :loading="password.processing">{{ t('security.password_save') }}</BaseButton>
-            </form>
-        </section>
-
-        <!-- E-mail -->
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="email">
-            <h2 id="email" class="text-lg font-semibold text-nova-900">{{ t('security.email_section') }}</h2>
-            <p class="mt-1 text-sm text-neutral-700">{{ t('security.email_current', { email: props.email }) }}</p>
-            <p v-if="pendingEmail" class="mt-1 text-sm font-medium text-neutral-800">{{ t('security.email_pending', { email: pendingEmail }) }}</p>
-            <form class="mt-3 space-y-4" novalidate @submit.prevent="requestEmail">
-                <TextField
-                    v-model="emailForm.email"
-                    type="email"
-                    :label="t('security.email_new')"
-                    autocomplete="email"
-                    inputmode="email"
-                    required
-                    :error="emailForm.errors.email"
-                />
-                <TextField
-                    v-model="emailForm.current_password"
-                    type="password"
-                    :label="t('security.current_password')"
-                    autocomplete="current-password"
-                    required
-                    :error="emailForm.errors.current_password"
-                />
-                <BaseButton type="submit" :loading="emailForm.processing">{{ t('security.email_send') }}</BaseButton>
-            </form>
-        </section>
-
-        <!-- Téléphone -->
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="phone">
-            <h2 id="phone" class="text-lg font-semibold text-nova-900">{{ t('security.phone_section') }}</h2>
-            <p v-if="phone" class="mt-1 text-sm text-neutral-700">{{ t('security.phone_current', { phone }) }}</p>
-            <form class="mt-3 space-y-4" novalidate @submit.prevent="requestPhone">
-                <TextField
-                    v-model="phoneForm.phone"
-                    type="tel"
-                    :label="t('security.phone_new')"
-                    autocomplete="tel"
-                    inputmode="tel"
-                    required
-                    :error="phoneForm.errors.phone"
-                />
-                <TextField
-                    v-model="phoneForm.current_password"
-                    type="password"
-                    :label="t('security.current_password')"
-                    autocomplete="current-password"
-                    required
-                    :error="phoneForm.errors.current_password"
-                />
-                <BaseButton type="submit" :loading="phoneForm.processing">{{ t('security.phone_send') }}</BaseButton>
-            </form>
-            <form v-if="pendingPhone" class="mt-4 space-y-3 border-t border-neutral-200 pt-4" novalidate @submit.prevent="confirmPhone">
-                <p class="text-sm text-neutral-700">{{ t('security.phone_pending', { phone: pendingPhone }) }}</p>
-                <TextField
-                    v-model="phoneCode.code"
-                    :label="t('security.phone_code')"
-                    autocomplete="one-time-code"
-                    inputmode="numeric"
-                    required
-                    :error="phoneCode.errors.code"
-                />
-                <BaseButton type="submit" :loading="phoneCode.processing">{{ t('security.phone_confirm') }}</BaseButton>
             </form>
         </section>
 

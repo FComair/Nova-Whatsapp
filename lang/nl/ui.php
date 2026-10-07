@@ -404,10 +404,24 @@ return [
         ],
     ],
 
+    'account_profile' => [
+        'nav' => 'Profiel',
+        'title' => 'Profiel',
+        'intro' => 'Uw contactgegevens en de gegevens van uw bedrijf, op één plek.',
+        'personal_title' => 'Persoonlijke gegevens',
+        'personal_intro' => 'Deze gegevens worden alleen voor uw eigen account gebruikt.',
+        'language' => 'Mijn taal',
+        'language_hint' => 'De taal van Nova voor u. De taal die met uw klanten wordt gebruikt, stelt u hieronder in bij de bedrijfsgegevens.',
+        'company_title' => 'Bedrijfsgegevens',
+        'company_intro' => 'Gebruikt voor uw account en als standaardtaal van de berichten aan uw klanten.',
+        'company_readonly' => 'Alleen de eigenaar kan de bedrijfsgegevens wijzigen.',
+        'save' => 'Opslaan',
+        'company_saved' => 'Bedrijfsgegevens opgeslagen.',
+    ],
     'settings' => [
         'nav' => 'Instellingen',
         'menu' => 'Onderdelen van de instellingen',
-        'groups' => ['integrations' => 'Integraties', 'privacy' => 'Privacy en gegevens'],
+        'groups' => ['account' => 'Account', 'integrations' => 'Integraties', 'privacy' => 'Privacy en gegevens'],
         'status' => ['connected' => 'Verbonden', 'two_factor' => '2FA aan'],
     ],
 

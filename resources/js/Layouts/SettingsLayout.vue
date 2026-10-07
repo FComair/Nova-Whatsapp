@@ -89,7 +89,11 @@ function go(event: Event): void {
                                     stroke-linejoin="round"
                                     aria-hidden="true"
                                 >
-                                    <template v-if="item.key === 'calendars'">
+                                    <template v-if="item.key === 'profile'">
+                                        <circle cx="12" cy="8" r="4" />
+                                        <path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6" />
+                                    </template>
+                                    <template v-else-if="item.key === 'calendars'">
                                         <rect x="3" y="5" width="18" height="16" rx="3" />
                                         <path d="M8 3v4M16 3v4M3 10h18" />
                                     </template>

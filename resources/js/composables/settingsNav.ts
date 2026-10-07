@@ -1,6 +1,6 @@
 import { routes } from '../routes';
 
-export type SettingsKey = 'calendars' | 'whatsapp' | 'data' | 'security';
+export type SettingsKey = 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security';
 
 export interface SettingsItem {
     key: SettingsKey;
@@ -12,7 +12,7 @@ export interface SettingsItem {
 }
 
 export interface SettingsGroup {
-    key: 'integrations' | 'privacy';
+    key: 'account' | 'integrations' | 'privacy';
     items: SettingsItem[];
 }
 
@@ -23,6 +23,7 @@ function visible(key: SettingsKey, role: string | null): boolean {
     }
 
     return {
+        profile: true,
         calendars: role !== 'receptionist',
         whatsapp: role === 'owner',
         data: role === 'owner',
@@ -30,7 +31,8 @@ function visible(key: SettingsKey, role: string | null): boolean {
     }[key];
 }
 
-const all: Record<'integrations' | 'privacy', SettingsItem[]> = {
+const all: Record<'account' | 'integrations' | 'privacy', SettingsItem[]> = {
+    account: [{ key: 'profile', href: routes.profile, label: 'account_profile.nav', prefixes: [routes.profile] }],
     integrations: [
         { key: 'calendars', href: routes.calendars, label: 'calendars.nav', prefixes: [routes.calendars] },
         { key: 'whatsapp', href: routes.whatsapp, label: 'whatsapp.nav', prefixes: [routes.whatsapp] },
@@ -43,7 +45,7 @@ const all: Record<'integrations' | 'privacy', SettingsItem[]> = {
 
 /** Groupes du menu Réglages pour un rôle : un groupe sans page accessible disparaît. */
 export function settingsGroups(role: string | null): SettingsGroup[] {
-    return (['integrations', 'privacy'] as const)
+    return (['account', 'integrations', 'privacy'] as const)
         .map((key) => ({ key, items: all[key].filter((item) => visible(item.key, role)) }))
         .filter((group) => group.items.length > 0);
 }
@@ -65,5 +67,5 @@ function matches(path: string, prefix: string): boolean {
 export function activeSettings(url: string): SettingsKey | null {
     const path = pathOf(url);
 
-    return [...all.integrations, ...all.privacy].find((item) => item.prefixes.some((prefix) => matches(path, prefix)))?.key ?? null;
+    return [...all.account, ...all.integrations, ...all.privacy].find((item) => item.prefixes.some((prefix) => matches(path, prefix)))?.key ?? null;
 }

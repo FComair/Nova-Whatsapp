@@ -67,7 +67,24 @@ function logout(): void {
                         {{ t('settings.nav') }}
                     </Link>
                     <LanguageSwitcher />
-                    <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100" @click="logout">
+                    <!-- La déconnexion reste dans la barre principale, hors du menu Réglages : toujours à un clic, sur toutes les pages. -->
+                    <button
+                        type="button"
+                        class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
+                        @click="logout"
+                    >
+                        <svg
+                            class="size-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.9"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10M15 8l4 4-4 4M19 12H9" />
+                        </svg>
                         {{ t('common.logout') }}
                     </button>
                 </div>

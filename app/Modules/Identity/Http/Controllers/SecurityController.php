@@ -37,17 +37,14 @@ final class SecurityController
 {
     public function __construct(private readonly TwoFactor $twoFactor, private readonly CurrentTenant $tenant) {}
 
-    public function show(Request $request, PhoneChange $phoneChange): Response
+    public function show(Request $request): Response
     {
         $user = $this->user($request);
         $setup = $user->two_factor_secret !== null && ! $user->hasTwoFactor();
         $changedAt = $user->password_changed_at;
 
+        // L'e-mail et le téléphone se modifient dans Réglages > Profil (mêmes routes ci-dessous, même mot de passe actuel).
         return Inertia::render('Account/Security', [
-            'email' => $user->email,
-            'pendingEmail' => DB::table('email_changes')->where('user_id', $user->id)->where('expires_at', '>', now())->value('new_email'),
-            'phone' => $user->phone_e164,
-            'pendingPhone' => $phoneChange->pending($user),
             'passwordChangedAt' => $changedAt?->toIso8601String(),
             'passwordOld' => $changedAt !== null && $changedAt->lt(now()->subMonths((int) config('nova.security.password_max_age_months'))),
             'twoFactor' => [
@@ -122,7 +119,7 @@ final class SecurityController
         $change = DB::table('email_changes')->where('user_id', $user->id)->first();
 
         if ($change === null || now()->gt($change->expires_at) || ! hash_equals((string) $change->token_hash, hash('sha256', $token))) {
-            return redirect()->route('security.show')->withErrors(['email' => __('ui.security.email_link_invalid')]);
+            return redirect()->route('settings.profile.show')->withErrors(['email' => __('ui.security.email_link_invalid')]);
         }
 
         $old = $user->email;
@@ -130,7 +127,7 @@ final class SecurityController
         if (User::query()->where('email', $change->new_email)->exists()) {
             DB::table('email_changes')->where('user_id', $user->id)->delete();
 
-            return redirect()->route('security.show')->withErrors(['email' => __('ui.errors.E1')]);
+            return redirect()->route('settings.profile.show')->withErrors(['email' => __('ui.errors.E1')]);
         }
 
         // La nouvelle adresse vient d'être prouvée par ce lien : elle est vérifiée d'office.
@@ -140,7 +137,7 @@ final class SecurityController
 
         Notification::route('mail', $old)->notify(new EmailChangeNoticeNotification(EmailChangeNoticeNotification::DONE, $change->new_email, $user->locale));
 
-        return redirect()->route('security.show')->with('status', __('ui.security.email_changed'));
+        return redirect()->route('settings.profile.show')->with('status', __('ui.security.email_changed'));
     }
 
     public function requestPhoneChange(Request $request, PhoneChange $phoneChange): RedirectResponse

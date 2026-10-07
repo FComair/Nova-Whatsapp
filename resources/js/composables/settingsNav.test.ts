@@ -4,28 +4,29 @@ import { activeSettings, settingsGroups, settingsHome } from './settingsNav';
 const keys = (role: string | null): string[] => settingsGroups(role).flatMap((group) => group.items.map((item) => item.key));
 
 describe('menu des réglages', () => {
-    it('propose toutes les pages au propriétaire, en deux groupes', () => {
-        expect(settingsGroups('owner').map((group) => group.key)).toEqual(['integrations', 'privacy']);
-        expect(keys('owner')).toEqual(['calendars', 'whatsapp', 'data', 'security']);
+    it('propose toutes les pages au propriétaire, en trois groupes', () => {
+        expect(settingsGroups('owner').map((group) => group.key)).toEqual(['account', 'integrations', 'privacy']);
+        expect(keys('owner')).toEqual(['profile', 'calendars', 'whatsapp', 'data', 'security']);
     });
 
     it('suit les droits des routes pour les autres rôles', () => {
-        expect(keys('site_manager')).toEqual(['calendars', 'security']);
-        expect(keys('practitioner')).toEqual(['calendars', 'security']);
-        expect(keys('receptionist')).toEqual(['security']);
+        expect(keys('site_manager')).toEqual(['profile', 'calendars', 'security']);
+        expect(keys('practitioner')).toEqual(['profile', 'calendars', 'security']);
+        expect(keys('receptionist')).toEqual(['profile', 'security']);
     });
 
-    it('masque un groupe vide et refuse un rôle inconnu', () => {
-        expect(settingsGroups('receptionist').map((group) => group.key)).toEqual(['privacy']);
+    it('refuse un rôle inconnu et ne garde que les groupes qui ont une page accessible', () => {
+        expect(settingsGroups('receptionist').map((group) => group.key)).toEqual(['account', 'privacy']);
         expect(settingsGroups(null)).toEqual([]);
     });
 
     it('ouvre la première page accessible', () => {
-        expect(settingsHome('owner')).toBe('/calendriers');
-        expect(settingsHome('receptionist')).toBe('/securite');
+        expect(settingsHome('owner')).toBe('/reglages/profil');
+        expect(settingsHome('receptionist')).toBe('/reglages/profil');
     });
 
     it('reconnaît la page active, y compris la pause qui dépend de « Mes données »', () => {
+        expect(activeSettings('/reglages/profil')).toBe('profile');
         expect(activeSettings('/calendriers')).toBe('calendars');
         expect(activeSettings('/whatsapp?x=1')).toBe('whatsapp');
         expect(activeSettings('/compte/donnees')).toBe('data');

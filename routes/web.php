@@ -24,6 +24,7 @@ use App\Modules\Privacy\Http\Controllers\AccountDataController;
 use App\Modules\Staff\Http\Controllers\InvitationController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
 use App\Modules\Staff\Http\Controllers\StaffController;
+use App\Modules\Tenancy\Http\Controllers\AccountProfileController;
 use App\Modules\Tenancy\Http\Controllers\PauseController;
 use App\Modules\Tenancy\Http\Middleware\EnsureOrganizationUsable;
 use App\Modules\Tenancy\Http\Middleware\SetTenantContext;
@@ -96,6 +97,12 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/2fa/confirmer', [SecurityController::class, 'confirmTwoFactor'])->middleware('throttle:15,1')->name('two-factor.confirm');
         Route::post('/2fa/codes', [SecurityController::class, 'regenerateRecoveryCodes'])->middleware('throttle:10,1')->name('two-factor.codes');
         Route::delete('/2fa', [SecurityController::class, 'disableTwoFactor'])->middleware('throttle:10,1')->name('two-factor.disable');
+    });
+
+    // Réglages > Profil : coordonnées de chacun (tous les rôles) ; entreprise et facturation réservées au propriétaire.
+    Route::prefix('/reglages/profil')->name('settings.profile.')->group(function (): void {
+        Route::get('/', [AccountProfileController::class, 'show'])->name('show');
+        Route::put('/entreprise', [AccountProfileController::class, 'updateCompany'])->middleware('role:owner')->name('company');
     });
 
     // Assistant d'onboarding : propriétaire uniquement (docs/02 §1).

@@ -23,6 +23,7 @@ use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Services\PractitionerManager;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
+use App\Modules\Tenancy\Services\CompanyUpdater;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Illuminate\Http\RedirectResponse;
@@ -44,6 +45,7 @@ final class OnboardingController
         private readonly PractitionerManager $staff,
         private readonly PlanLimits $limits,
         private readonly PolicyService $policies,
+        private readonly CompanyUpdater $company,
     ) {}
 
     /** Rouvre l'assistant à l'étape enregistrée (flowchart 2A). */
@@ -73,24 +75,7 @@ final class OnboardingController
 
     public function saveCompany(CompanyRequest $request): RedirectResponse
     {
-        $organization = $this->organization();
-        $data = $request->validated();
-        $previousTimezone = $organization->timezone;
-
-        DB::transaction(function () use ($organization, $data, $previousTimezone): void {
-            $organization->fill($data);
-            $diff = collect($organization->getDirty())->map(fn ($new, string $key): array => [$organization->getOriginal($key), $new])->all();
-            $organization->save();
-
-            // Les sites qui suivaient le fuseau de l'entreprise le suivent encore.
-            if ($organization->timezone !== $previousTimezone) {
-                Location::query()->where('timezone', $previousTimezone)->update(['timezone' => $organization->timezone]);
-            }
-
-            if ($diff !== []) {
-                Audit::record('org.company.updated', 'user', actorId: auth()->id(), orgId: $organization->id, entityType: 'organization', entityId: $organization->id, diff: $diff);
-            }
-        });
+        $this->company->update($this->organization(), $request->validated(), auth()->id());
 
         return $this->finish(OnboardingSteps::COMPANY);
     }
