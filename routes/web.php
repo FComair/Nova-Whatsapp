@@ -27,6 +27,7 @@ use App\Modules\Staff\Http\Controllers\ProfileController;
 use App\Modules\Staff\Http\Controllers\StaffController;
 use App\Modules\Tenancy\Http\Controllers\AccountProfileController;
 use App\Modules\Tenancy\Http\Controllers\PauseController;
+use App\Modules\Tenancy\Http\Controllers\SettingsSearchController;
 use App\Modules\Tenancy\Http\Middleware\EnsureOrganizationUsable;
 use App\Modules\Tenancy\Http\Middleware\SetTenantContext;
 use App\Modules\Whatsapp\Http\Controllers\WhatsappController;
@@ -99,6 +100,9 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/2fa/codes', [SecurityController::class, 'regenerateRecoveryCodes'])->middleware('throttle:10,1')->name('two-factor.codes');
         Route::delete('/2fa', [SecurityController::class, 'disableTwoFactor'])->middleware('throttle:10,1')->name('two-factor.disable');
     });
+
+    // Recherche dans les Réglages : index multilingue, filtré selon le rôle (lecture seule).
+    Route::get('/reglages/recherche', SettingsSearchController::class)->name('settings.search');
 
     // Réglages > Profil : coordonnées de chacun (tous les rôles) ; entreprise et facturation réservées au propriétaire.
     Route::prefix('/reglages/profil')->name('settings.profile.')->group(function (): void {

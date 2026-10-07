@@ -18,6 +18,7 @@ export const routes = {
     profile: '/reglages/profil',
     profileCompany: '/reglages/profil/entreprise',
     profileLogo: '/reglages/profil/logo',
+    settingsSearch: '/reglages/recherche',
     setup: '/reglages/demarrage',
     accountData: '/compte/donnees',
     accountExport: '/compte/donnees/export',

@@ -60,7 +60,7 @@ function primary(step: SetupStepData): boolean {
         </section>
 
         <ul class="mt-5 max-w-2xl divide-y divide-neutral-200 overflow-hidden rounded-card border border-neutral-200 bg-white" :aria-label="title">
-            <li v-for="step in category.steps" :key="step.key" class="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
+            <li v-for="step in category.steps" :id="`step-${step.key}`" :key="step.key" class="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
                 <span class="flex size-7 shrink-0" aria-hidden="true">
                     <svg v-if="step.state === 'done'" class="size-7 text-success-600" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" fill="currentColor" />

@@ -86,7 +86,7 @@ function confirmPhone(): void {
             <h2 id="personal" class="text-lg font-semibold text-nova-900">{{ t('account_profile.personal_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_profile.personal_intro') }}</p>
 
-            <div class="mt-4">
+            <div id="language" class="mt-4">
                 <SelectField
                     :model-value="personal.locale"
                     :label="t('account_profile.language')"
@@ -96,7 +96,7 @@ function confirmPhone(): void {
                 <p class="mt-1.5 text-sm text-neutral-600">{{ t('account_profile.language_hint') }}</p>
             </div>
 
-            <div class="mt-6 border-t border-neutral-200 pt-5">
+            <div id="email" class="mt-6 border-t border-neutral-200 pt-5">
                 <h3 class="text-base font-semibold text-nova-900">{{ t('security.email_section') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('security.email_current', { email: personal.email }) }}</p>
                 <p v-if="personal.pendingEmail" class="mt-1 text-sm font-medium text-neutral-800">
@@ -124,7 +124,7 @@ function confirmPhone(): void {
                 </form>
             </div>
 
-            <div class="mt-6 border-t border-neutral-200 pt-5">
+            <div id="phone" class="mt-6 border-t border-neutral-200 pt-5">
                 <h3 class="text-base font-semibold text-nova-900">{{ t('security.phone_section') }}</h3>
                 <p v-if="personal.phone" class="mt-1 text-sm text-neutral-700">{{ t('security.phone_current', { phone: personal.phone }) }}</p>
                 <form class="mt-3 space-y-4" novalidate @submit.prevent="requestPhone">
