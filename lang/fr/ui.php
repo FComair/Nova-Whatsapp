@@ -404,18 +404,28 @@ return [
         ],
     ],
 
+    'settings' => [
+        'nav' => 'Réglages',
+        'menu' => 'Sections des réglages',
+        'groups' => ['integrations' => 'Intégrations', 'privacy' => 'Confidentialité et données'],
+        'status' => ['connected' => 'Connecté', 'two_factor' => '2FA activée'],
+    ],
+
     'planning' => [
         'title' => 'Planning',
         'nav' => 'Planning',
         'today' => 'Aujourd\'hui',
-        'previous_day' => 'Jour précédent',
-        'next_day' => 'Jour suivant',
+        'this_week' => 'Cette semaine',
+        'practitioner' => 'Praticien',
+        'all_practitioners' => 'Tous les praticiens',
+        'previous_week' => 'Semaine précédente',
+        'next_week' => 'Semaine suivante',
         'location' => 'Site',
         'date' => 'Date',
         'new' => 'Nouveau rendez-vous',
         'no_sites' => 'Aucun site n\'est disponible pour votre compte.',
         'no_practitioners' => 'Aucun praticien n\'a de planning sur ce site. Ajoutez des praticiens et leurs disponibilités pour recevoir des rendez-vous.',
-        'empty_day' => 'Aucun rendez-vous ce jour-là.',
+        'empty_week' => 'Aucun rendez-vous cette semaine.',
         'working_hours' => 'Heures de travail',
         'form' => [
             'title' => 'Nouveau rendez-vous',

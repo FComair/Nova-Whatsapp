@@ -8,7 +8,7 @@ import TextareaField from '../../Components/TextareaField.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
 import { formatDate } from '../../composables/dates';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
 
@@ -36,7 +36,7 @@ function resume(): void {
 </script>
 
 <template>
-    <AppLayout :title="t('pause.title')">
+    <SettingsLayout :title="t('pause.title')">
         <h1 class="text-2xl font-semibold text-nova-900">{{ t('pause.title') }}</h1>
 
         <AlertBox v-if="errors.pause" variant="error" class="mt-4 max-w-2xl">{{ errors.pause }}</AlertBox>
@@ -87,5 +87,5 @@ function resume(): void {
                 <BaseButton type="submit" :loading="form.processing">{{ t('pause.submit') }}</BaseButton>
             </form>
         </template>
-    </AppLayout>
+    </SettingsLayout>
 </template>

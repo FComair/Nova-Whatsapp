@@ -7,7 +7,7 @@ import CheckboxField from '../../Components/CheckboxField.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
 import { formatDate } from '../../composables/dates';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
 
@@ -36,7 +36,7 @@ function cancel(): void {
 </script>
 
 <template>
-    <AppLayout :title="t('account_data.title')">
+    <SettingsLayout :title="t('account_data.title')">
         <h1 class="text-2xl font-semibold text-nova-900">{{ t('account_data.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('account_data.intro') }}</p>
 
@@ -102,5 +102,5 @@ function cancel(): void {
                 <BaseButton type="submit" variant="danger" :loading="deletion.processing">{{ t('account_data.delete_submit') }}</BaseButton>
             </form>
         </section>
-    </AppLayout>
+    </SettingsLayout>
 </template>

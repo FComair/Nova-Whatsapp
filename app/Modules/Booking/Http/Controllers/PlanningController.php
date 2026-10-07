@@ -32,7 +32,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Planning du dashboard (flowchart 2B) : une colonne par praticien, création, déplacement et annulation de rendez-vous.
+ * Planning du dashboard (flowchart 2B) : vue semaine (lundi → dimanche), création, déplacement et annulation de rendez-vous.
  * Toutes les écritures passent par le cœur de réservation ; les droits suivent docs/02 §1.
  */
 final class PlanningController
@@ -56,18 +56,19 @@ final class PlanningController
 
         $timezone = $location->timezone;
         $date = $this->dateFrom($request->query('date'), $timezone);
-        $dayStart = CarbonImmutable::parse($date, $timezone)->startOfDay();
-        $weekday = $dayStart->isoWeekday();
+        // Vue semaine : du lundi au dimanche autour de la date choisie (la date choisie reste le jour mis en avant).
+        $weekStart = CarbonImmutable::parse($date, $timezone)->startOfDay()->startOfWeek(CarbonImmutable::MONDAY);
+        $days = array_map(fn (int $offset): string => $weekStart->addDays($offset)->toDateString(), range(0, 6));
 
         $practitioners = Practitioner::query()->where('status', Practitioner::STATUS_ACTIVE)
             ->whereHas('schedules', fn ($query) => $query->where('location_id', $location->id))
             ->when($this->access->isPractitioner(), fn ($query) => $query->where('practitioners.id', $this->access->practitionerId()))
             ->orderBy('position')->get();
 
-        $schedules = PractitionerSchedule::query()->where('location_id', $location->id)->where('weekday', $weekday)->get()->groupBy('practitioner_id');
+        $schedules = PractitionerSchedule::query()->where('location_id', $location->id)->get();
 
         $bookings = Booking::query()->where('location_id', $location->id)
-            ->where('starts_at', '>=', $dayStart->utc())->where('starts_at', '<', $dayStart->addDay()->utc())
+            ->where('starts_at', '>=', $weekStart->utc())->where('starts_at', '<', $weekStart->addDays(7)->utc())
             ->whereIn('status', [Booking::PENDING, Booking::CONFIRMED, Booking::COMPLETED, Booking::NO_SHOW])
             ->when($this->access->isPractitioner(), fn ($query) => $query->where('practitioner_id', $this->access->practitionerId()))
             ->orderBy('starts_at')->get();
@@ -77,7 +78,7 @@ final class PlanningController
         $serviceNames = $services->pluck('name', 'id');
         $seesNotes = $this->access->seesNotes();
 
-        $open = BusinessHour::query()->where('location_id', $location->id)->where('weekday', $weekday)->get();
+        $open = BusinessHour::query()->where('location_id', $location->id)->get();
         $minutes = fn (string $time): int => (int) substr($time, 0, 2) * 60 + (int) substr($time, 3, 2);
         $localMinutes = fn (CarbonImmutable $instant): int => (int) $instant->setTimezone($timezone)->format('G') * 60 + (int) $instant->setTimezone($timezone)->format('i');
 
@@ -86,6 +87,7 @@ final class PlanningController
             'practitioner_id' => $booking->practitioner_id,
             'customer' => ['id' => $booking->customer_id, 'name' => $customers[$booking->customer_id]->name ?? null, 'phone' => $customers[$booking->customer_id]->phone_e164 ?? null],
             'service' => $serviceNames[$booking->service_id] ?? null,
+            'date' => $booking->starts_at->setTimezone($timezone)->toDateString(),
             'starts' => $booking->starts_at->setTimezone($timezone)->format('H:i'),
             'ends' => $booking->ends_at->setTimezone($timezone)->format('H:i'),
             'start_minute' => $localMinutes($booking->starts_at),
@@ -98,8 +100,8 @@ final class PlanningController
             'is_past' => $booking->starts_at <= now(),
         ])->values()->all();
 
-        // Plage horaire affichée : ouverture du site, élargie aux plannings et aux rendez-vous du jour.
-        $edges = collect([...$open->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)]), ...$schedules->flatten()->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)]), ...array_map(fn (array $row): array => [$row['start_minute'], $row['end_minute']], $bookingRows)]);
+        // Plage horaire affichée : ouverture du site, élargie aux plannings et aux rendez-vous de la semaine.
+        $edges = collect([...$open->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)]), ...$schedules->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)]), ...array_map(fn (array $row): array => [$row['start_minute'], $row['end_minute']], $bookingRows)]);
         $from = $edges->isEmpty() ? 9 * 60 : (int) (floor($edges->min(fn (array $edge): int => $edge[0]) / 60) * 60);
         $to = $edges->isEmpty() ? 18 * 60 : (int) (ceil($edges->max(fn (array $edge): int => $edge[1]) / 60) * 60);
 
@@ -109,11 +111,21 @@ final class PlanningController
             'date' => $date,
             'today' => CarbonImmutable::now($timezone)->toDateString(),
             'range' => ['from' => $from, 'to' => $to],
+            'week' => [
+                'start' => $days[0],
+                'end' => $days[6],
+                'days' => collect($days)->map(fn (string $day, int $index): array => [
+                    'date' => $day,
+                    'open' => $open->where('weekday', $index + 1)->map(fn (BusinessHour $hour): array => ['start' => $minutes($hour->starts_at), 'end' => $minutes($hour->ends_at)])->values()->all(),
+                ])->all(),
+            ],
             'practitioners' => $practitioners->map(fn (Practitioner $practitioner): array => [
                 'id' => $practitioner->id,
                 'name' => $practitioner->name,
                 'color' => $practitioner->color,
-                'working' => ($schedules[$practitioner->id] ?? collect())->map(fn (PractitionerSchedule $slot): array => ['start' => $minutes($slot->starts_at), 'end' => $minutes($slot->ends_at)])->values()->all(),
+                // Jours et heures de travail du profil, par jour de la semaine ISO (1 = lundi … 7 = dimanche).
+                'schedule' => $schedules->where('practitioner_id', $practitioner->id)->groupBy('weekday')
+                    ->map(fn ($slots): array => $slots->map(fn (PractitionerSchedule $slot): array => ['start' => $minutes($slot->starts_at), 'end' => $minutes($slot->ends_at)])->values()->all())->all(),
             ])->values()->all(),
             'bookings' => $bookingRows,
             'services' => $services->where('is_active', true)->map(fn (Service $service): array => [

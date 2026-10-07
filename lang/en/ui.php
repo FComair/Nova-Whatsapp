@@ -404,18 +404,28 @@ return [
         ],
     ],
 
+    'settings' => [
+        'nav' => 'Settings',
+        'menu' => 'Settings sections',
+        'groups' => ['integrations' => 'Integrations', 'privacy' => 'Privacy & data'],
+        'status' => ['connected' => 'Connected', 'two_factor' => '2-step on'],
+    ],
+
     'planning' => [
         'title' => 'Schedule',
         'nav' => 'Schedule',
         'today' => 'Today',
-        'previous_day' => 'Previous day',
-        'next_day' => 'Next day',
+        'this_week' => 'This week',
+        'practitioner' => 'Practitioner',
+        'all_practitioners' => 'All practitioners',
+        'previous_week' => 'Previous week',
+        'next_week' => 'Next week',
         'location' => 'Location',
         'date' => 'Date',
         'new' => 'New appointment',
         'no_sites' => 'No location is available for your account.',
         'no_practitioners' => 'No practitioner has a schedule at this location. Add practitioners and their availability to receive appointments.',
-        'empty_day' => 'No appointments on this day.',
+        'empty_week' => 'No appointments this week.',
         'working_hours' => 'Working hours',
         'form' => [
             'title' => 'New appointment',

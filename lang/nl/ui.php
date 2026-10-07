@@ -404,18 +404,28 @@ return [
         ],
     ],
 
+    'settings' => [
+        'nav' => 'Instellingen',
+        'menu' => 'Onderdelen van de instellingen',
+        'groups' => ['integrations' => 'Integraties', 'privacy' => 'Privacy en gegevens'],
+        'status' => ['connected' => 'Verbonden', 'two_factor' => '2FA aan'],
+    ],
+
     'planning' => [
         'title' => 'Agenda',
         'nav' => 'Agenda',
         'today' => 'Vandaag',
-        'previous_day' => 'Vorige dag',
-        'next_day' => 'Volgende dag',
+        'this_week' => 'Deze week',
+        'practitioner' => 'Behandelaar',
+        'all_practitioners' => 'Alle behandelaars',
+        'previous_week' => 'Vorige week',
+        'next_week' => 'Volgende week',
         'location' => 'Locatie',
         'date' => 'Datum',
         'new' => 'Nieuwe afspraak',
         'no_sites' => 'Er is geen locatie beschikbaar voor uw account.',
         'no_practitioners' => 'Geen enkele behandelaar heeft een rooster op deze locatie. Voeg behandelaars en hun beschikbaarheid toe om afspraken te ontvangen.',
-        'empty_day' => 'Geen afspraken op deze dag.',
+        'empty_week' => 'Geen afspraken deze week.',
         'working_hours' => 'Werkuren',
         'form' => [
             'title' => 'Nieuwe afspraak',

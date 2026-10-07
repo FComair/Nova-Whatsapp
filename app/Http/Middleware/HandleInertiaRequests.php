@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Modules\Tenancy\Support\CurrentTenant;
+use App\Modules\Whatsapp\Models\WhatsappAccount;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -50,6 +51,20 @@ final class HandleInertiaRequests extends Middleware
                         'status' => $organization->status,
                         'role' => $current->role(),
                     ],
+                ];
+            },
+            // Pastilles du menu Réglages (WhatsApp connecté, double authentification) : calculées seulement sur ces pages,
+            // dans le contexte d'organisation comme « auth ». Aucune donnée sensible.
+            'settings' => function () use ($request): ?array {
+                $current = app(CurrentTenant::class);
+
+                if ($request->user() === null || $current->organization() === null || ! $request->is('calendriers*', 'whatsapp*', 'compte/donnees*', 'compte/pause*', 'compte/suppression*', 'securite*')) {
+                    return null;
+                }
+
+                return [
+                    'whatsapp_connected' => $current->role() === 'owner' && WhatsappAccount::query()->where('status', 'active')->exists(),
+                    'two_factor' => $request->user()->hasTwoFactor(),
                 ];
             },
             'flash' => [

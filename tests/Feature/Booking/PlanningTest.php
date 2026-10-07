@@ -61,16 +61,22 @@ beforeEach(function (): void {
 });
 
 describe('lecture', function (): void {
-    it('affiche les colonnes des praticiens et les rendez-vous du jour', function (): void {
+    it('affiche la semaine (lundi → dimanche) avec ses horaires d\'ouverture et les rendez-vous', function (): void {
         ($this->book)('2026-06-02 10:00');
 
         ($this->as)()->get('/planning?date=2026-06-02')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('Planning/Index')
             ->where('date', '2026-06-02')
             ->where('location.id', $this->location->id)
+            ->where('week.start', '2026-06-01')
+            ->where('week.end', '2026-06-07')
+            ->has('week.days', 7)
+            ->where('week.days.1.date', '2026-06-02')
+            ->where('week.days.1.open', [['start' => 540, 'end' => 1020]])
             ->has('practitioners', 1)
-            ->where('practitioners.0.working', [['start' => 540, 'end' => 1020]])
+            ->where('practitioners.0.schedule.2', [['start' => 540, 'end' => 1020]])
             ->has('bookings', 1)
+            ->where('bookings.0.date', '2026-06-02')
             ->where('bookings.0.starts', '10:00')
             ->where('bookings.0.ends', '10:30')
             ->where('bookings.0.start_minute', 600)
@@ -79,12 +85,19 @@ describe('lecture', function (): void {
             ->has('services', 1));
     });
 
-    it('n\'affiche pas les rendez-vous d\'un autre jour ni les annulés', function (): void {
+    it('n\'affiche pas les rendez-vous d\'une autre semaine ni les annulés', function (): void {
         ($this->book)('2026-06-03 10:00');
-        $cancelled = ($this->book)('2026-06-02 11:00');
+        ($this->book)('2026-06-09 10:00', ['key' => 'semaine-suivante']);
+        $cancelled = ($this->book)('2026-06-02 11:00', ['key' => 'annule']);
         inOrg($this->org, fn () => app(BookingCore::class)->cancel($this->org, $cancelled, Actor::user(null)));
 
-        ($this->as)()->get('/planning?date=2026-06-02')->assertInertia(fn (Assert $page) => $page->has('bookings', 0));
+        ($this->as)()->get('/planning?date=2026-06-02')->assertInertia(fn (Assert $page) => $page->has('bookings', 1)->where('bookings.0.date', '2026-06-03'));
+        ($this->as)()->get('/planning?date=2026-06-09')->assertInertia(fn (Assert $page) => $page->where('week.start', '2026-06-08')->has('bookings', 1)->where('bookings.0.date', '2026-06-09'));
+    });
+
+    it('commence la semaine le lundi, y compris quand la date choisie est un dimanche', function (): void {
+        ($this->as)()->get('/planning?date=2026-06-07')->assertInertia(fn (Assert $page) => $page->where('week.start', '2026-06-01')->where('week.end', '2026-06-07'));
+        ($this->as)()->get('/planning?date=2026-06-08')->assertInertia(fn (Assert $page) => $page->where('week.start', '2026-06-08')->where('week.end', '2026-06-14'));
     });
 
     it('utilise le jour local du site (un rendez-vous tardif reste sur son jour)', function (): void {
@@ -92,8 +105,8 @@ describe('lecture', function (): void {
         $this->asOwner(fn () => BusinessHour::query()->where('weekday', 2)->update(['ends_at' => '23:00']));
         ($this->book)('2026-06-02 22:30');
 
-        ($this->as)()->get('/planning?date=2026-06-02')->assertInertia(fn (Assert $page) => $page->has('bookings', 1)->where('bookings.0.starts', '22:30'));
-        ($this->as)()->get('/planning?date=2026-06-03')->assertInertia(fn (Assert $page) => $page->has('bookings', 0));
+        ($this->as)()->get('/planning?date=2026-06-02')->assertInertia(fn (Assert $page) => $page->has('bookings', 1)->where('bookings.0.starts', '22:30')->where('bookings.0.date', '2026-06-02'));
+        ($this->as)()->get('/planning?date=2026-06-09')->assertInertia(fn (Assert $page) => $page->has('bookings', 0));
     });
 
     it('retombe sur aujourd\'hui quand la date est invalide', function (): void {

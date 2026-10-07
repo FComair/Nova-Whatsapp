@@ -1,0 +1,119 @@
+<script setup lang="ts">
+import { Link, router, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { activeSettings, settingsGroups, type SettingsItem } from '../composables/settingsNav';
+import { useT } from '../composables/useT';
+import type { SharedProps } from '../types';
+import AppLayout from './AppLayout.vue';
+
+defineProps<{ title: string }>();
+
+const page = usePage<SharedProps>();
+const { t } = useT();
+
+const groups = computed(() => settingsGroups(page.props.auth.organization?.role ?? null));
+const items = computed(() => groups.value.flatMap((group) => group.items));
+const active = computed(() => activeSettings((page as unknown as { url?: string }).url ?? ''));
+const activeHref = computed(() => items.value.find((item) => item.key === active.value)?.href ?? '');
+
+/** Pastille d'état affichée à côté d'une page (fournie par le serveur, sans donnée sensible). */
+function status(item: SettingsItem): string | null {
+    const shared = page.props.settings;
+
+    if (item.key === 'whatsapp' && shared?.whatsapp_connected) {
+        return t('settings.status.connected');
+    }
+
+    return item.key === 'security' && shared?.two_factor ? t('settings.status.two_factor') : null;
+}
+
+function go(event: Event): void {
+    router.visit((event.target as HTMLSelectElement).value);
+}
+</script>
+
+<template>
+    <AppLayout :title="title">
+        <div class="flex flex-col gap-5 lg:flex-row lg:gap-12">
+            <!-- Téléphone : une liste déroulante groupée. -->
+            <div class="md:hidden">
+                <label for="settings-section" class="sr-only">{{ t('settings.menu') }}</label>
+                <select
+                    id="settings-section"
+                    class="block min-h-12 w-full rounded-lg border border-neutral-300 bg-white px-3 text-base font-medium text-neutral-900"
+                    :value="activeHref"
+                    @change="go"
+                >
+                    <optgroup v-for="group in groups" :key="group.key" :label="t(`settings.groups.${group.key}`)">
+                        <option v-for="item in group.items" :key="item.key" :value="item.href">{{ t(item.label) }}</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <!-- Tablette : onglets au-dessus du contenu. -->
+            <nav class="hidden border-b border-neutral-200 md:flex lg:hidden" :aria-label="t('settings.menu')">
+                <Link
+                    v-for="item in items"
+                    :key="item.key"
+                    :href="item.href"
+                    class="-mb-px flex min-h-11 items-center gap-2 border-b-[3px] px-4 text-sm font-semibold"
+                    :class="item.key === active ? 'border-primary-600 text-primary-700' : 'border-transparent text-neutral-600 hover:text-neutral-900'"
+                    :aria-current="item.key === active ? 'page' : undefined"
+                >
+                    {{ t(item.label) }}
+                </Link>
+            </nav>
+
+            <!-- Ordinateur : menu vertical groupé, toujours visible. -->
+            <nav class="hidden w-60 shrink-0 lg:block" :aria-label="t('settings.menu')">
+                <div v-for="(group, index) in groups" :key="group.key" :class="index > 0 ? 'mt-6' : ''">
+                    <p class="mb-1.5 px-3 text-xs font-semibold uppercase tracking-wider text-neutral-600">{{ t(`settings.groups.${group.key}`) }}</p>
+                    <ul class="space-y-0.5">
+                        <li v-for="item in group.items" :key="item.key">
+                            <Link
+                                :href="item.href"
+                                class="flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm"
+                                :class="
+                                    item.key === active ? 'bg-primary-50 font-semibold text-primary-700' : 'font-medium text-neutral-800 hover:bg-neutral-100'
+                                "
+                                :aria-current="item.key === active ? 'page' : undefined"
+                            >
+                                <svg
+                                    class="size-5 shrink-0"
+                                    :class="item.key === active ? 'text-primary-600' : 'text-neutral-500'"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <template v-if="item.key === 'calendars'">
+                                        <rect x="3" y="5" width="18" height="16" rx="3" />
+                                        <path d="M8 3v4M16 3v4M3 10h18" />
+                                    </template>
+                                    <path v-else-if="item.key === 'whatsapp'" d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" />
+                                    <template v-else-if="item.key === 'data'">
+                                        <ellipse cx="12" cy="6" rx="8" ry="3" />
+                                        <path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+                                    </template>
+                                    <template v-else>
+                                        <rect x="5" y="11" width="14" height="10" rx="2.5" />
+                                        <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                                    </template>
+                                </svg>
+                                <span class="min-w-0 flex-1 truncate">{{ t(item.label) }}</span>
+                                <span v-if="status(item)" class="shrink-0 rounded-full bg-success-50 px-2 py-0.5 text-xs font-semibold text-success-600">
+                                    {{ status(item) }}
+                                </span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="min-w-0 flex-1"><slot /></div>
+        </div>
+    </AppLayout>
+</template>

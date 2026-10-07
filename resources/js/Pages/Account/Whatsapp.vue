@@ -5,7 +5,7 @@ import WhatsappPanel from '../../Components/WhatsappPanel.vue';
 import type { WhatsappTemplateRow } from '../../Components/WhatsappPanel.vue';
 import type { MetaSignupConfig } from '../../composables/metaSignup';
 import { useT } from '../../composables/useT';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import type { SharedProps } from '../../types';
 
 defineProps<{
@@ -20,7 +20,7 @@ const page = usePage<SharedProps>();
 </script>
 
 <template>
-    <AppLayout :title="t('whatsapp.title')">
+    <SettingsLayout :title="t('whatsapp.title')">
         <h1 class="text-2xl font-semibold text-nova-900">{{ t('whatsapp.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('whatsapp.intro') }}</p>
 
@@ -29,5 +29,5 @@ const page = usePage<SharedProps>();
         <div class="mt-6 max-w-3xl">
             <WhatsappPanel :account="account" :templates="templates" :all-approved="allApproved" :embedded="embedded" />
         </div>
-    </AppLayout>
+    </SettingsLayout>
 </template>

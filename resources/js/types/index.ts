@@ -97,6 +97,8 @@ export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'no_show';
 export interface PlanningBooking {
     id: string;
     practitioner_id: string;
+    /** Jour du rendez-vous, « AAAA-MM-JJ », à l'heure locale du site. */
+    date: string;
     customer: { id: string; name: string | null; phone: string | null };
     service: string | null;
     starts: string;
@@ -115,7 +117,15 @@ export interface PlanningPractitioner {
     id: string;
     name: string;
     color: string;
-    working: { start: number; end: number }[];
+    /** Jours et heures de travail du profil, par jour ISO de la semaine (« 1 » = lundi … « 7 » = dimanche). */
+    schedule: Record<string, { start: number; end: number }[]>;
+}
+
+/** Semaine affichée par le planning (lundi → dimanche) avec les horaires d'ouverture de chaque jour. */
+export interface PlanningWeek {
+    start: string;
+    end: string;
+    days: { date: string; open: { start: number; end: number }[] }[];
 }
 
 export interface PlanningService {
@@ -131,6 +141,8 @@ export interface SharedProps {
     locales: Locale[];
     translations: Record<string, unknown>;
     auth: { user: AuthUser | null; organization: AuthOrganization | null };
+    /** Pastilles du menu Réglages ; null hors des pages de réglages. */
+    settings: { whatsapp_connected: boolean; two_factor: boolean } | null;
     flash: { status: string | null; warning: string | null; first_login: boolean; suggestions: Suggestion[] };
     [key: string]: unknown;
 }

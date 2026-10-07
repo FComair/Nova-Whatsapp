@@ -5,7 +5,7 @@ import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
 
@@ -77,7 +77,7 @@ function newCodes(): void {
 </script>
 
 <template>
-    <AppLayout :title="t('security.title')">
+    <SettingsLayout :title="t('security.title')">
         <h1 class="text-2xl font-semibold text-nova-900">{{ t('security.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('security.intro') }}</p>
 
@@ -278,5 +278,5 @@ function newCodes(): void {
                 <BaseButton type="submit" variant="secondary" :loading="sessions.processing">{{ t('security.sessions_close') }}</BaseButton>
             </form>
         </section>
-    </AppLayout>
+    </SettingsLayout>
 </template>

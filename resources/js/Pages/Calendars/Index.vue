@@ -7,7 +7,7 @@ import CalendarForm from '../../Components/CalendarForm.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
 import { useT } from '../../composables/useT';
 import { formatDateTime } from '../../composables/dates';
-import AppLayout from '../../Layouts/AppLayout.vue';
+import SettingsLayout from '../../Layouts/SettingsLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
 
@@ -79,7 +79,7 @@ function rotate(): void {
 </script>
 
 <template>
-    <AppLayout :title="t('calendars.title')">
+    <SettingsLayout :title="t('calendars.title')">
         <h1 class="text-2xl font-semibold text-nova-900">{{ t('calendars.title') }}</h1>
         <p class="mt-2 max-w-3xl text-sm text-neutral-700">{{ t('calendars.intro') }}</p>
 
@@ -177,5 +177,5 @@ function rotate(): void {
             @confirm="rotate"
             @cancel="rotating = null"
         />
-    </AppLayout>
+    </SettingsLayout>
 </template>
