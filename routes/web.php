@@ -104,6 +104,10 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     Route::prefix('/reglages/profil')->name('settings.profile.')->group(function (): void {
         Route::get('/', [AccountProfileController::class, 'show'])->name('show');
         Route::put('/entreprise', [AccountProfileController::class, 'updateCompany'])->middleware('role:owner')->name('company');
+        // Logo de l'établissement : lecture pour tous les rôles (barre de navigation), envoi et retrait réservés au propriétaire.
+        Route::get('/logo/{size}', [AccountProfileController::class, 'showLogo'])->whereNumber('size')->name('logo.show');
+        Route::post('/logo', [AccountProfileController::class, 'storeLogo'])->middleware(['role:owner', 'throttle:10,1'])->name('logo.store');
+        Route::delete('/logo', [AccountProfileController::class, 'destroyLogo'])->middleware(['role:owner', 'throttle:10,1'])->name('logo.destroy');
     });
 
     // Réglages > Mise en route : liste des tâches par catégorie, qui renvoie vers les écrans existants (propriétaire uniquement).

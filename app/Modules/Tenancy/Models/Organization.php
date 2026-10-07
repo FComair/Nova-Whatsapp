@@ -36,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deletion_started_at
  * @property string|null $previous_status
  * @property Carbon|null $trial_ends_at
+ * @property Carbon|null $logo_updated_at
  * @property Carbon|null $trial_reminder_sent_at
  * @property string|null $billing_name
  * @property string|null $billing_vat_number
@@ -73,6 +74,7 @@ class Organization extends Model
             'billing_address' => 'array',
             'data_sensitivity' => 'boolean',
             'trial_ends_at' => 'datetime',
+            'logo_updated_at' => 'datetime',
             'paused_at' => 'datetime',
             'pause_until' => 'datetime',
             'pause_reminder_sent_at' => 'datetime',

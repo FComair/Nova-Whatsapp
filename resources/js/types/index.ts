@@ -10,6 +10,8 @@ export interface AuthOrganization {
     id: string;
     name: string;
     status: 'trial' | 'active' | 'past_due' | 'suspended' | 'paused' | 'pending_deletion' | 'deleted';
+    /** Date d'envoi du logo (horodatage) : sert de numéro de version ; null = pas de logo. */
+    logo_version: number | null;
     role: 'owner' | 'site_manager' | 'practitioner' | 'receptionist' | null;
 }
 

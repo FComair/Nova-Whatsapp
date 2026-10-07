@@ -50,6 +50,7 @@ final class HandleInertiaRequests extends Middleware
                         'id' => $organization->id,
                         'name' => $organization->name,
                         'status' => $organization->status,
+                        'logo_version' => $organization->logo_updated_at?->getTimestamp(),
                         'role' => $current->role(),
                     ],
                 ];

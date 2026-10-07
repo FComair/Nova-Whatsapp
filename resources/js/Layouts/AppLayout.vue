@@ -2,6 +2,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
+import ShopAvatar from '../Components/ShopAvatar.vue';
 import { activeSettings, settingsHome } from '../composables/settingsNav';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
@@ -31,8 +32,15 @@ function logout(): void {
             <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                 <div class="flex min-w-0 items-center gap-3">
                     <span class="text-xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
-                    <span v-if="page.props.auth.organization" class="max-w-[10rem] truncate text-sm text-neutral-600 sm:max-w-xs">
-                        {{ page.props.auth.organization.name }}
+                    <span v-if="page.props.auth.organization" class="flex min-w-0 items-center gap-2 border-l border-neutral-200 pl-3">
+                        <ShopAvatar
+                            :id="page.props.auth.organization.id"
+                            :name="page.props.auth.organization.name"
+                            :version="page.props.auth.organization.logo_version"
+                        />
+                        <span class="max-w-[8rem] truncate text-sm font-medium text-neutral-700 sm:max-w-xs">
+                            {{ page.props.auth.organization.name }}
+                        </span>
                     </span>
                 </div>
                 <div class="flex min-w-0 flex-wrap items-center justify-end gap-x-1 gap-y-1 sm:gap-x-3">

@@ -6,16 +6,21 @@ namespace App\Modules\Tenancy\Http\Controllers;
 
 use App\Modules\Identity\Services\PhoneChange;
 use App\Modules\Onboarding\Http\Requests\CompanyRequest;
+use App\Modules\Tenancy\Http\Requests\LogoRequest;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Services\CompanyUpdater;
+use App\Modules\Tenancy\Services\OrganizationLogo;
 use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Réglages > Profil : coordonnées de la personne connectée (e-mail, téléphone, langue) et informations de l'entreprise.
@@ -72,6 +77,40 @@ final class AccountProfileController
         $this->company->update($this->organization(), $request->validated(), (string) $request->user()?->id);
 
         return back()->with('status', __('ui.account_profile.company_saved'));
+    }
+
+    /** Envoi ou remplacement du logo (propriétaire uniquement, imposé par la route). */
+    public function storeLogo(LogoRequest $request, OrganizationLogo $logo): RedirectResponse
+    {
+        try {
+            $logo->store($this->organization(), $request->file('logo') ?? abort(422), (string) $request->user()?->id);
+        } catch (InvalidArgumentException) {
+            return back()->withErrors(['logo' => __('ui.logo.errors.invalid')]);
+        }
+
+        return back()->with('status', __('ui.logo.saved'));
+    }
+
+    public function destroyLogo(Request $request, OrganizationLogo $logo): RedirectResponse
+    {
+        $logo->remove($this->organization(), (string) $request->user()?->id);
+
+        return back()->with('status', __('ui.logo.removed'));
+    }
+
+    /** Sert le logo de l'établissement courant uniquement (jamais celui d'un autre), avec un cache long : l'adresse change à chaque nouvel envoi. */
+    public function showLogo(OrganizationLogo $logo, int $size): StreamedResponse
+    {
+        $organization = $this->organization();
+        $path = $logo->path($organization->id, $size);
+
+        abort_unless(in_array($size, OrganizationLogo::SIZES, true) && $organization->logo_updated_at !== null && Storage::disk('local')->exists($path), 404);
+
+        return Storage::disk('local')->response($path, null, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'private, max-age=31536000, immutable',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     private function organization(): Organization

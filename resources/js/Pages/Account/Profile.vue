@@ -3,7 +3,9 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
+import LogoUploader from '../../Components/LogoUploader.vue';
 import SelectField from '../../Components/SelectField.vue';
+import ShopAvatar from '../../Components/ShopAvatar.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
 import SettingsLayout from '../../Layouts/SettingsLayout.vue';
@@ -63,6 +65,21 @@ function confirmPhone(): void {
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-2xl">{{ page.props.flash.status }}</AlertBox>
         <AlertBox v-if="errors.email && !emailForm.errors.email" variant="error" class="mt-4 max-w-2xl">{{ errors.email }}</AlertBox>
+
+        <!-- Identité visuelle : le propriétaire envoie le logo, les autres rôles le voient -->
+        <section
+            v-if="page.props.auth.organization"
+            class="mt-6 flex max-w-2xl flex-wrap items-start gap-5 rounded-card border border-neutral-200 bg-white p-5"
+            aria-labelledby="logo"
+        >
+            <ShopAvatar :id="page.props.auth.organization.id" :name="company.name" :version="page.props.auth.organization.logo_version" size="xl" />
+            <div class="min-w-0 flex-1">
+                <h2 id="logo" class="text-lg font-semibold text-nova-900">{{ company.name }}</h2>
+                <p class="mt-1 text-sm text-neutral-700">{{ t('logo.title') }}</p>
+                <LogoUploader v-if="canEditCompany" class="mt-3" :has-logo="page.props.auth.organization.logo_version !== null" />
+                <p v-else class="mt-3 text-sm text-neutral-600">{{ t('logo.owner_only') }}</p>
+            </div>
+        </section>
 
         <!-- Coordonnées de la personne connectée -->
         <section class="mt-8 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="personal">

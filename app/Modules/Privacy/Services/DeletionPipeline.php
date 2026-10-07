@@ -12,6 +12,7 @@ use App\Modules\Privacy\Notifications\DeletionCompletedNotification;
 use App\Modules\Privacy\Notifications\DeletionFailedNotification;
 use App\Modules\Privacy\Support\ErasureSteps;
 use App\Modules\Tenancy\Models\Organization;
+use App\Modules\Tenancy\Services\OrganizationLogo;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -184,6 +185,7 @@ final class DeletionPipeline
                 'billing_name' => null,
                 'billing_vat_number' => null,
                 'billing_address' => null,
+                'logo_updated_at' => null,
                 'suspension_reason' => null,
                 'previous_status' => null,
                 'status' => Organization::STATUS_DELETED,
@@ -192,6 +194,9 @@ final class DeletionPipeline
 
             PlatformAudit::system('organization.deleted', $organization->id, 'organizations', $organization->id, ['kind' => $request->kind]);
         });
+
+        // Le logo est une donnée de l'établissement : ses fichiers disparaissent avec le compte.
+        app(OrganizationLogo::class)->purge($organization->id);
 
         $email = $request->owner_email_enc;
 
