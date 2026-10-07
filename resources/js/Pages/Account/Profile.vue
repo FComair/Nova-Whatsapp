@@ -15,7 +15,7 @@ const props = defineProps<{
     canEditCompany: boolean;
     company: { name: string; sector: string; country: string; timezone: string; locale: string };
     billing: { billing_name: string; vat_number: string; line1: string; postal_code: string; city: string } | null;
-    sectors: string[];
+    sectors: { value: string; label: string }[];
     countries: string[];
     timezones: string[];
 }>();
@@ -31,7 +31,7 @@ const company = useForm({ ...props.company });
 const identity = useForm({ ...(props.billing ?? { billing_name: '', vat_number: '', line1: '', postal_code: '', city: '' }) });
 
 const languageOptions = computed(() => (['fr', 'nl', 'en'] as const).map((value) => ({ value, label: t(`common.languages.${value}`) })));
-const sectorOptions = computed(() => props.sectors.map((value) => ({ value, label: t(`register.sectors.${value}`) })));
+const sectorOptions = computed(() => props.sectors);
 const countryOptions = computed(() => props.countries.map((value) => ({ value, label: t(`onboarding.company.countries.${value}`) })));
 const timezoneOptions = computed(() => props.timezones.map((value) => ({ value, label: value.replaceAll('_', ' ') })));
 

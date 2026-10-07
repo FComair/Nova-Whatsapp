@@ -10,6 +10,7 @@ use App\Modules\Identity\Notifications\VerifyEmailNotification;
 use App\Modules\Identity\Services\RegisterOrganization;
 use App\Modules\Identity\Services\SendLimiter;
 use App\Modules\Identity\Support\PendingVerification;
+use App\Modules\Tenancy\Services\SectorCatalog;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ final class RegisterController
     public function create(Request $request): Response
     {
         return Inertia::render('Auth/Register', [
-            'sectors' => config('nova.sectors'),
+            'sectors' => app(SectorCatalog::class)->options(app()->getLocale()),
             'plan' => in_array($request->query('plan'), config('nova.signup_plans'), true) ? $request->query('plan') : 'trial',
         ]);
     }

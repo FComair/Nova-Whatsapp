@@ -45,6 +45,11 @@ class PlatformSettingResource extends Resource
         return __('admin.settings.plural');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('admin.navigation.configuration');
+    }
+
     public static function canCreate(): bool
     {
         return false;

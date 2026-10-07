@@ -136,19 +136,6 @@ return [
         'have_account' => 'Hebt u al een account?',
         'plan' => 'Gekozen formule',
         'plans' => ['trial' => 'Gratis proefperiode', 'basic' => 'Basic', 'business' => 'Business'],
-        'sectors' => [
-            'hairdressing' => 'Kapper & Barbier',
-            'beauty' => 'Schoonheid en esthetiek',
-            'wellness' => 'Wellness en spa',
-            'medical' => 'Huisarts en specialist',
-            'paramedical' => 'Paramedisch (kine, enz.)',
-            'dental' => 'Tandarts',
-            'coaching' => 'Coaching en advies',
-            'real_estate' => 'Vastgoed',
-            'garage' => 'Garage en auto',
-            'driving_school' => 'Rijschool',
-            'other' => 'Andere',
-        ],
     ],
 
     'verify' => [
@@ -404,6 +391,37 @@ return [
         ],
     ],
 
+    'setup' => [
+        'breadcrumb' => 'Kruimelpad',
+        'completed' => 'Voltooid',
+        'progress_title' => 'Voortgang in dit onderdeel',
+        'progress' => ':done van :total stappen voltooid',
+        'optional' => 'Optioneel',
+        'footer' => 'Elke knop opent het scherm waar de stap gebeurt. Kom hier altijd terug: deze pagina toont steeds waar u staat.',
+        'states' => ['done' => 'Voltooid', 'current' => 'Bezig', 'todo' => 'Te doen', 'soon' => 'Binnenkort'],
+        'cta' => ['edit' => 'Wijzigen', 'view' => 'Bekijken', 'resume' => 'Hervatten', 'go' => 'Naar de stap'],
+        'categories' => [
+            'business' => ['nav' => 'Basisgegevens', 'title' => 'Basisgegevens', 'intro' => 'Wat uw klanten zien: wie u bent, waar u zit en wanneer u open bent.'],
+            'team' => ['nav' => 'Diensten en team', 'title' => 'Diensten en team', 'intro' => 'Geef aan wat u aanbiedt, wie het uitvoert en welke regels klanten volgen bij het boeken.'],
+            'messages' => ['nav' => 'Berichten aan klanten', 'title' => 'Berichten aan klanten', 'intro' => 'Bevestigingen en herinneringen via WhatsApp, vanaf uw eigen nummer.'],
+            'launch' => ['nav' => 'Live gaan en beveiliging', 'title' => 'Live gaan en beveiliging', 'intro' => 'Controleer of alles werkt, ontvang uw eerste boekingen en beveilig uw account.'],
+        ],
+        'steps' => [
+            'company' => ['title' => 'Uw bedrijfsgegevens invullen', 'body' => 'Naam, sector, land en tijdzone.'],
+            'locations' => ['title' => 'Uw locaties toevoegen', 'body' => 'Waar uw klanten u komen bezoeken.'],
+            'hours' => ['title' => 'Uw openingsuren instellen', 'body' => 'Wanneer klanten kunnen boeken.'],
+            'services' => ['title' => 'Uw diensten toevoegen', 'body' => 'Wat u aanbiedt, met duur en prijs.'],
+            'practitioners' => ['title' => 'Uw eerste medewerker toevoegen', 'body' => 'Voeg uw team toe en stel in wanneer iedereen werkt.'],
+            'policies' => ['title' => 'Uw boekingsregels instellen', 'body' => 'Minimale termijn, hoe ver vooruit te boeken, annuleringen.'],
+            'calendar' => ['title' => 'Een teamkalender koppelen', 'body' => 'Bezette momenten in een persoonlijke kalender blokkeren boekingen.'],
+            'whatsapp' => ['title' => 'Uw WhatsApp-nummer verbinden', 'body' => 'Stuur bevestigingen en herinneringen vanaf uw eigen nummer.'],
+            'templates' => ['title' => 'Uw berichten laten goedkeuren', 'body' => 'Uw standaardberichten moeten door WhatsApp worden goedgekeurd.'],
+            'test_booking' => ['title' => 'Een testboeking maken', 'body' => 'Controleer het hele traject als een klant. Nog niet beschikbaar.'],
+            'first_booking' => ['title' => 'Uw eerste boeking ontvangen', 'body' => 'Maak zelf een afspraak aan, of laat een klant boeken via WhatsApp.'],
+            'plan' => ['title' => 'Uw abonnement kiezen', 'body' => 'Kies Basic of Business voordat uw gratis proefperiode eindigt.'],
+            'two_factor' => ['title' => 'Tweestapsverificatie inschakelen', 'body' => 'Bij elke aanmelding wordt een code van uw telefoon gevraagd.'],
+        ],
+    ],
     'account_profile' => [
         'nav' => 'Profiel',
         'title' => 'Profiel',
@@ -421,8 +439,8 @@ return [
     'settings' => [
         'nav' => 'Instellingen',
         'menu' => 'Onderdelen van de instellingen',
-        'groups' => ['account' => 'Account', 'integrations' => 'Integraties', 'privacy' => 'Privacy en gegevens'],
-        'status' => ['connected' => 'Verbonden', 'two_factor' => '2FA aan'],
+        'groups' => ['setup' => 'Opstarten', 'account' => 'Account', 'integrations' => 'Integraties', 'privacy' => 'Privacy en gegevens'],
+        'status' => ['connected' => 'Verbonden', 'two_factor' => '2FA aan', 'left' => ':count te doen'],
     ],
 
     'planning' => [

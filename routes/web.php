@@ -20,6 +20,7 @@ use App\Modules\Identity\Http\Controllers\SecurityController;
 use App\Modules\Identity\Http\Controllers\TwoFactorChallengeController;
 use App\Modules\Identity\Http\Middleware\RequireTwoFactor;
 use App\Modules\Onboarding\Http\Controllers\OnboardingController;
+use App\Modules\Onboarding\Http\Controllers\SetupController;
 use App\Modules\Privacy\Http\Controllers\AccountDataController;
 use App\Modules\Staff\Http\Controllers\InvitationController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
@@ -104,6 +105,9 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [AccountProfileController::class, 'show'])->name('show');
         Route::put('/entreprise', [AccountProfileController::class, 'updateCompany'])->middleware('role:owner')->name('company');
     });
+
+    // Réglages > Mise en route : liste des tâches par catégorie, qui renvoie vers les écrans existants (propriétaire uniquement).
+    Route::get('/reglages/demarrage/{category}', [SetupController::class, 'show'])->middleware('role:owner')->name('settings.setup.show');
 
     // Assistant d'onboarding : propriétaire uniquement (docs/02 §1).
     Route::middleware('role:owner')->prefix('/configuration/assistant')->group(function (): void {

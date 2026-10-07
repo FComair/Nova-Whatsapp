@@ -9,7 +9,7 @@ import { useT } from '../../composables/useT';
 import AuthLayout from '../../Layouts/AuthLayout.vue';
 import { routes } from '../../routes';
 
-const props = defineProps<{ sectors: string[]; plan: string }>();
+const props = defineProps<{ sectors: { value: string; label: string }[]; plan: string }>();
 const { t } = useT();
 
 const form = useForm({
@@ -23,7 +23,7 @@ const form = useForm({
     accept_dpa: false,
 });
 
-const sectorOptions = computed(() => props.sectors.map((value) => ({ value, label: t(`register.sectors.${value}`) })));
+const sectorOptions = computed(() => props.sectors);
 
 function submit(): void {
     form.post(routes.register, { onFinish: () => form.reset('password') });

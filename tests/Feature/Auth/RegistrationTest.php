@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Identity\Models\User;
 use App\Modules\Identity\Notifications\VerifyEmailNotification;
+use App\Modules\Tenancy\Support\DefaultSectors;
 use App\Modules\Tenancy\Support\TenantContext;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -18,7 +19,7 @@ uses(AuthScenarios::class);
 it('affiche la page d\'inscription avec les secteurs proposés', function (): void {
     $this->get('/inscription')->assertInertia(fn (Assert $page) => $page
         ->component('Auth/Register')
-        ->has('sectors', count(config('nova.sectors')))
+        ->has('sectors', count(DefaultSectors::rows()))
         ->where('plan', 'trial'));
 });
 

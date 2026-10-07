@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Modules\Onboarding\Services\SetupChecklist;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Models\WhatsappAccount;
 use Illuminate\Http\Request;
@@ -58,13 +59,17 @@ final class HandleInertiaRequests extends Middleware
             'settings' => function () use ($request): ?array {
                 $current = app(CurrentTenant::class);
 
-                if ($request->user() === null || $current->organization() === null || ! $request->is('calendriers*', 'whatsapp*', 'compte/donnees*', 'compte/pause*', 'compte/suppression*', 'securite*')) {
+                if ($request->user() === null || $current->organization() === null || ! $request->is('reglages/*', 'calendriers*', 'whatsapp*', 'compte/donnees*', 'compte/pause*', 'compte/suppression*', 'securite*')) {
                     return null;
                 }
 
                 return [
                     'whatsapp_connected' => $current->role() === 'owner' && WhatsappAccount::query()->where('status', 'active')->exists(),
                     'two_factor' => $request->user()->hasTwoFactor(),
+                    // Reste à faire par catégorie de « Démarrage » (propriétaire seulement), pour les pastilles du menu.
+                    'setup' => $current->role() === 'owner'
+                        ? array_map(fn (array $category): array => ['key' => $category['key'], 'left' => $category['left'], 'complete' => $category['complete']], app(SetupChecklist::class)->categories($request->user()))
+                        : null,
                 ];
             },
             'flash' => [

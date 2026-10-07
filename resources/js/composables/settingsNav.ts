@@ -1,18 +1,22 @@
 import { routes } from '../routes';
 
-export type SettingsKey = 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security';
+export type SetupCategory = 'business' | 'team' | 'messages' | 'launch';
+
+export type SettingsKey = 'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security';
 
 export interface SettingsItem {
     key: SettingsKey;
     href: string;
-    /** Clé de traduction du libellé (celle déjà utilisée par l'ancien menu). */
+    /** Clé de traduction du libellé. */
     label: string;
     /** Préfixes d'adresse qui appartiennent à cette page (la page « Pause » fait partie de « Mes données »). */
     prefixes: string[];
+    /** Catégorie de « Démarrage » représentée par cette entrée (pour la pastille « reste à faire »). */
+    setup?: SetupCategory;
 }
 
 export interface SettingsGroup {
-    key: 'account' | 'integrations' | 'privacy';
+    key: 'setup' | 'account' | 'integrations' | 'privacy';
     items: SettingsItem[];
 }
 
@@ -22,16 +26,27 @@ function visible(key: SettingsKey, role: string | null): boolean {
         return false;
     }
 
+    if (key.startsWith('setup-')) {
+        return role === 'owner';
+    }
+
     return {
         profile: true,
         calendars: role !== 'receptionist',
         whatsapp: role === 'owner',
         data: role === 'owner',
         security: true,
-    }[key];
+    }[key as 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security'];
 }
 
-const all: Record<'account' | 'integrations' | 'privacy', SettingsItem[]> = {
+function setupItem(category: SetupCategory): SettingsItem {
+    const href = `${routes.setup}/${category}`;
+
+    return { key: `setup-${category}`, href, label: `setup.categories.${category}.nav`, prefixes: [href], setup: category };
+}
+
+const all: Record<SettingsGroup['key'], SettingsItem[]> = {
+    setup: [setupItem('business'), setupItem('team'), setupItem('messages'), setupItem('launch')],
     account: [{ key: 'profile', href: routes.profile, label: 'account_profile.nav', prefixes: [routes.profile] }],
     integrations: [
         { key: 'calendars', href: routes.calendars, label: 'calendars.nav', prefixes: [routes.calendars] },
@@ -43,16 +58,16 @@ const all: Record<'account' | 'integrations' | 'privacy', SettingsItem[]> = {
     ],
 };
 
+const order: SettingsGroup['key'][] = ['setup', 'account', 'integrations', 'privacy'];
+
 /** Groupes du menu Réglages pour un rôle : un groupe sans page accessible disparaît. */
 export function settingsGroups(role: string | null): SettingsGroup[] {
-    return (['account', 'integrations', 'privacy'] as const)
-        .map((key) => ({ key, items: all[key].filter((item) => visible(item.key, role)) }))
-        .filter((group) => group.items.length > 0);
+    return order.map((key) => ({ key, items: all[key].filter((item) => visible(item.key, role)) })).filter((group) => group.items.length > 0);
 }
 
-/** Première page accessible : destination du lien « Réglages » de la barre principale. */
-export function settingsHome(role: string | null): string {
-    return settingsGroups(role)[0]?.items[0]?.href ?? routes.security.show;
+/** Page d'accueil des réglages : le profil, accessible à tous les rôles. */
+export function settingsHome(): string {
+    return routes.profile;
 }
 
 function pathOf(url: string): string {
@@ -67,5 +82,5 @@ function matches(path: string, prefix: string): boolean {
 export function activeSettings(url: string): SettingsKey | null {
     const path = pathOf(url);
 
-    return [...all.account, ...all.integrations, ...all.privacy].find((item) => item.prefixes.some((prefix) => matches(path, prefix)))?.key ?? null;
+    return order.flatMap((key) => all[key]).find((item) => item.prefixes.some((prefix) => matches(path, prefix)))?.key ?? null;
 }

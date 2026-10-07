@@ -44,7 +44,7 @@ function logout(): void {
                     </Link>
                     <!-- Calendriers, WhatsApp, Mes données et Sécurité vivent désormais sous un seul menu « Réglages ». -->
                     <Link
-                        :href="settingsHome(page.props.auth.organization?.role ?? null)"
+                        :href="settingsHome()"
                         class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium"
                         :class="inSettings ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-neutral-100'"
                         :aria-current="inSettings ? 'page' : undefined"

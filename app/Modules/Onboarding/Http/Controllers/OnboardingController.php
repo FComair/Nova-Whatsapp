@@ -24,6 +24,7 @@ use App\Modules\Staff\Services\PractitionerManager;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Services\CompanyUpdater;
+use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Http\Controllers\WhatsappController;
 use Illuminate\Http\RedirectResponse;
@@ -213,7 +214,7 @@ final class OnboardingController
         return Inertia::render('Onboarding/Company', [
             ...$this->wizard(OnboardingSteps::COMPANY),
             'company' => $organization->only(['name', 'sector', 'country', 'timezone', 'locale']),
-            'sectors' => config('nova.sectors'),
+            'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
             'countries' => config('nova.countries'),
             'timezones' => \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
         ]);

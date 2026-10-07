@@ -27,6 +27,17 @@ function status(item: SettingsItem): string | null {
     return item.key === 'security' && shared?.two_factor ? t('settings.status.two_factor') : null;
 }
 
+/** « Reste à faire » d'une catégorie de mise en route : nombre de tâches à faire, ou null si tout est fait (une coche s'affiche alors). */
+function setupLeft(item: SettingsItem): number | null {
+    const entry = item.setup === undefined ? undefined : page.props.settings?.setup?.find((category) => category.key === item.setup);
+
+    return entry === undefined || entry.complete ? null : entry.left;
+}
+
+function setupComplete(item: SettingsItem): boolean {
+    return item.setup !== undefined && page.props.settings?.setup?.find((category) => category.key === item.setup)?.complete === true;
+}
+
 function go(event: Event): void {
     router.visit((event.target as HTMLSelectElement).value);
 }
@@ -89,7 +100,17 @@ function go(event: Event): void {
                                     stroke-linejoin="round"
                                     aria-hidden="true"
                                 >
-                                    <template v-if="item.key === 'profile'">
+                                    <path v-if="item.key === 'setup-business'" d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6" />
+                                    <template v-else-if="item.key === 'setup-team'">
+                                        <circle cx="9" cy="8" r="3.5" />
+                                        <path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2" />
+                                    </template>
+                                    <path v-else-if="item.key === 'setup-messages'" d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" />
+                                    <template v-else-if="item.key === 'setup-launch'">
+                                        <path d="M5 15c-1.5 1.3-2 4-2 6 2 0 4.7-.5 6-2M14 4c3-1.5 6-1.5 7-1 .5 1 .5 4-1 7l-6 6-5-5z" />
+                                        <circle cx="15.5" cy="8.5" r="1.4" />
+                                    </template>
+                                    <template v-else-if="item.key === 'profile'">
                                         <circle cx="12" cy="8" r="4" />
                                         <path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6" />
                                     </template>
@@ -111,6 +132,27 @@ function go(event: Event): void {
                                 <span v-if="status(item)" class="shrink-0 rounded-full bg-success-50 px-2 py-0.5 text-xs font-semibold text-success-600">
                                     {{ status(item) }}
                                 </span>
+                                <span
+                                    v-if="setupLeft(item) !== null"
+                                    class="shrink-0 rounded-full bg-warning-50 px-2 py-0.5 text-xs font-semibold text-warning-600"
+                                >
+                                    {{ t('settings.status.left', { count: String(setupLeft(item)) }) }}
+                                </span>
+                                <svg
+                                    v-if="setupComplete(item)"
+                                    class="size-5 shrink-0 text-success-600"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    role="img"
+                                    :aria-label="t('setup.completed')"
+                                >
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="m8 12.5 2.8 2.8L16 10" />
+                                </svg>
                             </Link>
                         </li>
                     </ul>

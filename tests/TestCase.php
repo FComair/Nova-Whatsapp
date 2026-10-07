@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Modules\Tenancy\Support\DefaultSectors;
 use App\Modules\Tenancy\Support\TenantContext;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
@@ -72,5 +73,9 @@ abstract class TestCase extends BaseTestCase
         $owner->unprepared('SET session_replication_role = replica');
         $owner->unprepared('TRUNCATE invoice_sequences, audit_logs, user_consents, password_reset_tokens, org_member_locations, org_members, locations, organizations, platform_admins, users RESTART IDENTITY CASCADE');
         $owner->unprepared('SET session_replication_role = DEFAULT');
+
+        // Les secteurs sont des données de référence que certains tests modifient : retour aux secteurs de départ à chaque test.
+        $owner->unprepared('DELETE FROM sectors');
+        DefaultSectors::insert('pgsql_owner');
     }
 }

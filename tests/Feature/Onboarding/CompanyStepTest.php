@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Modules\Onboarding\Models\OnboardingProgress;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
+use App\Modules\Tenancy\Support\DefaultSectors;
 use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Support\AuthScenarios;
@@ -30,7 +31,7 @@ it('affiche les informations actuelles avec les listes de choix', function (): v
         ->component('Onboarding/Company')
         ->where('company.name', 'nouveau')
         ->where('company.timezone', 'Europe/Brussels')
-        ->has('sectors', count(config('nova.sectors')))
+        ->has('sectors', count(DefaultSectors::rows()))
         ->where('countries', ['BE', 'FR', 'NL', 'LU', 'DE'])
         ->where('wizard.step', 'company')
         ->has('wizard.steps', 9)

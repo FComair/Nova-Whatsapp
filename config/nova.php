@@ -69,12 +69,6 @@ return [
         'dpa_version' => '2026-10-01',
     ],
 
-    // Secteurs proposés à l'inscription (docs : business plan, spec §9). Liste évolutive.
-    'sectors' => [
-        'hairdressing', 'beauty', 'wellness', 'medical', 'paramedical', 'dental',
-        'coaching', 'real_estate', 'garage', 'driving_school', 'other',
-    ],
-
     // Pays proposés pour l'entreprise et ses sites (marché belge et pays limitrophes).
     'countries' => ['BE', 'FR', 'NL', 'LU', 'DE'],
 

@@ -17,6 +17,7 @@ export const routes = {
     billing: '/facturation',
     profile: '/reglages/profil',
     profileCompany: '/reglages/profil/entreprise',
+    setup: '/reglages/demarrage',
     accountData: '/compte/donnees',
     accountExport: '/compte/donnees/export',
     accountDeletion: '/compte/suppression',

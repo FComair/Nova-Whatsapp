@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 use App\Modules\Catalog\Http\Requests\ServiceRequest;
 use App\Modules\Catalog\Support\SectorTemplates;
+use App\Modules\Tenancy\Support\DefaultSectors;
 
 /**
  * Cohérence des modèles sectoriels : chaque modèle doit produire des services valides dans les trois langues.
  */
 it('fournit un modèle pour chaque secteur sauf « autre »', function (): void {
-    foreach (config('nova.sectors') as $sector) {
+    foreach (array_column(DefaultSectors::rows(), 'code') as $sector) {
         expect(SectorTemplates::has($sector))->toBe($sector !== 'other', "Secteur : {$sector}");
     }
 });

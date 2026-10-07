@@ -8,6 +8,7 @@ use App\Modules\Identity\Services\PhoneChange;
 use App\Modules\Onboarding\Http\Requests\CompanyRequest;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Services\CompanyUpdater;
+use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
@@ -59,7 +60,7 @@ final class AccountProfileController
                 'postal_code' => (string) ($organization->billing_address['postal_code'] ?? ''),
                 'city' => (string) ($organization->billing_address['city'] ?? ''),
             ] : null,
-            'sectors' => config('nova.sectors'),
+            'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
             'countries' => config('nova.countries'),
             'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::EUROPE),
         ]);

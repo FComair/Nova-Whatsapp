@@ -4,12 +4,22 @@ import { activeSettings, settingsGroups, settingsHome } from './settingsNav';
 const keys = (role: string | null): string[] => settingsGroups(role).flatMap((group) => group.items.map((item) => item.key));
 
 describe('menu des réglages', () => {
-    it('propose toutes les pages au propriétaire, en trois groupes', () => {
-        expect(settingsGroups('owner').map((group) => group.key)).toEqual(['account', 'integrations', 'privacy']);
-        expect(keys('owner')).toEqual(['profile', 'calendars', 'whatsapp', 'data', 'security']);
+    it("propose toutes les pages au propriétaire, en quatre groupes, la mise en route d'abord", () => {
+        expect(settingsGroups('owner').map((group) => group.key)).toEqual(['setup', 'account', 'integrations', 'privacy']);
+        expect(keys('owner')).toEqual([
+            'setup-business',
+            'setup-team',
+            'setup-messages',
+            'setup-launch',
+            'profile',
+            'calendars',
+            'whatsapp',
+            'data',
+            'security',
+        ]);
     });
 
-    it('suit les droits des routes pour les autres rôles', () => {
+    it("réserve la mise en route au propriétaire, comme l'assistant, et suit les droits des routes pour le reste", () => {
         expect(keys('site_manager')).toEqual(['profile', 'calendars', 'security']);
         expect(keys('practitioner')).toEqual(['profile', 'calendars', 'security']);
         expect(keys('receptionist')).toEqual(['profile', 'security']);
@@ -20,12 +30,24 @@ describe('menu des réglages', () => {
         expect(settingsGroups(null)).toEqual([]);
     });
 
-    it('ouvre la première page accessible', () => {
-        expect(settingsHome('owner')).toBe('/reglages/profil');
-        expect(settingsHome('receptionist')).toBe('/reglages/profil');
+    it('relie chaque entrée de mise en route à sa catégorie', () => {
+        const items = settingsGroups('owner')[0].items;
+
+        expect(items.map((item) => item.setup)).toEqual(['business', 'team', 'messages', 'launch']);
+        expect(items.map((item) => item.href)).toEqual([
+            '/reglages/demarrage/business',
+            '/reglages/demarrage/team',
+            '/reglages/demarrage/messages',
+            '/reglages/demarrage/launch',
+        ]);
+    });
+
+    it('ouvre toujours le profil, accessible à tous les rôles', () => {
+        expect(settingsHome()).toBe('/reglages/profil');
     });
 
     it('reconnaît la page active, y compris la pause qui dépend de « Mes données »', () => {
+        expect(activeSettings('/reglages/demarrage/team')).toBe('setup-team');
         expect(activeSettings('/reglages/profil')).toBe('profile');
         expect(activeSettings('/calendriers')).toBe('calendars');
         expect(activeSettings('/whatsapp?x=1')).toBe('whatsapp');

@@ -7,6 +7,7 @@ namespace App\Modules\Admin\Filament\Resources;
 use App\Modules\Admin\Filament\Resources\OrganizationResource\Pages\ListOrganizations;
 use App\Modules\Admin\Filament\Resources\OrganizationResource\Pages\ViewOrganization;
 use App\Modules\Admin\Models\PlatformOrganization;
+use App\Modules\Admin\Models\PlatformSector;
 use App\Modules\Tenancy\Models\Organization;
 use BackedEnum;
 use Filament\Actions\ViewAction;
@@ -19,7 +20,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Liste des clients (organisations) pour le Super Admin.
@@ -104,10 +105,18 @@ class OrganizationResource extends Resource
             ->emptyStateHeading(__('admin.organizations.empty'));
     }
 
-    /** Nom du secteur dans la langue de l'interface (le code brut si le secteur n'existe plus dans la liste). */
+    /** Nom du secteur dans la langue de l'interface (le code brut si le secteur n'existe plus). */
     private static function sectorLabel(?string $code): ?string
     {
-        return $code !== null && Lang::has("ui.register.sectors.{$code}") ? __("ui.register.sectors.{$code}") : $code;
+        if ($code === null) {
+            return null;
+        }
+
+        // Une seule lecture par requête (cache en mémoire), au lieu d'une par ligne du tableau.
+        $locale = app()->getLocale();
+        $labels = Cache::store('array')->rememberForever("sector-labels:{$locale}", fn (): array => PlatformSector::query()->get()->mapWithKeys(fn (PlatformSector $sector): array => [$sector->code => $sector->label($locale)])->all());
+
+        return $labels[$code] ?? $code;
     }
 
     public static function infolist(Schema $schema): Schema

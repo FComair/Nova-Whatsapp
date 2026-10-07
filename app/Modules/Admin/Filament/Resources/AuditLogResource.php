@@ -40,6 +40,11 @@ class AuditLogResource extends Resource
         return __('admin.audit.plural');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('admin.navigation.operations');
+    }
+
     public static function canCreate(): bool
     {
         return false;

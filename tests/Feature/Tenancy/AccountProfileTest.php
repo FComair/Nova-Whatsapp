@@ -6,6 +6,7 @@ use App\Modules\Identity\Models\User;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Models\OrgMember;
+use App\Modules\Tenancy\Support\DefaultSectors;
 use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Support\AuthScenarios;
@@ -45,7 +46,7 @@ describe('page', function (): void {
             ->where('company.timezone', 'Europe/Brussels')
             ->where('billing.billing_name', 'Aurore SRL')
             ->where('billing.vat_number', 'BE0123456789')
-            ->has('sectors', count(config('nova.sectors')))
+            ->has('sectors', count(DefaultSectors::rows()))
             ->has('countries')
             ->has('timezones'));
     });

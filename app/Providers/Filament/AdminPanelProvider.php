@@ -13,6 +13,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -44,6 +45,11 @@ class AdminPanelProvider extends PanelProvider
             // Couleur ambre : distingue immédiatement l'espace Super Admin de l'espace client (docs/03 §A.1).
             ->colors(['primary' => Color::Amber])
             ->discoverResources(in: app_path('Modules/Admin/Filament/Resources'), for: 'App\\Modules\\Admin\\Filament\\Resources')
+            // Menu : tableau de bord, clients et factures, puis « Configuration » (secteurs, paramètres) et « Opérations » (suppressions, journal).
+            ->navigationGroups([
+                NavigationGroup::make()->label(fn (): string => __('admin.navigation.configuration')),
+                NavigationGroup::make()->label(fn (): string => __('admin.navigation.operations')),
+            ])
             ->pages([Dashboard::class])
             ->widgets([])
             ->middleware([

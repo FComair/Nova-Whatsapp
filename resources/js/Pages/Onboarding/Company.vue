@@ -12,7 +12,7 @@ import type { Wizard } from '../../types';
 const props = defineProps<{
     wizard: Wizard;
     company: { name: string; sector: string; country: string; timezone: string; locale: string };
-    sectors: string[];
+    sectors: { value: string; label: string }[];
     countries: string[];
     timezones: string[];
 }>();
@@ -20,7 +20,7 @@ const props = defineProps<{
 const { t } = useT();
 const form = useForm({ ...props.company });
 
-const sectorOptions = computed(() => props.sectors.map((value) => ({ value, label: t(`register.sectors.${value}`) })));
+const sectorOptions = computed(() => props.sectors);
 const countryOptions = computed(() => props.countries.map((value) => ({ value, label: t(`onboarding.company.countries.${value}`) })));
 const timezoneOptions = computed(() => props.timezones.map((value) => ({ value, label: value.replaceAll('_', ' ') })));
 const localeOptions = computed(() => (['fr', 'nl', 'en'] as const).map((value) => ({ value, label: t(`common.languages.${value}`) })));

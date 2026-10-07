@@ -92,14 +92,80 @@ describe('pages récentes', () => {
         [
             'Account/Security',
             {
-                email: 'proprio@example.com',
-                pendingEmail: null,
-                phone: '+32470123456',
-                pendingPhone: null,
                 passwordChangedAt: null,
                 passwordOld: false,
                 twoFactor: { enabled: false, required: true, setup: { secret: 'ABC', qr: 'data:image/svg+xml;base64,AAA=' }, remainingCodes: 0 },
                 recoveryCodes: null,
+            },
+        ],
+        [
+            'Account/Setup',
+            {
+                category: {
+                    key: 'team',
+                    total: 4,
+                    done: 1,
+                    left: 2,
+                    complete: false,
+                    steps: [
+                        { key: 'services', state: 'done', optional: false, href: '/configuration/assistant/services', wizard: true },
+                        { key: 'practitioners', state: 'current', optional: false, href: '/configuration/assistant/praticiens', wizard: true },
+                        { key: 'policies', state: 'todo', optional: false, href: '/configuration/assistant/politiques', wizard: true },
+                        { key: 'calendar', state: 'todo', optional: true, href: '/calendriers', wizard: false },
+                    ],
+                },
+            },
+        ],
+        [
+            'Account/Setup',
+            {
+                category: {
+                    key: 'launch',
+                    total: 2,
+                    done: 1,
+                    left: 0,
+                    complete: true,
+                    steps: [
+                        { key: 'test_booking', state: 'soon', optional: false, href: null, wizard: true },
+                        { key: 'two_factor', state: 'done', optional: false, href: '/securite', wizard: false },
+                    ],
+                },
+            },
+        ],
+        [
+            'Account/Profile',
+            {
+                personal: {
+                    email: 'proprio@example.com',
+                    pendingEmail: 'nouvelle@example.com',
+                    phone: '+32470123456',
+                    pendingPhone: '+32470222222',
+                    locale: 'fr',
+                },
+                canEditCompany: true,
+                company: { name: 'Salon Aurore', sector: 'hairdressing', country: 'BE', timezone: 'Europe/Brussels', locale: 'fr' },
+                billing: { billing_name: 'Aurore SRL', vat_number: 'BE0123456789', line1: 'Rue du Test 12', postal_code: '1000', city: 'Bruxelles' },
+                sectors: [
+                    { value: 'hairdressing', label: 'Coiffeur & Barbier' },
+                    { value: 'beauty', label: 'Beauté et esthétique' },
+                ],
+                countries: ['BE', 'FR'],
+                timezones: ['Europe/Brussels', 'Europe/Paris'],
+            },
+        ],
+        [
+            'Account/Profile',
+            {
+                personal: { email: 'resp@example.com', pendingEmail: null, phone: null, pendingPhone: null, locale: 'nl' },
+                canEditCompany: false,
+                company: { name: 'Salon Aurore', sector: 'hairdressing', country: 'BE', timezone: 'Europe/Brussels', locale: 'fr' },
+                billing: null,
+                sectors: [
+                    { value: 'hairdressing', label: 'Coiffeur & Barbier' },
+                    { value: 'beauty', label: 'Beauté et esthétique' },
+                ],
+                countries: ['BE', 'FR'],
+                timezones: ['Europe/Brussels', 'Europe/Paris'],
             },
         ],
         [

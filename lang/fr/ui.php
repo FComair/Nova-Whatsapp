@@ -136,19 +136,6 @@ return [
         'have_account' => 'Vous avez déjà un compte ?',
         'plan' => 'Formule choisie',
         'plans' => ['trial' => 'Essai gratuit', 'basic' => 'Basic', 'business' => 'Business'],
-        'sectors' => [
-            'hairdressing' => 'Coiffeur & Barbier',
-            'beauty' => 'Beauté et esthétique',
-            'wellness' => 'Bien-être et spa',
-            'medical' => 'Médecine générale et spécialisée',
-            'paramedical' => 'Paramédical (kiné, etc.)',
-            'dental' => 'Dentiste',
-            'coaching' => 'Coaching et conseil',
-            'real_estate' => 'Immobilier',
-            'garage' => 'Garage et automobile',
-            'driving_school' => 'Auto-école',
-            'other' => 'Autre',
-        ],
     ],
 
     'verify' => [
@@ -404,6 +391,37 @@ return [
         ],
     ],
 
+    'setup' => [
+        'breadcrumb' => 'Fil d\'Ariane',
+        'completed' => 'Terminé',
+        'progress_title' => 'Avancement de cette section',
+        'progress' => ':done sur :total étapes terminées',
+        'optional' => 'Facultatif',
+        'footer' => 'Chaque bouton ouvre l\'écran où l\'étape se fait. Revenez ici quand vous voulez : cette page montre toujours où vous en êtes.',
+        'states' => ['done' => 'Terminée', 'current' => 'En cours', 'todo' => 'À faire', 'soon' => 'Bientôt'],
+        'cta' => ['edit' => 'Modifier', 'view' => 'Consulter', 'resume' => 'Reprendre', 'go' => 'Aller à l\'étape'],
+        'categories' => [
+            'business' => ['nav' => 'Bases de l\'entreprise', 'title' => 'Bases de l\'entreprise', 'intro' => 'Ce que voient vos clients : qui vous êtes, où vous êtes et quand vous êtes ouvert.'],
+            'team' => ['nav' => 'Services et équipe', 'title' => 'Services et équipe', 'intro' => 'Indiquez ce que vous proposez, qui le réalise et les règles que suivent vos clients pour réserver.'],
+            'messages' => ['nav' => 'Messages aux clients', 'title' => 'Messages aux clients', 'intro' => 'Confirmations et rappels sur WhatsApp, depuis votre propre numéro.'],
+            'launch' => ['nav' => 'Lancement et sécurité', 'title' => 'Lancement et sécurité', 'intro' => 'Vérifiez que tout fonctionne, recevez vos premières réservations et protégez votre compte.'],
+        ],
+        'steps' => [
+            'company' => ['title' => 'Renseigner votre entreprise', 'body' => 'Nom, secteur, pays et fuseau horaire.'],
+            'locations' => ['title' => 'Ajouter vos sites', 'body' => 'Là où vos clients viennent vous voir.'],
+            'hours' => ['title' => 'Définir vos horaires d\'ouverture', 'body' => 'Quand vos clients peuvent réserver.'],
+            'services' => ['title' => 'Ajouter vos services', 'body' => 'Ce que vous proposez, avec durées et prix.'],
+            'practitioners' => ['title' => 'Ajouter votre premier collaborateur', 'body' => 'Ajoutez votre équipe et ses horaires de travail.'],
+            'policies' => ['title' => 'Fixer vos règles de réservation', 'body' => 'Délai minimum, horizon de réservation, annulations.'],
+            'calendar' => ['title' => 'Relier un calendrier d\'équipe', 'body' => 'Les moments occupés d\'un calendrier personnel bloquent les réservations.'],
+            'whatsapp' => ['title' => 'Connecter votre numéro WhatsApp', 'body' => 'Envoyez confirmations et rappels depuis votre propre numéro.'],
+            'templates' => ['title' => 'Faire approuver vos messages', 'body' => 'Vos messages types doivent être approuvés par WhatsApp.'],
+            'test_booking' => ['title' => 'Faire une réservation test', 'body' => 'Vérifiez tout le parcours comme un client. Pas encore disponible.'],
+            'first_booking' => ['title' => 'Recevoir votre première réservation', 'body' => 'Créez un rendez-vous vous-même, ou laissez un client réserver sur WhatsApp.'],
+            'plan' => ['title' => 'Choisir votre formule', 'body' => 'Choisissez Basic ou Business avant la fin de l\'essai gratuit.'],
+            'two_factor' => ['title' => 'Activer la double authentification', 'body' => 'Un code de votre téléphone est demandé à chaque connexion.'],
+        ],
+    ],
     'account_profile' => [
         'nav' => 'Profil',
         'title' => 'Profil',
@@ -421,8 +439,8 @@ return [
     'settings' => [
         'nav' => 'Réglages',
         'menu' => 'Sections des réglages',
-        'groups' => ['account' => 'Compte', 'integrations' => 'Intégrations', 'privacy' => 'Confidentialité et données'],
-        'status' => ['connected' => 'Connecté', 'two_factor' => '2FA activée'],
+        'groups' => ['setup' => 'Mise en route', 'account' => 'Compte', 'integrations' => 'Intégrations', 'privacy' => 'Confidentialité et données'],
+        'status' => ['connected' => 'Connecté', 'two_factor' => '2FA activée', 'left' => ':count à faire'],
     ],
 
     'planning' => [

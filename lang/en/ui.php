@@ -136,19 +136,6 @@ return [
         'have_account' => 'Already have an account?',
         'plan' => 'Selected plan',
         'plans' => ['trial' => 'Free trial', 'basic' => 'Basic', 'business' => 'Business'],
-        'sectors' => [
-            'hairdressing' => 'Hairdresser & Barber',
-            'beauty' => 'Beauty and aesthetics',
-            'wellness' => 'Wellness and spa',
-            'medical' => 'General and specialist medicine',
-            'paramedical' => 'Paramedical (physio, etc.)',
-            'dental' => 'Dentist',
-            'coaching' => 'Coaching and consulting',
-            'real_estate' => 'Real estate',
-            'garage' => 'Garage and automotive',
-            'driving_school' => 'Driving school',
-            'other' => 'Other',
-        ],
     ],
 
     'verify' => [
@@ -404,6 +391,37 @@ return [
         ],
     ],
 
+    'setup' => [
+        'breadcrumb' => 'Breadcrumb',
+        'completed' => 'Completed',
+        'progress_title' => 'Progress in this section',
+        'progress' => ':done of :total steps completed',
+        'optional' => 'Optional',
+        'footer' => 'Each button opens the screen where that step is done. Come back here at any time: this page always shows where you are.',
+        'states' => ['done' => 'Completed', 'current' => 'In progress', 'todo' => 'Not started', 'soon' => 'Coming soon'],
+        'cta' => ['edit' => 'Edit', 'view' => 'View', 'resume' => 'Resume', 'go' => 'Go to step'],
+        'categories' => [
+            'business' => ['nav' => 'Business basics', 'title' => 'Business basics', 'intro' => 'What your customers see: who you are, where you are and when you are open.'],
+            'team' => ['nav' => 'Services & team', 'title' => 'Services & team', 'intro' => 'Tell Nova what you offer, who delivers it, and the rules customers follow when they book.'],
+            'messages' => ['nav' => 'Customer messages', 'title' => 'Customer messages', 'intro' => 'Confirmations and reminders on WhatsApp, from your own number.'],
+            'launch' => ['nav' => 'Go live & security', 'title' => 'Go live & security', 'intro' => 'Check that everything works, start taking bookings, and keep your account safe.'],
+        ],
+        'steps' => [
+            'company' => ['title' => 'Add your company details', 'body' => 'Name, sector, country and time zone.'],
+            'locations' => ['title' => 'Add your locations', 'body' => 'Where your customers come to see you.'],
+            'hours' => ['title' => 'Set your opening hours', 'body' => 'When customers can book.'],
+            'services' => ['title' => 'Add your services', 'body' => 'What you offer, with durations and prices.'],
+            'practitioners' => ['title' => 'Add your first employee', 'body' => 'Add your team and set when each person works.'],
+            'policies' => ['title' => 'Set your booking rules', 'body' => 'Minimum notice, how far ahead to book, cancellations.'],
+            'calendar' => ['title' => 'Link an employee calendar', 'body' => 'Busy times in a personal calendar block bookings.'],
+            'whatsapp' => ['title' => 'Connect your WhatsApp number', 'body' => 'Send confirmations and reminders from your own number.'],
+            'templates' => ['title' => 'Get your messages approved', 'body' => 'Your standard messages must be approved by WhatsApp.'],
+            'test_booking' => ['title' => 'Make a test booking', 'body' => 'Check the whole journey like a customer would. Not available yet.'],
+            'first_booking' => ['title' => 'Receive your first booking', 'body' => 'Create an appointment yourself, or let a customer book on WhatsApp.'],
+            'plan' => ['title' => 'Choose your plan', 'body' => 'Pick Basic or Business before your free trial ends.'],
+            'two_factor' => ['title' => 'Turn on two-step verification', 'body' => 'A code from your phone is asked at every sign-in.'],
+        ],
+    ],
     'account_profile' => [
         'nav' => 'Profile',
         'title' => 'Profile',
@@ -421,8 +439,8 @@ return [
     'settings' => [
         'nav' => 'Settings',
         'menu' => 'Settings sections',
-        'groups' => ['account' => 'Account', 'integrations' => 'Integrations', 'privacy' => 'Privacy & data'],
-        'status' => ['connected' => 'Connected', 'two_factor' => '2-step on'],
+        'groups' => ['setup' => 'Setup & onboarding', 'account' => 'Account', 'integrations' => 'Integrations', 'privacy' => 'Privacy & data'],
+        'status' => ['connected' => 'Connected', 'two_factor' => '2-step on', 'left' => ':count left'],
     ],
 
     'planning' => [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Identity\Http\Requests;
 
 use App\Modules\Identity\Rules\StrongPassword;
+use App\Modules\Tenancy\Services\SectorCatalog;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,7 +36,7 @@ final class RegisterRequest extends FormRequest
             'email' => ['required', 'string', 'email:rfc', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'string', new StrongPassword, 'max:200'],
             'phone' => ['required', 'string', 'phone:BE,FR,NL,LU,DE,GB'],
-            'sector' => ['required', 'string', Rule::in(config('nova.sectors'))],
+            'sector' => ['required', 'string', Rule::in(app(SectorCatalog::class)->codes())],
             'plan' => ['nullable', 'string', Rule::in(config('nova.signup_plans'))],
             'accept_terms' => ['accepted'],
             'accept_privacy' => ['accepted'],

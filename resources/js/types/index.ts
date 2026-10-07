@@ -135,6 +135,25 @@ export interface PlanningService {
     practitioner_ids: string[];
 }
 
+/** Une tâche de mise en route (Réglages > Démarrage). `href` vaut null tant que l'écran n'existe pas (« bientôt »). */
+export interface SetupStepData {
+    key: string;
+    state: 'done' | 'current' | 'todo' | 'soon';
+    optional: boolean;
+    href: string | null;
+    /** Vrai pour une étape de l'assistant d'onboarding (son écran permet de modifier), faux pour une tâche détectée dans les données. */
+    wizard: boolean;
+}
+
+export interface SetupCategoryData {
+    key: 'business' | 'team' | 'messages' | 'launch';
+    steps: SetupStepData[];
+    total: number;
+    done: number;
+    left: number;
+    complete: boolean;
+}
+
 /** Propriétés partagées avec toutes les pages (voir HandleInertiaRequests). */
 export interface SharedProps {
     locale: Locale;
@@ -142,7 +161,7 @@ export interface SharedProps {
     translations: Record<string, unknown>;
     auth: { user: AuthUser | null; organization: AuthOrganization | null };
     /** Pastilles du menu Réglages ; null hors des pages de réglages. */
-    settings: { whatsapp_connected: boolean; two_factor: boolean } | null;
+    settings: { whatsapp_connected: boolean; two_factor: boolean; setup: { key: string; left: number; complete: boolean }[] | null } | null;
     flash: { status: string | null; warning: string | null; first_login: boolean; suggestions: Suggestion[] };
     [key: string]: unknown;
 }
