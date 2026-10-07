@@ -411,7 +411,7 @@ return [
             'locations' => ['title' => 'Add your locations', 'body' => 'Where your customers come to see you.'],
             'hours' => ['title' => 'Set your opening hours', 'body' => 'When customers can book.'],
             'services' => ['title' => 'Add your services', 'body' => 'What you offer, with durations and prices.'],
-            'practitioners' => ['title' => 'Add your first employee', 'body' => 'Add your team and set when each person works.'],
+            'practitioners' => ['title' => 'Add a practitioner', 'body' => 'Add your team and set when each person works.'],
             'policies' => ['title' => 'Set your booking rules', 'body' => 'Minimum notice, how far ahead to book, cancellations.'],
             'calendar' => ['title' => 'Link an employee calendar', 'body' => 'Busy times in a personal calendar block bookings.'],
             'whatsapp' => ['title' => 'Connect your WhatsApp number', 'body' => 'Send confirmations and reminders from your own number.'],

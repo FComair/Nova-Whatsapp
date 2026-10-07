@@ -411,7 +411,7 @@ return [
             'locations' => ['title' => 'Uw locaties toevoegen', 'body' => 'Waar uw klanten u komen bezoeken.'],
             'hours' => ['title' => 'Uw openingsuren instellen', 'body' => 'Wanneer klanten kunnen boeken.'],
             'services' => ['title' => 'Uw diensten toevoegen', 'body' => 'Wat u aanbiedt, met duur en prijs.'],
-            'practitioners' => ['title' => 'Uw eerste medewerker toevoegen', 'body' => 'Voeg uw team toe en stel in wanneer iedereen werkt.'],
+            'practitioners' => ['title' => 'Een behandelaar toevoegen', 'body' => 'Voeg uw team toe en stel in wanneer iedereen werkt.'],
             'policies' => ['title' => 'Uw boekingsregels instellen', 'body' => 'Minimale termijn, hoe ver vooruit te boeken, annuleringen.'],
             'calendar' => ['title' => 'Een teamkalender koppelen', 'body' => 'Bezette momenten in een persoonlijke kalender blokkeren boekingen.'],
             'whatsapp' => ['title' => 'Uw WhatsApp-nummer verbinden', 'body' => 'Stuur bevestigingen en herinneringen vanaf uw eigen nummer.'],

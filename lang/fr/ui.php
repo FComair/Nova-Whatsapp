@@ -411,7 +411,7 @@ return [
             'locations' => ['title' => 'Ajouter vos sites', 'body' => 'Là où vos clients viennent vous voir.'],
             'hours' => ['title' => 'Définir vos horaires d\'ouverture', 'body' => 'Quand vos clients peuvent réserver.'],
             'services' => ['title' => 'Ajouter vos services', 'body' => 'Ce que vous proposez, avec durées et prix.'],
-            'practitioners' => ['title' => 'Ajouter votre premier collaborateur', 'body' => 'Ajoutez votre équipe et ses horaires de travail.'],
+            'practitioners' => ['title' => 'Ajouter un praticien', 'body' => 'Ajoutez votre équipe et ses horaires de travail.'],
             'policies' => ['title' => 'Fixer vos règles de réservation', 'body' => 'Délai minimum, horizon de réservation, annulations.'],
             'calendar' => ['title' => 'Relier un calendrier d\'équipe', 'body' => 'Les moments occupés d\'un calendrier personnel bloquent les réservations.'],
             'whatsapp' => ['title' => 'Connecter votre numéro WhatsApp', 'body' => 'Envoyez confirmations et rappels depuis votre propre numéro.'],
