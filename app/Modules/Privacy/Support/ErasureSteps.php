@@ -23,6 +23,7 @@ final class ErasureSteps
 
     public const ALL = [
         'booking_events',
+        'price_list_imports',
         'whatsapp_messages',
         'external_busy_slots',
         'external_calendars',
@@ -41,6 +42,7 @@ final class ErasureSteps
         'org_member_locations',
         'locations',
         'api_clients',
+        'whatsapp_qr_codes',
         'whatsapp_templates',
         'whatsapp_accounts',
         'booking_policies',

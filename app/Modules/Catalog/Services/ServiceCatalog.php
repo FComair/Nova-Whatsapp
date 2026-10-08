@@ -53,6 +53,49 @@ final class ServiceCatalog
         });
     }
 
+    /**
+     * Change le prix d'un service (import de liste de prix) sans toucher au reste ; la catégorie n'est posée que si le service n'en a pas.
+     *
+     * @return array{old_price: int, old_category_id: string|null, category_set: bool} l'état d'avant, pour pouvoir annuler
+     */
+    public function updatePrice(Organization $organization, Service $service, int $priceCents, ?string $categoryName): array
+    {
+        $before = ['old_price' => $service->price_cents, 'old_category_id' => $service->category_id, 'category_set' => false];
+
+        $service->price_cents = $priceCents;
+
+        if ($service->category_id === null && $categoryName !== null && trim($categoryName) !== '') {
+            $service->category_id = $this->category($organization, $categoryName)?->id;
+            $before['category_set'] = $service->category_id !== null;
+        }
+
+        $diff = collect($service->getDirty())->map(fn ($new, string $key): array => [$service->getOriginal($key), $new])->all();
+        $service->save();
+
+        if ($diff !== []) {
+            Audit::record('service.updated', 'user', actorId: auth()->id(), orgId: $organization->id, entityType: 'service', entityId: $service->id, diff: $diff);
+        }
+
+        return $before;
+    }
+
+    /** Remet le prix (et la catégorie, si l'import l'avait posée) comme avant un import. */
+    public function restorePrice(Organization $organization, Service $service, int $priceCents, bool $resetCategory, ?string $categoryId): void
+    {
+        $service->price_cents = $priceCents;
+
+        if ($resetCategory) {
+            $service->category_id = $categoryId;
+        }
+
+        $diff = collect($service->getDirty())->map(fn ($new, string $key): array => [$service->getOriginal($key), $new])->all();
+        $service->save();
+
+        if ($diff !== []) {
+            Audit::record('service.updated', 'user', actorId: auth()->id(), orgId: $organization->id, entityType: 'service', entityId: $service->id, diff: $diff);
+        }
+    }
+
     public function delete(Organization $organization, Service $service): void
     {
         $service->delete();

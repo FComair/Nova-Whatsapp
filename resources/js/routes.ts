@@ -20,6 +20,7 @@ export const routes = {
     profileLogo: '/reglages/profil/logo',
     settingsSearch: '/reglages/recherche',
     setup: '/reglages/demarrage',
+    servicesImport: '/configuration/services/import',
     accountData: '/compte/donnees',
     accountExport: '/compte/donnees/export',
     accountDeletion: '/compte/suppression',

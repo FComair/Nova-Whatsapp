@@ -8,6 +8,7 @@ use App\Modules\Billing\Http\Controllers\BillingController;
 use App\Modules\Booking\Http\Controllers\PlanningController;
 use App\Modules\Calendars\Http\Controllers\CalendarController;
 use App\Modules\Calendars\Http\Controllers\FeedController;
+use App\Modules\Catalog\Http\Controllers\PriceListImportController;
 use App\Modules\Catalog\Http\Controllers\ServiceController;
 use App\Modules\Customers\Http\Controllers\CustomerController;
 use App\Modules\Identity\Http\Controllers\EmailVerificationController;
@@ -156,6 +157,17 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::delete('/{practitioner}', [StaffController::class, 'destroy'])->name('practitioners.destroy');
         Route::post('/{practitioner}/activer', [StaffController::class, 'activate'])->name('practitioners.activate');
         Route::put('/{practitioner}/horaires/{location}', [StaffController::class, 'saveSchedule'])->name('practitioners.schedule');
+    });
+
+    // Import du catalogue depuis une liste de prix photographiée : propriétaire uniquement (lecture, vérification, import, annulation).
+    Route::middleware('role:owner')->prefix('/configuration/services/import')->name('services.import.')->group(function (): void {
+        Route::get('/', [PriceListImportController::class, 'index'])->name('index');
+        Route::post('/', [PriceListImportController::class, 'store'])->name('store');
+        Route::get('/{import}', [PriceListImportController::class, 'review'])->name('review');
+        Route::post('/{import}/apply', [PriceListImportController::class, 'apply'])->name('apply');
+        Route::post('/{import}/undo', [PriceListImportController::class, 'undo'])->name('undo');
+        Route::delete('/{import}', [PriceListImportController::class, 'cancel'])->name('cancel');
+        Route::get('/{import}/csv', [PriceListImportController::class, 'csv'])->name('csv');
     });
 
     // Catalogue de services : propriétaire et responsable de site (docs/02 §1).

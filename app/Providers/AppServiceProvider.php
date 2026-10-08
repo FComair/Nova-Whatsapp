@@ -16,6 +16,11 @@ use App\Modules\Booking\Console\SendReminders;
 use App\Modules\Calendars\Console\SyncCalendars;
 use App\Modules\Calendars\Contracts\HostResolver;
 use App\Modules\Calendars\Support\DnsHostResolver;
+use App\Modules\Catalog\Console\PurgePriceListFiles;
+use App\Modules\Catalog\Contracts\PriceListReader;
+use App\Modules\Catalog\Support\NullPriceListReader;
+use App\Modules\Catalog\Support\OpenAiPriceListReader;
+use App\Modules\Catalog\Support\SamplePriceListReader;
 use App\Modules\Conversation\Contracts\LanguageModel;
 use App\Modules\Conversation\Support\NullModel;
 use App\Modules\Conversation\Support\OpenAiModel;
@@ -53,6 +58,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Assistant de conversation : sans clé d'API, les menus suffisent (aucun appel externe).
         $this->app->bind(LanguageModel::class, fn (): LanguageModel => filled(config('conversation.ai.api_key')) ? new OpenAiModel : new NullModel);
+
+        // Lecture des listes de prix (import du catalogue) : même service d'IA que l'assistant ; sans clé, l'import n'est pas proposé.
+        $this->app->bind(PriceListReader::class, fn (): PriceListReader => match (true) {
+            config('pricelist.driver') === 'fake' => new SamplePriceListReader,
+            filled(config('conversation.ai.api_key')) => new OpenAiPriceListReader,
+            default => new NullPriceListReader,
+        });
 
         // Prestataire de paiement : 'fake' tant que le fondateur n'a pas choisi (aucun débit réel possible).
         $this->app->singleton(PaymentGateway::class, fn (): PaymentGateway => match (config('nova.billing.gateway')) {
@@ -93,7 +105,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class]);
+            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class]);
         }
     }
 }

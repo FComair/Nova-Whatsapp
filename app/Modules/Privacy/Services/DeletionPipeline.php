@@ -17,6 +17,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
@@ -197,6 +198,8 @@ final class DeletionPipeline
 
         // Le logo est une donnée de l'établissement : ses fichiers disparaissent avec le compte.
         app(OrganizationLogo::class)->purge($organization->id);
+        // Les photos d'une liste de prix (import non terminé) sont aussi des données de l'établissement.
+        Storage::disk('local')->deleteDirectory("pricelists/{$organization->id}");
 
         $email = $request->owner_email_enc;
 

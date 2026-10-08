@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
@@ -9,7 +9,7 @@ import { centsToInput, formatPrice } from '../../composables/money';
 import { useT } from '../../composables/useT';
 import OnboardingLayout from '../../Layouts/OnboardingLayout.vue';
 import { routes } from '../../routes';
-import type { ServiceFormData, ServiceItem, Wizard } from '../../types';
+import type { ServiceFormData, ServiceItem, SharedProps, Wizard } from '../../types';
 
 const props = defineProps<{
     wizard: Wizard;
@@ -26,6 +26,8 @@ const editing = ref<string | 'new' | null>(null);
 const toDelete = ref<ServiceItem | null>(null);
 const deleting = ref(false);
 const errors = computed(() => usePage().props.errors as Record<string, string>);
+// L'import depuis une liste de prix est réservé au propriétaire, comme sur le serveur.
+const canImport = computed(() => (usePage<SharedProps>().props.auth.organization?.role ?? null) === 'owner');
 
 const emptyForm = (): ServiceFormData => ({
     name: '',
@@ -105,6 +107,26 @@ function confirmDelete(): void {
 
         <AlertBox variant="warning" class="mt-4">{{ t('services.indicative_notice') }}</AlertBox>
         <AlertBox v-if="errors.template || errors.service" variant="error" class="mt-4">{{ errors.template ?? errors.service }}</AlertBox>
+
+        <Link
+            v-if="canImport"
+            :href="routes.servicesImport"
+            class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg border border-primary-600 bg-white px-4 text-base font-semibold text-primary-700 hover:bg-primary-50"
+        >
+            <svg
+                class="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10" />
+            </svg>
+            {{ t('price_import.entry') }}
+        </Link>
 
         <!-- Méthodes de création (flowchart 1B, étape 4) -->
         <div v-if="showMethods" class="mt-6">

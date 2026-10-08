@@ -73,6 +73,8 @@ final class SettingsSearchIndex
             }
         }
 
+        $entries[] = ['id' => 'price-import', 'group' => 'setup', 'page' => 'setup-team', 'href' => '/configuration/services/import', 'title' => 'price_import.title', 'description' => 'price_import.intro'];
+
         $profile = ['group' => 'account', 'page' => 'profile', 'href' => '/reglages/profil'];
         $entries[] = $profile + ['id' => 'profile', 'title' => 'account_profile.title', 'description' => 'account_profile.intro'];
         $entries[] = $profile + ['id' => 'profile-logo', 'anchor' => 'logo', 'title' => 'logo.title', 'description' => 'logo.hint', 'owner' => true];
