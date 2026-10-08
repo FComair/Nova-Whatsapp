@@ -183,6 +183,7 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [PlanningController::class, 'index'])->name('planning.index');
         Route::post('/rendez-vous', [PlanningController::class, 'store'])->name('planning.store');
         Route::put('/rendez-vous/{booking}/deplacer', [PlanningController::class, 'move'])->name('planning.move');
+        Route::put('/rendez-vous/{booking}/praticien', [PlanningController::class, 'reassign'])->name('planning.reassign');
         Route::post('/rendez-vous/{booking}/annuler', [PlanningController::class, 'cancel'])->name('planning.cancel');
         Route::post('/rendez-vous/{booking}/resultat', [PlanningController::class, 'finish'])->name('planning.finish');
         Route::put('/rendez-vous/{booking}/paiement', [PlanningController::class, 'payment'])->name('planning.payment');

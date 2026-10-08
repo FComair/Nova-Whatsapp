@@ -749,6 +749,20 @@ return [
         'no_practitioners' => 'Aucun praticien n\'a de planning sur ce site. Ajoutez des praticiens et leurs disponibilités pour recevoir des rendez-vous.',
         'empty_week' => 'Aucun rendez-vous cette semaine.',
         'working_hours' => 'Heures de travail',
+        'practitioner' => [
+            'change' => 'Modifier',
+            'change_label' => 'Modifier le praticien',
+            'current' => 'Praticien : :name. Utilisez Modifier pour en choisir un autre.',
+            'none' => 'Aucun praticien assigné',
+            'select' => 'Choisir un praticien',
+            'search' => 'Rechercher un praticien',
+            'save' => 'Enregistrer',
+            'saving' => 'Enregistrement…',
+            'updated' => 'Praticien mis à jour',
+            'none_available' => 'Aucun praticien disponible. Ajoutez ou activez un praticien dans les réglages.',
+            'no_match' => 'Aucun praticien ne correspond.',
+            'inactive' => 'Praticien inactif',
+        ],
         'form' => [
             'title' => 'Nouveau rendez-vous',
             'service' => 'Service',
@@ -812,6 +826,7 @@ return [
         'notify_failed' => 'Le client n\'a pas pu être prévenu par WhatsApp (désinscrit ou injoignable) : contactez-le directement.',
         'created' => 'Rendez-vous créé.',
         'moved' => 'Rendez-vous déplacé.',
+        'practitioner_changed' => 'Praticien mis à jour.',
         'cancelled' => 'Rendez-vous annulé.',
         'updated' => 'Rendez-vous mis à jour.',
         'errors' => [

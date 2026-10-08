@@ -26,6 +26,7 @@ const props = defineProps<{
     bookings?: PlanningBooking[];
     services?: PlanningService[];
     canCreate?: boolean;
+    canReassign?: boolean;
     seesNotes?: boolean;
 }>();
 
@@ -260,6 +261,8 @@ function describe(booking: PlanningBooking): string {
                 :booking="selected"
                 :date="selected.date"
                 :practitioners="practitioners ?? []"
+                :services="services ?? []"
+                :can-reassign="canReassign ?? false"
                 @done="selectedId = null"
             />
         </ModalDialog>

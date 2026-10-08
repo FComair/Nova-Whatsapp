@@ -749,6 +749,20 @@ return [
         'no_practitioners' => 'No practitioner has a schedule at this location. Add practitioners and their availability to receive appointments.',
         'empty_week' => 'No appointments this week.',
         'working_hours' => 'Working hours',
+        'practitioner' => [
+            'change' => 'Change',
+            'change_label' => 'Change practitioner',
+            'current' => 'Practitioner: :name. Use Change to pick a different one.',
+            'none' => 'No practitioner assigned',
+            'select' => 'Choose a practitioner',
+            'search' => 'Search practitioners',
+            'save' => 'Save',
+            'saving' => 'Saving…',
+            'updated' => 'Practitioner updated',
+            'none_available' => 'No practitioners available. Please add or activate a practitioner in Settings.',
+            'no_match' => 'No practitioner matches.',
+            'inactive' => 'Inactive practitioner',
+        ],
         'form' => [
             'title' => 'New appointment',
             'service' => 'Service',
@@ -812,6 +826,7 @@ return [
         'notify_failed' => 'The customer could not be notified by WhatsApp (opted out or unreachable): contact them directly.',
         'created' => 'Appointment created.',
         'moved' => 'Appointment moved.',
+        'practitioner_changed' => 'Practitioner updated.',
         'cancelled' => 'Appointment cancelled.',
         'updated' => 'Appointment updated.',
         'errors' => [

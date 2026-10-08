@@ -99,6 +99,9 @@ export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'no_show';
 export interface PlanningBooking {
     id: string;
     practitioner_id: string;
+    /** Nom du praticien, même devenu inactif ou supprimé ; null si introuvable. */
+    practitioner_name: string | null;
+    service_id: string;
     /** Jour du rendez-vous, « AAAA-MM-JJ », à l'heure locale du site. */
     date: string;
     customer: { id: string; name: string | null; phone: string | null };

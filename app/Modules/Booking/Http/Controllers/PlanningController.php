@@ -76,6 +76,8 @@ final class PlanningController
         $customers = DB::table('customers')->whereIn('id', $bookings->pluck('customer_id'))->get()->keyBy('id');
         $services = Service::query()->orderBy('position')->get();
         $serviceNames = $services->pluck('name', 'id');
+        // Nom du praticien même s'il est devenu inactif ou supprimé depuis : le rendez-vous doit toujours dire à qui il est attribué.
+        $practitionerNames = Practitioner::withTrashed()->whereIn('id', $bookings->pluck('practitioner_id'))->pluck('name', 'id');
         $seesNotes = $this->access->seesNotes();
 
         $open = BusinessHour::query()->where('location_id', $location->id)->get();
@@ -85,6 +87,8 @@ final class PlanningController
         $bookingRows = $bookings->map(fn (Booking $booking): array => [
             'id' => $booking->id,
             'practitioner_id' => $booking->practitioner_id,
+            'practitioner_name' => $practitionerNames[$booking->practitioner_id] ?? null,
+            'service_id' => $booking->service_id,
             'customer' => ['id' => $booking->customer_id, 'name' => $customers[$booking->customer_id]->name ?? null, 'phone' => $customers[$booking->customer_id]->phone_e164 ?? null],
             'service' => $serviceNames[$booking->service_id] ?? null,
             'date' => $booking->starts_at->setTimezone($timezone)->toDateString(),
@@ -134,6 +138,7 @@ final class PlanningController
                 'duration_minutes' => $service->duration_minutes,
                 'practitioner_ids' => DB::table('practitioner_services')->where('service_id', $service->id)->pluck('practitioner_id')->all(),
             ])->values()->all(),
+            'canReassign' => ! $this->access->isPractitioner(),
             'canCreate' => ! $this->access->isPractitioner() || $this->access->practitionerId() !== null,
             'seesNotes' => $seesNotes,
         ]);
@@ -176,6 +181,25 @@ final class PlanningController
         $start = $request->startsAt($location->timezone);
 
         return $this->attempt(fn () => $this->core->move($this->organization(), $booking, $start, Actor::user((string) auth()->id()), $practitionerId, false), 'ui.planning.moved', $request->boolean('notify') ? 'moved' : null);
+    }
+
+    /**
+     * Remplace le praticien d'un rendez-vous sans toucher à l'heure. Mêmes règles qu'un déplacement (praticien actif qui réalise
+     * le service, créneau libre) ; le praticien lui-même ne peut pas passer son rendez-vous à un autre (docs/02 §1).
+     */
+    public function reassign(Request $request, Booking $booking): RedirectResponse
+    {
+        $this->access->authorize($booking);
+        abort_if($this->access->isPractitioner(), 403);
+
+        $data = $request->validate(['practitioner_id' => ['required', 'uuid']]);
+
+        if ($data['practitioner_id'] === $booking->practitioner_id) {
+            return back();
+        }
+
+        // Le changement est consigné dans booking_events (« moved », ancien et nouveau praticien) par le cœur de réservation.
+        return $this->attempt(fn () => $this->core->move($this->organization(), $booking, $booking->starts_at, Actor::user((string) auth()->id()), $data['practitioner_id'], false), 'ui.planning.practitioner_changed');
     }
 
     public function cancel(Request $request, Booking $booking): RedirectResponse

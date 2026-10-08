@@ -5,16 +5,23 @@ import { formatPrice } from '../composables/money';
 import { extraError } from '../composables/planning';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
-import type { PlanningBooking, PlanningPractitioner, SharedProps, Suggestion } from '../types';
+import type { PlanningBooking, PlanningPractitioner, PlanningService, SharedProps, Suggestion } from '../types';
 import AlertBox from './AlertBox.vue';
 import BaseButton from './BaseButton.vue';
 import CheckboxField from './CheckboxField.vue';
+import PractitionerField from './PractitionerField.vue';
 import SelectField from './SelectField.vue';
 import SlotSuggestions from './SlotSuggestions.vue';
 import TextField from './TextField.vue';
 import TimeFields from './TimeFields.vue';
 
-const props = defineProps<{ booking: PlanningBooking; date: string; practitioners: PlanningPractitioner[] }>();
+const props = defineProps<{
+    booking: PlanningBooking;
+    date: string;
+    practitioners: PlanningPractitioner[];
+    services?: PlanningService[];
+    canReassign?: boolean;
+}>();
 const emit = defineEmits<{ done: [] }>();
 
 const { t, locale } = useT();
@@ -26,6 +33,14 @@ const moveForm = useForm({ date: props.date, time: props.booking.starts, practit
 const cancelForm = useForm({ reason: '', notify: true });
 const finishForm = useForm({ outcome: 'completed' });
 const paymentForm = useForm({ payment_status: props.booking.payment_status, amount: '', method: '' });
+
+// Praticiens actifs du site qui réalisent le service de ce rendez-vous.
+const eligible = computed(() => {
+    const allowed = props.services?.find((service) => service.id === props.booking.service_id)?.practitioner_ids;
+
+    return allowed === undefined ? props.practitioners : props.practitioners.filter((practitioner) => allowed.includes(practitioner.id));
+});
+const canChangePractitioner = computed(() => props.canReassign === true && isOpen.value);
 
 const isOpen = computed(() => props.booking.status === 'pending' || props.booking.status === 'confirmed');
 const canFinish = computed(() => props.booking.status === 'confirmed' && props.booking.is_past);
@@ -59,6 +74,8 @@ function pick(suggestion: Suggestion): void {
             <dd>{{ booking.starts }} – {{ booking.ends }} · {{ t(`planning.status.${booking.status}`) }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.service') }}</dt>
             <dd>{{ booking.service }}</dd>
+            <dt class="font-medium text-neutral-600">{{ t('planning.form.practitioner') }}</dt>
+            <dd><PractitionerField :booking="booking" :eligible="eligible" :can-change="canChangePractitioner" /></dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.name') }}</dt>
             <dd>{{ booking.customer.name ?? '—' }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.phone') }}</dt>

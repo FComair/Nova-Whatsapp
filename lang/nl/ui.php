@@ -749,6 +749,20 @@ return [
         'no_practitioners' => 'Geen enkele behandelaar heeft een rooster op deze locatie. Voeg behandelaars en hun beschikbaarheid toe om afspraken te ontvangen.',
         'empty_week' => 'Geen afspraken deze week.',
         'working_hours' => 'Werkuren',
+        'practitioner' => [
+            'change' => 'Wijzigen',
+            'change_label' => 'Behandelaar wijzigen',
+            'current' => 'Behandelaar: :name. Gebruik Wijzigen om een andere te kiezen.',
+            'none' => 'Geen behandelaar toegewezen',
+            'select' => 'Kies een behandelaar',
+            'search' => 'Behandelaar zoeken',
+            'save' => 'Opslaan',
+            'saving' => 'Opslaan…',
+            'updated' => 'Behandelaar bijgewerkt',
+            'none_available' => 'Geen behandelaars beschikbaar. Voeg een behandelaar toe of activeer er een in de instellingen.',
+            'no_match' => 'Geen behandelaar gevonden.',
+            'inactive' => 'Inactieve behandelaar',
+        ],
         'form' => [
             'title' => 'Nieuwe afspraak',
             'service' => 'Dienst',
@@ -812,6 +826,7 @@ return [
         'notify_failed' => 'De klant kon niet via WhatsApp worden verwittigd (uitgeschreven of onbereikbaar): neem rechtstreeks contact op.',
         'created' => 'Afspraak aangemaakt.',
         'moved' => 'Afspraak verplaatst.',
+        'practitioner_changed' => 'Behandelaar bijgewerkt.',
         'cancelled' => 'Afspraak geannuleerd.',
         'updated' => 'Afspraak bijgewerkt.',
         'errors' => [
