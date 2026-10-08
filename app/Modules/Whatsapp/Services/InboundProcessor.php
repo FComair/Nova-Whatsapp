@@ -7,6 +7,7 @@ namespace App\Modules\Whatsapp\Services;
 use App\Modules\Audit\Audit;
 use App\Modules\Conversation\Jobs\HandleInboundMessage;
 use App\Modules\Customers\Models\Customer;
+use App\Modules\Customers\Services\ConsentRecorder;
 use App\Modules\Customers\Services\CustomerDirectory;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Support\TenantContext;
@@ -36,6 +37,7 @@ final class InboundProcessor
         private readonly TenantContext $tenants,
         private readonly CustomerDirectory $customers,
         private readonly MessageSender $sender,
+        private readonly ConsentRecorder $consents,
     ) {}
 
     /**
@@ -143,6 +145,7 @@ final class InboundProcessor
     private function changeConsent(Organization $organization, Customer $customer, bool $optOut): void
     {
         $customer->forceFill(['whatsapp_opted_out_at' => $optOut ? now() : null])->save();
+        $optOut ? $this->consents->recordStop($customer) : $this->consents->recordStart($customer);
         Audit::record($optOut ? 'customer.whatsapp_opt_out' : 'customer.whatsapp_opt_in', 'system', null, $organization->id, 'customers', $customer->id);
 
         $key = $optOut ? 'whatsapp.opt_out_confirmed' : 'whatsapp.opt_in_confirmed';

@@ -148,7 +148,7 @@ final class CustomerController
         $blocked = (bool) $data['blocked'];
 
         if ($customer->is_blocked !== $blocked) {
-            $customer->forceFill(['is_blocked' => $blocked])->save();
+            $customer->setStatus($blocked ? 'blocked' : 'active');
             Audit::record($blocked ? 'customer.blocked' : 'customer.unblocked', 'user', (string) auth()->id(), $this->current->organization()?->id, 'customers', $customer->id);
         }
 

@@ -34,6 +34,7 @@ final class ErasureSteps
         'practitioner_services',
         'invitations',
         'practitioners',
+        'customer_consents',
         'customers',
         'services',
         'service_categories',
