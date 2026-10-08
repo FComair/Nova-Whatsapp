@@ -1329,6 +1329,8 @@ return [
         'E2_code' => 'Code incorrect.',
         'E2_expired' => 'Ce code a expiré. Demandez un nouveau code.',
         'E2_blocked' => 'Trop de codes incorrects. Réessayez dans :minutes minutes.',
+        'phone_invalid' => 'Ce numéro de téléphone n\'est pas valide.',
+        'phone_country_needed' => 'Ajoutez l\'indicatif du pays, par exemple +32 pour la Belgique ou +31 pour les Pays-Bas : ce numéro existe dans plusieurs pays.',
         'E2_resend' => 'Trop de demandes d\'envoi. Réessayez dans :minutes minutes.',
         'E3' => 'Trop de tentatives. Réessayez dans :minutes minutes ou réinitialisez votre mot de passe.',
         'invalid_credentials' => 'Identifiants incorrects.',

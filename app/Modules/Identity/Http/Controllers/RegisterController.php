@@ -11,12 +11,13 @@ use App\Modules\Identity\Services\RegisterOrganization;
 use App\Modules\Identity\Services\SendLimiter;
 use App\Modules\Identity\Support\PendingVerification;
 use App\Modules\Tenancy\Services\SectorCatalog;
+use App\Support\Phone;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Propaganistas\LaravelPhone\PhoneNumber;
+use UnexpectedValueException;
 
 final class RegisterController
 {
@@ -30,7 +31,7 @@ final class RegisterController
 
     public function store(RegisterRequest $request, RegisterOrganization $register, SendLimiter $limiter): RedirectResponse
     {
-        $phone = (new PhoneNumber($request->string('phone')->toString()))->formatE164();
+        $phone = Phone::toE164($request->string('phone')->toString()) ?? throw new UnexpectedValueException('Numéro non validé.');
 
         try {
             $user = $register->handle([

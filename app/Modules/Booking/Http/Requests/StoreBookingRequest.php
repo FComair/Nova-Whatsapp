@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Http\Requests;
 
+use App\Modules\Tenancy\Support\CurrentTenant;
+use App\Support\Phone;
+use App\Support\ValidPhone;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Propaganistas\LaravelPhone\PhoneNumber;
+use UnexpectedValueException;
 
 /**
  * Nouveau rendez-vous saisi depuis le dashboard (flowchart 2B). L'heure est saisie à l'heure locale du site.
  */
 final class StoreBookingRequest extends FormRequest
 {
-    /** Pays dont les numéros nationaux sont acceptés (comme à l'inscription). */
-    private const COUNTRIES = 'BE,FR,NL,LU,DE,GB';
-
     public function authorize(): bool
     {
         return true;
@@ -33,7 +33,7 @@ final class StoreBookingRequest extends FormRequest
             'practitioner_id' => ['required', 'uuid', Rule::exists('practitioners', 'id')->whereNull('deleted_at')],
             'date' => ['required', 'date_format:Y-m-d'],
             'time' => ['required', 'date_format:H:i'],
-            'phone' => ['required', 'string', 'phone:'.self::COUNTRIES],
+            'phone' => ['required', 'string', new ValidPhone($this->defaultCountry())],
             'name' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
@@ -41,7 +41,13 @@ final class StoreBookingRequest extends FormRequest
 
     public function phoneE164(): string
     {
-        return (new PhoneNumber($this->string('phone')->toString(), explode(',', self::COUNTRIES)))->formatE164();
+        return Phone::toE164($this->string('phone')->toString(), $this->defaultCountry()) ?? throw new UnexpectedValueException('Numéro non validé.');
+    }
+
+    /** Pays de l'établissement : il lit les numéros nationaux (06 12 34 56 78) sans deviner un autre pays. */
+    private function defaultCountry(): ?string
+    {
+        return app(CurrentTenant::class)->organization()?->country;
     }
 
     /** Début du rendez-vous en UTC, à partir de la date et de l'heure locales du site. */

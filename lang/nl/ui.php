@@ -1329,6 +1329,8 @@ return [
         'E2_code' => 'Onjuiste code.',
         'E2_expired' => 'Deze code is verlopen. Vraag een nieuwe code aan.',
         'E2_blocked' => 'Te veel onjuiste codes. Probeer het opnieuw over :minutes minuten.',
+        'phone_invalid' => 'Dit telefoonnummer is niet geldig.',
+        'phone_country_needed' => 'Voeg de landcode toe, bijvoorbeeld +32 voor België of +31 voor Nederland: dit nummer bestaat in meerdere landen.',
         'E2_resend' => 'Te veel verzoeken. Probeer het opnieuw over :minutes minuten.',
         'E3' => 'Te veel pogingen. Probeer het opnieuw over :minutes minuten of stel uw wachtwoord opnieuw in.',
         'invalid_credentials' => 'Onjuiste inloggegevens.',

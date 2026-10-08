@@ -14,6 +14,8 @@ use App\Modules\Identity\Rules\StrongPassword;
 use App\Modules\Identity\Services\PhoneChange;
 use App\Modules\Identity\Services\TwoFactor;
 use App\Modules\Tenancy\Support\CurrentTenant;
+use App\Support\Phone;
+use App\Support\ValidPhone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +28,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
-use Propaganistas\LaravelPhone\PhoneNumber;
+use UnexpectedValueException;
 
 /**
  * Paramètres > Sécurité (flowchart 3C, décision 18) : mot de passe, e-mail, téléphone, sessions et double authentification.
@@ -144,9 +146,10 @@ final class SecurityController
     {
         $user = $this->user($request);
         $this->reauthenticate($request, $user);
-        $request->validate(['phone' => ['required', 'string', 'phone:BE,FR,NL,LU,DE,GB']]);
+        $country = app(CurrentTenant::class)->organization()?->country;
+        $request->validate(['phone' => ['required', 'string', new ValidPhone($country)]]);
 
-        $phone = (new PhoneNumber($request->string('phone')->toString()))->formatE164();
+        $phone = Phone::toE164($request->string('phone')->toString(), $country) ?? throw new UnexpectedValueException('Numéro non validé.');
 
         try {
             $phoneChange->request($user, $phone);
