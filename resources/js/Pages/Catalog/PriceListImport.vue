@@ -299,7 +299,7 @@ function summary(item: HistoryItem): string {
                     <div class="mt-5 flex flex-wrap justify-end gap-3">
                         <Link
                             :href="onboardingStep('services')"
-                            class="inline-flex min-h-11 items-center rounded-control border border-line-strong bg-surface px-4 text-base font-semibold text-neutral-800 hover:bg-surface-2"
+                            class="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-surface px-4 text-base font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('price_import.cancel') }}
                         </Link>

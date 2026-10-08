@@ -1,5 +1,7 @@
 # Nova — UI aesthetic upgrade plan ("Calm Premium")
 
+> **Palette, typography and shapes in this document are superseded by `docs/20-alignement-visuel-site-et-application.md`** (the app now follows the website identity). The structure, rollout, motion and dark-mode mechanics below still apply.
+
 Status: steps 0 and 1 of section 6.2 are built (tokens, base components, top bar, card/border/radius codemod); steps 2 to 5 remain. Scope: look and feel only. No change to features, page structure, labels or flows.
 Written against the code as it is today (Tailwind v4 tokens in `resources/css/app.css`, Vue components in `resources/js/Components`, pages in `resources/js/Pages`). Every contrast figure below was computed (WCAG 2.x relative luminance), not estimated.
 

@@ -1,77 +1,90 @@
 @import 'tailwindcss';
-/* Police Inter auto-hébergée (aucun CDN externe : pas de transfert d'adresse IP à un tiers, RGPD). */
-@import '@fontsource-variable/inter';
+/* Polices auto-hébergées (aucun CDN externe : pas de transfert d'adresse IP à un tiers, RGPD). Mêmes familles que le site. */
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
 
 @source '../js/**/*.vue';
 
 /*
- * Jetons de design Nova (docs/03-identite-visuelle-et-structure-projet.md §A.1).
- * Contrastes visés : WCAG 2.2 AA. Ne jamais utiliser la couleur seule pour porter une information.
+ * Jetons de design Nova, alignés sur le site web (docs/20-alignement-visuel-site-et-application.md) :
+ * un teal profond, un encre très sombre, un canvas chaud, une étincelle d'ambre.
+ * Contrastes visés : WCAG 2.2 AA (un test les vérifie : resources/js/design/tokens.test.ts).
+ * Ne jamais utiliser la couleur seule pour porter une information.
  */
 @theme {
-    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* Instrument Sans pour l'interface, Bricolage Grotesque pour les titres et les grands chiffres. */
+    --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Bricolage Grotesque Variable', 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
 
-    --color-nova-900: #14213d;
-    --color-nova-700: #1f3a6b;
+    /* Deep Ink et son bleu-vert clair (texte secondaire sur fond sombre). */
+    --color-nova-900: #0b2b2e;
+    --color-nova-700: #2f5558;
 
-    --color-primary-50: #eaf0fd;
-    --color-primary-100: #dbe6fd;
-    --color-primary-600: #2a5bd7;
-    --color-primary-700: #2249b0;
+    /* Nova Teal : actions, liens, sélection. 50 = survol des lignes, 100 = Mint (pastilles, élément actif). */
+    --color-primary-50: #e8f0ec;
+    --color-primary-100: #ddf1ea;
+    --color-primary-200: #bfd5ce;
+    --color-primary-300: #9cccbe;
+    --color-primary-600: #0e6b6b;
+    --color-primary-700: #0a5656;
 
-    --color-accent-500: #12a594;
-    --color-accent-700: #0b7a6d;
+    /* Spark Amber : étincelle décorative (jamais du texte sur blanc). Sand : teinte chaude. */
+    --color-amber: #f0a23a;
+    --color-sand: #fbebcf;
+    --color-mint: #ddf1ea;
+    --color-deep: #0b2b2e;
 
-    --color-success-50: #ecfdf3;
-    --color-success-600: #15803d;
-    --color-warning-50: #fffbeb;
-    --color-warning-600: #b45309;
-    --color-danger-50: #fef2f2;
-    --color-danger-600: #dc2626;
-    --color-danger-700: #b91c1c;
-    --color-danger-800: #912018;
+    --color-success-50: #e2f3e8;
+    --color-success-600: #14683b;
+    --color-warning-50: #fbebcf;
+    --color-warning-600: #7a4a06;
+    --color-danger-50: #fdecea;
+    --color-danger-600: #b3261e;
+    --color-danger-700: #b3261e;
+    --color-danger-800: #8e1d17;
 
-    /* Neutres « ardoise » */
-    --color-neutral-50: #f8fafc;
-    --color-neutral-100: #f1f5f9;
-    --color-neutral-200: #e2e8f0;
-    --color-neutral-300: #cbd5e1;
-    --color-neutral-400: #94a3b8;
-    --color-neutral-500: #64748b;
-    --color-neutral-600: #475569;
-    --color-neutral-700: #334155;
-    --color-neutral-800: #1e293b;
-    --color-neutral-900: #0f172a;
+    /* Neutres « vert-gris » du site : 900 Ink, 700 Body, 500 Muted, 300 bordure décorative, 200 trait, 100 survol, 50 canvas. */
+    --color-neutral-50: #f6f8f5;
+    --color-neutral-100: #e8f0ec;
+    --color-neutral-200: #e1e9e5;
+    --color-neutral-300: #c7d6d1;
+    --color-neutral-400: #9db8b4;
+    --color-neutral-500: #566968;
+    --color-neutral-600: #4a5d5c;
+    --color-neutral-700: #3f5150;
+    --color-neutral-800: #2e4442;
+    --color-neutral-900: #10201f;
 
-    /* Surfaces et lignes (plan « Calm Premium », docs/19). line-strong : bordure des champs, 3:1 sur blanc (WCAG 1.4.11). */
-    --color-canvas: #f6f8fb;
+    /* Surfaces et lignes. line-strong : bordure des champs, 3:1 sur blanc et sur le canvas (WCAG 1.4.11). */
+    --color-canvas: #f6f8f5;
     --color-surface: #ffffff;
-    --color-surface-2: #f1f5f9;
-    --color-line: #e6eaf0;
-    --color-line-strong: #7f8ea3;
-    --color-muted: #566175;
+    --color-surface-2: #e8f0ec;
+    --color-line: #e1e9e5;
+    --color-line-strong: #6f8984;
+    --color-muted: #566968;
 
     /* États : texte sur fond teinté, tous au-dessus de 4,5:1. */
-    --color-success-fg: #166534;
-    --color-success-bg: #e8f7ee;
-    --color-warning-fg: #92400e;
-    --color-warning-bg: #fef3c7;
-    --color-danger-fg: #b42318;
-    --color-danger-bg: #feecea;
-    --color-info-fg: #1d4ed8;
-    --color-info-bg: #e8f0fe;
-    --color-neutral-fg: #475569;
-    --color-neutral-bg: #f1f5f9;
+    --color-success-fg: #14683b;
+    --color-success-bg: #e2f3e8;
+    --color-warning-fg: #7a4a06;
+    --color-warning-bg: #fbebcf;
+    --color-danger-fg: #b3261e;
+    --color-danger-bg: #fdecea;
+    --color-info-fg: #0a5656;
+    --color-info-bg: #ddf1ea;
+    --color-neutral-fg: #3f5150;
+    --color-neutral-bg: #e8f0ec;
 
-    --radius-control: 0.625rem;
-    --radius-card: 0.875rem;
-    --radius-modal: 1rem;
+    --radius-control: 0.75rem;
+    --radius-card: 1rem;
+    --radius-modal: 1.25rem;
 
-    --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.04);
-    --shadow-sm: 0 1px 3px rgb(16 24 40 / 0.08), 0 1px 2px rgb(16 24 40 / 0.04);
-    --shadow-md: 0 4px 12px -2px rgb(16 24 40 / 0.08);
-    --shadow-lg: 0 8px 24px -4px rgb(16 24 40 / 0.14);
-    --shadow-xl: 0 24px 48px -12px rgb(16 24 40 / 0.28);
+    --shadow-xs: 0 1px 2px rgb(16 32 31 / 0.05);
+    --shadow-sm: 0 1px 3px rgb(16 32 31 / 0.08), 0 1px 2px rgb(16 32 31 / 0.04);
+    --shadow-md: 0 8px 20px -4px rgb(16 32 31 / 0.1);
+    --shadow-lg: 0 18px 40px rgb(16 32 31 / 0.08);
+    --shadow-xl: 0 20px 44px rgb(16 32 31 / 0.12);
+    --shadow-teal: 0 10px 24px rgb(14 107 107 / 0.28);
 
     --ease-nova: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -79,14 +92,21 @@
 @layer base {
     html {
         font-family: var(--font-sans);
-        /* Inter : "a" plus ouvert et formes plus rondes. */
-        font-feature-settings: 'cv11', 'ss03';
         -webkit-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
     }
 
     body {
         background-color: var(--color-canvas);
         color: var(--color-neutral-900);
+    }
+
+    /* Titres : Bricolage Grotesque, resserré comme sur le site. Le corps du texte reste en Instrument Sans. */
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-display);
+        letter-spacing: -0.02em;
     }
 
     /* Chiffres de même largeur : les colonnes de prix, d'heures et de compteurs s'alignent. */
@@ -96,9 +116,10 @@
         font-variant-numeric: tabular-nums;
     }
 
-    /* Focus visible et cohérent sur tous les éléments interactifs (navigation au clavier). */
+    /* Focus visible et cohérent sur tous les éléments interactifs (navigation au clavier).
+       Teal à 6,3:1 sur blanc ; l'ambre du site (2,1:1) ne passe pas le seuil de 3:1 sur fond clair. */
     :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-        outline: 2px solid var(--color-primary-600);
+        outline: 3px solid var(--color-primary-600);
         outline-offset: 2px;
     }
 
@@ -114,7 +135,7 @@
     @keyframes nova-dialog-in {
         from {
             opacity: 0;
-            transform: scale(0.98) translateY(4px);
+            transform: translateY(10px) scale(0.97);
         }
     }
 
@@ -135,13 +156,13 @@
 }
 
 @layer components {
-    /* Case à cocher : bordure à 3:1, coche tracée en blanc sur fond bleu. */
+    /* Case à cocher : bordure à 3:1, coche tracée en blanc sur fond teal. */
     .nova-check {
         appearance: none;
         width: 1.25rem;
         height: 1.25rem;
         flex-shrink: 0;
-        border: 1px solid var(--color-line-strong);
+        border: 1.5px solid var(--color-line-strong);
         border-radius: 0.375rem;
         background-color: var(--color-surface);
         background-position: center;

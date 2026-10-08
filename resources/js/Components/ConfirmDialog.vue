@@ -39,7 +39,7 @@ watch(
         ref="dialog"
         :aria-labelledby="titleId"
         :aria-describedby="bodyId"
-        class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-nova-900/45"
+        class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-nova-900/55"
         @cancel.prevent="emit('cancel')"
     >
         <h2 :id="titleId" class="text-lg font-semibold text-nova-900">{{ title }}</h2>

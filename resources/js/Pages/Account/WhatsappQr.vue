@@ -122,7 +122,7 @@ async function copy(): Promise<void> {
             <p class="mt-2 max-w-xl text-sm text-neutral-700">{{ t(`whatsapp_qr.states.${state}.body`) }}</p>
             <Link
                 :href="routes.whatsapp"
-                class="mt-5 inline-flex min-h-11 items-center rounded-control bg-primary-600 px-4 text-base font-semibold text-white hover:bg-primary-700"
+                class="mt-5 inline-flex min-h-11 items-center rounded-full bg-primary-600 px-4 text-base font-semibold text-white hover:bg-primary-700"
             >
                 {{ t(`whatsapp_qr.states.${state}.cta`) }}
             </Link>
@@ -173,27 +173,27 @@ async function copy(): Promise<void> {
                     <div class="mt-4 grid grid-cols-2 gap-2.5">
                         <a
                             :href="image(current, 'png', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-control bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700"
+                            class="flex min-h-11 flex-col items-center justify-center rounded-full bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700"
                         >
                             {{ t('whatsapp_qr.download_png') }}
                             <span class="text-xs font-normal opacity-80">{{ t('whatsapp_qr.png_size') }}</span>
                         </a>
                         <a
                             :href="image(current, 'svg', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-control border border-line-strong bg-surface px-3 py-1.5 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
+                            class="flex min-h-11 flex-col items-center justify-center rounded-full border border-line-strong bg-surface px-3 py-1.5 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_svg') }}
                             <span class="text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.vector') }}</span>
                         </a>
                         <a
                             :href="image(current, 'pdf', '&size=a4&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-control border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
+                            class="flex min-h-11 items-center justify-center rounded-full border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_pdf_a4') }}
                         </a>
                         <a
                             :href="image(current, 'pdf', '&size=a6&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-control border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
+                            class="flex min-h-11 items-center justify-center rounded-full border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_pdf_a6') }}
                         </a>
@@ -210,7 +210,7 @@ async function copy(): Promise<void> {
                                 :value="current.link ?? ''"
                                 readonly
                                 :aria-label="t('whatsapp_qr.link_label')"
-                                class="min-h-11 min-w-0 flex-1 rounded-control border border-line-strong bg-neutral-50 px-3 font-mono text-sm text-neutral-700"
+                                class="min-h-11 min-w-0 flex-1 rounded-full border border-line-strong bg-neutral-50 px-3 font-mono text-sm text-neutral-700"
                                 @focus="($event.target as HTMLInputElement).select()"
                             />
                             <BaseButton variant="secondary" @click="copy">{{ copied ? t('whatsapp_qr.copied') : t('whatsapp_qr.copy') }}</BaseButton>

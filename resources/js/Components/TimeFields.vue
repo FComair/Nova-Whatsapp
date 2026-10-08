@@ -48,7 +48,7 @@ function change(): void {
                 :aria-label="t('planning.form.hour')"
                 :required="required"
                 :aria-invalid="error ? 'true' : undefined"
-                class="min-w-0 flex-1 rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
+                class="min-w-0 flex-1 rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
                 :class="
                     error
                         ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
@@ -65,7 +65,7 @@ function change(): void {
                 :aria-label="t('planning.form.minute')"
                 :required="required"
                 :aria-invalid="error ? 'true' : undefined"
-                class="min-w-0 flex-1 rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
+                class="min-w-0 flex-1 rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
                 :class="
                     error
                         ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'

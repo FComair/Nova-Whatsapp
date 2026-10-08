@@ -112,7 +112,7 @@ function primary(step: SetupStepData): boolean {
                 <Link
                     v-if="step.href"
                     :href="step.href"
-                    class="inline-flex min-h-11 min-w-28 items-center justify-center rounded-control px-4 text-sm font-semibold"
+                    class="inline-flex min-h-11 min-w-28 items-center justify-center rounded-full px-4 text-sm font-semibold"
                     :class="
                         primary(step)
                             ? 'bg-primary-600 text-white hover:bg-primary-700'
@@ -126,7 +126,7 @@ function primary(step: SetupStepData): boolean {
                 </Link>
                 <span
                     v-else
-                    class="inline-flex min-h-11 min-w-28 cursor-not-allowed items-center justify-center rounded-control border border-line px-4 text-sm font-semibold text-neutral-500"
+                    class="inline-flex min-h-11 min-w-28 cursor-not-allowed items-center justify-center rounded-full border border-line px-4 text-sm font-semibold text-neutral-500"
                     aria-disabled="true"
                 >
                     {{ t('setup.cta.go') }}

@@ -17,7 +17,7 @@ const currentUrl = computed(() => (page as unknown as { url?: string }).url ?? '
 
 /** Entrée du menu : fond bleu pâle et texte bleu pour la page courante, discret au survol sinon. */
 function navClass(active: boolean): string {
-    return `flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${active ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-surface-2 hover:text-neutral-900'}`;
+    return `flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${active ? 'bg-primary-100 text-primary-700' : 'text-neutral-800 hover:bg-surface-2 hover:text-primary-600'}`;
 }
 
 const inSettings = computed(() => activeSettings((page as unknown as { url?: string }).url ?? '') !== null);
@@ -35,10 +35,10 @@ function logout(): void {
     </a>
 
     <div class="min-h-screen bg-canvas">
-        <header class="border-b border-line bg-surface">
+        <header class="sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-[14px]">
             <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                 <div class="flex min-w-0 items-center gap-3">
-                    <span class="text-xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
+                    <span class="font-display text-xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
                     <span v-if="page.props.auth.organization" class="flex min-w-0 items-center gap-2 border-l border-line pl-3">
                         <ShopAvatar
                             :id="page.props.auth.organization.id"

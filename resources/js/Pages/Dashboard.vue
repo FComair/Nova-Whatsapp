@@ -79,27 +79,27 @@ function formatDate(iso: string): string {
         <dl class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6" data-testid="counts">
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_today') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.today }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.today }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_remaining') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.remaining }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.remaining }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_cancelled') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.cancelled }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.cancelled }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_tomorrow') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.tomorrow }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.tomorrow }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_week') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.week }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.week }}</dd>
             </div>
             <div v-if="summary.counts.new_customers !== null" class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_new_customers') }}</dt>
-                <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.new_customers }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.new_customers }}</dd>
             </div>
         </dl>
 
