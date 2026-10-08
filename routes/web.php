@@ -191,6 +191,9 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     // Fiches clients : PlanningAccess/CustomerController restreignent le praticien à ses propres clients (docs/02 §1).
     Route::prefix('/clients')->group(function (): void {
         Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
+        Route::post('/actions', [CustomerController::class, 'bulk'])->name('customers.bulk');
+        Route::post('/vues', [CustomerController::class, 'saveView'])->name('customers.views.store');
+        Route::delete('/vues/{view}', [CustomerController::class, 'deleteView'])->name('customers.views.destroy');
         Route::get('/{customer}', [CustomerController::class, 'show'])->name('customers.show');
         Route::put('/{customer}', [CustomerController::class, 'update'])->name('customers.update');
         Route::put('/{customer}/blocage', [CustomerController::class, 'block'])->name('customers.block');

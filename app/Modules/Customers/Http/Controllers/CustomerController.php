@@ -8,7 +8,11 @@ use App\Modules\Audit\Audit;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Support\PlanningAccess;
 use App\Modules\Customers\Models\Customer;
+use App\Modules\Customers\Models\CustomerSavedView;
+use App\Modules\Customers\Services\CustomerListQuery;
 use App\Modules\Privacy\Services\CustomerErasure;
+use App\Modules\Staff\Models\Practitioner;
+use App\Modules\Tenancy\Models\OrgMember;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -26,42 +30,121 @@ final class CustomerController
 {
     private const PER_PAGE = 25;
 
-    public function __construct(private readonly CurrentTenant $current, private readonly PlanningAccess $access) {}
+    private const MAX_TAGS = 20;
+
+    /** Colonnes que l'écran sait afficher (une vue enregistrée peut en choisir). */
+    private const COLUMNS = ['contact', 'last', 'next', 'visits', 'value', 'whatsapp', 'tags', 'status', 'source', 'created'];
+
+    public function __construct(private readonly CurrentTenant $current, private readonly PlanningAccess $access, private readonly CustomerListQuery $list) {}
 
     public function index(Request $request): Response
     {
         $search = trim($request->string('q')->toString());
+        $filters = CustomerListQuery::cleanFilters($request->query());
+        $sort = in_array($request->query('sort'), CustomerListQuery::SORTS, true) ? (string) $request->query('sort') : 'name';
+        $direction = $request->query('dir') === 'desc' ? 'desc' : 'asc';
 
-        $page = $this->visible(Customer::query())
-            ->when($search !== '', function (Builder $query) use ($search): void {
-                $like = '%'.addcslashes($search, '\\%_').'%';
-                $digits = preg_replace('/\D+/', '', $search) ?? '';
-
-                $query->where(function (Builder $inner) use ($like, $digits): void {
-                    $inner->where('name', 'ilike', $like)->orWhere('email', 'ilike', $like);
-
-                    if ($digits !== '') {
-                        $inner->orWhere('phone_e164', 'like', '%'.$digits.'%');
-                    }
-                });
-            })
-            ->orderByRaw('lower(coalesce(name, phone_e164))')
-            ->paginate(self::PER_PAGE)->withQueryString();
-
-        $lastVisit = DB::table('bookings')->whereIn('customer_id', $page->pluck('id'))->whereIn('status', [Booking::CONFIRMED, Booking::COMPLETED])
-            ->groupBy('customer_id')->selectRaw('customer_id, max(starts_at) as last_at')->pluck('last_at', 'customer_id');
+        $page = $this->list->build($search, $filters, $sort, $direction)->paginate(self::PER_PAGE)->withQueryString();
+        $userId = (string) auth()->id();
+        $manages = in_array($this->access->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
 
         return Inertia::render('Customers/Index', [
             'q' => $search,
-            'customers' => $page->getCollection()->map(fn (Customer $customer): array => [
-                'id' => $customer->id,
-                'name' => $customer->name,
-                'phone' => $customer->phone_e164,
-                'is_blocked' => $customer->is_blocked,
-                'last_visit' => isset($lastVisit[$customer->id]) ? substr((string) $lastVisit[$customer->id], 0, 10) : null,
-            ])->values()->all(),
+            'filters' => (object) $filters,
+            'sort' => $sort,
+            'dir' => $direction,
+            'customers' => $this->list->rows($page),
             'pagination' => ['page' => $page->currentPage(), 'last_page' => $page->lastPage(), 'total' => $page->total()],
+            'views' => CustomerSavedView::query()->where(fn (Builder $q) => $q->where('user_id', $userId)->orWhere('shared', true))->orderBy('name')->get()
+                ->map(fn (CustomerSavedView $view): array => [
+                    'id' => $view->id, 'name' => $view->name, 'filters' => (object) $view->filters, 'columns' => $view->columns,
+                    'sort' => $view->sort, 'dir' => $view->direction, 'shared' => $view->shared, 'mine' => $view->user_id === $userId,
+                ])->all(),
+            'practitioners' => Practitioner::query()->orderBy('name')->get(['id', 'name'])->map(fn (Practitioner $p): array => ['value' => $p->id, 'label' => (string) $p->name])->all(),
+            'tags' => DB::table('customers')->whereNull('deleted_at')->selectRaw('distinct jsonb_array_elements_text(tags) as tag')->orderBy('tag')->limit(200)->pluck('tag')->all(),
+            'can' => ['tag' => ! $this->access->isPractitioner(), 'archive' => $manages, 'share_views' => $manages],
+            'scoped' => $this->access->isPractitioner(),
         ]);
+    }
+
+    /**
+     * Actions groupées sur la sélection : étiqueter, retirer une étiquette, archiver, rétablir. Chaque action est contrôlée côté
+     * serveur (rôle, clients visibles) et journalisée une seule fois, avec le nombre de fiches mais jamais leurs données.
+     */
+    public function bulk(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'action' => ['required', 'in:tag,untag,archive,unarchive'],
+            'ids' => ['required', 'array', 'min:1', 'max:500'],
+            'ids.*' => ['uuid'],
+            'tag' => ['required_if:action,tag,untag', 'nullable', 'string', 'max:30'],
+        ]);
+        $action = (string) $data['action'];
+
+        abort_if($this->access->isPractitioner(), 403);
+        abort_if(in_array($action, ['archive', 'unarchive'], true) && $this->access->role() === OrgMember::ROLE_RECEPTIONIST, 403);
+
+        $tag = isset($data['tag']) ? trim((string) $data['tag']) : null;
+        $changed = 0;
+
+        DB::transaction(function () use ($data, $action, $tag, &$changed): void {
+            foreach ($this->list->build('', ['status' => 'all'])->whereIn('customers.id', $data['ids'])->get() as $customer) {
+                $tags = $customer->tags;
+
+                if ($action === 'tag' && $tag !== null && ! in_array($tag, $tags, true) && count($tags) < self::MAX_TAGS) {
+                    $customer->forceFill(['tags' => [...$tags, $tag]])->save();
+                    $changed++;
+                } elseif ($action === 'untag' && in_array($tag, $tags, true)) {
+                    $customer->forceFill(['tags' => array_values(array_diff($tags, [$tag]))])->save();
+                    $changed++;
+                } elseif ($action === 'archive' && $customer->status === 'active') {
+                    $customer->setStatus('archived');
+                    $changed++;
+                } elseif ($action === 'unarchive' && $customer->status === 'archived') {
+                    $customer->setStatus('active');
+                    $changed++;
+                }
+            }
+        });
+
+        Audit::record('customer.bulk_'.$action, 'user', (string) auth()->id(), $this->current->organization()?->id, 'customers', null, ['count' => $changed, 'selected' => count($data['ids'])]);
+
+        return back()->with('status', __('ui.customers.bulk.done_'.$action, ['count' => $changed]));
+    }
+
+    public function saveView(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:60'],
+            'filters' => ['nullable', 'array'],
+            'columns' => ['nullable', 'array', 'max:14'],
+            'columns.*' => ['string', 'in:'.implode(',', self::COLUMNS)],
+            'sort' => ['nullable', 'in:'.implode(',', CustomerListQuery::SORTS)],
+            'dir' => ['nullable', 'in:asc,desc'],
+            'shared' => ['nullable', 'boolean'],
+        ]);
+        $shared = (bool) ($data['shared'] ?? false) && in_array($this->access->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
+
+        CustomerSavedView::query()->create([
+            'org_id' => $this->current->organization()?->id,
+            'user_id' => auth()->id(),
+            'name' => trim($data['name']),
+            'filters' => CustomerListQuery::cleanFilters($data['filters'] ?? []),
+            'columns' => $data['columns'] ?? null,
+            'sort' => $data['sort'] ?? null,
+            'direction' => $data['dir'] ?? null,
+            'shared' => $shared,
+        ]);
+
+        return back()->with('status', __('ui.customers.views.saved'));
+    }
+
+    public function deleteView(CustomerSavedView $view): RedirectResponse
+    {
+        abort_unless($view->user_id === (string) auth()->id() || ($view->shared && $this->access->role() === OrgMember::ROLE_OWNER), 403);
+        $view->delete();
+
+        return back()->with('status', __('ui.customers.views.deleted'));
     }
 
     public function show(Customer $customer): Response

@@ -8,6 +8,7 @@ vi.mock('@inertiajs/vue3', () => ({
             translations: {
                 errors: { E3: 'Te veel pogingen. Probeer het opnieuw over :minutes minuten.' },
                 common: { app_name: 'Nova' },
+                n: { items: ':count klant|:count klanten' },
             },
         },
     }),
@@ -28,6 +29,12 @@ describe('useT', () => {
 
     it('laisse un paramètre non fourni visible plutôt que de le supprimer', () => {
         expect(useT().t('errors.E3')).toBe('Te veel pogingen. Probeer het opnieuw over :minutes minuten.');
+    });
+
+    it('choisit le singulier ou le pluriel selon count', () => {
+        expect(useT().t('n.items', { count: 1 })).toBe('1 klant');
+        expect(useT().t('n.items', { count: 0 })).toBe('0 klanten');
+        expect(useT().t('n.items', { count: 12 })).toBe('12 klanten');
     });
 
     it('expose la langue courante', () => {

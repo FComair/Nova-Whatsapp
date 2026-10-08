@@ -1,6 +1,6 @@
 # Nova — Customers hub (spec)
 
-Status: design to validate. Visual reference: the canvas "Nova Customers hub" (https://claude.ai/artifact/J7JQpkYgrcd2CehUjfazGY), light and dark, using the website identity (docs/20). No change to navigation or unrelated features.
+Status: phases 1 (foundation) and 2 (list) built; phases 3 to 6 to come. Visual reference: the canvas "Nova Customers hub" (https://claude.ai/artifact/J7JQpkYgrcd2CehUjfazGY), light and dark, using the website identity (docs/20). No change to navigation or unrelated features.
 
 ## 1. Starting point (what exists)
 
@@ -38,8 +38,8 @@ Owner: everything. Site manager: customers of their locations, edit, archive, no
 
 ## 5. Delivery in phases
 
-1. **Foundation** (no visible change): new customer columns, status, reference, consent records, computed summary, search index (pg_trgm and digit-normalised phone), tests, erasure steps.
-2. **List**: table, columns, search, filters, saved views, bulk tags and archive, empty and error states.
+1. **Foundation** (built, no visible change): new customer columns, status, reference, consent records, computed summary, search index (pg_trgm and digit-normalised phone), tests, erasure steps.
+2. **List** (built): table, columns, search, filters, saved views, bulk tags and archive, empty and error states.
 3. **Profile**: header, figures, tabs (overview, appointments, communications, notes, preferences and consent, data and privacy).
 4. **Add and edit**: split name fields, duplicate detection, validation, consent capture.
 5. **Export**: server-side CSV, XLSX, JSON, audit log and history, individual export.
@@ -53,3 +53,12 @@ Owner: everything. Site manager: customers of their locations, edit, archive, no
 4. No file attachments in custom fields in the first version.
 5. Customer value is computed from booking prices and amounts collected and labelled as such.
 6. Site managers export by default, or only on the owner's grant (proposed: only on grant).
+
+## 7. Phase 2 as built
+
+- Search: one box, 300 ms after typing, from 2 characters. Text matches `search_text` (accent- and case-insensitive, name, email, reference `C-1002`, tags); words of 4+ letters without digits also match with typos (trigram). An input that looks like a phone number matches by digits whatever the format (0470 12 34 56, +32 470 12 34 56, 0032470123456) or by reference number.
+- Filters (server-validated, unknown keys dropped): status (default hides archived), appointments (upcoming, never visited, no recent visit with N days, with a no-show), WhatsApp marketing consent, practitioner, tag, source, new in N days, minimum completed visits.
+- Row figures come from bookings (last = past confirmed/completed/no-show, next = future pending/confirmed, visits = completed, value = amount collected or price of completed bookings). A practitioner only sees their own customers and their own bookings.
+- Saved views (`customer_saved_views`, RLS, erasure step): filters, columns, sort; personal, or shared by owner and site managers. Six starter views are built in. Column choice is remembered in the browser.
+- Bulk actions (`POST /clients/actions`): add or remove a tag (owner, site manager, receptionist), archive or restore (owner, site manager). Practitioners get none. One audit entry per action with the counts only. Archiving does not block bookings (only *blocked* does).
+- Left for later phases: send WhatsApp message, delete, export selected (phase 5), Add customer button (phase 4).

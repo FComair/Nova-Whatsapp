@@ -47,7 +47,7 @@ beforeEach(function (): void {
 });
 
 describe('liste et recherche', function (): void {
-    it('liste les clients par ordre alphabétique avec leur dernier rendez-vous', function (): void {
+    it('liste les clients par ordre alphabétique avec leur prochain rendez-vous', function (): void {
         ($this->addCustomer)('+32470000002', 'Zoé');
         ($this->addCustomer)('+32470000003', 'alice');
         ($this->bookFor)($this->customer);
@@ -57,9 +57,10 @@ describe('liste et recherche', function (): void {
             ->has('customers', 3)
             ->where('customers.0.name', 'alice')
             ->where('customers.1.name', 'Client Test')
-            ->where('customers.1.last_visit', '2026-06-02')
+            ->where('customers.1.last', null)
+            ->where('customers.1.next.at', '2026-06-02T10:00')
             ->where('customers.2.name', 'Zoé')
-            ->where('customers.2.last_visit', null)
+            ->where('customers.2.last', null)
             ->where('pagination.total', 3));
     });
 
