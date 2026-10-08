@@ -108,7 +108,8 @@ return [
         'greeting_existing' => "Bonjour:spaced 👋\n\nVous avez un rendez-vous prévu :\n\n💈 :service:staff_line\n📅 :date\n🕐 :time_h\n\nQue souhaitez-vous faire ?\n\n1️⃣ Confirmer ma présence ✅\n2️⃣ Modifier mon rendez-vous ✏️\n3️⃣ Annuler mon rendez-vous ❌\n4️⃣ Prendre un nouveau rendez-vous ➕\n5️⃣ Poser une question",
         'existing_appointment' => "ℹ️ Vous avez déjà un rendez-vous prévu.\n\n👤 Personne : :name\n💈 Service : :service\n👤 Praticien : :staff\n📅 Rendez-vous : :date\n🕐 Heure : :time\n\nQue souhaitez-vous faire ?\n\n1️⃣ Modifier ce rendez-vous ✏️\n2️⃣ Prendre un nouveau rendez-vous ➕\n3️⃣ Annuler ❌",
         'with_staff' => '👤 :staff',
-        'clarify' => "Je n’ai pas bien compris votre demande 😊\n\nQue souhaitez-vous faire ?\n\n1️⃣ Prendre un rendez-vous\n2️⃣ Modifier un rendez-vous\n3️⃣ Annuler un rendez-vous\n4️⃣ Poser une question\n5️⃣ Parler à quelqu’un",
+        'clarify' => "Je n’ai pas bien compris votre demande 😊\n\nQue souhaitez-vous faire ?\n\n1️⃣ Prendre un rendez-vous\n2️⃣ Modifier un rendez-vous\n3️⃣ Annuler un rendez-vous\n4️⃣ Poser une question\n5️⃣ Parler à quelqu’un\n6️⃣ Quitter",
+        'quit' => "Pas de souci 👋\n\nLa conversation est terminée. Écrivez-nous quand vous avez besoin de nous.",
         'handoff' => "Bien sûr 🙏\n\nJe transmets votre demande à l'équipe de :business. Quelqu'un vous répondra dès que possible.", // (nouveau)
         'presence_confirmed' => "✅ Présence confirmée\n\nBonjour :name,\n\nMerci, votre présence a bien été confirmée.\n\n📅 Date : :date\n🕒 Heure : :time\n💼 Service : :service\n👤 Praticien : :staff\n\n🏢 :business\n\nNous vous attendons. À bientôt !",
         'reminder_invalid' => "Je n'ai pas compris votre réponse.\n\n1️⃣ Confirmer ma présence ✅\n2️⃣ Annuler mon rendez-vous ❌", // (nouveau)
@@ -148,6 +149,7 @@ return [
         'next' => ['prochain', 'prochaine', 'next', 'volgende'],
         'weekdays' => ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
         'human' => ['parler a quelqu', 'parler a un humain', 'parler a une personne', 'un humain', 'un conseiller', 'quelqu\'un', 'human', 'agent', 'iemand spreken', 'een mens'],
+        'quit' => ['quitter', 'quit', 'exit', 'sortir', 'terminer', 'afsluiten', 'stoppen'],
         'cancel' => ['annuler', 'annulation', 'supprimer mon rdv', 'cancel', 'annuleren', 'afzeggen'],
         'modify' => ['modifier', 'modification', 'changer', 'deplacer', 'decaler', 'reporter', 'reschedule', 'change', 'wijzigen', 'verzetten', 'verplaatsen'],
         'book' => ['prendre rendez', 'prendre un rdv', 'reserver', 'reservation', 'je voudrais un rendez', 'je veux un rendez', 'book', 'appointment', 'afspraak maken', 'boeken', 'reserveren'],

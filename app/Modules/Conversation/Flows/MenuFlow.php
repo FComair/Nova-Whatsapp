@@ -77,6 +77,13 @@ final class MenuFlow extends Flow
         $turn->conv->go(self::CLARIFY, 'clarify_intent');
     }
 
+    /** « Quitter » : la conversation est close (état remis à zéro, aucun silence imposé) ; le prochain message repart de l'accueil. */
+    public function quit(Turn $turn): void
+    {
+        $turn->conv->reset();
+        $turn->say('menu.quit');
+    }
+
     /** « Parler à quelqu'un » : l'assistant se tait le temps que l'équipe réponde. */
     public function handoff(Turn $turn): void
     {
@@ -177,6 +184,10 @@ final class MenuFlow extends Flow
                 return IntentDetector::FAQ;
             case $this->is($turn, '5') || Keywords::contains($message, 'human'):
                 return IntentDetector::HANDOFF;
+            case $this->is($turn, '6', 'quit'):
+                $this->quit($turn);
+
+                return self::HANDLED;
             default:
                 $this->clarify($turn);
 

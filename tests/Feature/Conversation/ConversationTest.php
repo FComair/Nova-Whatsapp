@@ -65,6 +65,21 @@ describe('accueil', function (): void {
         expect($reply)->toContain('Je n’ai pas bien compris votre demande')->toContain('5️⃣ Parler à quelqu’un');
     });
 
+    it('propose « 6 Quitter » dans le menu de clarification', function (): void {
+        expect(($this->talk)('azerty qsdfgh'))->toContain('6️⃣ Quitter');
+    });
+
+    it('ferme la conversation avec « 6 » sans passer la main à l\'équipe, puis repart de l\'accueil', function (string $answer): void {
+        ($this->talk)('azerty qsdfgh');
+
+        $reply = ($this->talk)($answer);
+
+        expect($reply)->toContain('La conversation est terminée')->not->toContain('Je transmets votre demande');
+
+        // Pas de silence imposé : le message suivant est traité normalement.
+        expect(($this->talk)('Bonjour'))->toContain('Bienvenue');
+    })->with(['6', 'Quitter']);
+
     it('se tait quand l\'établissement est suspendu et répond le message d\'absence en pause', function (): void {
         $this->asOwner(fn () => $this->org->forceFill(['status' => 'suspended'])->save());
         $this->org->refresh();
