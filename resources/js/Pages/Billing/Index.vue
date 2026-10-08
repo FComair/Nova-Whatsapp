@@ -74,7 +74,7 @@ function post(path: string): void {
         <AlertBox v-if="errors.billing" variant="error" class="mt-4 max-w-3xl">{{ errors.billing }}</AlertBox>
         <AlertBox v-if="banner" variant="warning" class="mt-4 max-w-3xl">{{ t(`billing.${banner}`) }}</AlertBox>
 
-        <section class="mt-6 max-w-3xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="state">
+        <section class="mt-6 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="state">
             <h2 id="state" class="text-lg font-semibold text-nova-900">
                 {{
                     t(
@@ -113,8 +113,8 @@ function post(path: string): void {
                 <article
                     v-for="plan in plans"
                     :key="plan.id"
-                    class="flex flex-col rounded-card border bg-white p-5"
-                    :class="subscription?.plan === plan.code && hasActiveSubscription ? 'border-primary-600' : 'border-neutral-200'"
+                    class="flex flex-col rounded-card border bg-surface p-5"
+                    :class="subscription?.plan === plan.code && hasActiveSubscription ? 'border-primary-600' : 'border-line'"
                 >
                     <h3 class="text-lg font-semibold text-nova-900">{{ plan.name }}</h3>
                     <p class="mt-1 text-sm text-neutral-700">{{ t('billing.per_month', { price: price(plan.price_cents) }) }}</p>
@@ -133,7 +133,7 @@ function post(path: string): void {
             <p class="mt-3 text-sm text-neutral-600">{{ t('billing.vat_note', { rate: vatRate }) }}</p>
         </section>
 
-        <section class="mt-8 max-w-3xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="method">
+        <section class="mt-8 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="method">
             <h2 id="method" class="text-lg font-semibold text-nova-900">{{ t('billing.method_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">
                 {{
@@ -156,7 +156,7 @@ function post(path: string): void {
         <section class="mt-8 max-w-3xl" aria-labelledby="invoices">
             <h2 id="invoices" class="text-lg font-semibold text-nova-900">{{ t('billing.invoices_title') }}</h2>
             <p v-if="!invoices.length" class="mt-2 text-sm text-neutral-600">{{ t('billing.invoices_empty') }}</p>
-            <ul v-else class="mt-3 divide-y divide-neutral-200 rounded-card border border-neutral-200 bg-white">
+            <ul v-else class="mt-3 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                 <li v-for="invoice in invoices" :key="invoice.id" class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
                     <span class="font-medium text-neutral-900">{{ invoice.number }} · {{ date(invoice.issued_at) }}</span>
                     <span class="flex items-center gap-3">
@@ -169,7 +169,7 @@ function post(path: string): void {
             </ul>
         </section>
 
-        <section class="mt-8 max-w-3xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="identity">
+        <section class="mt-8 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="identity">
             <h2 id="identity" class="text-lg font-semibold text-nova-900">{{ t('billing.identity_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-600">{{ t('billing.identity_hint') }}</p>
             <form class="mt-4 space-y-4" novalidate @submit.prevent="identity.put(`${routes.billing}/identite`, { preserveScroll: true })">

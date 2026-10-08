@@ -75,7 +75,7 @@ const percent = computed(() => Math.round((props.wizard.steps.filter((step) => s
             <AlertBox v-if="page.props.flash.status" variant="success" class="mt-5">{{ page.props.flash.status }}</AlertBox>
             <AlertBox v-if="page.props.flash.warning" variant="warning" class="mt-5">{{ page.props.flash.warning }}</AlertBox>
 
-            <section class="mt-6 rounded-card border border-neutral-200 bg-white p-5 shadow-sm sm:p-8">
+            <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
                 <slot />
             </section>
 

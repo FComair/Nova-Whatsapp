@@ -69,14 +69,14 @@ function toggleBlock(): void {
                     <BaseButton type="submit" :loading="form.processing">{{ t('customers.save') }}</BaseButton>
                 </form>
 
-                <div class="mt-8 rounded-card border border-neutral-200 bg-white p-4">
+                <div class="mt-8 rounded-card border border-line bg-surface shadow-xs p-4">
                     <p class="text-sm text-neutral-700">{{ t('customers.block_hint') }}</p>
                     <BaseButton class="mt-3" :variant="customer.is_blocked ? 'secondary' : 'danger'" :loading="blocking.processing" @click="toggleBlock">
                         {{ customer.is_blocked ? t('customers.unblock') : t('customers.block') }}
                     </BaseButton>
                 </div>
 
-                <div v-if="canErase" class="mt-4 rounded-card border border-neutral-200 bg-white p-4">
+                <div v-if="canErase" class="mt-4 rounded-card border border-line bg-surface shadow-xs p-4">
                     <p class="text-sm text-neutral-700">{{ t('customers.erase_hint') }}</p>
                     <AlertBox v-if="eraseError" variant="error" class="mt-3">{{ eraseError }}</AlertBox>
                     <BaseButton class="mt-3" variant="danger" @click="erasing = true">{{ t('customers.erase') }}</BaseButton>
@@ -86,7 +86,7 @@ function toggleBlock(): void {
             <section aria-labelledby="history">
                 <h2 id="history" class="text-lg font-semibold text-nova-900">{{ t('customers.history') }}</h2>
                 <p v-if="!history.length" class="mt-4 text-sm text-neutral-600">{{ t('customers.no_history') }}</p>
-                <ul v-else class="mt-4 divide-y divide-neutral-200 rounded-card border border-neutral-200 bg-white">
+                <ul v-else class="mt-4 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="item in history" :key="item.id" class="px-4 py-3 text-sm">
                         <div class="flex flex-wrap justify-between gap-2">
                             <span class="font-medium text-neutral-900">{{ formatDate(item.date) }} · {{ item.time }}</span>

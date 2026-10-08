@@ -40,11 +40,11 @@ function go(query: Record<string, string | number>): void {
             {{ q ? t('customers.no_result') : t('customers.empty') }}
         </AlertBox>
 
-        <ul v-else class="mt-6 divide-y divide-neutral-200 rounded-card border border-neutral-200 bg-white">
+        <ul v-else class="mt-6 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
             <li v-for="customer in customers" :key="customer.id">
                 <Link
                     :href="`${routes.customers}/${customer.id}`"
-                    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 hover:bg-neutral-50"
+                    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 hover:bg-surface-2"
                 >
                     <span class="min-w-0">
                         <span class="block truncate font-medium text-neutral-900">{{ customer.name ?? t('customers.unnamed') }}</span>

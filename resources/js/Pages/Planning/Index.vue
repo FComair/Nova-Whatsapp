@@ -164,10 +164,10 @@ function describe(booking: PlanningBooking): string {
                     </li>
                 </ul>
 
-                <div class="mt-3 overflow-x-auto rounded-card border border-neutral-200 bg-white">
+                <div class="mt-3 overflow-x-auto rounded-card border border-line bg-surface shadow-xs">
                     <div class="flex min-w-[52rem]">
-                        <div class="w-14 shrink-0 border-r border-neutral-200">
-                            <div class="h-12 border-b border-neutral-200" />
+                        <div class="w-14 shrink-0 border-r border-line">
+                            <div class="h-12 border-b border-line" />
                             <div class="relative" :style="{ height: gridHeight }">
                                 <span
                                     v-for="mark in hourMarks(range)"
@@ -183,13 +183,13 @@ function describe(booking: PlanningBooking): string {
                         <section
                             v-for="day in days"
                             :key="day.date"
-                            class="min-w-0 flex-1 basis-0 border-r border-neutral-200 last:border-r-0"
+                            class="min-w-0 flex-1 basis-0 border-r border-line last:border-r-0"
                             :aria-label="formatWeekdayDate(day.date, locale)"
                         >
-                            <h3 class="h-12 border-b border-neutral-200">
+                            <h3 class="h-12 border-b border-line">
                                 <button
                                     type="button"
-                                    class="flex size-full flex-col items-center justify-center text-sm leading-tight hover:bg-neutral-50 focus-visible:outline focus-visible:outline-2"
+                                    class="flex size-full flex-col items-center justify-center text-sm leading-tight hover:bg-surface-2 focus-visible:outline focus-visible:outline-2"
                                     :class="day.date === today ? 'bg-primary-50 text-primary-700' : 'text-neutral-900'"
                                     :aria-current="day.date === date ? 'date' : undefined"
                                     @click="visit({ date: day.date })"
@@ -204,14 +204,14 @@ function describe(booking: PlanningBooking): string {
                                 <div
                                     v-for="(slot, index) in day.working"
                                     :key="index"
-                                    class="absolute inset-x-0 bg-white"
+                                    class="absolute inset-x-0 bg-surface"
                                     :style="blockStyle(range, slot.start, slot.end)"
                                     :title="t('planning.working_hours')"
                                 />
                                 <span
                                     v-for="mark in hourMarks(range)"
                                     :key="mark"
-                                    class="pointer-events-none absolute inset-x-0 border-t border-neutral-200"
+                                    class="pointer-events-none absolute inset-x-0 border-t border-line"
                                     :style="{ top: `${(mark - range.from) * PIXELS_PER_MINUTE}px` }"
                                 />
                                 <button

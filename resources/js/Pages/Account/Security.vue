@@ -67,7 +67,7 @@ function newCodes(): void {
         <AlertBox v-if="errors.two_factor" variant="error" class="mt-4 max-w-2xl">{{ errors.two_factor }}</AlertBox>
 
         <!-- Double authentification -->
-        <section class="mt-8 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="two-factor">
+        <section class="mt-8 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="two-factor">
             <h2 id="two-factor" class="text-lg font-semibold text-nova-900">
                 {{ t('security.two_factor_section') }}
                 <span class="ml-2 text-sm font-medium" :class="twoFactor.enabled ? 'text-success-600' : 'text-neutral-600'">
@@ -78,7 +78,7 @@ function newCodes(): void {
             <p v-if="twoFactor.required" class="mt-1 text-sm font-medium text-neutral-800">{{ t('security.two_factor_mandatory') }}</p>
 
             <!-- Codes de secours : affichés une seule fois, juste après l'activation ou le renouvellement. -->
-            <div v-if="recoveryCodes" class="mt-4 rounded-lg border border-neutral-300 bg-neutral-50 p-4">
+            <div v-if="recoveryCodes" class="mt-4 rounded-control border border-line-strong bg-neutral-50 p-4">
                 <h3 class="font-semibold text-nova-900">{{ t('security.recovery_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('security.recovery_body') }}</p>
                 <ul class="mt-3 grid grid-cols-2 gap-2 font-mono text-sm" data-testid="recovery-codes">
@@ -93,7 +93,7 @@ function newCodes(): void {
                 </div>
                 <form v-else class="mt-4 space-y-4" novalidate @submit.prevent="enableTwoFactor">
                     <p class="text-sm text-neutral-700">{{ t('security.two_factor_scan') }}</p>
-                    <img :src="twoFactor.setup.qr" alt="" class="h-44 w-44 rounded border border-neutral-200" />
+                    <img :src="twoFactor.setup.qr" alt="" class="h-44 w-44 rounded border border-line" />
                     <p class="break-all font-mono text-sm text-neutral-800">{{ t('security.two_factor_secret', { secret: twoFactor.setup.secret }) }}</p>
                     <TextField
                         v-model="confirmTwoFactor.code"
@@ -123,7 +123,7 @@ function newCodes(): void {
                     <BaseButton type="submit" variant="secondary" :loading="regenerate.processing">{{ t('security.recovery_regenerate') }}</BaseButton>
                 </form>
 
-                <form v-if="!twoFactor.required" class="mt-6 space-y-3 border-t border-neutral-200 pt-4" novalidate @submit.prevent="turnOffTwoFactor">
+                <form v-if="!twoFactor.required" class="mt-6 space-y-3 border-t border-line pt-4" novalidate @submit.prevent="turnOffTwoFactor">
                     <TextField
                         v-model="disableTwoFactor.current_password"
                         type="password"
@@ -145,7 +145,7 @@ function newCodes(): void {
         </section>
 
         <!-- Mot de passe -->
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="password">
+        <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="password">
             <h2 id="password" class="text-lg font-semibold text-nova-900">{{ t('security.password_section') }}</h2>
             <AlertBox v-if="passwordOld" variant="warning" class="mt-3">{{ t('security.password_old') }}</AlertBox>
             <form class="mt-3 space-y-4" novalidate @submit.prevent="changePassword">
@@ -178,7 +178,7 @@ function newCodes(): void {
         </section>
 
         <!-- Sessions -->
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="sessions">
+        <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="sessions">
             <h2 id="sessions" class="text-lg font-semibold text-nova-900">{{ t('security.sessions_section') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('security.sessions_body') }}</p>
             <form class="mt-3 space-y-3" novalidate @submit.prevent="closeSessions">

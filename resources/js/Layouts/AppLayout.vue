@@ -13,6 +13,13 @@ defineProps<{ title: string }>();
 const page = usePage<SharedProps>();
 const { t } = useT();
 
+const currentUrl = computed(() => (page as unknown as { url?: string }).url ?? '');
+
+/** Entrée du menu : fond bleu pâle et texte bleu pour la page courante, discret au survol sinon. */
+function navClass(active: boolean): string {
+    return `flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${active ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-surface-2 hover:text-neutral-900'}`;
+}
+
 const inSettings = computed(() => activeSettings((page as unknown as { url?: string }).url ?? '') !== null);
 
 function logout(): void {
@@ -23,16 +30,16 @@ function logout(): void {
 <template>
     <Head :title="title" />
 
-    <a href="#contenu" class="sr-only rounded bg-white px-3 py-2 focus:not-sr-only focus:absolute focus:left-4 focus:top-4">
+    <a href="#contenu" class="sr-only rounded bg-surface px-3 py-2 focus:not-sr-only focus:absolute focus:left-4 focus:top-4">
         {{ t('common.skip_to_content') }}
     </a>
 
-    <div class="min-h-screen bg-neutral-50">
-        <header class="border-b border-neutral-200 bg-white">
+    <div class="min-h-screen bg-canvas">
+        <header class="border-b border-line bg-surface">
             <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                 <div class="flex min-w-0 items-center gap-3">
                     <span class="text-xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
-                    <span v-if="page.props.auth.organization" class="flex min-w-0 items-center gap-2 border-l border-neutral-200 pl-3">
+                    <span v-if="page.props.auth.organization" class="flex min-w-0 items-center gap-2 border-l border-line pl-3">
                         <ShopAvatar
                             :id="page.props.auth.organization.id"
                             :name="page.props.auth.organization.name"
@@ -44,19 +51,22 @@ function logout(): void {
                     </span>
                 </div>
                 <div class="flex min-w-0 flex-wrap items-center justify-end gap-x-1 gap-y-1 sm:gap-x-3">
-                    <Link :href="routes.planning" class="rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+                    <Link
+                        :href="routes.planning"
+                        :class="navClass(currentUrl.startsWith(routes.planning))"
+                        :aria-current="currentUrl.startsWith(routes.planning) ? 'page' : undefined"
+                    >
                         {{ t('planning.nav') }}
                     </Link>
-                    <Link :href="routes.customers" class="rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+                    <Link
+                        :href="routes.customers"
+                        :class="navClass(currentUrl.startsWith(routes.customers))"
+                        :aria-current="currentUrl.startsWith(routes.customers) ? 'page' : undefined"
+                    >
                         {{ t('customers.nav') }}
                     </Link>
                     <!-- Calendriers, WhatsApp, Mes données et Sécurité vivent désormais sous un seul menu « Réglages ». -->
-                    <Link
-                        :href="settingsHome()"
-                        class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium"
-                        :class="inSettings ? 'bg-primary-50 text-primary-700' : 'text-neutral-700 hover:bg-neutral-100'"
-                        :aria-current="inSettings ? 'page' : undefined"
-                    >
+                    <Link :href="settingsHome()" :class="navClass(inSettings)" :aria-current="inSettings ? 'page' : undefined">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -78,7 +88,7 @@ function logout(): void {
                     <!-- La déconnexion reste dans la barre principale, hors du menu Réglages : toujours à un clic, sur toutes les pages. -->
                     <button
                         type="button"
-                        class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
+                        class="flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors duration-150 hover:bg-surface-2 hover:text-neutral-900"
                         @click="logout"
                     >
                         <svg

@@ -57,11 +57,9 @@ function save(): void {
                 <li v-for="site in locations" :key="site.id">
                     <Link
                         :href="onboardingStep('horaires', { site: site.id })"
-                        class="inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium"
+                        class="inline-flex items-center gap-2 rounded-control border px-3 py-1.5 text-sm font-medium"
                         :class="
-                            site.id === selectedId
-                                ? 'border-primary-600 bg-primary-50 text-nova-900'
-                                : 'border-neutral-300 text-neutral-700 hover:bg-neutral-100'
+                            site.id === selectedId ? 'border-primary-600 bg-primary-50 text-nova-900' : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                         "
                         :aria-current="site.id === selectedId ? 'page' : undefined"
                     >

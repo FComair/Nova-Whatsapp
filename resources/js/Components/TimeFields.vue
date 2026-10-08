@@ -39,7 +39,7 @@ function change(): void {
 
 <template>
     <fieldset :aria-describedby="describedBy">
-        <legend class="mb-1.5 block text-sm font-medium text-neutral-800">
+        <legend class="mb-1.5 block text-sm font-semibold text-neutral-900">
             {{ label }}<span v-if="required" class="text-danger-600" aria-hidden="true"> *</span>
         </legend>
         <div class="flex items-center gap-2">
@@ -48,8 +48,12 @@ function change(): void {
                 :aria-label="t('planning.form.hour')"
                 :required="required"
                 :aria-invalid="error ? 'true' : undefined"
-                class="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2.5 text-base text-neutral-900 focus:border-primary-600 focus:outline-none"
-                :class="error ? 'border-danger-600' : 'border-neutral-300'"
+                class="min-w-0 flex-1 rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
+                :class="
+                    error
+                        ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
+                        : 'border-line-strong hover:border-neutral-500 focus:border-primary-600 focus:ring-primary-600/20'
+                "
                 @change="change"
             >
                 <option value="" disabled>--</option>
@@ -61,14 +65,18 @@ function change(): void {
                 :aria-label="t('planning.form.minute')"
                 :required="required"
                 :aria-invalid="error ? 'true' : undefined"
-                class="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2.5 text-base text-neutral-900 focus:border-primary-600 focus:outline-none"
-                :class="error ? 'border-danger-600' : 'border-neutral-300'"
+                class="min-w-0 flex-1 rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
+                :class="
+                    error
+                        ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
+                        : 'border-line-strong hover:border-neutral-500 focus:border-primary-600 focus:ring-primary-600/20'
+                "
                 @change="change"
             >
                 <option value="" disabled>--</option>
                 <option v-for="value in MINUTES" :key="value" :value="value">{{ value }}</option>
             </select>
         </div>
-        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-700" role="alert">{{ error }}</p>
+        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-fg" role="alert">{{ error }}</p>
     </fieldset>
 </template>

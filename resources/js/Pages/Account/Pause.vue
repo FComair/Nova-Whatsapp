@@ -41,7 +41,7 @@ function resume(): void {
 
         <AlertBox v-if="errors.pause" variant="error" class="mt-4 max-w-2xl">{{ errors.pause }}</AlertBox>
 
-        <section v-if="status === 'paused'" class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5">
+        <section v-if="status === 'paused'" class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5">
             <p class="text-sm text-neutral-800">{{ t('pause.current', { date: until }) }}</p>
             <p v-if="message" class="mt-2 text-sm text-neutral-700">{{ message }}</p>
             <div class="mt-4">
@@ -52,7 +52,7 @@ function resume(): void {
         <template v-else-if="canPause">
             <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('pause.intro') }}</p>
 
-            <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="effects">
+            <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="effects">
                 <h2 id="effects" class="text-lg font-semibold text-nova-900">{{ t('pause.effects_title') }}</h2>
                 <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-700">
                     <li>{{ t('pause.effect_dashboard') }}</li>
@@ -68,7 +68,7 @@ function resume(): void {
             </AlertBox>
 
             <form
-                class="mt-6 max-w-2xl space-y-4 rounded-card border border-neutral-200 bg-white p-5"
+                class="mt-6 max-w-2xl space-y-4 rounded-card border border-line bg-surface shadow-xs p-5"
                 novalidate
                 @submit.prevent="form.post(routes.accountPause)"
             >

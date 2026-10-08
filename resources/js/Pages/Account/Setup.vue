@@ -40,7 +40,7 @@ function primary(step: SetupStepData): boolean {
         <h1 class="text-2xl font-semibold text-nova-900">{{ title }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t(`setup.categories.${category.key}.intro`) }}</p>
 
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="progress">
+        <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="progress">
             <div class="flex items-baseline justify-between gap-4">
                 <h2 id="progress" class="text-base font-semibold text-nova-900">{{ t('setup.progress_title') }}</h2>
                 <span class="text-sm font-semibold text-neutral-600">{{
@@ -59,7 +59,7 @@ function primary(step: SetupStepData): boolean {
             </div>
         </section>
 
-        <ul class="mt-5 max-w-2xl divide-y divide-neutral-200 overflow-hidden rounded-card border border-neutral-200 bg-white" :aria-label="title">
+        <ul class="mt-5 max-w-2xl divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-xs" :aria-label="title">
             <li v-for="step in category.steps" :id="`step-${step.key}`" :key="step.key" class="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
                 <span class="flex size-7 shrink-0" aria-hidden="true">
                     <svg v-if="step.state === 'done'" class="size-7 text-success-600" viewBox="0 0 24 24" fill="none">
@@ -91,11 +91,9 @@ function primary(step: SetupStepData): boolean {
                 <div class="min-w-0 flex-1 basis-56">
                     <p class="text-base" :class="step.state === 'done' ? 'font-medium text-neutral-600' : 'font-semibold text-neutral-900'">
                         {{ t(`setup.steps.${step.key}.title`) }}
-                        <span
-                            v-if="step.optional"
-                            class="ml-2 rounded border border-neutral-200 px-1.5 py-px align-middle text-xs font-semibold text-neutral-600"
-                            >{{ t('setup.optional') }}</span
-                        >
+                        <span v-if="step.optional" class="ml-2 rounded border border-line px-1.5 py-px align-middle text-xs font-semibold text-neutral-600">{{
+                            t('setup.optional')
+                        }}</span>
                     </p>
                     <p class="mt-0.5 text-sm text-neutral-600">{{ t(`setup.steps.${step.key}.body`) }}</p>
                 </div>
@@ -114,13 +112,13 @@ function primary(step: SetupStepData): boolean {
                 <Link
                     v-if="step.href"
                     :href="step.href"
-                    class="inline-flex min-h-11 min-w-28 items-center justify-center rounded-lg px-4 text-sm font-semibold"
+                    class="inline-flex min-h-11 min-w-28 items-center justify-center rounded-control px-4 text-sm font-semibold"
                     :class="
                         primary(step)
                             ? 'bg-primary-600 text-white hover:bg-primary-700'
                             : step.state === 'done'
                               ? 'text-primary-700 hover:bg-primary-50'
-                              : 'border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100'
+                              : 'border border-line-strong bg-surface text-neutral-800 hover:bg-surface-2'
                     "
                     :aria-label="`${action(step)} : ${t(`setup.steps.${step.key}.title`)}`"
                 >
@@ -128,7 +126,7 @@ function primary(step: SetupStepData): boolean {
                 </Link>
                 <span
                     v-else
-                    class="inline-flex min-h-11 min-w-28 cursor-not-allowed items-center justify-center rounded-lg border border-neutral-200 px-4 text-sm font-semibold text-neutral-500"
+                    class="inline-flex min-h-11 min-w-28 cursor-not-allowed items-center justify-center rounded-control border border-line px-4 text-sm font-semibold text-neutral-500"
                     aria-disabled="true"
                 >
                     {{ t('setup.cta.go') }}

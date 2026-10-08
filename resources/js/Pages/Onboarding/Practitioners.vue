@@ -161,7 +161,7 @@ function statusLabel(practitioner: PractitionerItem): string {
         <h1 class="text-xl font-semibold text-nova-900">{{ t('practitioners.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('practitioners.body') }}</p>
 
-        <p class="mt-3 rounded-lg bg-primary-50 px-3 py-2 text-sm text-nova-700">
+        <p class="mt-3 rounded-control bg-primary-50 px-3 py-2 text-sm text-nova-700">
             {{
                 plan.limit === null
                     ? t('practitioners.plan_usage_unlimited', { plan: plan.name, used: plan.used })
@@ -176,7 +176,7 @@ function statusLabel(practitioner: PractitionerItem): string {
         <p v-if="practitioners.length === 0 && editing === null" class="mt-6 text-sm text-neutral-600">{{ t('practitioners.empty') }}</p>
 
         <ul class="mt-6 space-y-3">
-            <li v-for="practitioner in practitioners" :key="practitioner.id" class="rounded-lg border border-neutral-200 p-4">
+            <li v-for="practitioner in practitioners" :key="practitioner.id" class="rounded-control border border-line p-4">
                 <div v-if="editing !== practitioner.id" class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="flex flex-wrap items-center gap-2 font-medium text-nova-900">
@@ -251,7 +251,7 @@ function statusLabel(practitioner: PractitionerItem): string {
                 />
 
                 <!-- Planning hebdomadaire du praticien -->
-                <div v-if="scheduleFor?.practitionerId === practitioner.id" class="mt-4 border-t border-neutral-200 pt-4">
+                <div v-if="scheduleFor?.practitionerId === practitioner.id" class="mt-4 border-t border-line pt-4">
                     <h2 class="font-medium text-nova-900">{{ t('practitioners.hours_title', { name: practitioner.name }) }}</h2>
                     <p class="mt-1 text-sm text-neutral-600">{{ t('practitioners.hours_body') }}</p>
 
@@ -259,11 +259,11 @@ function statusLabel(practitioner: PractitionerItem): string {
                         <li v-for="site in locations" :key="site.id">
                             <button
                                 type="button"
-                                class="rounded-lg border px-3 py-1.5 text-sm font-medium"
+                                class="rounded-control border px-3 py-1.5 text-sm font-medium"
                                 :class="
                                     site.id === scheduleFor.locationId
                                         ? 'border-primary-600 bg-primary-50 text-nova-900'
-                                        : 'border-neutral-300 text-neutral-700 hover:bg-neutral-100'
+                                        : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                                 "
                                 :aria-pressed="site.id === scheduleFor.locationId"
                                 @click="openSchedule(practitioner, site.id)"
@@ -283,7 +283,7 @@ function statusLabel(practitioner: PractitionerItem): string {
                 </div>
             </li>
 
-            <li v-if="editing === 'new'" class="rounded-lg border border-primary-600/40 bg-primary-50/40 p-4">
+            <li v-if="editing === 'new'" class="rounded-control border border-primary-600/40 bg-primary-50/40 p-4">
                 <PractitionerForm
                     v-model="form"
                     :errors="form.errors"
@@ -297,7 +297,7 @@ function statusLabel(practitioner: PractitionerItem): string {
             </li>
         </ul>
 
-        <form v-if="inviting" class="mt-4 space-y-4 rounded-lg border border-primary-600/40 bg-primary-50/40 p-4" novalidate @submit.prevent="sendInvite">
+        <form v-if="inviting" class="mt-4 space-y-4 rounded-control border border-primary-600/40 bg-primary-50/40 p-4" novalidate @submit.prevent="sendInvite">
             <h2 class="font-medium text-nova-900">{{ t('practitioners.invite') }}</h2>
             <p class="text-sm text-neutral-700">{{ t('practitioners.invite_hint', { days: invitationDays }) }}</p>
             <TextField v-model="inviteForm.name" :label="t('practitioners.invite_name')" required :error="inviteForm.errors.name" />

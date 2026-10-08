@@ -115,14 +115,14 @@ async function copy(): Promise<void> {
         <!-- Pas prêt : on explique pourquoi et on renvoie vers la page WhatsApp. Aucun code n'est montré : personne n'imprime un code qui ne mène nulle part. -->
         <section
             v-if="state !== 'ready'"
-            class="mt-6 max-w-3xl rounded-card border border-dashed border-neutral-300 bg-white p-8"
+            class="mt-6 max-w-3xl rounded-card border border-dashed border-line-strong bg-surface p-8"
             :class="state === 'not_connected' ? '' : 'bg-warning-50'"
         >
             <h2 class="text-lg font-semibold text-nova-900">{{ t(`whatsapp_qr.states.${state}.title`) }}</h2>
             <p class="mt-2 max-w-xl text-sm text-neutral-700">{{ t(`whatsapp_qr.states.${state}.body`) }}</p>
             <Link
                 :href="routes.whatsapp"
-                class="mt-5 inline-flex min-h-11 items-center rounded-lg bg-primary-600 px-4 text-base font-semibold text-white hover:bg-primary-700"
+                class="mt-5 inline-flex min-h-11 items-center rounded-control bg-primary-600 px-4 text-base font-semibold text-white hover:bg-primary-700"
             >
                 {{ t(`whatsapp_qr.states.${state}.cta`) }}
             </Link>
@@ -143,11 +143,11 @@ async function copy(): Promise<void> {
                         <Link
                             :href="`${routes.whatsappQr}?code=${code.id}`"
                             preserve-scroll
-                            class="flex items-center gap-3 rounded-card border bg-white p-3 hover:bg-neutral-50"
-                            :class="code.id === current.id ? 'border-primary-600 ring-2 ring-primary-600/20' : 'border-neutral-200'"
+                            class="flex items-center gap-3 rounded-card border bg-surface p-3 hover:bg-surface-2"
+                            :class="code.id === current.id ? 'border-primary-600 ring-2 ring-primary-600/20' : 'border-line'"
                             :aria-current="code.id === current.id ? 'true' : undefined"
                         >
-                            <img :src="image(code, 'svg')" alt="" class="size-14 shrink-0 rounded border border-neutral-200 bg-white" />
+                            <img :src="image(code, 'svg')" alt="" class="size-14 shrink-0 rounded border border-line bg-white" />
                             <span class="min-w-0">
                                 <span class="block truncate text-sm font-semibold text-neutral-900">
                                     {{ code.name }}
@@ -164,36 +164,36 @@ async function copy(): Promise<void> {
 
             <div class="mt-6 grid max-w-5xl gap-6 lg:grid-cols-[22rem_1fr]">
                 <!-- Aperçu et téléchargements -->
-                <section id="download" class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="preview">
+                <section id="download" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="preview">
                     <h2 id="preview" class="text-lg font-semibold text-nova-900">{{ t('whatsapp_qr.your_code') }}</h2>
                     <p v-if="phone" class="mt-1 text-sm text-neutral-600">{{ phone }}</p>
-                    <div class="mx-auto mt-4 aspect-square w-full max-w-72 rounded-xl border border-neutral-200 bg-white p-1.5">
+                    <div class="mx-auto mt-4 aspect-square w-full max-w-72 rounded-xl border border-line bg-white p-1.5">
                         <img :src="image(current, 'svg')" :alt="t('whatsapp_qr.preview_alt')" class="size-full" />
                     </div>
                     <div class="mt-4 grid grid-cols-2 gap-2.5">
                         <a
                             :href="image(current, 'png', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-lg bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700"
+                            class="flex min-h-11 flex-col items-center justify-center rounded-control bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700"
                         >
                             {{ t('whatsapp_qr.download_png') }}
                             <span class="text-xs font-normal opacity-80">{{ t('whatsapp_qr.png_size') }}</span>
                         </a>
                         <a
                             :href="image(current, 'svg', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-100"
+                            class="flex min-h-11 flex-col items-center justify-center rounded-control border border-line-strong bg-surface px-3 py-1.5 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_svg') }}
                             <span class="text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.vector') }}</span>
                         </a>
                         <a
                             :href="image(current, 'pdf', '&size=a4&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-lg border border-neutral-300 bg-white px-3 text-sm font-semibold text-neutral-800 hover:bg-neutral-100"
+                            class="flex min-h-11 items-center justify-center rounded-control border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_pdf_a4') }}
                         </a>
                         <a
                             :href="image(current, 'pdf', '&size=a6&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-lg border border-neutral-300 bg-white px-3 text-sm font-semibold text-neutral-800 hover:bg-neutral-100"
+                            class="flex min-h-11 items-center justify-center rounded-control border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('whatsapp_qr.download_pdf_a6') }}
                         </a>
@@ -202,7 +202,7 @@ async function copy(): Promise<void> {
 
                 <div class="space-y-6">
                     <!-- Lien -->
-                    <section id="link" class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="link-title">
+                    <section id="link" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="link-title">
                         <h2 id="link-title" class="text-lg font-semibold text-nova-900">{{ t('whatsapp_qr.link_title') }}</h2>
                         <p class="mt-1 text-sm text-neutral-600">{{ t('whatsapp_qr.link_help') }}</p>
                         <div class="mt-3 flex flex-wrap gap-2.5">
@@ -210,7 +210,7 @@ async function copy(): Promise<void> {
                                 :value="current.link ?? ''"
                                 readonly
                                 :aria-label="t('whatsapp_qr.link_label')"
-                                class="min-h-11 min-w-0 flex-1 rounded-lg border border-neutral-300 bg-neutral-50 px-3 font-mono text-sm text-neutral-700"
+                                class="min-h-11 min-w-0 flex-1 rounded-control border border-line-strong bg-neutral-50 px-3 font-mono text-sm text-neutral-700"
                                 @focus="($event.target as HTMLInputElement).select()"
                             />
                             <BaseButton variant="secondary" @click="copy">{{ copied ? t('whatsapp_qr.copied') : t('whatsapp_qr.copy') }}</BaseButton>
@@ -218,7 +218,7 @@ async function copy(): Promise<void> {
                     </section>
 
                     <!-- Réglages du code -->
-                    <section id="message" class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="message-title">
+                    <section id="message" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="message-title">
                         <h2 id="message-title" class="sr-only">{{ t('whatsapp_qr.message_label') }}</h2>
                         <form class="space-y-5" novalidate @submit.prevent="save">
                             <TextField v-model="form.name" :label="t('whatsapp_qr.name_label')" :maxlength="60" :error="form.errors.name" />
@@ -261,7 +261,7 @@ async function copy(): Promise<void> {
                             </div>
                             <p v-if="errors.name && !form.errors.name" class="text-sm font-medium text-danger-700" role="alert">{{ errors.name }}</p>
                         </form>
-                        <p class="mt-4 border-t border-neutral-200 pt-4 text-sm text-neutral-600">{{ t('whatsapp_qr.stable') }}</p>
+                        <p class="mt-4 border-t border-line pt-4 text-sm text-neutral-600">{{ t('whatsapp_qr.stable') }}</p>
                     </section>
                 </div>
             </div>

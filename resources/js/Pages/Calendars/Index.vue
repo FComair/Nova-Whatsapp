@@ -87,7 +87,7 @@ function rotate(): void {
         <AlertBox v-if="errors()" variant="error" class="mt-4 max-w-3xl">{{ errors() }}</AlertBox>
         <AlertBox v-if="!practitioners.length" variant="info" class="mt-6 max-w-3xl">{{ t('calendars.no_practitioners') }}</AlertBox>
 
-        <details class="mt-4 max-w-3xl rounded-card border border-neutral-200 bg-white p-4 text-sm text-neutral-700">
+        <details class="mt-4 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-4 text-sm text-neutral-700">
             <summary class="cursor-pointer font-medium text-neutral-900">{{ t('calendars.providers_title') }}</summary>
             <p class="mt-2">{{ t('calendars.providers') }}</p>
         </details>
@@ -96,7 +96,7 @@ function rotate(): void {
             <h2 class="text-lg font-semibold text-nova-900">{{ practitioner.name }}</h2>
 
             <p v-if="!practitioner.calendars.length" class="mt-3 text-sm text-neutral-600">{{ t('calendars.empty') }}</p>
-            <ul v-else class="mt-3 divide-y divide-neutral-200 rounded-card border border-neutral-200 bg-white">
+            <ul v-else class="mt-3 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                 <li v-for="calendar in practitioner.calendars" :key="calendar.id" class="space-y-2 px-4 py-3">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="font-medium text-neutral-900"
@@ -136,19 +136,19 @@ function rotate(): void {
                 <BaseButton v-if="adding !== practitioner.id && practitioner.calendars.length < limit" variant="secondary" @click="adding = practitioner.id">
                     {{ t('calendars.add') }}
                 </BaseButton>
-                <div v-if="adding === practitioner.id" class="rounded-card border border-neutral-200 bg-white p-4">
+                <div v-if="adding === practitioner.id" class="rounded-card border border-line bg-surface shadow-xs p-4">
                     <h3 class="mb-3 font-semibold text-neutral-900">{{ t('calendars.add') }}</h3>
                     <CalendarForm :practitioner-id="practitioner.id" />
                 </div>
             </div>
 
-            <div class="mt-6 rounded-card border border-neutral-200 bg-neutral-50 p-4">
+            <div class="mt-6 rounded-card border border-line bg-neutral-50 p-4">
                 <h3 class="font-semibold text-neutral-900">{{ t('calendars.feed_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-600">{{ t('calendars.feed_help') }}</p>
                 <input
                     :value="practitioner.feed_url"
                     readonly
-                    class="mt-3 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm"
+                    class="mt-3 block w-full rounded-control border border-line-strong bg-surface px-3 py-2 text-sm"
                     :aria-label="t('calendars.feed_title')"
                     @focus="($event.target as HTMLInputElement).select()"
                 />

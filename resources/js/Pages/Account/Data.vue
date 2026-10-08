@@ -43,7 +43,7 @@ function cancel(): void {
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-2xl">{{ page.props.flash.status }}</AlertBox>
         <AlertBox v-if="errors.deletion" variant="error" class="mt-4 max-w-2xl">{{ errors.deletion }}</AlertBox>
 
-        <section class="mt-8 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="export">
+        <section class="mt-8 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="export">
             <h2 id="export" class="text-lg font-semibold text-nova-900">{{ t('account_data.export_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_data.export_body') }}</p>
             <!-- Formulaire natif : la réponse est un fichier à télécharger, pas une page Inertia. -->
@@ -56,8 +56,8 @@ function cancel(): void {
                     type="password"
                     autocomplete="current-password"
                     required
-                    class="block w-full rounded-lg border px-3 py-2.5 text-base"
-                    :class="errors.password ? 'border-danger-600' : 'border-neutral-300'"
+                    class="block w-full rounded-control border px-3 py-2.5 text-base"
+                    :class="errors.password ? 'border-danger-600' : 'border-line-strong'"
                 />
                 <p v-if="errors.password" class="text-sm font-medium text-danger-700" role="alert">{{ errors.password }}</p>
                 <BaseButton type="submit">{{ t('account_data.export_submit') }}</BaseButton>
@@ -78,7 +78,7 @@ function cancel(): void {
             </div>
         </section>
 
-        <section v-else-if="canRequestDeletion" class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="delete">
+        <section v-else-if="canRequestDeletion" class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="delete">
             <h2 id="delete" class="text-lg font-semibold text-nova-900">{{ t('account_data.delete_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_data.delete_body', { days: deletionDelayDays }) }}</p>
             <p v-if="status !== 'paused'" class="mt-2 text-sm text-neutral-700">

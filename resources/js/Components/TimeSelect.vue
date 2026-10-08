@@ -12,8 +12,12 @@ const model = defineModel<string>({ required: true });
     <select
         :id="id"
         v-model="model"
-        class="rounded-lg border bg-white px-3 py-2 text-base text-neutral-900 focus:border-primary-600 focus:outline-none"
-        :class="invalid ? 'border-danger-600' : 'border-neutral-300'"
+        class="rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-4"
+        :class="
+            invalid
+                ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
+                : 'border-line-strong hover:border-neutral-500 focus:border-primary-600 focus:ring-primary-600/20'
+        "
         :aria-invalid="invalid ? 'true' : undefined"
     >
         <option v-for="option in options" :key="option" :value="option">{{ option }}</option>

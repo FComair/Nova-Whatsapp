@@ -61,7 +61,7 @@ function saveSchedule(): void {
                 {{ practitioner.bookable ? t('profile.ready') : t('profile.incomplete') }}
             </AlertBox>
 
-            <section class="mt-6 rounded-card border border-neutral-200 bg-white p-5 shadow-sm sm:p-8">
+            <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
                 <h2 class="text-lg font-semibold text-nova-900">{{ t('profile.services') }}</h2>
                 <form class="mt-4" novalidate @submit.prevent="servicesForm.put('/mon-profil/services', { preserveScroll: true })">
                     <p v-if="services.length === 0" class="text-sm text-warning-600">{{ t('practitioners.fields.no_services') }}</p>
@@ -72,7 +72,7 @@ function saveSchedule(): void {
                                 v-model="servicesForm.service_ids"
                                 type="checkbox"
                                 :value="service.id"
-                                class="size-5 rounded border-neutral-300 text-primary-600"
+                                class="size-5 rounded border-line-strong text-primary-600"
                             />
                             <label :for="`${id}-${service.id}`" class="text-sm text-neutral-800">{{ service.name }}</label>
                         </li>
@@ -81,18 +81,18 @@ function saveSchedule(): void {
                 </form>
             </section>
 
-            <section class="mt-6 rounded-card border border-neutral-200 bg-white p-5 shadow-sm sm:p-8">
+            <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
                 <h2 class="text-lg font-semibold text-nova-900">{{ t('profile.hours') }}</h2>
 
                 <ul v-if="locations.length > 1" class="mt-3 flex flex-wrap gap-2">
                     <li v-for="site in locations" :key="site.id">
                         <button
                             type="button"
-                            class="rounded-lg border px-3 py-1.5 text-sm font-medium"
+                            class="rounded-control border px-3 py-1.5 text-sm font-medium"
                             :class="
                                 site.id === locationId
                                     ? 'border-primary-600 bg-primary-50 text-nova-900'
-                                    : 'border-neutral-300 text-neutral-700 hover:bg-neutral-100'
+                                    : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                             "
                             :aria-pressed="site.id === locationId"
                             @click="locationId = site.id"

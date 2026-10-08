@@ -164,7 +164,7 @@ function summary(item: HistoryItem): string {
         </AlertBox>
         <AlertBox v-if="errors.import" variant="error" class="mt-4 max-w-3xl">{{ errors.import }}</AlertBox>
 
-        <section v-if="!available" class="mt-6 max-w-3xl rounded-card border border-dashed border-neutral-300 bg-white p-8">
+        <section v-if="!available" class="mt-6 max-w-3xl rounded-card border border-dashed border-line-strong bg-surface p-8">
             <h2 class="text-lg font-semibold text-nova-900">{{ t('price_import.unavailable_title') }}</h2>
             <p class="mt-2 text-sm text-neutral-700">{{ t('price_import.unavailable_body') }}</p>
         </section>
@@ -178,7 +178,7 @@ function summary(item: HistoryItem): string {
             <!-- Analyse en cours : la lecture se fait pendant l'envoi, la page reste ouverte. -->
             <section
                 v-if="form.processing"
-                class="mt-6 max-w-3xl rounded-card border border-neutral-200 bg-white p-8 text-center"
+                class="mt-6 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-8 text-center"
                 role="status"
                 aria-live="polite"
             >
@@ -201,11 +201,11 @@ function summary(item: HistoryItem): string {
             </section>
 
             <div v-else class="mt-6 grid max-w-5xl gap-6 lg:grid-cols-[1fr_20rem]">
-                <section class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="upload">
+                <section class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="upload">
                     <h2 id="upload" class="text-lg font-semibold text-nova-900">{{ t('price_import.your_list') }}</h2>
 
                     <!-- Erreurs de lecture, avec des conseils -->
-                    <div v-if="failure" class="mt-4 rounded-lg border border-danger-600/30 bg-danger-50 p-4 text-sm text-danger-700" role="alert">
+                    <div v-if="failure" class="mt-4 rounded-control border border-danger-600/30 bg-danger-50 p-4 text-sm text-danger-700" role="alert">
                         <p class="font-semibold">{{ t(`price_import.fail.${reason ?? 'files'}.title`) }}</p>
                         <p class="mt-1 text-neutral-800">{{ fileError }}</p>
                         <ul v-if="reason === 'unreadable' || reason === 'bad_image'" class="mt-2 list-disc space-y-0.5 pl-5 text-neutral-800">
@@ -217,7 +217,7 @@ function summary(item: HistoryItem): string {
 
                     <div
                         class="mt-4 rounded-xl border-2 border-dashed p-8 text-center"
-                        :class="dragging ? 'border-primary-600 bg-primary-50' : 'border-neutral-300 bg-neutral-50'"
+                        :class="dragging ? 'border-primary-600 bg-primary-50' : 'border-line-strong bg-neutral-50'"
                         @dragover.prevent="dragging = true"
                         @dragleave="dragging = false"
                         @drop.prevent="drop"
@@ -258,11 +258,11 @@ function summary(item: HistoryItem): string {
                                 <img
                                     :src="entry.url"
                                     :alt="t('price_import.page_n', { n: index + 1 })"
-                                    class="h-36 w-28 rounded-lg border border-neutral-200 bg-neutral-50 object-cover"
+                                    class="h-36 w-28 rounded-control border border-line bg-neutral-50 object-cover"
                                 />
                                 <button
                                     type="button"
-                                    class="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100"
+                                    class="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full border border-line-strong bg-surface text-neutral-700 hover:bg-surface-2"
                                     :aria-label="t('price_import.remove_page', { n: index + 1 })"
                                     @click="remove(entry.id)"
                                 >
@@ -274,7 +274,7 @@ function summary(item: HistoryItem): string {
                                 <span class="flex gap-1">
                                     <button
                                         type="button"
-                                        class="rounded px-1.5 py-0.5 hover:bg-neutral-100 disabled:opacity-30"
+                                        class="rounded px-1.5 py-0.5 hover:bg-surface-2 disabled:opacity-30"
                                         :disabled="index === 0"
                                         :aria-label="t('price_import.move_up', { n: index + 1 })"
                                         @click="move(index, -1)"
@@ -283,7 +283,7 @@ function summary(item: HistoryItem): string {
                                     </button>
                                     <button
                                         type="button"
-                                        class="rounded px-1.5 py-0.5 hover:bg-neutral-100 disabled:opacity-30"
+                                        class="rounded px-1.5 py-0.5 hover:bg-surface-2 disabled:opacity-30"
                                         :disabled="index === pages.length - 1"
                                         :aria-label="t('price_import.move_down', { n: index + 1 })"
                                         @click="move(index, 1)"
@@ -295,11 +295,11 @@ function summary(item: HistoryItem): string {
                         </li>
                     </ol>
 
-                    <p class="mt-5 rounded-lg bg-primary-50 p-3 text-sm text-neutral-800">{{ t('price_import.privacy') }}</p>
+                    <p class="mt-5 rounded-control bg-primary-50 p-3 text-sm text-neutral-800">{{ t('price_import.privacy') }}</p>
                     <div class="mt-5 flex flex-wrap justify-end gap-3">
                         <Link
                             :href="onboardingStep('services')"
-                            class="inline-flex min-h-11 items-center rounded-lg border border-neutral-300 bg-white px-4 text-base font-semibold text-neutral-800 hover:bg-neutral-100"
+                            class="inline-flex min-h-11 items-center rounded-control border border-line-strong bg-surface px-4 text-base font-semibold text-neutral-800 hover:bg-surface-2"
                         >
                             {{ t('price_import.cancel') }}
                         </Link>
@@ -307,7 +307,7 @@ function summary(item: HistoryItem): string {
                     </div>
                 </section>
 
-                <aside class="rounded-card border border-neutral-200 bg-white p-5 text-sm">
+                <aside class="rounded-card border border-line bg-surface shadow-xs p-5 text-sm">
                     <h2 class="text-base font-semibold text-nova-900">{{ t('price_import.tips_title') }}</h2>
                     <ul class="mt-2 list-disc space-y-2 pl-5 text-neutral-800">
                         <li>{{ t('price_import.tips.frame') }}</li>
@@ -321,7 +321,7 @@ function summary(item: HistoryItem): string {
             <!-- Historique -->
             <section v-if="history.length > 0 && !form.processing" class="mt-8 max-w-5xl" aria-labelledby="history">
                 <h2 id="history" class="text-lg font-semibold text-nova-900">{{ t('price_import.history') }}</h2>
-                <ul class="mt-3 divide-y divide-neutral-200 overflow-hidden rounded-card border border-neutral-200 bg-white">
+                <ul class="mt-3 divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="item in history" :key="item.id" class="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 text-sm">
                         <div class="min-w-0 flex-1 basis-64">
                             <p class="font-semibold text-neutral-900">
@@ -336,7 +336,7 @@ function summary(item: HistoryItem): string {
                         </div>
                         <a
                             :href="`${base}/${item.id}/csv`"
-                            class="rounded-lg border border-neutral-300 bg-white px-3 py-1.5 font-semibold text-neutral-800 hover:bg-neutral-100"
+                            class="rounded-control border border-line-strong bg-surface px-3 py-1.5 font-semibold text-neutral-800 hover:bg-surface-2"
                             >{{ t('price_import.csv_download') }}</a
                         >
                         <BaseButton v-if="item.can_undo" variant="secondary" @click="toUndo = item">{{ t('price_import.undo') }}</BaseButton>

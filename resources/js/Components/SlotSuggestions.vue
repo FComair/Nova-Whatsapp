@@ -17,13 +17,13 @@ function label(suggestion: Suggestion): string {
 </script>
 
 <template>
-    <div v-if="suggestions.length" class="rounded-lg border border-primary-200 bg-primary-50 p-3">
+    <div v-if="suggestions.length" class="rounded-control border border-primary-200 bg-primary-50 p-3">
         <p class="text-sm font-semibold text-nova-900">{{ t('planning.form.suggestions') }}</p>
         <ul class="mt-2 space-y-2">
             <li v-for="suggestion in suggestions" :key="`${suggestion.date}-${suggestion.time}-${suggestion.practitioner_id}`">
                 <button
                     type="button"
-                    class="min-h-11 w-full rounded-lg border border-primary-300 bg-white px-3 py-2 text-left text-sm font-medium text-primary-700 hover:bg-primary-100"
+                    class="min-h-11 w-full rounded-control border border-primary-300 bg-surface px-3 py-2 text-left text-sm font-medium text-primary-700 hover:bg-primary-100"
                     @click="emit('pick', suggestion)"
                 >
                     {{ label(suggestion) }} · {{ practitioners.find((p) => p.id === suggestion.practitioner_id)?.name }}

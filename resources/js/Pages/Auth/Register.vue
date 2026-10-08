@@ -33,7 +33,7 @@ function submit(): void {
 <template>
     <AuthLayout :title="t('register.title')" :subtitle="t('register.subtitle')">
         <form class="space-y-5" novalidate @submit.prevent="submit">
-            <p class="rounded-lg bg-primary-50 px-3 py-2 text-sm text-nova-700">
+            <p class="rounded-control bg-primary-50 px-3 py-2 text-sm text-nova-700">
                 {{ t('register.plan') }} : <strong>{{ t(`register.plans.${form.plan}`) }}</strong>
             </p>
 

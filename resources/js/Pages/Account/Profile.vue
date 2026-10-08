@@ -69,7 +69,7 @@ function confirmPhone(): void {
         <!-- Identité visuelle : le propriétaire envoie le logo, les autres rôles le voient -->
         <section
             v-if="page.props.auth.organization"
-            class="mt-6 flex max-w-2xl flex-wrap items-start gap-5 rounded-card border border-neutral-200 bg-white p-5"
+            class="mt-6 flex max-w-2xl flex-wrap items-start gap-5 rounded-card border border-line bg-surface shadow-xs p-5"
             aria-labelledby="logo"
         >
             <ShopAvatar :id="page.props.auth.organization.id" :name="company.name" :version="page.props.auth.organization.logo_version" size="xl" />
@@ -82,7 +82,7 @@ function confirmPhone(): void {
         </section>
 
         <!-- Coordonnées de la personne connectée -->
-        <section class="mt-8 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="personal">
+        <section class="mt-8 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="personal">
             <h2 id="personal" class="text-lg font-semibold text-nova-900">{{ t('account_profile.personal_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_profile.personal_intro') }}</p>
 
@@ -96,7 +96,7 @@ function confirmPhone(): void {
                 <p class="mt-1.5 text-sm text-neutral-600">{{ t('account_profile.language_hint') }}</p>
             </div>
 
-            <div id="email" class="mt-6 border-t border-neutral-200 pt-5">
+            <div id="email" class="mt-6 border-t border-line pt-5">
                 <h3 class="text-base font-semibold text-nova-900">{{ t('security.email_section') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('security.email_current', { email: personal.email }) }}</p>
                 <p v-if="personal.pendingEmail" class="mt-1 text-sm font-medium text-neutral-800">
@@ -124,7 +124,7 @@ function confirmPhone(): void {
                 </form>
             </div>
 
-            <div id="phone" class="mt-6 border-t border-neutral-200 pt-5">
+            <div id="phone" class="mt-6 border-t border-line pt-5">
                 <h3 class="text-base font-semibold text-nova-900">{{ t('security.phone_section') }}</h3>
                 <p v-if="personal.phone" class="mt-1 text-sm text-neutral-700">{{ t('security.phone_current', { phone: personal.phone }) }}</p>
                 <form class="mt-3 space-y-4" novalidate @submit.prevent="requestPhone">
@@ -147,7 +147,7 @@ function confirmPhone(): void {
                     />
                     <BaseButton type="submit" :loading="phoneForm.processing">{{ t('security.phone_send') }}</BaseButton>
                 </form>
-                <form v-if="personal.pendingPhone" class="mt-4 space-y-3 border-t border-neutral-200 pt-4" novalidate @submit.prevent="confirmPhone">
+                <form v-if="personal.pendingPhone" class="mt-4 space-y-3 border-t border-line pt-4" novalidate @submit.prevent="confirmPhone">
                     <p class="text-sm text-neutral-700">{{ t('security.phone_pending', { phone: personal.pendingPhone }) }}</p>
                     <TextField
                         v-model="phoneCode.code"
@@ -163,7 +163,7 @@ function confirmPhone(): void {
         </section>
 
         <!-- Entreprise : le propriétaire modifie, les autres rôles consultent -->
-        <section class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="company">
+        <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="company">
             <h2 id="company" class="text-lg font-semibold text-nova-900">{{ t('account_profile.company_title') }}</h2>
 
             <form v-if="canEditCompany" class="mt-3 space-y-5" novalidate @submit.prevent="company.put(routes.profileCompany, { preserveScroll: true })">
@@ -234,7 +234,7 @@ function confirmPhone(): void {
         </section>
 
         <!-- Identité de facturation (propriétaire) : même enregistrement que sur la page Facturation -->
-        <section v-if="billing" class="mt-6 max-w-2xl rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="identity">
+        <section v-if="billing" class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="identity">
             <h2 id="identity" class="text-lg font-semibold text-nova-900">{{ t('billing.identity_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-600">{{ t('billing.identity_hint') }}</p>
             <form class="mt-4 space-y-4" novalidate @submit.prevent="identity.put(`${routes.billing}/identite`, { preserveScroll: true })">

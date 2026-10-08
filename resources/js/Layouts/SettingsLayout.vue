@@ -60,7 +60,7 @@ function go(event: Event): void {
                     <label for="settings-section" class="sr-only">{{ t('settings.menu') }}</label>
                     <select
                         id="settings-section"
-                        class="block min-h-12 w-full rounded-lg border border-neutral-300 bg-white px-3 text-base font-medium text-neutral-900"
+                        class="block min-h-12 w-full rounded-control border border-line-strong bg-surface px-3 text-base font-medium text-neutral-900"
                         :value="activeHref"
                         @change="go"
                     >
@@ -71,7 +71,7 @@ function go(event: Event): void {
                 </div>
 
                 <!-- Tablette : onglets au-dessus du contenu. -->
-                <nav class="hidden border-b border-neutral-200 md:flex lg:hidden" :aria-label="t('settings.menu')">
+                <nav class="hidden border-b border-line md:flex lg:hidden" :aria-label="t('settings.menu')">
                     <Link
                         v-for="item in items"
                         :key="item.key"
@@ -92,11 +92,9 @@ function go(event: Event): void {
                             <li v-for="item in group.items" :key="item.key">
                                 <Link
                                     :href="item.href"
-                                    class="flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm"
+                                    class="flex min-h-11 items-center gap-3 rounded-control px-3 text-sm transition-colors duration-150"
                                     :class="
-                                        item.key === active
-                                            ? 'bg-primary-50 font-semibold text-primary-700'
-                                            : 'font-medium text-neutral-800 hover:bg-neutral-100'
+                                        item.key === active ? 'bg-primary-50 font-semibold text-primary-700' : 'font-medium text-neutral-800 hover:bg-surface-2'
                                     "
                                     :aria-current="item.key === active ? 'page' : undefined"
                                 >
@@ -146,12 +144,12 @@ function go(event: Event): void {
                                         </template>
                                     </svg>
                                     <span class="min-w-0 flex-1 truncate">{{ t(item.label) }}</span>
-                                    <span v-if="status(item)" class="shrink-0 rounded-full bg-success-50 px-2 py-0.5 text-xs font-semibold text-success-600">
+                                    <span v-if="status(item)" class="shrink-0 rounded-full bg-success-bg px-2 py-0.5 text-xs font-semibold text-success-fg">
                                         {{ status(item) }}
                                     </span>
                                     <span
                                         v-if="setupLeft(item) !== null"
-                                        class="shrink-0 rounded-full bg-warning-50 px-2 py-0.5 text-xs font-semibold text-warning-600"
+                                        class="shrink-0 rounded-full bg-warning-bg px-2 py-0.5 text-xs font-semibold text-warning-fg"
                                     >
                                         {{ t('settings.status.left', { count: String(setupLeft(item)) }) }}
                                     </span>

@@ -87,7 +87,7 @@ function formatAddress(site: Site): string {
         <AlertBox v-if="pageErrors.site" variant="error" class="mt-4">{{ pageErrors.site }}</AlertBox>
 
         <ul class="mt-6 space-y-3">
-            <li v-for="site in locations" :key="site.id" class="rounded-lg border border-neutral-200 p-4">
+            <li v-for="site in locations" :key="site.id" class="rounded-control border border-line p-4">
                 <div v-if="editing !== site.id" class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="flex flex-wrap items-center gap-2 font-medium text-nova-900">
@@ -130,7 +130,7 @@ function formatAddress(site: Site): string {
                 </form>
             </li>
 
-            <li v-if="editing === 'new'" class="rounded-lg border border-primary-600/40 bg-primary-50/40 p-4">
+            <li v-if="editing === 'new'" class="rounded-control border border-primary-600/40 bg-primary-50/40 p-4">
                 <form class="space-y-4" novalidate @submit.prevent="save">
                     <TextField v-model="form.name" :label="t('onboarding.sites.name')" required :error="form.errors.name" />
                     <TextField v-model="form.street" :label="t('onboarding.sites.street')" autocomplete="street-address" :error="form.errors.street" />

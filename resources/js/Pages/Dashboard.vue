@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import AlertBox from '../Components/AlertBox.vue';
+import Badge from '../Components/Badge.vue';
 import { useT } from '../composables/useT';
 import { formatWeekdayDate } from '../composables/dates';
 import AppLayout from '../Layouts/AppLayout.vue';
 import { onboardingStep, routes } from '../routes';
+
+const statusVariant = { pending: 'warning', confirmed: 'success', completed: 'neutral', no_show: 'danger' } as const;
 
 interface Appointment {
     id: string;
@@ -74,33 +77,33 @@ function formatDate(iso: string): string {
         <p class="mt-1 text-sm capitalize text-neutral-600">{{ formatDate(summary.date) }}</p>
 
         <dl class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6" data-testid="counts">
-            <div class="rounded-card border border-neutral-200 bg-white p-4">
+            <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_today') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.today }}</dd>
             </div>
-            <div class="rounded-card border border-neutral-200 bg-white p-4">
+            <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_remaining') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.remaining }}</dd>
             </div>
-            <div class="rounded-card border border-neutral-200 bg-white p-4">
+            <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_cancelled') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.cancelled }}</dd>
             </div>
-            <div class="rounded-card border border-neutral-200 bg-white p-4">
+            <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_tomorrow') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.tomorrow }}</dd>
             </div>
-            <div class="rounded-card border border-neutral-200 bg-white p-4">
+            <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_week') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.week }}</dd>
             </div>
-            <div v-if="summary.counts.new_customers !== null" class="rounded-card border border-neutral-200 bg-white p-4">
+            <div v-if="summary.counts.new_customers !== null" class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_new_customers') }}</dt>
                 <dd class="mt-1 text-2xl font-semibold text-nova-900">{{ summary.counts.new_customers }}</dd>
             </div>
         </dl>
 
-        <section class="mt-6 rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="next">
+        <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="next">
             <h2 id="next" class="text-lg font-semibold text-nova-900">{{ t('dashboard.next') }}</h2>
             <p v-if="summary.next" class="mt-2 text-neutral-800" data-testid="next">
                 <strong>{{ summary.next.starts }}</strong>
@@ -110,14 +113,14 @@ function formatDate(iso: string): string {
             <p v-else class="mt-2 text-sm text-neutral-600">{{ t('dashboard.next_none') }}</p>
         </section>
 
-        <section class="mt-6 rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="agenda">
+        <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="agenda">
             <div class="flex items-center justify-between gap-3">
                 <h2 id="agenda" class="text-lg font-semibold text-nova-900">{{ t('dashboard.today_title') }}</h2>
                 <Link :href="routes.planning" class="text-sm font-semibold text-primary-700 underline">{{ t('dashboard.see_planning') }}</Link>
             </div>
 
             <p v-if="summary.appointments.length === 0" class="mt-3 text-sm text-neutral-600">{{ t('dashboard.today_empty') }}</p>
-            <ul v-else class="mt-3 divide-y divide-neutral-200" data-testid="appointments">
+            <ul v-else class="mt-3 divide-y divide-line" data-testid="appointments">
                 <li
                     v-for="appointment in summary.appointments"
                     :key="appointment.id"
@@ -130,13 +133,13 @@ function formatDate(iso: string): string {
                         <span v-if="appointment.practitioner" class="text-neutral-600">{{ t('dashboard.with', { name: appointment.practitioner }) }}</span>
                         <span v-if="summary.multi_site && appointment.site" class="text-neutral-600"> · {{ appointment.site }}</span>
                     </span>
-                    <span class="text-sm font-medium text-neutral-700">{{ t(`dashboard.status.${appointment.status}`) }}</span>
+                    <Badge :variant="statusVariant[appointment.status]">{{ t(`dashboard.status.${appointment.status}`) }}</Badge>
                 </li>
             </ul>
             <p v-if="summary.truncated" class="mt-3 text-sm text-neutral-600">{{ t('dashboard.truncated', { count: summary.appointments.length }) }}</p>
         </section>
 
-        <section v-if="firstSteps" class="mt-6 rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="steps">
+        <section v-if="firstSteps" class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="steps">
             <h2 id="steps" class="text-lg font-semibold text-nova-900">{{ t('dashboard.first_steps_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('dashboard.first_steps_body') }}</p>
             <ul class="mt-3 space-y-2" data-testid="first-steps">

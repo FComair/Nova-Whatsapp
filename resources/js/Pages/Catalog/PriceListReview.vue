@@ -219,13 +219,13 @@ function cancel(): void {
         <AlertBox v-if="errors.lines || errors.confirm" variant="error" class="mt-4 max-w-5xl">{{ errors.lines ?? errors.confirm }}</AlertBox>
 
         <div
-            class="mt-4 flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-card border border-neutral-200 bg-white px-4 py-3"
+            class="mt-4 flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-card border border-line bg-surface shadow-xs px-4 py-3"
             aria-live="polite"
         >
             <p class="flex flex-wrap gap-2 text-sm font-semibold">
                 <span class="rounded-full bg-success-50 px-3 py-1 text-success-600">{{ t('price_import.sum_new', { count: summary.added }) }}</span>
                 <span class="rounded-full bg-primary-50 px-3 py-1 text-primary-700">{{ t('price_import.sum_update', { count: summary.updated }) }}</span>
-                <span class="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-neutral-600">{{
+                <span class="rounded-full border border-line bg-neutral-50 px-3 py-1 text-neutral-600">{{
                     t('price_import.sum_ignored', { count: summary.ignored })
                 }}</span>
                 <span v-if="summary.toCheck > 0" class="rounded-full bg-warning-50 px-3 py-1 text-warning-600">{{
@@ -240,12 +240,12 @@ function cancel(): void {
                     :placeholder="t('price_import.category')"
                     maxlength="60"
                     :aria-label="t('price_import.category')"
-                    class="min-h-9 w-32 rounded-lg border border-neutral-300 px-2"
+                    class="min-h-9 w-32 rounded-control border border-line-strong px-2"
                     list="price-import-categories"
                 />
                 <button
                     type="button"
-                    class="min-h-9 rounded-lg border border-neutral-300 bg-white px-3 font-semibold hover:bg-neutral-100"
+                    class="min-h-9 rounded-control border border-line-strong bg-surface px-3 font-semibold hover:bg-surface-2"
                     @click="applyCategory"
                 >
                     {{ t('price_import.set_category') }}
@@ -257,25 +257,25 @@ function cancel(): void {
                     max="480"
                     :placeholder="t('price_import.minutes')"
                     :aria-label="t('price_import.duration')"
-                    class="min-h-9 w-20 rounded-lg border border-neutral-300 px-2"
+                    class="min-h-9 w-20 rounded-control border border-line-strong px-2"
                 />
                 <button
                     type="button"
-                    class="min-h-9 rounded-lg border border-neutral-300 bg-white px-3 font-semibold hover:bg-neutral-100"
+                    class="min-h-9 rounded-control border border-line-strong bg-surface px-3 font-semibold hover:bg-surface-2"
                     @click="applyDuration"
                 >
                     {{ t('price_import.set_duration') }}
                 </button>
                 <button
                     type="button"
-                    class="min-h-9 rounded-lg border border-neutral-300 bg-white px-3 font-semibold hover:bg-neutral-100"
+                    class="min-h-9 rounded-control border border-line-strong bg-surface px-3 font-semibold hover:bg-surface-2"
                     @click="ignoreSelected"
                 >
                     {{ t('price_import.ignore') }}
                 </button>
                 <button
                     type="button"
-                    class="min-h-9 rounded-lg border border-neutral-300 bg-white px-3 font-semibold hover:bg-neutral-100"
+                    class="min-h-9 rounded-control border border-line-strong bg-surface px-3 font-semibold hover:bg-surface-2"
                     @click="deleteSelected"
                 >
                     {{ t('price_import.delete') }}
@@ -284,7 +284,7 @@ function cancel(): void {
         </div>
         <datalist id="price-import-categories"><option v-for="name in categories" :key="name" :value="name" /></datalist>
 
-        <div class="mt-4 max-w-6xl overflow-x-auto rounded-card border border-neutral-200 bg-white">
+        <div class="mt-4 max-w-6xl overflow-x-auto rounded-card border border-line bg-surface shadow-xs">
             <table class="w-full min-w-[60rem] text-left text-sm">
                 <caption class="sr-only">
                     {{
@@ -307,7 +307,7 @@ function cancel(): void {
                     <tr
                         v-for="row in rows"
                         :key="row.key"
-                        class="border-t border-neutral-200 align-top"
+                        class="border-t border-line align-top"
                         :class="[row.action === 'ignore' ? 'opacity-60' : '', needsCheck(row) ? 'bg-warning-50' : '']"
                     >
                         <td class="px-3 py-2">
@@ -320,8 +320,8 @@ function cancel(): void {
                                 maxlength="120"
                                 :aria-label="t('price_import.service')"
                                 :aria-invalid="fieldInvalid(row, 'name') || undefined"
-                                class="min-h-10 w-full rounded-lg border bg-white px-2"
-                                :class="[fieldInvalid(row, 'name') ? 'border-danger-600' : 'border-neutral-300', row.action === 'ignore' ? 'line-through' : '']"
+                                class="min-h-10 w-full rounded-control border bg-surface px-2"
+                                :class="[fieldInvalid(row, 'name') ? 'border-danger-600' : 'border-line-strong', row.action === 'ignore' ? 'line-through' : '']"
                                 :disabled="row.action === 'update'"
                             />
                         </td>
@@ -331,7 +331,7 @@ function cancel(): void {
                                 type="text"
                                 maxlength="60"
                                 :aria-label="t('price_import.category')"
-                                class="min-h-10 w-full rounded-lg border border-neutral-300 bg-white px-2"
+                                class="min-h-10 w-full rounded-control border border-line-strong bg-surface px-2"
                                 list="price-import-categories"
                                 :disabled="row.action === 'ignore'"
                             />
@@ -345,13 +345,13 @@ function cancel(): void {
                                     max="480"
                                     :aria-label="t('price_import.duration')"
                                     :aria-invalid="fieldInvalid(row, 'duration') || undefined"
-                                    class="min-h-10 w-16 rounded-lg border bg-white px-2"
+                                    class="min-h-10 w-16 rounded-control border bg-surface px-2"
                                     :class="
                                         fieldInvalid(row, 'duration')
                                             ? 'border-danger-600'
                                             : row.durationGuessed && row.action === 'new'
                                               ? 'border-warning-600'
-                                              : 'border-neutral-300'
+                                              : 'border-line-strong'
                                     "
                                     :disabled="row.action !== 'new'"
                                 />
@@ -365,13 +365,13 @@ function cancel(): void {
                                 inputmode="decimal"
                                 :aria-label="t('price_import.price')"
                                 :aria-invalid="fieldInvalid(row, 'price') || undefined"
-                                class="min-h-10 w-24 rounded-lg border bg-white px-2"
+                                class="min-h-10 w-24 rounded-control border bg-surface px-2"
                                 :class="
                                     fieldInvalid(row, 'price')
                                         ? 'border-danger-600'
                                         : row.warnings.some((w) => w.startsWith('price'))
                                           ? 'border-warning-600'
-                                          : 'border-neutral-300'
+                                          : 'border-line-strong'
                                 "
                                 :disabled="row.action === 'ignore'"
                             />
@@ -380,7 +380,7 @@ function cancel(): void {
                             <select
                                 :value="rowTarget(row)"
                                 :aria-label="t('price_import.what_happens')"
-                                class="min-h-10 w-full rounded-lg border border-neutral-300 bg-white px-2"
+                                class="min-h-10 w-full rounded-control border border-line-strong bg-surface px-2"
                                 @change="setTarget(row, ($event.target as HTMLSelectElement).value)"
                             >
                                 <option value="new">{{ t('price_import.actions.new') }}</option>
@@ -436,7 +436,7 @@ function cancel(): void {
                 </li>
             </ul>
             <p class="mt-3 text-sm text-neutral-600">{{ t('price_import.confirm_prices_only') }}</p>
-            <label class="mt-4 flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-sm">
+            <label class="mt-4 flex items-start gap-3 rounded-control border border-line bg-neutral-50 p-3 text-sm">
                 <input v-model="accepted" type="checkbox" class="mt-0.5 size-4" />
                 <span>{{ t('price_import.confirm_check') }}</span>
             </label>

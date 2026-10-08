@@ -27,7 +27,7 @@ function update(index: number, day: DayState): void {
 </script>
 
 <template>
-    <ul class="divide-y divide-neutral-200 rounded-lg border border-neutral-200">
+    <ul class="divide-y divide-line rounded-control border border-line">
         <li v-for="(day, index) in days" :key="day.weekday" class="p-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -35,7 +35,7 @@ function update(index: number, day: DayState): void {
                         :id="`${id}-open-${day.weekday}`"
                         type="checkbox"
                         :checked="day.open"
-                        class="size-5 rounded border-neutral-300 text-primary-600"
+                        class="size-5 rounded border-line-strong text-primary-600"
                         @change="update(index, setOpen(day, ($event.target as HTMLInputElement).checked))"
                     />
                     <label :for="`${id}-open-${day.weekday}`" class="font-medium capitalize text-nova-900">{{ weekdayNames[index] }}</label>

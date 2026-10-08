@@ -57,7 +57,7 @@ const id = useId();
                         v-model="data.service_ids"
                         type="checkbox"
                         :value="service.id"
-                        class="size-5 rounded border-neutral-300 text-primary-600"
+                        class="size-5 rounded border-line-strong text-primary-600"
                     />
                     <label :for="`${id}-${service.id}`" class="text-sm text-neutral-800">{{ service.name }}</label>
                 </li>

@@ -111,7 +111,7 @@ function confirmDelete(): void {
         <Link
             v-if="canImport"
             :href="routes.servicesImport"
-            class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg border border-primary-600 bg-white px-4 text-base font-semibold text-primary-700 hover:bg-primary-50"
+            class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-control border border-primary-600 bg-surface px-4 text-base font-semibold text-primary-700 hover:bg-primary-50"
         >
             <svg
                 class="size-5"
@@ -132,19 +132,19 @@ function confirmDelete(): void {
         <div v-if="showMethods" class="mt-6">
             <h2 class="text-base font-semibold text-nova-900">{{ t('services.methods_title') }}</h2>
             <ul class="mt-3 grid gap-4 md:grid-cols-3">
-                <li v-if="template" class="flex flex-col rounded-lg border border-primary-600/40 bg-primary-50/40 p-4">
+                <li v-if="template" class="flex flex-col rounded-control border border-primary-600/40 bg-primary-50/40 p-4">
                     <h3 class="font-medium text-nova-900">{{ t('services.template_title') }}</h3>
                     <p class="mt-1 flex-1 text-sm text-neutral-700">{{ t('services.template_body', { count: template.count }) }}</p>
                     <BaseButton class="mt-4" :loading="templateForm.processing" @click="templateForm.post(`${base}/modele`, { preserveScroll: true })">
                         {{ t('services.template_action') }}
                     </BaseButton>
                 </li>
-                <li class="flex flex-col rounded-lg border border-neutral-200 p-4">
+                <li class="flex flex-col rounded-control border border-line p-4">
                     <h3 class="font-medium text-nova-900">{{ t('services.manual_title') }}</h3>
                     <p class="mt-1 flex-1 text-sm text-neutral-700">{{ t('services.manual_body') }}</p>
                     <BaseButton class="mt-4" variant="secondary" @click="startNew">{{ t('services.manual_action') }}</BaseButton>
                 </li>
-                <li class="flex flex-col rounded-lg border border-dashed border-neutral-300 p-4 text-neutral-500">
+                <li class="flex flex-col rounded-control border border-dashed border-line-strong p-4 text-neutral-500">
                     <h3 class="font-medium">{{ t('services.scan_title') }}</h3>
                     <p class="mt-1 flex-1 text-sm">{{ t('services.scan_body') }}</p>
                     <span class="mt-4 inline-block text-sm font-medium">{{ t('services.soon') }}</span>
@@ -157,7 +157,7 @@ function confirmDelete(): void {
             <p v-if="services.length === 0" class="text-sm text-neutral-600">{{ t('services.empty') }}</p>
 
             <ul class="space-y-3">
-                <li v-for="service in services" :key="service.id" class="rounded-lg border border-neutral-200 p-4">
+                <li v-for="service in services" :key="service.id" class="rounded-control border border-line p-4">
                     <div v-if="editing !== service.id" class="flex flex-wrap items-start justify-between gap-3">
                         <div class="min-w-0">
                             <p class="break-words font-medium text-nova-900">{{ service.name }}</p>
@@ -186,7 +186,7 @@ function confirmDelete(): void {
                     />
                 </li>
 
-                <li v-if="editing === 'new'" class="rounded-lg border border-primary-600/40 bg-primary-50/40 p-4">
+                <li v-if="editing === 'new'" class="rounded-control border border-primary-600/40 bg-primary-50/40 p-4">
                     <ServiceForm
                         v-model="form"
                         :errors="form.errors"

@@ -14,7 +14,7 @@
     --color-nova-900: #14213d;
     --color-nova-700: #1f3a6b;
 
-    --color-primary-50: #eef3fe;
+    --color-primary-50: #eaf0fd;
     --color-primary-100: #dbe6fd;
     --color-primary-600: #2a5bd7;
     --color-primary-700: #2249b0;
@@ -29,6 +29,7 @@
     --color-danger-50: #fef2f2;
     --color-danger-600: #dc2626;
     --color-danger-700: #b91c1c;
+    --color-danger-800: #912018;
 
     /* Neutres « ardoise » */
     --color-neutral-50: #f8fafc;
@@ -42,19 +43,85 @@
     --color-neutral-800: #1e293b;
     --color-neutral-900: #0f172a;
 
-    --radius-card: 0.5rem;
+    /* Surfaces et lignes (plan « Calm Premium », docs/19). line-strong : bordure des champs, 3:1 sur blanc (WCAG 1.4.11). */
+    --color-canvas: #f6f8fb;
+    --color-surface: #ffffff;
+    --color-surface-2: #f1f5f9;
+    --color-line: #e6eaf0;
+    --color-line-strong: #7f8ea3;
+    --color-muted: #566175;
+
+    /* États : texte sur fond teinté, tous au-dessus de 4,5:1. */
+    --color-success-fg: #166534;
+    --color-success-bg: #e8f7ee;
+    --color-warning-fg: #92400e;
+    --color-warning-bg: #fef3c7;
+    --color-danger-fg: #b42318;
+    --color-danger-bg: #feecea;
+    --color-info-fg: #1d4ed8;
+    --color-info-bg: #e8f0fe;
+    --color-neutral-fg: #475569;
+    --color-neutral-bg: #f1f5f9;
+
+    --radius-control: 0.625rem;
+    --radius-card: 0.875rem;
+    --radius-modal: 1rem;
+
+    --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.04);
+    --shadow-sm: 0 1px 3px rgb(16 24 40 / 0.08), 0 1px 2px rgb(16 24 40 / 0.04);
+    --shadow-md: 0 4px 12px -2px rgb(16 24 40 / 0.08);
+    --shadow-lg: 0 8px 24px -4px rgb(16 24 40 / 0.14);
+    --shadow-xl: 0 24px 48px -12px rgb(16 24 40 / 0.28);
+
+    --ease-nova: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @layer base {
     html {
         font-family: var(--font-sans);
+        /* Inter : "a" plus ouvert et formes plus rondes. */
+        font-feature-settings: 'cv11', 'ss03';
         -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-canvas);
+        color: var(--color-neutral-900);
+    }
+
+    /* Chiffres de même largeur : les colonnes de prix, d'heures et de compteurs s'alignent. */
+    table,
+    time,
+    dd {
+        font-variant-numeric: tabular-nums;
     }
 
     /* Focus visible et cohérent sur tous les éléments interactifs (navigation au clavier). */
     :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-        outline: 3px solid var(--color-primary-600);
+        outline: 2px solid var(--color-primary-600);
         outline-offset: 2px;
+    }
+
+    /* Fenêtres : apparition douce (200 ms), fond qui se fonce en fondu. */
+    dialog[open] {
+        animation: nova-dialog-in 200ms var(--ease-nova);
+    }
+
+    dialog[open]::backdrop {
+        animation: nova-fade-in 200ms var(--ease-nova);
+    }
+
+    @keyframes nova-dialog-in {
+        from {
+            opacity: 0;
+            transform: scale(0.98) translateY(4px);
+        }
+    }
+
+    @keyframes nova-fade-in {
+        from {
+            opacity: 0;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -64,5 +131,37 @@
             animation-duration: 0.01ms !important;
             transition-duration: 0.01ms !important;
         }
+    }
+}
+
+@layer components {
+    /* Case à cocher : bordure à 3:1, coche tracée en blanc sur fond bleu. */
+    .nova-check {
+        appearance: none;
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+        border: 1px solid var(--color-line-strong);
+        border-radius: 0.375rem;
+        background-color: var(--color-surface);
+        background-position: center;
+        background-repeat: no-repeat;
+        transition:
+            background-color 120ms var(--ease-nova),
+            border-color 120ms var(--ease-nova);
+    }
+
+    .nova-check:hover {
+        border-color: var(--color-neutral-500);
+    }
+
+    .nova-check:checked {
+        border-color: var(--color-primary-600);
+        background-color: var(--color-primary-600);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 10.5 3.2 3.2L15 6.8'/%3E%3C/svg%3E");
+    }
+
+    .nova-check:disabled {
+        opacity: 0.5;
     }
 }

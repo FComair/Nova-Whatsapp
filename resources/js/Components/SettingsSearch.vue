@@ -325,8 +325,8 @@ function groupStart(index: number): string | null {
     <div ref="root" class="relative" @focusout="onFocusOut">
         <label :for="`${uid}-input`" class="sr-only">{{ t('settings_search.label') }}</label>
         <div
-            class="flex min-h-11 items-center gap-2 rounded-lg border bg-neutral-50 px-3 text-sm focus-within:border-primary-600 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary-600/30"
-            :class="open ? 'border-primary-600 bg-white' : 'border-neutral-300'"
+            class="flex min-h-11 items-center gap-2 rounded-control border bg-neutral-50 px-3 text-sm focus-within:border-primary-600 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary-600/30"
+            :class="open ? 'border-primary-600 bg-surface' : 'border-line-strong'"
         >
             <svg
                 class="size-[18px] shrink-0 text-neutral-500"
@@ -371,7 +371,7 @@ function groupStart(index: number): string | null {
             </button>
             <kbd
                 v-else-if="!open"
-                class="hidden shrink-0 rounded-md border border-neutral-300 bg-white px-1.5 py-0.5 text-[11px] font-semibold text-neutral-500 lg:inline"
+                class="hidden shrink-0 rounded-md border border-line-strong bg-surface px-1.5 py-0.5 text-[11px] font-semibold text-neutral-500 lg:inline"
                 >{{ t('settings_search.shortcut') }}</kbd
             >
             <svg v-if="mode === 'loading' && open" class="size-4 shrink-0 animate-spin text-primary-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -384,12 +384,12 @@ function groupStart(index: number): string | null {
 
         <div
             v-if="open"
-            class="absolute left-0 top-[calc(100%+0.5rem)] z-40 w-[min(30rem,calc(100vw-2rem))] overflow-hidden rounded-card border border-neutral-200 bg-white shadow-xl"
+            class="absolute left-0 top-[calc(100%+0.5rem)] z-40 w-[min(30rem,calc(100vw-2rem))] overflow-hidden rounded-card border border-line bg-surface shadow-xs shadow-xl"
         >
             <!-- Chargement de l'index -->
             <div v-if="mode === 'loading'" class="px-4 py-3" aria-hidden="true">
                 <div v-for="row in 3" :key="row" class="flex animate-pulse gap-3 py-2">
-                    <span class="size-8 shrink-0 rounded-lg bg-neutral-200" />
+                    <span class="size-8 shrink-0 rounded-control bg-neutral-200" />
                     <span class="flex-1 space-y-2"
                         ><span class="block h-3 w-1/2 rounded bg-neutral-200" /><span class="block h-2.5 w-2/3 rounded bg-neutral-200"
                     /></span>
@@ -403,7 +403,7 @@ function groupStart(index: number): string | null {
                 <p class="mt-1 text-sm">{{ t('settings_search.error_body') }}</p>
                 <button
                     type="button"
-                    class="mt-3 min-h-10 rounded-lg border border-neutral-300 bg-white px-4 text-sm font-semibold text-neutral-900 hover:bg-neutral-50"
+                    class="mt-3 min-h-10 rounded-control border border-line-strong bg-surface px-4 text-sm font-semibold text-neutral-900 hover:bg-surface-2"
                     @click="loadIndex"
                 >
                     {{ t('settings_search.retry') }}
@@ -445,14 +445,14 @@ function groupStart(index: number): string | null {
                             role="option"
                             :aria-selected="index === active"
                             class="flex min-h-11 cursor-pointer items-start gap-3 px-4 py-2"
-                            :class="index === active ? 'bg-primary-50' : 'hover:bg-neutral-50'"
+                            :class="index === active ? 'bg-primary-50' : 'hover:bg-surface-2'"
                             @mousedown.prevent
                             @mousemove="active = index"
                             @click="choose(item)"
                         >
                             <span
-                                class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg"
-                                :class="index === active ? 'bg-white text-primary-700' : 'bg-neutral-100 text-neutral-600'"
+                                class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-control"
+                                :class="index === active ? 'bg-surface text-primary-700' : 'bg-neutral-100 text-neutral-600'"
                             >
                                 <svg
                                     class="size-[18px]"
@@ -520,13 +520,13 @@ function groupStart(index: number): string | null {
                     </template>
                 </ul>
 
-                <div v-if="!typed && recent.length > 0" class="border-t border-neutral-200 py-1">
+                <div v-if="!typed && recent.length > 0" class="border-t border-line py-1">
                     <p class="px-4 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-600">{{ t('settings_search.recent') }}</p>
                     <button
                         v-for="value in recent"
                         :key="value"
                         type="button"
-                        class="flex min-h-10 w-full items-center gap-3 px-4 text-left text-sm text-neutral-800 hover:bg-neutral-50"
+                        class="flex min-h-10 w-full items-center gap-3 px-4 text-left text-sm text-neutral-800 hover:bg-surface-2"
                         @mousedown.prevent
                         @click="useRecent(value)"
                     >
@@ -546,14 +546,14 @@ function groupStart(index: number): string | null {
                     </button>
                 </div>
 
-                <div class="flex items-center justify-between gap-3 border-t border-neutral-200 bg-neutral-50 px-4 py-2 text-xs text-neutral-600">
+                <div class="flex items-center justify-between gap-3 border-t border-line bg-neutral-50 px-4 py-2 text-xs text-neutral-600">
                     <span>{{ typed ? count(results.length) : t('settings_search.languages') }}</span>
                     <span class="hidden items-center gap-3 sm:flex">
                         <span
-                            ><kbd class="rounded border border-neutral-300 bg-white px-1">↑</kbd>
-                            <kbd class="rounded border border-neutral-300 bg-white px-1">↓</kbd> {{ t('settings_search.navigate') }}</span
+                            ><kbd class="rounded border border-line-strong bg-surface px-1">↑</kbd>
+                            <kbd class="rounded border border-line-strong bg-surface px-1">↓</kbd> {{ t('settings_search.navigate') }}</span
                         >
-                        <span><kbd class="rounded border border-neutral-300 bg-white px-1">↵</kbd> {{ t('settings_search.open') }}</span>
+                        <span><kbd class="rounded border border-line-strong bg-surface px-1">↵</kbd> {{ t('settings_search.open') }}</span>
                     </span>
                 </div>
             </template>

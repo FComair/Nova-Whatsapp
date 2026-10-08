@@ -22,7 +22,7 @@ function change(event: Event): void {
         <select
             :id="id"
             :value="page.props.locale"
-            class="rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-neutral-800"
+            class="rounded-control border border-line-strong bg-surface px-2.5 py-1.5 text-sm text-neutral-800"
             @change="change"
         >
             <option v-for="code in page.props.locales" :key="code" :value="code">{{ t(`common.languages.${code}`) }}</option>

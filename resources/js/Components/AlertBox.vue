@@ -5,12 +5,12 @@ withDefaults(defineProps<{ variant?: 'success' | 'error' | 'warning' | 'info' }>
 <template>
     <!-- Icône + texte : la couleur n'est jamais le seul vecteur d'information. -->
     <div
-        class="flex gap-3 rounded-lg border px-4 py-3 text-sm"
+        class="flex gap-3 rounded-xl border px-4 py-3 text-sm"
         :class="{
-            'border-success-600/30 bg-success-50 text-success-600': variant === 'success',
-            'border-danger-600/30 bg-danger-50 text-danger-700': variant === 'error',
-            'border-warning-600/30 bg-warning-50 text-warning-600': variant === 'warning',
-            'border-primary-600/30 bg-primary-50 text-nova-700': variant === 'info',
+            'border-success-fg/25 bg-success-bg text-success-fg': variant === 'success',
+            'border-danger-fg/25 bg-danger-bg text-danger-fg': variant === 'error',
+            'border-warning-fg/25 bg-warning-bg text-warning-fg': variant === 'warning',
+            'border-info-fg/25 bg-info-bg text-info-fg': variant === 'info',
         }"
         :role="variant === 'error' ? 'alert' : 'status'"
     >

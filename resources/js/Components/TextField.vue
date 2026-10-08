@@ -44,7 +44,7 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
 
 <template>
     <div>
-        <label :for="id" class="mb-1.5 block text-sm font-medium text-neutral-800">
+        <label :for="id" class="mb-1.5 block text-sm font-semibold text-neutral-900">
             {{ label }}<span v-if="required" class="text-danger-600" aria-hidden="true"> *</span>
         </label>
 
@@ -61,8 +61,13 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-describedby="describedBy"
                 :list="suggestions?.length ? listId : undefined"
-                class="block w-full rounded-lg border bg-white px-3 py-2.5 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-primary-600 focus:outline-none disabled:bg-neutral-100 disabled:text-neutral-600"
-                :class="[error ? 'border-danger-600' : 'border-neutral-300', isPassword ? 'pr-20' : '']"
+                class="block w-full rounded-control border bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova placeholder:text-neutral-500 focus:outline-none focus:ring-4 disabled:bg-surface-2 disabled:text-muted"
+                :class="[
+                    error
+                        ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
+                        : 'border-line-strong hover:border-neutral-500 focus:border-primary-600 focus:ring-primary-600/20',
+                    isPassword ? 'pr-20' : '',
+                ]"
             />
 
             <datalist v-if="suggestions?.length" :id="listId">
@@ -72,7 +77,7 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
             <button
                 v-if="isPassword"
                 type="button"
-                class="absolute inset-y-0 right-0 rounded-r-lg px-3 text-sm font-medium text-primary-600 hover:text-primary-700"
+                class="absolute inset-y-0 right-0 rounded-r-control px-3 text-sm font-semibold text-primary-700 hover:text-nova-700"
                 :aria-pressed="revealed"
                 :aria-label="revealed ? t('common.hide_password') : t('common.show_password')"
                 @click="revealed = !revealed"
@@ -82,7 +87,7 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
             </button>
         </div>
 
-        <p v-if="hint" :id="hintId" class="mt-1.5 text-sm text-neutral-600">{{ hint }}</p>
-        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-700" role="alert">{{ error }}</p>
+        <p v-if="hint" :id="hintId" class="mt-1.5 text-sm text-muted">{{ hint }}</p>
+        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-fg" role="alert">{{ error }}</p>
     </div>
 </template>

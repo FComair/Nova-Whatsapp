@@ -59,7 +59,7 @@ function address(party: Party): string {
             <BaseButton variant="secondary" @click="print">{{ t('billing.invoice_print') }}</BaseButton>
         </div>
 
-        <article class="mt-4 max-w-3xl rounded-card border border-neutral-200 bg-white p-6 print:border-0 print:p-0">
+        <article class="mt-4 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-6 print:border-0 print:p-0">
             <h1 class="text-2xl font-semibold text-nova-900">{{ t('billing.invoice_title', { number: invoice.number }) }}</h1>
             <p class="mt-1 text-sm text-neutral-600">
                 {{ t('billing.invoice_date') }} : {{ date(invoice.issued_at) }} · {{ t('billing.invoice_period') }} : {{ date(invoice.period_start) }} –
@@ -84,7 +84,7 @@ function address(party: Party): string {
 
             <div class="mt-6 overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="border-b border-neutral-300 text-neutral-600">
+                    <thead class="border-b border-line-strong text-neutral-600">
                         <tr>
                             <th class="py-2 pr-3 font-medium">{{ t('billing.invoice_description') }}</th>
                             <th class="px-3 py-2 font-medium">{{ t('billing.invoice_quantity') }}</th>
@@ -92,7 +92,7 @@ function address(party: Party): string {
                             <th class="py-2 pl-3 text-right font-medium">{{ t('billing.invoice_subtotal') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-neutral-200">
+                    <tbody class="divide-y divide-line">
                         <tr v-for="(line, index) in invoice.lines" :key="index">
                             <td class="py-2 pr-3">{{ line.description }}</td>
                             <td class="px-3 py-2">{{ line.quantity }}</td>
@@ -112,7 +112,7 @@ function address(party: Party): string {
                     <dt>{{ t('billing.invoice_vat', { rate: invoice.vat_rate }) }}</dt>
                     <dd>{{ price(invoice.vat_cents) }}</dd>
                 </div>
-                <div class="flex justify-between border-t border-neutral-300 pt-1 text-base font-semibold">
+                <div class="flex justify-between border-t border-line-strong pt-1 text-base font-semibold">
                     <dt>{{ t('billing.invoice_total') }}</dt>
                     <dd>{{ price(invoice.total_cents) }}</dd>
                 </div>

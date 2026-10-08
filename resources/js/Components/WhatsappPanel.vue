@@ -7,6 +7,7 @@ import { useT } from '../composables/useT';
 import { routes } from '../routes';
 import type { SharedProps } from '../types';
 import AlertBox from './AlertBox.vue';
+import Badge from './Badge.vue';
 import BaseButton from './BaseButton.vue';
 import TextField from './TextField.vue';
 
@@ -16,6 +17,12 @@ export interface WhatsappTemplateRow {
     language: string;
     status: 'missing' | 'pending' | 'approved' | 'rejected' | 'paused';
     reason: string | null;
+}
+
+/** Couleur de la pastille selon l'état d'approbation du modèle chez Meta. */
+function templateVariant(status: WhatsappTemplateRow['status']): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
+    return { approved: 'success', pending: 'info', rejected: 'danger', paused: 'warning', missing: 'neutral' }[status] as
+        'success' | 'warning' | 'danger' | 'info' | 'neutral';
 }
 
 const props = withDefaults(
@@ -77,7 +84,7 @@ async function signUpWithMeta(): Promise<void> {
     <div class="space-y-6">
         <AlertBox v-if="errors.whatsapp" variant="error">{{ errors.whatsapp }}</AlertBox>
 
-        <section v-if="section !== 'templates'" class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="connection">
+        <section v-if="section !== 'templates'" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="connection">
             <h2 id="connection" class="text-lg font-semibold text-nova-900">{{ t('whatsapp.connection_title') }}</h2>
 
             <p v-if="account" class="mt-2 text-sm font-medium text-success-600" data-testid="connected">
@@ -85,7 +92,7 @@ async function signUpWithMeta(): Promise<void> {
             </p>
             <p v-else class="mt-2 text-sm text-neutral-700">{{ t('whatsapp.not_connected') }}</p>
 
-            <div v-if="embedded" class="mt-4 rounded-lg border border-neutral-200 bg-neutral-50 p-4" data-testid="embedded">
+            <div v-if="embedded" class="mt-4 rounded-control border border-line bg-neutral-50 p-4" data-testid="embedded">
                 <h3 class="font-semibold text-nova-900">{{ t('whatsapp.embedded_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('whatsapp.embedded_notice') }}</p>
                 <AlertBox v-if="signupError" variant="warning" class="mt-3">{{ signupError }}</AlertBox>
@@ -123,7 +130,7 @@ async function signUpWithMeta(): Promise<void> {
                 <BaseButton type="submit" :loading="connect.processing">{{ account ? t('whatsapp.reconnect') : t('whatsapp.connect') }}</BaseButton>
             </form>
 
-            <form v-if="account" class="mt-6 space-y-3 border-t border-neutral-200 pt-4" novalidate @submit.prevent="submitDisconnect">
+            <form v-if="account" class="mt-6 space-y-3 border-t border-line pt-4" novalidate @submit.prevent="submitDisconnect">
                 <TextField
                     v-model="disconnect.password"
                     type="password"
@@ -136,7 +143,7 @@ async function signUpWithMeta(): Promise<void> {
             </form>
         </section>
 
-        <section v-if="section !== 'connection'" class="rounded-card border border-neutral-200 bg-white p-5" aria-labelledby="templates">
+        <section v-if="section !== 'connection'" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="templates">
             <h2 id="templates" class="text-lg font-semibold text-nova-900">{{ t('whatsapp.templates_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('whatsapp.templates_intro') }}</p>
 
@@ -147,18 +154,18 @@ async function signUpWithMeta(): Promise<void> {
 
                 <table class="mt-4 w-full text-left text-sm" data-testid="templates">
                     <thead>
-                        <tr class="border-b border-neutral-200 text-neutral-600">
-                            <th scope="col" class="py-2 pr-3 font-medium">{{ t('whatsapp.templates_title') }}</th>
-                            <th v-for="row in rowsFor(messages[0] ?? 'reminder')" :key="row.language" scope="col" class="py-2 pr-3 font-medium uppercase">
+                        <tr class="border-b border-line bg-surface-2 text-xs uppercase tracking-wider text-muted">
+                            <th scope="col" class="px-3 py-2.5 font-semibold">{{ t('whatsapp.templates_title') }}</th>
+                            <th v-for="row in rowsFor(messages[0] ?? 'reminder')" :key="row.language" scope="col" class="px-3 py-2.5 font-semibold uppercase">
                                 {{ row.language }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="key in messages" :key="key" class="border-b border-neutral-100">
-                            <th scope="row" class="py-2 pr-3 font-medium text-neutral-800">{{ t(`whatsapp.message.${key}`) }}</th>
-                            <td v-for="row in rowsFor(key)" :key="row.language" class="py-2 pr-3" :title="row.reason ?? undefined">
-                                {{ t(`whatsapp.status.${row.status}`) }}
+                        <tr v-for="key in messages" :key="key" class="border-b border-line transition-colors duration-100 hover:bg-surface-2">
+                            <th scope="row" class="px-3 py-3 font-medium text-neutral-900">{{ t(`whatsapp.message.${key}`) }}</th>
+                            <td v-for="row in rowsFor(key)" :key="row.language" class="px-3 py-3" :title="row.reason ?? undefined">
+                                <Badge :variant="templateVariant(row.status)">{{ t(`whatsapp.status.${row.status}`) }}</Badge>
                             </td>
                         </tr>
                     </tbody>

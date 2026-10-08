@@ -18,10 +18,10 @@ const describedBy = computed(() => (props.error ? errorId : undefined));
                 type="checkbox"
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-describedby="describedBy"
-                class="mt-0.5 size-5 shrink-0 rounded border-neutral-300 text-primary-600"
+                class="nova-check mt-0.5"
             />
-            <label :for="id" class="text-sm text-neutral-800">{{ label }}</label>
+            <label :for="id" class="text-sm text-neutral-900">{{ label }}</label>
         </div>
-        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-700" role="alert">{{ error }}</p>
+        <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-fg" role="alert">{{ error }}</p>
     </div>
 </template>
