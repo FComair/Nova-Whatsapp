@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
 import { extraError } from '../composables/planning';
 import { useT } from '../composables/useT';
-import { routes } from '../routes';
+import { onboardingStep, routes } from '../routes';
 import type { PlanningPractitioner, PlanningService, SharedProps, Suggestion } from '../types';
 import AlertBox from './AlertBox.vue';
 import BaseButton from './BaseButton.vue';
@@ -53,6 +53,12 @@ watch(
     },
 );
 
+const selectedService = computed(() => props.services.find((item) => item.id === form.service_id));
+// Deux causes à une liste vide : aucun praticien actif, ou le service choisi n'est proposé par personne (le serveur exige ce lien).
+const noPractitioners = computed(() => props.practitioners.length === 0);
+const nobodyOffers = computed(() => !noPractitioners.value && selectedService.value !== undefined && offering.value.length === 0);
+const canSetUp = computed(() => page.props.auth.organization?.role === 'owner');
+
 const suggestions = computed(() => (extraError(form.errors, 'slot') ? page.props.flash.suggestions : []));
 
 const failure = computed(() => extraError(form.errors, 'slot') ?? extraError(form.errors, 'booking'));
@@ -87,18 +93,27 @@ function submit(): void {
             required
             :error="form.errors.service_id"
         />
+        <div class="grid gap-4 sm:grid-cols-2">
+            <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="form.errors.date" />
+            <TextField v-model="form.time" type="time" :label="t('planning.form.time')" required :error="form.errors.time" />
+        </div>
         <SelectField
             v-model="form.practitioner_id"
             :label="t('planning.form.practitioner')"
             :placeholder="t('planning.form.choose')"
             :options="offering.map((practitioner) => ({ value: practitioner.id, label: practitioner.name }))"
+            :empty-label="t('planning.form.practitioner_empty')"
             required
             :error="form.errors.practitioner_id"
         />
-        <div class="grid gap-4 sm:grid-cols-2">
-            <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="form.errors.date" />
-            <TextField v-model="form.time" type="time" :label="t('planning.form.time')" required :error="form.errors.time" />
-        </div>
+        <AlertBox v-if="noPractitioners" variant="warning" data-testid="no-practitioners">
+            <span>{{ t('planning.form.practitioner_none') }}</span>
+            <Link v-if="canSetUp" :href="onboardingStep('praticiens')" class="ml-1 font-semibold underline">{{ t('planning.form.practitioner_assign') }}</Link>
+        </AlertBox>
+        <AlertBox v-else-if="nobodyOffers" variant="warning" data-testid="nobody-offers">
+            <span>{{ t('planning.form.practitioner_none_for_service', { service: selectedService?.name ?? '' }) }}</span>
+            <Link v-if="canSetUp" :href="onboardingStep('praticiens')" class="ml-1 font-semibold underline">{{ t('planning.form.practitioner_assign') }}</Link>
+        </AlertBox>
         <TextField
             v-model="form.phone"
             type="tel"

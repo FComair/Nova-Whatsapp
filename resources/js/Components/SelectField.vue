@@ -5,6 +5,8 @@ const props = defineProps<{
     label: string;
     options: { value: string; label: string }[];
     placeholder?: string;
+    /** Texte de l'unique option (désactivée) quand la liste est vide : la liste ne s'ouvre jamais « à blanc ». */
+    emptyLabel?: string;
     error?: string;
     required?: boolean;
 }>();
@@ -32,6 +34,7 @@ const describedBy = computed(() => (props.error ? errorId : undefined));
             :class="error ? 'border-danger-600' : 'border-neutral-300'"
         >
             <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
+            <option v-if="options.length === 0 && emptyLabel" value="" disabled>{{ emptyLabel }}</option>
             <option v-for="option in options" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
 

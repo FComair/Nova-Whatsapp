@@ -443,10 +443,8 @@ function cancel(): void {
             <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <BaseButton variant="secondary" @click="confirming = false">{{ t('price_import.back_to_list') }}</BaseButton>
                 <BaseButton :disabled="!accepted" :loading="form.processing" @click="submit">
-{{
-                    t('price_import.import_n', { count: importable })
-                }}
-</BaseButton>
+                    {{ t('price_import.import_n', { count: importable }) }}
+                </BaseButton>
             </div>
         </ModalDialog>
     </AppLayout>

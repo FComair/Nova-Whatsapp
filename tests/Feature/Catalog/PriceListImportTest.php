@@ -184,6 +184,16 @@ describe('vérification et import', function (): void {
             ->where('vatRates', [0, 6, 12, 21]));
     });
 
+    it('prévient quand les services ajoutés ne sont proposés par aucun praticien (ils ne seraient pas réservables)', function (): void {
+        ($this->as)()->post("/configuration/services/import/{$this->import->id}/apply", ($this->lines)())->assertSessionHas('warning', fn (string $warning) => str_contains($warning, '1'));
+    });
+
+    it('ne prévient pas quand l\'import ne fait que mettre à jour des prix', function (): void {
+        $payload = ($this->lines)(['lines' => [['key' => 'l2', 'action' => 'update', 'price_cents' => 2750, 'service_id' => $this->haircut->id]]]);
+
+        ($this->as)()->post("/configuration/services/import/{$this->import->id}/apply", $payload)->assertSessionHasNoErrors()->assertSessionMissing('warning');
+    });
+
     it('ajoute les nouveaux services avec les valeurs par défaut et ne change que le prix des existants', function (): void {
         ($this->as)()->post("/configuration/services/import/{$this->import->id}/apply", ($this->lines)())->assertSessionHasNoErrors()->assertRedirect('/configuration/services/import');
 

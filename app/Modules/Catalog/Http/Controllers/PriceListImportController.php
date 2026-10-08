@@ -119,7 +119,15 @@ final class PriceListImportController
             return back()->withErrors(['lines' => __('ui.price_import.errors.'.($e->reason === 'not_open' ? 'not_open' : 'import_failed'))]);
         }
 
-        return to_route('services.import.index')->with('status', __('ui.price_import.done', ['added' => $result['added'], 'updated' => $result['updated']]));
+        $redirect = to_route('services.import.index')->with('status', __('ui.price_import.done', ['added' => $result['added'], 'updated' => $result['updated']]));
+
+        // Un service que personne ne propose ne peut pas être réservé (le serveur exige le lien praticien-service) : on le dit tout de suite.
+        $createdIds = array_column((array) ($record->refresh()->result['created'] ?? []), 'id');
+        $unassigned = $createdIds === [] ? 0 : Service::query()->whereIn('id', $createdIds)->whereNotExists(
+            fn ($query) => $query->selectRaw('1')->from('practitioner_services')->whereColumn('practitioner_services.service_id', 'services.id'),
+        )->count();
+
+        return $unassigned > 0 ? $redirect->with('warning', __('ui.price_import.unassigned', ['count' => $unassigned])) : $redirect;
     }
 
     public function undo(Request $request, string $import): RedirectResponse

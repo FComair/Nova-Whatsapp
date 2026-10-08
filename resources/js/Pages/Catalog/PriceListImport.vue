@@ -158,6 +158,10 @@ function summary(item: HistoryItem): string {
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('price_import.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-3xl">{{ page.props.flash.status }}</AlertBox>
+        <AlertBox v-if="page.props.flash.warning" variant="warning" class="mt-4 max-w-3xl">
+            <span>{{ page.props.flash.warning }}</span>
+            <Link :href="onboardingStep('praticiens')" class="ml-1 font-semibold underline">{{ t('price_import.unassigned_action') }}</Link>
+        </AlertBox>
         <AlertBox v-if="errors.import" variant="error" class="mt-4 max-w-3xl">{{ errors.import }}</AlertBox>
 
         <section v-if="!available" class="mt-6 max-w-3xl rounded-card border border-dashed border-neutral-300 bg-white p-8">
@@ -296,10 +300,9 @@ function summary(item: HistoryItem): string {
                         <Link
                             :href="onboardingStep('services')"
                             class="inline-flex min-h-11 items-center rounded-lg border border-neutral-300 bg-white px-4 text-base font-semibold text-neutral-800 hover:bg-neutral-100"
-                            >
-{{ t('price_import.cancel') }}
-</Link
                         >
+                            {{ t('price_import.cancel') }}
+                        </Link>
                         <BaseButton :disabled="pages.length === 0" @click="analyse">{{ t('price_import.analyse') }}</BaseButton>
                     </div>
                 </section>
