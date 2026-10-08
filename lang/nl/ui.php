@@ -765,6 +765,8 @@ return [
             'practitioner_none' => 'Nog geen actieve behandelaar. Voeg een behandelaar toe of activeer er een om afspraken te maken.',
             'practitioner_none_for_service' => 'Niemand biedt “:service” nog aan. Vink deze dienst aan bij een behandelaar om ze boekbaar te maken.',
             'practitioner_assign' => 'Behandelaars instellen',
+            'hour' => 'Uur',
+            'minute' => 'Minuut',
             'suggestions' => 'Dichtstbijzijnde vrije tijdstippen',
             'use_suggestion' => 'Dit tijdstip kiezen',
         ],

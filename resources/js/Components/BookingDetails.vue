@@ -12,6 +12,7 @@ import CheckboxField from './CheckboxField.vue';
 import SelectField from './SelectField.vue';
 import SlotSuggestions from './SlotSuggestions.vue';
 import TextField from './TextField.vue';
+import TimeFields from './TimeFields.vue';
 
 const props = defineProps<{ booking: PlanningBooking; date: string; practitioners: PlanningPractitioner[] }>();
 const emit = defineEmits<{ done: [] }>();
@@ -93,7 +94,7 @@ function pick(suggestion: Suggestion): void {
             />
             <div class="grid gap-4 sm:grid-cols-2">
                 <TextField v-model="moveForm.date" type="date" :label="t('planning.form.date')" required :error="moveForm.errors.date" />
-                <TextField v-model="moveForm.time" type="time" :label="t('planning.form.time')" required :error="moveForm.errors.time" />
+                <TimeFields v-model="moveForm.time" :label="t('planning.form.time')" required :error="moveForm.errors.time" />
             </div>
             <CheckboxField v-model="moveForm.notify" :label="t('planning.notify')" />
             <div class="flex flex-col gap-2 sm:flex-row">

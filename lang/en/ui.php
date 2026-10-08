@@ -765,6 +765,8 @@ return [
             'practitioner_none' => 'No active practitioner yet. Add or activate a practitioner to create appointments.',
             'practitioner_none_for_service' => 'Nobody offers “:service” yet. Tick this service on a practitioner to make it bookable.',
             'practitioner_assign' => 'Set up practitioners',
+            'hour' => 'Hour',
+            'minute' => 'Minute',
             'suggestions' => 'Nearest free slots',
             'use_suggestion' => 'Choose this slot',
         ],

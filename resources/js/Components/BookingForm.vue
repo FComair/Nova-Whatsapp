@@ -12,6 +12,7 @@ import SelectField from './SelectField.vue';
 import SlotSuggestions from './SlotSuggestions.vue';
 import TextareaField from './TextareaField.vue';
 import TextField from './TextField.vue';
+import TimeFields from './TimeFields.vue';
 
 const props = defineProps<{
     locationId: string;
@@ -95,7 +96,7 @@ function submit(): void {
         />
         <div class="grid gap-4 sm:grid-cols-2">
             <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="form.errors.date" />
-            <TextField v-model="form.time" type="time" :label="t('planning.form.time')" required :error="form.errors.time" />
+            <TimeFields v-model="form.time" :label="t('planning.form.time')" required :error="form.errors.time" />
         </div>
         <SelectField
             v-model="form.practitioner_id"

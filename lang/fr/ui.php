@@ -765,6 +765,8 @@ return [
             'practitioner_none' => 'Aucun praticien actif pour le moment. Ajoutez ou activez un praticien pour créer des rendez-vous.',
             'practitioner_none_for_service' => 'Personne ne propose « :service » pour le moment. Cochez ce service chez un praticien pour le rendre réservable.',
             'practitioner_assign' => 'Configurer les praticiens',
+            'hour' => 'Heure',
+            'minute' => 'Minute',
             'suggestions' => 'Créneaux libres les plus proches',
             'use_suggestion' => 'Choisir ce créneau',
         ],

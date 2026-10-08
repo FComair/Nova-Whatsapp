@@ -38,7 +38,7 @@ function form(practitioners: unknown[]) {
     return mount(BookingForm, { props: { locationId: 'l1', date: '2026-10-08', practitioners, services, seesNotes: false } as never });
 }
 
-const practitionerSelect = (wrapper: ReturnType<typeof form>) => wrapper.findAll('select')[1]!;
+const practitionerSelect = (wrapper: ReturnType<typeof form>) => wrapper.findAll('select')[3]!;
 const optionLabels = (wrapper: ReturnType<typeof form>) =>
     practitionerSelect(wrapper)
         .findAll('option')
