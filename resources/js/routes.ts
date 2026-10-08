@@ -25,6 +25,7 @@ export const routes = {
     accountDeletion: '/compte/suppression',
     accountPause: '/compte/pause',
     whatsapp: '/whatsapp',
+    whatsappQr: '/qr-whatsapp',
     whatsappEmbedded: '/whatsapp/meta',
     whatsappTemplates: '/whatsapp/modeles',
     whatsappTemplatesSync: '/whatsapp/modeles/synchroniser',

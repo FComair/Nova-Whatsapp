@@ -2,7 +2,8 @@ import { routes } from '../routes';
 
 export type SetupCategory = 'business' | 'team' | 'messages' | 'launch';
 
-export type SettingsKey = 'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security';
+export type SettingsKey =
+    'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'security';
 
 export interface SettingsItem {
     key: SettingsKey;
@@ -34,9 +35,10 @@ function visible(key: SettingsKey, role: string | null): boolean {
         profile: true,
         calendars: role !== 'receptionist',
         whatsapp: role === 'owner',
+        'whatsapp-qr': role === 'owner',
         data: role === 'owner',
         security: true,
-    }[key as 'profile' | 'calendars' | 'whatsapp' | 'data' | 'security'];
+    }[key as 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'security'];
 }
 
 function setupItem(category: SetupCategory): SettingsItem {
@@ -51,6 +53,7 @@ const all: Record<SettingsGroup['key'], SettingsItem[]> = {
     integrations: [
         { key: 'calendars', href: routes.calendars, label: 'calendars.nav', prefixes: [routes.calendars] },
         { key: 'whatsapp', href: routes.whatsapp, label: 'whatsapp.nav', prefixes: [routes.whatsapp] },
+        { key: 'whatsapp-qr', href: routes.whatsappQr, label: 'whatsapp_qr.nav', prefixes: [routes.whatsappQr] },
     ],
     privacy: [
         { key: 'data', href: routes.accountData, label: 'account_data.nav', prefixes: [routes.accountData, routes.accountPause, routes.accountDeletion] },

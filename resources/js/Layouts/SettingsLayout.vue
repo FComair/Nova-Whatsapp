@@ -130,6 +130,12 @@ function go(event: Event): void {
                                             <path d="M8 3v4M16 3v4M3 10h18" />
                                         </template>
                                         <path v-else-if="item.key === 'whatsapp'" d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" />
+                                        <template v-else-if="item.key === 'whatsapp-qr'">
+                                            <rect x="3" y="3" width="7" height="7" rx="1" />
+                                            <rect x="14" y="3" width="7" height="7" rx="1" />
+                                            <rect x="3" y="14" width="7" height="7" rx="1" />
+                                            <path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4" />
+                                        </template>
                                         <template v-else-if="item.key === 'data'">
                                             <ellipse cx="12" cy="6" rx="8" ry="3" />
                                             <path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />

@@ -14,6 +14,7 @@ describe('menu des réglages', () => {
             'profile',
             'calendars',
             'whatsapp',
+            'whatsapp-qr',
             'data',
             'security',
         ]);

@@ -31,6 +31,7 @@ use App\Modules\Tenancy\Http\Controllers\SettingsSearchController;
 use App\Modules\Tenancy\Http\Middleware\EnsureOrganizationUsable;
 use App\Modules\Tenancy\Http\Middleware\SetTenantContext;
 use App\Modules\Whatsapp\Http\Controllers\WhatsappController;
+use App\Modules\Whatsapp\Http\Controllers\WhatsappQrController;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 
@@ -221,6 +222,15 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::delete('/', [WhatsappController::class, 'disconnect'])->name('disconnect');
         Route::post('/modeles', [WhatsappController::class, 'submitTemplates'])->name('templates.submit');
         Route::post('/modeles/synchroniser', [WhatsappController::class, 'syncTemplates'])->name('templates.sync');
+    });
+
+    // QR codes WhatsApp : liens wa.me imprimables vers l'assistant ; propriétaire uniquement.
+    Route::middleware('role:owner')->prefix('/qr-whatsapp')->name('whatsapp.qr.')->group(function (): void {
+        Route::get('/', [WhatsappQrController::class, 'show'])->name('show');
+        Route::post('/', [WhatsappQrController::class, 'store'])->middleware('throttle:30,1')->name('store');
+        Route::put('/{code}', [WhatsappQrController::class, 'update'])->name('update');
+        Route::delete('/{code}', [WhatsappQrController::class, 'destroy'])->name('destroy');
+        Route::get('/{code}/{format}', [WhatsappQrController::class, 'image'])->whereIn('format', ['svg', 'png', 'pdf'])->middleware('throttle:60,1')->name('image');
     });
 
     // Calendriers externes : propriétaire, responsable de site (ses sites) et praticien (les siens) ; pas de réceptionniste (docs/02 §1).

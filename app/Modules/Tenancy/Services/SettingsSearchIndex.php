@@ -93,6 +93,12 @@ final class SettingsSearchIndex
         $entries[] = $whatsapp + ['id' => 'whatsapp-connection', 'anchor' => 'connection', 'title' => 'whatsapp.connection_title', 'description' => 'whatsapp.help'];
         $entries[] = $whatsapp + ['id' => 'whatsapp-templates', 'anchor' => 'templates', 'title' => 'whatsapp.templates_title', 'description' => 'whatsapp.templates_intro'];
 
+        $qr = ['group' => 'integrations', 'page' => 'whatsapp-qr', 'href' => '/qr-whatsapp'];
+        $entries[] = $qr + ['id' => 'whatsapp-qr', 'title' => 'whatsapp_qr.title', 'description' => 'whatsapp_qr.intro'];
+        $entries[] = $qr + ['id' => 'whatsapp-qr-link', 'anchor' => 'link', 'title' => 'whatsapp_qr.link_title', 'description' => 'whatsapp_qr.link_help'];
+        $entries[] = $qr + ['id' => 'whatsapp-qr-message', 'anchor' => 'message', 'title' => 'whatsapp_qr.message_label', 'description' => 'whatsapp_qr.message_hint'];
+        $entries[] = $qr + ['id' => 'whatsapp-qr-download', 'anchor' => 'download', 'title' => 'whatsapp_qr.download_png', 'description' => 'whatsapp_qr.stable'];
+
         $data = ['group' => 'privacy', 'page' => 'data', 'href' => '/compte/donnees'];
         $entries[] = $data + ['id' => 'data', 'title' => 'account_data.title', 'description' => 'account_data.intro'];
         $entries[] = $data + ['id' => 'data-export', 'anchor' => 'export', 'title' => 'account_data.export_title', 'description' => 'account_data.export_body'];
