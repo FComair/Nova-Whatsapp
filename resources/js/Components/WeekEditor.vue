@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue';
 import { addRange, copyDay, removeRange, setOpen, type DayState } from '../composables/hours';
+import { endOptions, rangeIsValid, startOptions } from '../composables/timeOptions';
 import { useT } from '../composables/useT';
+import TimeSelect from './TimeSelect.vue';
 
 defineProps<{
     /** Messages d'erreur par jour (index 0 = lundi). */
@@ -64,22 +66,22 @@ function update(index: number, day: DayState): void {
                         <label :for="`${id}-s-${day.weekday}-${rangeIndex}`" class="mb-1 block text-xs font-medium text-neutral-700">{{
                             t('onboarding.hours.from')
                         }}</label>
-                        <input
+                        <TimeSelect
                             :id="`${id}-s-${day.weekday}-${rangeIndex}`"
                             v-model="range.start"
-                            type="time"
-                            class="rounded-lg border border-neutral-300 px-3 py-2 text-base"
+                            :options="startOptions(range.start, range.end)"
+                            :invalid="!rangeIsValid(range)"
                         />
                     </div>
                     <div>
                         <label :for="`${id}-e-${day.weekday}-${rangeIndex}`" class="mb-1 block text-xs font-medium text-neutral-700">{{
                             t('onboarding.hours.to')
                         }}</label>
-                        <input
+                        <TimeSelect
                             :id="`${id}-e-${day.weekday}-${rangeIndex}`"
                             v-model="range.end"
-                            type="time"
-                            class="rounded-lg border border-neutral-300 px-3 py-2 text-base"
+                            :options="endOptions(range.start, range.end)"
+                            :invalid="!rangeIsValid(range)"
                         />
                     </div>
                     <button type="button" class="pb-2 text-sm font-medium text-danger-700 hover:underline" @click="update(index, removeRange(day, rangeIndex))">
@@ -97,6 +99,9 @@ function update(index: number, day: DayState): void {
                 </button>
             </div>
 
+            <p v-if="day.open && day.ranges.some((range) => !rangeIsValid(range))" class="mt-2 text-sm font-medium text-danger-700" role="alert">
+                {{ t('onboarding.errors.hours_end_after_start') }}
+            </p>
             <p v-for="message in errorsByDay?.[index] ?? []" :key="message" class="mt-2 text-sm font-medium text-danger-700" role="alert">{{ message }}</p>
         </li>
     </ul>
