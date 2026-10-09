@@ -523,6 +523,7 @@ function describe(booking: PlanningBooking): string {
                 :practitioners="practitioners ?? []"
                 :services="services ?? []"
                 :sees-notes="seesNotes ?? false"
+                :timezone="location.timezone"
                 @done="creating = false"
             />
         </ModalDialog>
@@ -536,6 +537,7 @@ function describe(booking: PlanningBooking): string {
                 :practitioners="practitioners ?? []"
                 :services="services ?? []"
                 :can-reassign="canReassign ?? false"
+                :timezone="location?.timezone ?? 'UTC'"
                 @done="selectedId = null"
             />
         </ModalDialog>

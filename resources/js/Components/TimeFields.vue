@@ -6,7 +6,13 @@ import { useT } from '../composables/useT';
  * Heure en deux listes fermées : 24 heures (00 à 23) et 60 minutes (00 à 59). Remplace le champ « heure » du navigateur, qui sur
  * téléphone ouvre une roue qui tourne sans fin. La valeur échangée reste « HH:MM » (vide tant que l'heure n'est pas choisie).
  */
-const props = defineProps<{ label: string; required?: boolean; error?: string }>();
+const props = defineProps<{
+    label: string;
+    required?: boolean;
+    error?: string;
+    /** Première minute encore choisissable (minutes depuis minuit) : les heures d'avant sont grisées. Null : aucune limite. */
+    minMinutes?: number | null;
+}>();
 
 const model = defineModel<string>({ required: true });
 const { t } = useT();
@@ -27,10 +33,17 @@ watch(model, (value) => {
     minute.value = value.slice(3, 5);
 });
 
+// Une heure est grisée quand toutes ses minutes sont passées ; dans l'heure en cours, seules les minutes déjà passées le sont.
+const hourDisabled = (value: string): boolean => props.minMinutes != null && Number(value) * 60 + 59 < props.minMinutes;
+const minuteDisabled = (value: string): boolean => props.minMinutes != null && hour.value !== '' && Number(hour.value) * 60 + Number(value) < props.minMinutes;
+
 function change(): void {
     // Choisir l'heure suffit : les minutes sont à 00 tant qu'on n'en choisit pas d'autres.
     if (hour.value !== '' && minute.value === '') {
-        minute.value = '00';
+        minute.value = MINUTES.find((value) => !minuteDisabled(value)) ?? '00';
+    } else if (hour.value !== '' && minuteDisabled(minute.value)) {
+        // L'heure choisie est l'heure en cours : on passe à la première minute encore possible plutôt que de garder une minute passée.
+        minute.value = MINUTES.find((value) => !minuteDisabled(value)) ?? minute.value;
     }
 
     model.value = hour.value === '' ? '' : `${hour.value}:${minute.value}`;
@@ -57,7 +70,7 @@ function change(): void {
                 @change="change"
             >
                 <option value="" disabled>--</option>
-                <option v-for="value in HOURS" :key="value" :value="value">{{ value }}</option>
+                <option v-for="value in HOURS" :key="value" :value="value" :disabled="hourDisabled(value)">{{ value }}</option>
             </select>
             <span class="font-semibold text-neutral-700" aria-hidden="true">:</span>
             <select
@@ -74,7 +87,7 @@ function change(): void {
                 @change="change"
             >
                 <option value="" disabled>--</option>
-                <option v-for="value in MINUTES" :key="value" :value="value">{{ value }}</option>
+                <option v-for="value in MINUTES" :key="value" :value="value" :disabled="minuteDisabled(value)">{{ value }}</option>
             </select>
         </div>
         <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-fg" role="alert">{{ error }}</p>

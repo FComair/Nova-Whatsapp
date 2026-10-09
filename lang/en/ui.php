@@ -868,6 +868,7 @@ return [
             'slot_taken' => 'This slot has just been taken. Here are the next free slots.',
             'slot_outside_hours' => 'This slot is outside opening hours or the practitioner\'s availability.',
             'slot_policy' => 'This slot does not comply with the booking rules.',
+            'past_time' => 'This time has already passed. Choose a future time.',
             'invalid_transition' => 'This action is not possible in the appointment\'s current state.',
             'cancellation_too_late' => 'The cancellation deadline has passed.',
             'hold_expired' => 'The hold on this slot has expired.',

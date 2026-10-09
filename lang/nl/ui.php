@@ -868,6 +868,7 @@ return [
             'slot_taken' => 'Dit tijdstip is net bezet. Hier zijn de eerstvolgende vrije tijdstippen.',
             'slot_outside_hours' => 'Dit tijdstip valt buiten de openingsuren of de beschikbaarheid van de behandelaar.',
             'slot_policy' => 'Dit tijdstip voldoet niet aan de reserveringsregels.',
+            'past_time' => 'Dit tijdstip is al voorbij. Kies een tijdstip in de toekomst.',
             'invalid_transition' => 'Deze actie is niet mogelijk in de huidige status van de afspraak.',
             'cancellation_too_late' => 'De annuleringstermijn is verstreken.',
             'hold_expired' => 'De blokkering van dit tijdstip is verlopen.',

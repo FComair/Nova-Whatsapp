@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useForm, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { formatPrice } from '../composables/money';
+import { usePastTimeGuard } from '../composables/pastTime';
 import { extraError } from '../composables/planning';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
@@ -21,6 +22,8 @@ const props = defineProps<{
     practitioners: PlanningPractitioner[];
     services?: PlanningService[];
     canReassign?: boolean;
+    /** Fuseau du site : l'heure « maintenant » du formulaire de déplacement. */
+    timezone: string;
 }>();
 const emit = defineEmits<{ done: [] }>();
 
@@ -30,6 +33,26 @@ const base = computed(() => `${routes.planning}/rendez-vous/${props.booking.id}`
 const mode = ref<'view' | 'move' | 'cancel' | 'payment'>('view');
 
 const moveForm = useForm({ date: props.date, time: props.booking.starts, practitioner_id: props.booking.practitioner_id, notify: true });
+// Déplacement : pas de nouvelle heure dans le passé, mais l'horaire actuel (même passé) reste valable tant qu'on n'y touche pas.
+const past = usePastTimeGuard(
+    props.timezone,
+    () => moveForm.date,
+    () => moveForm.time,
+    () => ({ date: props.date, time: props.booking.starts }),
+);
+watch(
+    () => [moveForm.date, moveForm.time],
+    () => moveForm.clearErrors('date', 'time'),
+);
+function submitMove(): void {
+    if (!past.validNow()) {
+        moveForm.setError('time', past.message.value);
+
+        return;
+    }
+
+    moveForm.put(`${base.value}/deplacer`, options);
+}
 const cancelForm = useForm({ reason: '', notify: true });
 const finishForm = useForm({ outcome: 'completed' });
 const paymentForm = useForm({ payment_status: props.booking.payment_status, amount: '', method: '' });
@@ -102,7 +125,7 @@ function pick(suggestion: Suggestion): void {
             <BaseButton v-if="isOpen" variant="danger" @click="mode = 'cancel'">{{ t('planning.actions.cancel') }}</BaseButton>
         </div>
 
-        <form v-else-if="mode === 'move'" class="space-y-4" novalidate @submit.prevent="moveForm.put(`${base}/deplacer`, options)">
+        <form v-else-if="mode === 'move'" class="space-y-4" novalidate @submit.prevent="submitMove">
             <SlotSuggestions :suggestions="suggestions" :practitioners="practitioners" @pick="pick" />
             <SelectField
                 v-model="moveForm.practitioner_id"
@@ -111,8 +134,20 @@ function pick(suggestion: Suggestion): void {
                 :error="moveForm.errors.practitioner_id"
             />
             <div class="grid gap-4 sm:grid-cols-2">
-                <TextField v-model="moveForm.date" type="date" :label="t('planning.form.date')" required :error="moveForm.errors.date" />
-                <TimeFields v-model="moveForm.time" :label="t('planning.form.time')" required :error="moveForm.errors.time" />
+                <TextField
+                    v-model="moveForm.date"
+                    type="date"
+                    :label="t('planning.form.date')"
+                    required
+                    :error="past.dateError.value ?? moveForm.errors.date"
+                />
+                <TimeFields
+                    v-model="moveForm.time"
+                    :label="t('planning.form.time')"
+                    required
+                    :min-minutes="past.minMinutes.value"
+                    :error="past.timeError.value ?? moveForm.errors.time"
+                />
             </div>
             <CheckboxField v-model="moveForm.notify" :label="t('planning.notify')" />
             <div class="flex flex-col gap-2 sm:flex-row">

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Http\Requests;
 
+use App\Modules\Booking\Support\PastStart;
+use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Support\Phone;
 use App\Support\ValidPhone;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use UnexpectedValueException;
 
 /**
@@ -37,6 +40,27 @@ final class StoreBookingRequest extends FormRequest
             'name' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
+    }
+
+    /**
+     * Pas de début dans le passé (heure du site). Contrôlé une fois la date, l'heure et le site validés : une saisie incomplète
+     * garde ses propres messages.
+     *
+     * @return list<callable(Validator): void>
+     */
+    public function after(): array
+    {
+        return [function (Validator $validator): void {
+            if ($validator->errors()->hasAny(['location_id', 'date', 'time'])) {
+                return;
+            }
+
+            $location = Location::query()->find($this->string('location_id')->toString());
+
+            if ($location !== null && PastStart::isPast($this->startsAt($location->timezone))) {
+                $validator->errors()->add('time', __('ui.planning.errors.past_time'));
+            }
+        }];
     }
 
     public function phoneE164(): string

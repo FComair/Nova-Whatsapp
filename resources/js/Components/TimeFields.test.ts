@@ -75,4 +75,45 @@ describe('heure en deux listes', () => {
         expect(wrapper.find('[role="alert"]').text()).toBe('Heure invalide');
         expect(wrapper.findAll('select').every((select) => select.attributes('aria-invalid') === 'true')).toBe(true);
     });
+
+    describe('heures passées', () => {
+        const withMin = (value: string, minMinutes: number | null) => mount(TimeFields, { props: { modelValue: value, label: 'Heure', minMinutes } });
+        const enabledValues = (select: ReturnType<ReturnType<typeof fields>['findAll']>[number]) =>
+            select
+                .findAll('option')
+                .filter((option) => option.element.value !== '' && !option.element.disabled)
+                .map((option) => option.element.value);
+
+        it('ne grise rien sans limite', () => {
+            const [hours, minutes] = withMin('', null).findAll('select');
+
+            expect(enabledValues(hours!)).toHaveLength(24);
+            expect(enabledValues(minutes!)).toHaveLength(60);
+        });
+
+        it("grise les heures entièrement passées et garde l'heure en cours", () => {
+            const [hours] = withMin('', 14 * 60 + 20).findAll('select');
+
+            expect(enabledValues(hours!)[0]).toBe('14');
+            expect(enabledValues(hours!)).toHaveLength(10);
+        });
+
+        it('grise les minutes passées de l’heure en cours, pas des suivantes', async () => {
+            const wrapper = withMin('', 14 * 60 + 20);
+            const [hours, minutes] = wrapper.findAll('select');
+            await hours!.setValue('14');
+
+            expect(enabledValues(minutes!)[0]).toBe('20');
+            expect((minutes!.element as HTMLSelectElement).value).toBe('20');
+
+            await hours!.setValue('15');
+            expect(enabledValues(minutes!)).toHaveLength(60);
+        });
+
+        it('grise tout un jour passé', () => {
+            const [hours] = withMin('', 24 * 60).findAll('select');
+
+            expect(enabledValues(hours!)).toHaveLength(0);
+        });
+    });
 });

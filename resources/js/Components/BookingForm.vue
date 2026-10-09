@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
+import { usePastTimeGuard } from '../composables/pastTime';
 import { extraError } from '../composables/planning';
 import { useT } from '../composables/useT';
 import { onboardingStep, routes } from '../routes';
@@ -21,6 +22,8 @@ const props = defineProps<{
     practitioners: PlanningPractitioner[];
     services: PlanningService[];
     seesNotes: boolean;
+    /** Fuseau du site : l'heure « maintenant » du formulaire. */
+    timezone: string;
 }>();
 const emit = defineEmits<{ done: [] }>();
 
@@ -38,6 +41,18 @@ const form = useForm({
     notes: '',
     notify: true,
 });
+
+// Heures passées grisées et refusées, d'après l'heure du site ; recalculé tant que le formulaire reste ouvert.
+const past = usePastTimeGuard(
+    props.timezone,
+    () => form.date,
+    () => form.time,
+);
+// Une erreur du serveur sur la date ou l'heure disparaît dès qu'on la change.
+watch(
+    () => [form.date, form.time],
+    () => form.clearErrors('date', 'time'),
+);
 
 const offering = computed(() => {
     const service = props.services.find((item) => item.id === form.service_id);
@@ -72,6 +87,13 @@ function pick(suggestion: Suggestion): void {
 }
 
 function submit(): void {
+    // Relit l'heure à l'envoi : une heure qui vient de passer ne part pas.
+    if (!past.validNow()) {
+        form.setError('time', past.message.value);
+
+        return;
+    }
+
     form.post(`${routes.planning}/rendez-vous`, {
         preserveScroll: true,
         onSuccess: () => {
@@ -96,8 +118,14 @@ function submit(): void {
             :error="form.errors.service_id"
         />
         <div class="grid gap-4 sm:grid-cols-2">
-            <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="form.errors.date" />
-            <TimeFields v-model="form.time" :label="t('planning.form.time')" required :error="form.errors.time" />
+            <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="past.dateError.value ?? form.errors.date" />
+            <TimeFields
+                v-model="form.time"
+                :label="t('planning.form.time')"
+                required
+                :min-minutes="past.minMinutes.value"
+                :error="past.timeError.value ?? form.errors.time"
+            />
         </div>
         <PractitionerSelect
             v-model="form.practitioner_id"

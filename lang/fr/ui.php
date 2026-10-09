@@ -868,6 +868,7 @@ return [
             'slot_taken' => 'Ce créneau vient d\'être pris. Voici les prochains créneaux libres.',
             'slot_outside_hours' => 'Ce créneau est en dehors des horaires d\'ouverture ou de disponibilité du praticien.',
             'slot_policy' => 'Ce créneau ne respecte pas les règles de réservation.',
+            'past_time' => 'Cette heure est déjà passée. Choisissez une heure à venir.',
             'invalid_transition' => 'Cette action n\'est pas possible dans l\'état actuel du rendez-vous.',
             'cancellation_too_late' => 'Le délai d\'annulation est dépassé.',
             'hold_expired' => 'Le blocage de ce créneau a expiré.',
