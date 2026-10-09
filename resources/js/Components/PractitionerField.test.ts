@@ -47,21 +47,21 @@ describe('PractitionerField', () => {
     });
 
     it("annonce le praticien et l'action pour les lecteurs d'écran", () => {
-        expect(field().find('button').attributes('aria-label')).toBe('planning.practitioner.current');
+        expect(field().find('button').attributes('aria-label')).toBe('planning.reassign.current');
     });
 
     it("affiche « aucun praticien assigné » et garde l'action Modifier", () => {
         const wrapper = field({ name: null });
 
-        expect(wrapper.text()).toContain('planning.practitioner.none');
-        expect(wrapper.find('button').attributes('aria-label')).toBe('planning.practitioner.change_label');
+        expect(wrapper.text()).toContain('planning.reassign.none');
+        expect(wrapper.find('button').attributes('aria-label')).toBe('planning.reassign.change_label');
     });
 
     it('ouvre la liste sur place avec les praticiens proposés, Enregistrer désactivé tant que rien ne change', async () => {
         const wrapper = field();
         await wrapper.find('button').trigger('click');
 
-        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.practitioner.select', 'Anna Dupont', 'Ben Martin']);
+        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.reassign.select', 'Anna Dupont', 'Ben Martin']);
         const [save, cancel] = wrapper.findAll('button');
         expect(save!.attributes('disabled')).toBeDefined();
 
@@ -86,7 +86,7 @@ describe('PractitionerField', () => {
         const wrapper = field({ eligible: [] });
         await wrapper.find('button').trigger('click');
 
-        expect(wrapper.text()).toContain('planning.practitioner.none_available');
+        expect(wrapper.text()).toContain('planning.reassign.none_available');
         expect(wrapper.find('select').exists()).toBe(false);
     });
 
@@ -98,6 +98,6 @@ describe('PractitionerField', () => {
         expect(wrapper.find('input[type="text"]').exists()).toBe(true);
 
         await wrapper.find('input[type="text"]').setValue('personne 3');
-        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.practitioner.select', 'Personne 3']);
+        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.reassign.select', 'Personne 3']);
     });
 });

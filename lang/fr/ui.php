@@ -749,7 +749,14 @@ return [
         'no_practitioners' => 'Aucun praticien n\'a de planning sur ce site. Ajoutez des praticiens et leurs disponibilités pour recevoir des rendez-vous.',
         'empty_week' => 'Aucun rendez-vous cette semaine.',
         'working_hours' => 'Heures de travail',
-        'practitioner' => [
+        'opening' => 'Ouverture à :time',
+        'closing' => 'Fermeture à :time',
+        'legend' => [
+            'title' => 'Repères de la grille',
+            'open' => 'Horaires d\'ouverture ou de travail',
+            'outside' => 'Avant l\'ouverture et après la fermeture (marge de 2 h)',
+        ],
+        'reassign' => [
             'change' => 'Modifier',
             'change_label' => 'Modifier le praticien',
             'current' => 'Praticien : :name. Utilisez Modifier pour en choisir un autre.',

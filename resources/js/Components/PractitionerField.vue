@@ -92,14 +92,14 @@ onBeforeUnmount(() => clearTimeout(hideTimer));
                     aria-hidden="true"
                     >{{ initials(name, '') }}</span
                 >
-                <span>{{ name ?? t('planning.practitioner.none') }}</span>
+                <span>{{ name ?? t('planning.reassign.none') }}</span>
             </span>
             <BaseButton
                 v-if="canChange"
                 ref="changeButton"
                 variant="ghost"
                 size="sm"
-                :aria-label="name ? t('planning.practitioner.current', { name }) : t('planning.practitioner.change_label')"
+                :aria-label="name ? t('planning.reassign.current', { name }) : t('planning.reassign.change_label')"
                 @click="edit"
             >
                 <svg
@@ -114,32 +114,32 @@ onBeforeUnmount(() => clearTimeout(hideTimer));
                 >
                     <path d="m10.5 2.8 2.7 2.7M2.5 13.5l.6-2.9 7.4-7.4 2.3 2.3-7.4 7.4-2.9.6Z" />
                 </svg>
-                {{ t('planning.practitioner.change') }}
+                {{ t('planning.reassign.change') }}
             </BaseButton>
         </div>
 
         <form v-else class="mt-1 space-y-3" novalidate @submit.prevent="save">
             <p v-if="!eligible.length" class="rounded-control bg-warning-bg px-3 py-2 text-sm text-warning-fg" role="alert">
-                {{ t('planning.practitioner.none_available') }}
+                {{ t('planning.reassign.none_available') }}
             </p>
             <template v-else>
-                <TextField v-if="searchable" v-model="query" :label="t('planning.practitioner.search')" autocomplete="off" />
+                <TextField v-if="searchable" v-model="query" :label="t('planning.reassign.search')" autocomplete="off" />
                 <div ref="select">
                     <SelectField
                         v-model="form.practitioner_id"
                         :label="t('planning.form.practitioner')"
-                        :placeholder="t('planning.practitioner.select')"
+                        :placeholder="t('planning.reassign.select')"
                         :options="options"
                         :error="form.errors.practitioner_id"
                     />
                 </div>
                 <p v-if="searchable && query.trim() !== '' && filtered.length <= 1" class="text-sm text-neutral-700" role="status">
-                    {{ t('planning.practitioner.no_match') }}
+                    {{ t('planning.reassign.no_match') }}
                 </p>
             </template>
             <div class="flex flex-col gap-2 sm:flex-row">
                 <BaseButton v-if="eligible.length" type="submit" size="sm" :loading="form.processing" :disabled="unchanged || !form.practitioner_id">
-                    {{ t('planning.practitioner.save') }}
+                    {{ t('planning.reassign.save') }}
                 </BaseButton>
                 <BaseButton variant="secondary" size="sm" @click="close">{{ t('common.cancel') }}</BaseButton>
             </div>
@@ -160,7 +160,7 @@ onBeforeUnmount(() => clearTimeout(hideTimer));
                 <circle cx="8" cy="8" r="6.25" />
                 <path d="m5.3 8.2 1.8 1.8 3.6-3.8" />
             </svg>
-            {{ t('planning.practitioner.updated') }}
+            {{ t('planning.reassign.updated') }}
         </p>
     </div>
 </template>

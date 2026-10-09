@@ -81,7 +81,7 @@ describe('lecture', function (): void {
             ->where('bookings.0.ends', '10:30')
             ->where('bookings.0.start_minute', 600)
             ->where('bookings.0.customer.phone', '+32470123456')
-            ->where('range', ['from' => 540, 'to' => 1020])
+            ->where('range', ['from' => 420, 'to' => 1140])
             ->has('services', 1));
     });
 

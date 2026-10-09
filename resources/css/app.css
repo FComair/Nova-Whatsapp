@@ -186,3 +186,9 @@
         opacity: 0.5;
     }
 }
+
+/* Planning : heures hors ouverture (avant l'ouverture, après la fermeture, jours sans horaires) : fond teinté et fines hachures. */
+.nova-offhours {
+  background-color: var(--color-neutral-100);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgb(11 43 46 / 0.05) 6px 7px);
+}

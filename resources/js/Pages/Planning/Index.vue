@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import BookingDetails from '../../Components/BookingDetails.vue';
@@ -65,6 +65,33 @@ const days = computed(() => {
         return { ...day, working, bookings, lanes: layoutLanes(bookings) };
     });
 });
+
+/** Défilement vertical de la grille (la marge de 2 h reste visible au-dessus, l'utilisateur garde la main ensuite). */
+const scroller = ref<HTMLElement | null>(null);
+
+/** Horaires d'ouverture ou de travail de la semaine : première ouverture et dernière fermeture, repères de l'axe. */
+const opening = computed(() => {
+    const slots = days.value.flatMap((day) => day.working);
+
+    return slots.length === 0 ? null : { start: Math.min(...slots.map((slot) => slot.start)), end: Math.max(...slots.map((slot) => slot.end)) };
+});
+
+/** Au chargement : l'ouverture du jour choisi (ou le premier rendez-vous s'il est plus tôt) moins 30 minutes en haut de la grille. */
+function scrollToOpening(): void {
+    const element = scroller.value;
+
+    if (element === null) {
+        return;
+    }
+
+    const day = days.value.find((item) => item.date === props.date);
+    const starts = [...(day?.working.map((slot) => slot.start) ?? []), ...(day?.bookings.map((booking) => booking.start_minute) ?? [])];
+    const target = starts.length > 0 ? Math.min(...starts) : (opening.value?.start ?? range.value.from);
+
+    element.scrollTop = Math.max(0, (target - 30 - range.value.from) * PIXELS_PER_MINUTE);
+}
+
+onMounted(() => void nextTick(scrollToOpening));
 
 function weekday(date: string): string {
     return new Intl.DateTimeFormat(locale.value, { weekday: 'short' }).format(new Date(`${date}T12:00:00`));
@@ -165,19 +192,43 @@ function describe(booking: PlanningBooking): string {
                     </li>
                 </ul>
 
-                <div class="mt-3 overflow-x-auto rounded-card border border-line bg-surface shadow-xs">
+                <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-neutral-700" :aria-label="t('planning.legend.title')">
+                    <li class="flex items-center gap-1.5">
+                        <span class="inline-block h-4 w-6 rounded-sm border-y border-primary-600/30 bg-surface" aria-hidden="true" />
+                        {{ t('planning.legend.open') }}
+                    </li>
+                    <li class="flex items-center gap-1.5">
+                        <span class="nova-offhours inline-block h-4 w-6 rounded-sm border border-line" aria-hidden="true" />
+                        {{ t('planning.legend.outside') }}
+                    </li>
+                </ul>
+
+                <div ref="scroller" class="mt-3 max-h-[75vh] overflow-auto rounded-card border border-line bg-surface shadow-xs">
                     <div class="flex min-w-[52rem]">
                         <div class="w-14 shrink-0 border-r border-line">
-                            <div class="h-12 border-b border-line" />
+                            <div class="sticky top-0 z-20 h-12 border-b border-line bg-surface" />
                             <div class="relative" :style="{ height: gridHeight }">
                                 <span
                                     v-for="mark in hourMarks(range)"
                                     :key="mark"
-                                    class="absolute right-2 -translate-y-1/2 text-xs text-neutral-500"
+                                    class="absolute right-2 text-xs text-neutral-500"
+                                    :class="mark === range.from ? 'translate-y-0.5' : '-translate-y-1/2'"
                                     :style="{ top: `${(mark - range.from) * PIXELS_PER_MINUTE}px` }"
                                 >
                                     {{ minutesToTime(mark) }}
                                 </span>
+                                <template v-if="opening">
+                                    <span
+                                        class="pointer-events-none absolute inset-x-0 border-t-2 border-primary-600"
+                                        :style="{ top: `${(opening.start - range.from) * PIXELS_PER_MINUTE}px` }"
+                                        :title="t('planning.opening', { time: minutesToTime(opening.start) })"
+                                    />
+                                    <span
+                                        class="pointer-events-none absolute inset-x-0 border-t-2 border-primary-600"
+                                        :style="{ top: `${(opening.end - range.from) * PIXELS_PER_MINUTE}px` }"
+                                        :title="t('planning.closing', { time: minutesToTime(opening.end) })"
+                                    />
+                                </template>
                             </div>
                         </div>
 
@@ -187,7 +238,7 @@ function describe(booking: PlanningBooking): string {
                             class="min-w-0 flex-1 basis-0 border-r border-line last:border-r-0"
                             :aria-label="formatWeekdayDate(day.date, locale)"
                         >
-                            <h3 class="h-12 border-b border-line">
+                            <h3 class="sticky top-0 z-20 h-12 border-b border-line bg-surface">
                                 <button
                                     type="button"
                                     class="flex size-full flex-col items-center justify-center text-sm leading-tight hover:bg-surface-2 focus-visible:outline focus-visible:outline-2"
@@ -201,11 +252,11 @@ function describe(booking: PlanningBooking): string {
                                     }}</span>
                                 </button>
                             </h3>
-                            <div class="relative bg-neutral-100" :style="{ height: gridHeight }">
+                            <div class="nova-offhours relative" :style="{ height: gridHeight }">
                                 <div
                                     v-for="(slot, index) in day.working"
                                     :key="index"
-                                    class="absolute inset-x-0 bg-surface"
+                                    class="absolute inset-x-0 border-y border-primary-600/30 bg-surface"
                                     :style="blockStyle(range, slot.start, slot.end)"
                                     :title="t('planning.working_hours')"
                                 />

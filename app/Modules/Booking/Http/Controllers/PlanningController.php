@@ -14,6 +14,7 @@ use App\Modules\Booking\Services\SlotUnavailable;
 use App\Modules\Booking\Support\Actor;
 use App\Modules\Booking\Support\NewBooking;
 use App\Modules\Booking\Support\PlanningAccess;
+use App\Modules\Booking\Support\PlanningRange;
 use App\Modules\Booking\Support\Slot;
 use App\Modules\Catalog\Models\BusinessHour;
 use App\Modules\Catalog\Models\Service;
@@ -104,17 +105,19 @@ final class PlanningController
             'is_past' => $booking->starts_at <= now(),
         ])->values()->all();
 
-        // Plage horaire affichée : ouverture du site, élargie aux plannings et aux rendez-vous de la semaine.
-        $edges = collect([...$open->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)]), ...$schedules->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)]), ...array_map(fn (array $row): array => [$row['start_minute'], $row['end_minute']], $bookingRows)]);
-        $from = $edges->isEmpty() ? 9 * 60 : (int) (floor($edges->min(fn (array $edge): int => $edge[0]) / 60) * 60);
-        $to = $edges->isEmpty() ? 18 * 60 : (int) (ceil($edges->max(fn (array $edge): int => $edge[1]) / 60) * 60);
+        // Plage horaire affichée : 2 h avant l'ouverture et 2 h après la fermeture (horaires du site et des praticiens de la semaine),
+        // élargie aux rendez-vous de la semaine pour qu'aucun ne soit caché.
+        $range = PlanningRange::compute(
+            [...$open->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)])->all(), ...$schedules->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)])->all()],
+            array_map(fn (array $row): array => [$row['start_minute'], $row['end_minute']], $bookingRows),
+        );
 
         return Inertia::render('Planning/Index', [
             'locations' => $locations->map(fn (Location $item): array => ['id' => $item->id, 'name' => $item->name])->all(),
             'location' => ['id' => $location->id, 'name' => $location->name, 'timezone' => $timezone],
             'date' => $date,
             'today' => CarbonImmutable::now($timezone)->toDateString(),
-            'range' => ['from' => $from, 'to' => $to],
+            'range' => $range,
             'week' => [
                 'start' => $days[0],
                 'end' => $days[6],

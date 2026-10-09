@@ -749,7 +749,14 @@ return [
         'no_practitioners' => 'Geen enkele behandelaar heeft een rooster op deze locatie. Voeg behandelaars en hun beschikbaarheid toe om afspraken te ontvangen.',
         'empty_week' => 'Geen afspraken deze week.',
         'working_hours' => 'Werkuren',
-        'practitioner' => [
+        'opening' => 'Opent om :time',
+        'closing' => 'Sluit om :time',
+        'legend' => [
+            'title' => 'Legenda van het raster',
+            'open' => 'Openings- of werkuren',
+            'outside' => 'Voor opening en na sluiting (marge van 2 uur)',
+        ],
+        'reassign' => [
             'change' => 'Wijzigen',
             'change_label' => 'Behandelaar wijzigen',
             'current' => 'Behandelaar: :name. Gebruik Wijzigen om een andere te kiezen.',
