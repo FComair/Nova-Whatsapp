@@ -21,6 +21,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 /**
  * Réglages > Profil : coordonnées de la personne connectée (e-mail, téléphone, langue) et informations de l'entreprise.
@@ -86,6 +87,11 @@ final class AccountProfileController
             $logo->store($this->organization(), $request->file('logo') ?? abort(422), (string) $request->user()?->id);
         } catch (InvalidArgumentException) {
             return back()->withErrors(['logo' => __('ui.logo.errors.invalid')]);
+        } catch (Throwable $e) {
+            // Écriture impossible : le logo enregistré n'a pas changé (voir OrganizationLogo::store).
+            report($e);
+
+            return back()->withErrors(['logo' => __('ui.logo.errors.failed')]);
         }
 
         return back()->with('status', __('ui.logo.saved'));

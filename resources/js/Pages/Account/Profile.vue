@@ -73,7 +73,7 @@ function confirmPhone(): void {
             aria-labelledby="logo"
         >
             <ShopAvatar :id="page.props.auth.organization.id" :name="company.name" :version="page.props.auth.organization.logo_version" size="xl" />
-            <div class="min-w-0 flex-1">
+            <div class="min-w-0 flex-1 basis-64">
                 <h2 id="logo" class="text-lg font-semibold text-nova-900">{{ company.name }}</h2>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('logo.title') }}</p>
                 <LogoUploader v-if="canEditCompany" class="mt-3" :has-logo="page.props.auth.organization.logo_version !== null" />

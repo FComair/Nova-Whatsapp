@@ -93,6 +93,57 @@ it('refuse les fichiers non conformes', function (string $case): void {
     expect($this->asOwner(fn () => DB::table('audit_logs')->where('action', 'org.logo.updated')->count()))->toBe(0);
 })->with(['trop petit', 'trop lourd', 'svg', 'pdf', 'texte déguisé']);
 
+it('enregistre l\'image recadrée par le formulaire : un carré de 512 px réduit sans déformation', function (): void {
+    $square = imagecreatetruecolor(512, 512);
+    imagefill($square, 0, 0, (int) imagecolorallocate($square, 10, 120, 200));
+    imagefilledrectangle($square, 0, 0, 255, 511, (int) imagecolorallocate($square, 250, 200, 20)); // moitié gauche jaune
+    $path = tempnam(sys_get_temp_dir(), 'crop').'.png';
+    imagepng($square, $path);
+
+    ($this->upload)(new UploadedFile($path, 'logo.png', 'image/png', null, true))->assertSessionHasNoErrors();
+
+    foreach (OrganizationLogo::SIZES as $size) {
+        $stored = imagecreatefromstring(Storage::disk('local')->get(app(OrganizationLogo::class)->path($this->org->id, $size)));
+
+        expect([imagesx($stored), imagesy($stored)])->toBe([$size, $size]);
+
+        // Le cadrage choisi est conservé tel quel : jaune à gauche, bleu à droite, à toutes les tailles.
+        $left = imagecolorsforindex($stored, imagecolorat($stored, intdiv($size, 4), intdiv($size, 2)));
+        $right = imagecolorsforindex($stored, imagecolorat($stored, intdiv($size * 3, 4), intdiv($size, 2)));
+        expect([$left['red'], $left['green'], $left['blue']])->toBe([250, 200, 20])
+            ->and([$right['red'], $right['green'], $right['blue']])->toBe([10, 120, 200]);
+    }
+});
+
+it('garde le logo enregistré quand l\'écriture échoue en cours de route', function (): void {
+    ($this->upload)(pngFile(300, 300));
+    $logo = app(OrganizationLogo::class);
+    $disk = Storage::disk('local');
+    $before = [64 => $disk->get($logo->path($this->org->id, 64)), 256 => $disk->get($logo->path($this->org->id, 256))];
+    $version = $this->asOwner(fn () => DB::table('organizations')->where('id', $this->org->id)->value('logo_updated_at'));
+
+    // Le fichier 256 px devient un dossier : sa réécriture échoue après celle du 64 px.
+    $disk->delete($logo->path($this->org->id, 256));
+    $disk->makeDirectory($logo->path($this->org->id, 256));
+    $disk->put($logo->path($this->org->id, 64), $before[64]);
+
+    ($this->upload)(pngFile(500, 500))->assertSessionHasErrors(['logo' => __('ui.logo.errors.failed', [], 'fr')]);
+
+    expect($disk->get($logo->path($this->org->id, 64)))->toBe($before[64])
+        ->and($this->asOwner(fn () => DB::table('organizations')->where('id', $this->org->id)->value('logo_updated_at')))->toBe($version)
+        ->and($this->asOwner(fn () => DB::table('audit_logs')->where('action', 'org.logo.updated')->count()))->toBe(1);
+});
+
+it('ne touche à aucun fichier quand l\'image est illisible', function (): void {
+    ($this->upload)(pngFile(300, 300));
+    $logo = app(OrganizationLogo::class);
+    $before = Storage::disk('local')->get($logo->path($this->org->id, 256));
+
+    ($this->upload)(UploadedFile::fake()->createWithContent('logo.png', 'pas une image'))->assertSessionHasErrors('logo');
+
+    expect(Storage::disk('local')->get($logo->path($this->org->id, 256)))->toBe($before);
+});
+
 it('réserve l\'envoi et le retrait au propriétaire', function (string $role): void {
     $user = ($this->memberOf)($role);
 

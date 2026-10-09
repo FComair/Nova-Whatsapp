@@ -10,12 +10,17 @@ use GdImage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
+use RuntimeException;
+use Throwable;
 
 /**
  * Logo de l'établissement : réencodage, deux tailles, stockage privé.
  *
  * - L'image est relue puis réécrite en PNG : tout contenu caché (métadonnées de photo, données ajoutées au fichier) disparaît.
- * - Une image non carrée est recadrée au centre ; l'aperçu du formulaire montre exactement ce recadrage.
+ * - Le formulaire envoie déjà l'image recadrée et zoomée par l'utilisateur (carrée) ; une image non carrée reçue directement est
+ *   recadrée au centre. Le carré sert à tous les affichages (rond dans le menu et le profil, carré au centre du QR code).
+ * - Un échec (lecture, encodage ou écriture) laisse le logo enregistré tel quel : tout est encodé avant la première écriture, et si
+ *   une écriture échoue les fichiers déjà remplacés sont remis dans leur état précédent.
  * - Deux tailles : 64 px pour le menu, 256 px pour le profil. Le SVG n'est pas accepté (il peut contenir des scripts).
  * - Les fichiers vivent dans le stockage privé, un dossier par établissement ; ils ne sont servis qu'aux membres de cet établissement.
  */
@@ -35,13 +40,14 @@ final class OrganizationLogo
     public function store(Organization $organization, UploadedFile $file, ?string $actorId = null): void
     {
         $source = $this->read($file);
+        $encoded = [];
 
         try {
             $side = min(imagesx($source), imagesy($source));
             $cropX = intdiv(imagesx($source) - $side, 2);
             $cropY = intdiv(imagesy($source) - $side, 2);
-            $disk = Storage::disk(self::DISK);
 
+            // Tout est encodé en mémoire d'abord : une image illisible ou un manque de mémoire ne touche à aucun fichier.
             foreach (self::SIZES as $size) {
                 $thumb = imagecreatetruecolor($size, $size);
                 imagealphablending($thumb, false);
@@ -51,15 +57,50 @@ final class OrganizationLogo
 
                 ob_start();
                 imagepng($thumb, null, 9);
-                $disk->put($this->path($organization->id, $size), (string) ob_get_clean());
+                $encoded[$size] = (string) ob_get_clean();
             }
         } finally {
             // GdImage est libéré à la destruction ; la variable est lâchée explicitement pour les gros fichiers.
             unset($source);
         }
 
+        $this->write($organization->id, $encoded);
+
         $organization->forceFill(['logo_updated_at' => now()])->save();
         Audit::record('org.logo.updated', 'user', actorId: $actorId, orgId: $organization->id, entityType: 'organization', entityId: $organization->id);
+    }
+
+    /**
+     * Écrit les deux tailles ; si une écriture échoue, les fichiers déjà remplacés retrouvent leur contenu précédent (ou disparaissent
+     * s'il n'y en avait pas) et l'erreur remonte : le logo enregistré reste celui d'avant.
+     *
+     * @param  array<int, string>  $encoded
+     */
+    private function write(string $organizationId, array $encoded): void
+    {
+        $disk = Storage::disk(self::DISK);
+        $previous = [];
+
+        try {
+            foreach ($encoded as $size => $bytes) {
+                $path = $this->path($organizationId, $size);
+                $previous[$path] = $disk->exists($path) ? $disk->get($path) : null;
+
+                if (! $disk->put($path, $bytes)) {
+                    throw new RuntimeException('Écriture du logo impossible.');
+                }
+            }
+        } catch (Throwable $e) {
+            foreach ($previous as $path => $bytes) {
+                try {
+                    $bytes === null ? $disk->delete($path) : $disk->put($path, $bytes);
+                } catch (Throwable) {
+                    // Restauration au mieux : l'erreur d'origine reste celle que l'appelant doit voir.
+                }
+            }
+
+            throw $e;
+        }
     }
 
     public function remove(Organization $organization, ?string $actorId = null): void
