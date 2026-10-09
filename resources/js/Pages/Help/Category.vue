@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import HelpIcon from '../../Components/HelpIcon.vue';
 import { useT } from '../../composables/useT';
+import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 
@@ -18,6 +19,8 @@ const name = computed(() => t(`help.categories.${props.category.slug}.name`));
 
 <template>
     <AppLayout :title="name">
+        <HelpTabs />
+
         <HelpBreadcrumb :category="{ slug: category.slug, name }" />
 
         <header class="mt-4 flex items-start gap-4">

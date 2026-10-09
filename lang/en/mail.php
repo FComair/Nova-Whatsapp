@@ -156,4 +156,25 @@ return [
             'action' => 'You can subscribe again at any time to restore the account.',
         ],
     ],
+
+    'support' => [
+        'action' => 'View my ticket',
+        'created' => [
+            'subject' => 'Your request has been sent (#:reference)',
+            'intro' => 'We received your request. Here is how to find it again.',
+            'reference' => 'Reference: :reference',
+            'summary' => 'Subject: :subject. Category: :category. Urgency: :urgency.',
+            'response_time' => 'We aim to respond within 1 business day. Complex issues may take longer.',
+        ],
+        'reply' => [
+            'subject' => 'New reply on your request #:reference',
+            'intro' => 'Our team replied to your request “:subject”.',
+            'how' => 'To answer, go to your tickets page: replying to this email does not work.',
+        ],
+        'resolved' => [
+            'subject' => 'Your request #:reference is resolved',
+            'intro' => 'We believe we have settled your request “:subject”.',
+            'reopen' => 'If not, reply within :days days: the ticket will be reopened. Otherwise it will close by itself.',
+        ],
+    ],
 ];

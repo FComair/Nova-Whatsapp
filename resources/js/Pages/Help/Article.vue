@@ -6,6 +6,7 @@ import BaseButton from '../../Components/BaseButton.vue';
 import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import { formatDate } from '../../composables/dates';
 import { useT } from '../../composables/useT';
+import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 import type { SharedProps } from '../../types';
@@ -55,6 +56,8 @@ function onProseClick(event: MouseEvent): void {
 
 <template>
     <AppLayout :title="article.title">
+        <HelpTabs />
+
         <HelpBreadcrumb :category="{ slug: article.category, name: categoryName }" :current="article.title" />
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4">{{ page.props.flash.status }}</AlertBox>
@@ -87,10 +90,8 @@ function onProseClick(event: MouseEvent): void {
 
                     <div v-else-if="!asking" class="mt-3 flex gap-3">
                         <BaseButton variant="secondary" size="sm" class="!border-line-strong" :loading="busy" @click="send(true)">
-{{
-                            t('help.feedback.yes')
-                        }}
-</BaseButton>
+                            {{ t('help.feedback.yes') }}
+                        </BaseButton>
                         <BaseButton variant="secondary" size="sm" class="!border-line-strong" @click="asking = true">{{ t('help.feedback.no') }}</BaseButton>
                     </div>
 
@@ -109,6 +110,14 @@ function onProseClick(event: MouseEvent): void {
                         </div>
                     </form>
                 </section>
+                <p class="mt-6 text-sm text-neutral-700">
+                    <Link
+                        :href="`${routes.help}/contact?category=${article.category}&article=${article.slug}`"
+                        class="font-semibold text-primary-700 underline underline-offset-4"
+                    >
+                        {{ t('support.cta.still_stuck') }}
+                    </Link>
+                </p>
 
                 <section v-if="related.length" class="mt-10" aria-labelledby="help-related">
                     <h2 id="help-related" class="text-lg font-semibold text-nova-900">{{ t('help.related') }}</h2>

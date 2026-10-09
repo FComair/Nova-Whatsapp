@@ -4,6 +4,8 @@ import HelpIcon from '../../Components/HelpIcon.vue';
 import HelpSearch from '../../Components/HelpSearch.vue';
 import type { HelpEntry } from '../../composables/helpSearch';
 import { useT } from '../../composables/useT';
+import HelpTabs from '../../Components/HelpTabs.vue';
+import BaseButton from '../../Components/BaseButton.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 
@@ -19,6 +21,8 @@ const { t } = useT();
 
 <template>
     <AppLayout :title="t('help.title')">
+        <HelpTabs />
+
         <section class="rounded-card bg-primary-50 px-5 py-10 text-center sm:px-10 sm:py-14">
             <h1 class="font-display text-3xl font-bold text-nova-900 sm:text-4xl">{{ t('help.hero_title') }}</h1>
             <p class="mx-auto mt-2 max-w-xl text-neutral-700">{{ t('help.hero_subtitle') }}</p>
@@ -62,6 +66,20 @@ const { t } = useT();
                     </Link>
                 </li>
             </ul>
+        </section>
+
+        <section class="mt-10 rounded-card border border-line bg-surface p-6 text-center shadow-xs sm:p-8">
+            <h2 class="text-lg font-semibold text-nova-900">{{ t('support.cta.title') }}</h2>
+            <p class="mx-auto mt-1 max-w-xl text-neutral-700">{{ t('support.cta.body') }}</p>
+            <div class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
+                <Link :href="`${routes.help}/contact`">
+                    <BaseButton>{{ t('support.cta.contact') }}</BaseButton>
+                </Link>
+                <Link :href="`${routes.help}/tickets`">
+                    <BaseButton variant="secondary">{{ t('support.cta.tickets') }}</BaseButton>
+                </Link>
+            </div>
+            <p class="mt-3 text-sm text-neutral-600">{{ t('support.response_time') }}</p>
         </section>
     </AppLayout>
 </template>

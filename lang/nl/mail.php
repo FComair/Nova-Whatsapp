@@ -156,4 +156,25 @@ return [
             'action' => 'U kunt zich op elk moment opnieuw abonneren om het account te herstellen.',
         ],
     ],
+
+    'support' => [
+        'action' => 'Mijn ticket bekijken',
+        'created' => [
+            'subject' => 'Uw aanvraag is verzonden (#:reference)',
+            'intro' => 'We hebben uw aanvraag ontvangen. Zo vindt u ze terug.',
+            'reference' => 'Referentie: :reference',
+            'summary' => 'Onderwerp: :subject. Categorie: :category. Urgentie: :urgency.',
+            'response_time' => 'We streven naar een antwoord binnen 1 werkdag. Complexe zaken kunnen langer duren.',
+        ],
+        'reply' => [
+            'subject' => 'Nieuw antwoord op uw aanvraag #:reference',
+            'intro' => 'Ons team antwoordde op uw aanvraag “:subject”.',
+            'how' => 'Om te antwoorden gaat u naar de pagina met uw tickets: antwoorden op deze e-mail werkt niet.',
+        ],
+        'resolved' => [
+            'subject' => 'Uw aanvraag #:reference is opgelost',
+            'intro' => 'We denken uw aanvraag “:subject” te hebben afgehandeld.',
+            'reopen' => 'Is dat niet zo, antwoord dan binnen :days dagen: het ticket wordt heropend. Anders sluit het vanzelf.',
+        ],
+    ],
 ];

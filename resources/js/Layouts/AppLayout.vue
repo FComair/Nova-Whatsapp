@@ -125,6 +125,13 @@ function logout(): void {
                             <path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1.9-1.1 1.8M12 17v.01" />
                         </svg>
                         {{ t('help.nav') }}
+                        <span
+                            v-if="(page.props.support?.attention ?? 0) > 0"
+                            class="rounded-full bg-primary-600 px-1.5 text-xs font-bold leading-5 text-white"
+                            :title="t('support.cta.attention', { count: page.props.support?.attention ?? 0 })"
+                            >{{ page.props.support?.attention
+                            }}<span class="sr-only"> {{ t('support.cta.attention', { count: page.props.support?.attention ?? 0 }) }}</span></span
+                        >
                     </Link>
                     <LanguageSwitcher />
                     <!-- La déconnexion reste dans la barre principale, hors du menu Réglages : toujours à un clic, sur toutes les pages. -->

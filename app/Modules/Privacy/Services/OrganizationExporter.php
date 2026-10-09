@@ -21,6 +21,9 @@ use App\Modules\Customers\Models\Customer;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Models\PractitionerSchedule;
 use App\Modules\Staff\Models\PractitionerTimeOff;
+use App\Modules\Support\Models\SupportMessage;
+use App\Modules\Support\Models\SupportTicket;
+use App\Modules\Support\Models\SupportTicketEvent;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Whatsapp\Models\WhatsappMessage;
@@ -60,6 +63,9 @@ final class OrganizationExporter
         'invoices' => Invoice::class,
         'invoice_lines' => InvoiceLine::class,
         'payments' => Payment::class,
+        'support_tickets' => SupportTicket::class,
+        'support_messages' => SupportMessage::class,
+        'support_ticket_events' => SupportTicketEvent::class,
     ];
 
     /** Colonnes techniques jamais exportées. */

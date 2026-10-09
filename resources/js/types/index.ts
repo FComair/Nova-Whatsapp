@@ -167,6 +167,8 @@ export interface SharedProps {
     auth: { user: AuthUser | null; organization: AuthOrganization | null };
     /** Pastilles du menu Réglages ; null hors des pages de réglages. */
     settings: { whatsapp_connected: boolean; two_factor: boolean; setup: { key: string; left: number; complete: boolean }[] | null } | null;
+    /** Pastille du menu Aide : tickets qui attendent l'attention de la personne. */
+    support: { attention: number } | null;
     flash: { status: string | null; warning: string | null; first_login: boolean; suggestions: Suggestion[] };
     [key: string]: unknown;
 }

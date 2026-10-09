@@ -1,6 +1,6 @@
 # Nova — Help centre, contact form and support tickets (spec)
 
-Status: phase 1 (Help centre) built; phases 2 to 5 to come. Same visual language as the app (docs/20: teal tokens, Bricolage Grotesque and Instrument Sans, pill buttons, status badge pairs). No change to existing screens except one new top-level menu entry. UI text in fr / nl / en, dates DD/MM/YYYY (CLAUDE.md).
+Status: phases 1 (Help centre) and 2 (tickets for clients) built; phases 3 to 5 to come. Same visual language as the app (docs/20: teal tokens, Bricolage Grotesque and Instrument Sans, pill buttons, status badge pairs). No change to existing screens except one new top-level menu entry. UI text in fr / nl / en, dates DD/MM/YYYY (CLAUDE.md).
 
 ## 1. What this adds, and what it reuses
 
@@ -119,3 +119,11 @@ One column, same card style as the customer form (docs/21).
 7. **Attachment limits**: 3 files, 5 MB, PNG / JPG / PDF (proposed).
 8. **Timings**: reminder after 3 days waiting, auto-resolve after 14 days, reopen window 14 days (proposed).
 9. **Reference format**: global sequence `NWS-1001…` (reveals the total volume of tickets to clients; use a per-business sequence if you prefer).
+
+## 13. Phase 2 as built
+
+- **Routes** (signed-in, all roles): `/aide/contact`, `/aide/contact/envoye/{NWS-n}`, `/aide/tickets`, `/aide/tickets/{NWS-n}` (reply, close, solved, reopen, attachments). Tabs *Help centre · Contact support · Your tickets* on every Help page, a call-to-action strip on the landing page, "Still stuck?" on articles, and a count badge on the menu entry and the tab.
+- **Database** (migration 2026_11_01): `support_tickets`, `support_messages`, `support_attachments`, `support_ticket_events`, all with RLS and in the GDPR erasure steps and the organisation export (internal notes are never exported). The application role cannot read internal notes (policy on `visibility`), cannot write staff messages, cannot change staff priority or assignment, cannot delete tickets; messages, attachments and events are append-only. The reference comes from the sequence `support_ticket_reference_seq` (global, from 1001).
+- **Rules as specified**: 5 new tickets per user per hour, 30 replies per hour, one ticket per form token, 3 attachments of 5 MB (PNG, JPG, PDF read from the file content, images re-encoded, files on the private disk and served only through a checked route), reply on a closed ticket refused, reopen within 14 days, "Waiting on you" → "In progress" on a client reply, "Resolved" → "Open". Author and business owner only.
+- **Emails** (fr/nl/en, best effort, after the write): confirmation on creation; reply and resolution emails are sent by `TicketDesk` when the team answers (used by the console in phase 3).
+- **Team side already in `TicketDesk`** (no screen yet): public reply with optional new status, internal note, status change, automatic closure. The console (phase 3) will call these through the `nova_platform` role.

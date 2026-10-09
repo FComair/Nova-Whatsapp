@@ -156,4 +156,25 @@ return [
             'action' => 'Vous pouvez vous réabonner à tout moment pour rétablir le compte.',
         ],
     ],
+
+    'support' => [
+        'action' => 'Voir mon ticket',
+        'created' => [
+            'subject' => 'Votre demande a bien été envoyée (#:reference)',
+            'intro' => 'Nous avons bien reçu votre demande. Voici de quoi la retrouver.',
+            'reference' => 'Référence : :reference',
+            'summary' => 'Objet : :subject. Catégorie : :category. Urgence : :urgency.',
+            'response_time' => 'Nous visons une réponse sous 1 jour ouvrable. Les cas complexes peuvent demander plus de temps.',
+        ],
+        'reply' => [
+            'subject' => 'Nouvelle réponse sur votre demande #:reference',
+            'intro' => 'Notre équipe a répondu à votre demande « :subject ».',
+            'how' => 'Pour répondre, rendez-vous sur la page de vos tickets : répondre à cet e-mail ne fonctionne pas.',
+        ],
+        'resolved' => [
+            'subject' => 'Votre demande #:reference est résolue',
+            'intro' => 'Nous pensons avoir réglé votre demande « :subject ».',
+            'reopen' => 'Si ce n’est pas le cas, répondez dans les :days jours : le ticket sera rouvert. Sinon il se fermera tout seul.',
+        ],
+    ],
 ];

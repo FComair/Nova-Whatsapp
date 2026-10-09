@@ -5,6 +5,7 @@ import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import HelpSearch from '../../Components/HelpSearch.vue';
 import { type HelpEntry, MIN_QUERY, searchHelp } from '../../composables/helpSearch';
 import { useT } from '../../composables/useT';
+import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 
@@ -28,6 +29,8 @@ const groups = computed(() => {
 
 <template>
     <AppLayout :title="t('help.title')">
+        <HelpTabs />
+
         <HelpBreadcrumb :current="searched ? t('help.results_title', { q }) : t('help.search_label')" />
 
         <div class="mt-4 max-w-2xl"><HelpSearch :index="index" :initial="q" /></div>
@@ -38,6 +41,7 @@ const groups = computed(() => {
             <h1 class="text-lg font-semibold text-neutral-900">{{ t('help.no_results_title', { q }) }}</h1>
             <p class="mt-2 text-neutral-700">{{ t('help.no_results_body') }}</p>
             <Link :href="routes.help" class="mt-4 inline-block font-semibold text-primary-700 underline">{{ t('help.back') }}</Link>
+            <Link :href="`${routes.help}/contact`" class="ml-4 mt-4 inline-block font-semibold text-primary-700 underline">{{ t('support.cta.contact') }}</Link>
         </div>
 
         <template v-else>

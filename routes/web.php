@@ -27,6 +27,7 @@ use App\Modules\Privacy\Http\Controllers\AccountDataController;
 use App\Modules\Staff\Http\Controllers\InvitationController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
 use App\Modules\Staff\Http\Controllers\StaffController;
+use App\Modules\Support\Http\Controllers\SupportController;
 use App\Modules\Tenancy\Http\Controllers\AccountProfileController;
 use App\Modules\Tenancy\Http\Controllers\PauseController;
 use App\Modules\Tenancy\Http\Controllers\SettingsSearchController;
@@ -197,6 +198,19 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [HelpController::class, 'index'])->name('help.index');
         Route::get('/recherche', [HelpController::class, 'search'])->name('help.search');
         Route::post('/retour', [HelpController::class, 'feedback'])->middleware('throttle:30,1')->name('help.feedback');
+        // Support : formulaire, tickets et conversation (docs/22). Un ticket se désigne par sa référence : NWS-1248.
+        Route::get('/contact', [SupportController::class, 'create'])->name('help.contact');
+        Route::post('/contact', [SupportController::class, 'store'])->name('help.contact.store');
+        Route::get('/contact/envoye/{reference}', [SupportController::class, 'sent'])->where('reference', 'NWS-\d+')->name('help.ticket.sent');
+        Route::get('/tickets', [SupportController::class, 'index'])->name('help.tickets');
+        Route::prefix('/tickets/{reference}')->where(['reference' => 'NWS-\d+'])->group(function (): void {
+            Route::get('/', [SupportController::class, 'show'])->name('help.ticket');
+            Route::post('/reponse', [SupportController::class, 'reply'])->middleware('throttle:30,60')->name('help.ticket.reply');
+            Route::post('/fermer', [SupportController::class, 'close'])->name('help.ticket.close');
+            Route::post('/resolu', [SupportController::class, 'solved'])->name('help.ticket.solved');
+            Route::post('/rouvrir', [SupportController::class, 'reopen'])->name('help.ticket.reopen');
+            Route::get('/pieces/{attachment}', [SupportController::class, 'attachment'])->whereUuid('attachment')->name('help.ticket.attachment');
+        });
         Route::get('/{category}', [HelpController::class, 'category'])->where('category', $categories)->name('help.category');
         Route::get('/{category}/{slug}', [HelpController::class, 'show'])->where('category', $categories)->where('slug', '[a-z0-9-]+')->name('help.article');
     });

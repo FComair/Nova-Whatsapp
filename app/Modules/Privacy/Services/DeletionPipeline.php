@@ -200,6 +200,8 @@ final class DeletionPipeline
         app(OrganizationLogo::class)->purge($organization->id);
         // Les photos d'une liste de prix (import non terminé) sont aussi des données de l'établissement.
         Storage::disk('local')->deleteDirectory("pricelists/{$organization->id}");
+        // Les pièces jointes du support aussi.
+        Storage::disk('local')->deleteDirectory("support/{$organization->id}");
 
         $email = $request->owner_email_enc;
 

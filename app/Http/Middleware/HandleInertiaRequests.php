@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Modules\Onboarding\Services\SetupChecklist;
+use App\Modules\Support\Models\SupportTicket;
+use App\Modules\Support\Support\TicketStatus;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Models\WhatsappAccount;
 use Illuminate\Http\Request;
@@ -72,6 +74,18 @@ final class HandleInertiaRequests extends Middleware
                         ? array_map(fn (array $category): array => ['key' => $category['key'], 'left' => $category['left'], 'complete' => $category['complete']], app(SetupChecklist::class)->categories($request->user()))
                         : null,
                 ];
+            },
+            // Pastille du menu Aide : tickets de la personne qui attendent son attention (réponse non lue ou « En attente de vous »).
+            // Calculée au rendu, dans le contexte d'organisation, comme « auth ».
+            'support' => function () use ($request): ?array {
+                if ($request->user() === null || app(CurrentTenant::class)->organization() === null) {
+                    return null;
+                }
+
+                return ['attention' => SupportTicket::query()->where('user_id', $request->user()->id)->where('status', '!=', TicketStatus::CLOSED)
+                    ->where(fn ($query) => $query->where('status', TicketStatus::WAITING_ON_YOU)->orWhere(
+                        fn ($unread) => $unread->whereNotNull('last_staff_message_at')->where(fn ($read) => $read->whereNull('client_read_at')->orWhereColumn('client_read_at', '<', 'last_staff_message_at')),
+                    ))->count()];
             },
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),
