@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Models;
 
+use App\Modules\Catalog\Casts\VatRate;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $status
  * @property string $source
  * @property int $price_cents
- * @property int $vat_rate
+ * @property int|float $vat_rate pourcentage au moment de la réservation (21 ou 21.5)
  * @property string $payment_status
  * @property int $amount_collected_cents
  * @property string|null $notes_enc
@@ -63,6 +64,7 @@ class Booking extends Model
     {
         return [
             'starts_at' => 'immutable_datetime',
+            'vat_rate' => VatRate::class,
             'ends_at' => 'immutable_datetime',
             'blocked_from' => 'immutable_datetime',
             'blocked_until' => 'immutable_datetime',

@@ -258,7 +258,7 @@ final class OnboardingController
                 'bookable_online' => $service->bookable_online,
                 'notes_required' => $service->notes_required,
             ])->all(),
-            'categories' => ServiceCategory::query()->orderBy('position')->pluck('name')->all(),
+            'categories' => ServiceCategory::query()->where('locale', app()->getLocale())->orderBy('position')->pluck('name')->all(),
             'template' => $services->isEmpty() && SectorTemplates::has((string) $organization->sector)
                 ? ['sector' => $organization->sector, 'count' => count(SectorTemplates::services((string) $organization->sector, $organization->locale))]
                 : null,

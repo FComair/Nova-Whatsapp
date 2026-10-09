@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $id
  * @property string $org_id
  * @property string $name
+ * @property string $locale langue de la catégorie : fr, nl ou en
  * @property int $position
  */
 class ServiceCategory extends Model

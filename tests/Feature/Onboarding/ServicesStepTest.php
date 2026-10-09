@@ -194,7 +194,11 @@ describe('création, modification, suppression', function (): void {
         'prix non numérique' => [['price' => 'abc'], 'price'],
         'prix négatif' => [['price' => '-5'], 'price'],
         'prix à trois décimales' => [['price' => '40,555'], 'price'],
-        'TVA inconnue' => [['vat_rate' => 7], 'vat_rate'],
+        'TVA négative' => [['vat_rate' => -1], 'vat_rate'],
+        'TVA supérieure à 100' => [['vat_rate' => 101], 'vat_rate'],
+        'TVA non numérique' => [['vat_rate' => 'abc'], 'vat_rate'],
+        'TVA à trois décimales' => [['vat_rate' => '21,555'], 'vat_rate'],
+        'TVA vide' => [['vat_rate' => ''], 'vat_rate'],
         'capacité nulle' => [['capacity' => 0], 'capacity'],
         'capacité excessive' => [['capacity' => 51], 'capacity'],
         'description trop longue' => [['description' => str_repeat('a', 1001)], 'description'],
@@ -313,7 +317,7 @@ describe('isolation entre clients et garanties de la base', function (): void {
         )));
     })->with([
         'durée' => [['duration_minutes' => 3], 'services_duration_check'],
-        'TVA' => [['vat_rate' => 7], 'services_vat_check'],
+        'TVA' => [['vat_rate' => 101], 'services_vat_check'],
         'capacité' => [['capacity' => 0], 'services_capacity_check'],
         'marge' => [['buffer_after_minutes' => 200], 'services_buffers_check'],
     ])->throws(QueryException::class);

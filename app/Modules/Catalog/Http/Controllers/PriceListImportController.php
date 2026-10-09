@@ -104,7 +104,7 @@ final class PriceListImportController
                 'price_cents' => $service->price_cents,
                 'has_category' => $service->category_id !== null,
             ])->all(),
-            'categories' => ServiceCategory::query()->orderBy('position')->pluck('name')->all(),
+            'categories' => ServiceCategory::query()->where('locale', app()->getLocale())->orderBy('position')->pluck('name')->all(),
             'vatRates' => [0, 6, 12, 21],
         ]);
     }

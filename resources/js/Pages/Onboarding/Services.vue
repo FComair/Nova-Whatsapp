@@ -6,6 +6,7 @@ import BaseButton from '../../Components/BaseButton.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
 import ServiceForm from '../../Components/ServiceForm.vue';
 import { centsToInput, formatPrice } from '../../composables/money';
+import { formatVat } from '../../composables/vat';
 import { useT } from '../../composables/useT';
 import OnboardingLayout from '../../Layouts/OnboardingLayout.vue';
 import { routes } from '../../routes';
@@ -165,6 +166,7 @@ function confirmDelete(): void {
                                 <span v-if="service.category">{{ service.category }} · </span>
                                 {{ service.duration_minutes }} {{ t('services.minutes') }} ·
                                 {{ service.price_cents === 0 ? t('services.free') : formatPrice(service.price_cents, locale) }}
+                                · {{ t('services.fields.vat_short', { rate: formatVat(service.vat_rate, locale) }) }}
                                 <span v-if="!service.bookable_online"> · {{ t('services.offline') }}</span>
                             </p>
                         </div>

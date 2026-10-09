@@ -18,7 +18,7 @@ use RuntimeException;
 final class ServiceCatalog
 {
     /**
-     * @param  array{name: string, category?: string|null, description?: string|null, duration_minutes: int, buffer_before_minutes: int, buffer_after_minutes: int, price_cents: int, vat_rate: int, capacity: int, bookable_online: bool, notes_required: bool}  $data
+     * @param  array{name: string, category?: string|null, description?: string|null, duration_minutes: int, buffer_before_minutes: int, buffer_after_minutes: int, price_cents: int, vat_rate: int|float, capacity: int, bookable_online: bool, notes_required: bool}  $data
      */
     public function create(Organization $organization, array $data): Service
     {
@@ -36,12 +36,12 @@ final class ServiceCatalog
     }
 
     /**
-     * @param  array{name: string, category?: string|null, description?: string|null, duration_minutes: int, buffer_before_minutes: int, buffer_after_minutes: int, price_cents: int, vat_rate: int, capacity: int, bookable_online: bool, notes_required: bool}  $data
+     * @param  array{name: string, category?: string|null, description?: string|null, duration_minutes: int, buffer_before_minutes: int, buffer_after_minutes: int, price_cents: int, vat_rate: int|float, capacity: int, bookable_online: bool, notes_required: bool}  $data
      */
     public function update(Organization $organization, Service $service, array $data): Service
     {
         return DB::transaction(function () use ($organization, $service, $data): Service {
-            $service->fill($this->attributes($organization, $data));
+            $service->fill($this->attributes($organization, $data, $service));
             $diff = collect($service->getDirty())->map(fn ($new, string $key): array => [$service->getOriginal($key), $new])->all();
             $service->save();
 
@@ -121,7 +121,7 @@ final class ServiceCatalog
             foreach ($templates as $position => $template) {
                 Service::query()->create([
                     'org_id' => $organization->id,
-                    'category_id' => $this->category($organization, $template['category'])?->id,
+                    'category_id' => $this->category($organization, $template['category'], $organization->locale)?->id,
                     'name' => $template['name'],
                     'duration_minutes' => $template['duration'],
                     'price_cents' => $template['price'],
@@ -140,12 +140,12 @@ final class ServiceCatalog
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function attributes(Organization $organization, array $data): array
+    private function attributes(Organization $organization, array $data, ?Service $current = null): array
     {
         return [
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
-            'category_id' => $this->category($organization, $data['category'] ?? null)?->id,
+            'category_id' => $this->categoryId($organization, $data['category'] ?? null, $current),
             'duration_minutes' => $data['duration_minutes'],
             'buffer_before_minutes' => $data['buffer_before_minutes'],
             'buffer_after_minutes' => $data['buffer_after_minutes'],
@@ -157,8 +157,23 @@ final class ServiceCatalog
         ];
     }
 
-    /** Catégorie retrouvée par son nom (sans tenir compte de la casse) ou créée. */
-    private function category(Organization $organization, ?string $name): ?ServiceCategory
+    /**
+     * Catégorie du service : celle qu'il a déjà quand son nom n'a pas changé (même si elle est dans une autre langue que
+     * l'interface du moment), sinon celle de la langue de l'interface qui porte ce nom, créée au besoin.
+     */
+    private function categoryId(Organization $organization, ?string $name, ?Service $current): ?string
+    {
+        $name = $name === null ? '' : trim($name);
+
+        if ($current?->category_id !== null && $name !== '' && mb_strtolower((string) $current->category?->name) === mb_strtolower($name)) {
+            return $current->category_id;
+        }
+
+        return $this->category($organization, $name)?->id;
+    }
+
+    /** Catégorie de la langue donnée (par défaut celle de l'interface), retrouvée par son nom sans tenir compte de la casse, ou créée. */
+    private function category(Organization $organization, ?string $name, ?string $locale = null): ?ServiceCategory
     {
         $name = $name === null ? '' : trim($name);
 
@@ -166,11 +181,14 @@ final class ServiceCatalog
             return null;
         }
 
-        return ServiceCategory::query()->whereRaw('lower(name) = ?', [mb_strtolower($name)])->first()
+        $locale = in_array($locale ?? app()->getLocale(), ['fr', 'nl', 'en'], true) ? ($locale ?? app()->getLocale()) : 'fr';
+
+        return ServiceCategory::query()->where('locale', $locale)->whereRaw('lower(name) = ?', [mb_strtolower($name)])->first()
             ?? ServiceCategory::query()->create([
                 'org_id' => $organization->id,
+                'locale' => $locale,
                 'name' => $name,
-                'position' => (int) ServiceCategory::query()->max('position') + 1,
+                'position' => (int) ServiceCategory::query()->where('locale', $locale)->max('position') + 1,
             ]);
     }
 }
