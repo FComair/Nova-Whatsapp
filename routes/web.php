@@ -11,6 +11,7 @@ use App\Modules\Calendars\Http\Controllers\FeedController;
 use App\Modules\Catalog\Http\Controllers\PriceListImportController;
 use App\Modules\Catalog\Http\Controllers\ServiceController;
 use App\Modules\Customers\Http\Controllers\CustomerController;
+use App\Modules\Feedback\Http\Controllers\FeedbackController;
 use App\Modules\Help\Http\Controllers\HelpController;
 use App\Modules\Identity\Http\Controllers\EmailVerificationController;
 use App\Modules\Identity\Http\Controllers\LocaleController;
@@ -219,6 +220,11 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [HelpController::class, 'index'])->name('help.index');
         Route::get('/recherche', [HelpController::class, 'search'])->name('help.search');
         Route::post('/retour', [HelpController::class, 'feedback'])->middleware('throttle:30,1')->name('help.feedback');
+        // Avis sur Nova (docs/26) : privé à l'équipe, à tout moment ; « Pas maintenant » ; liens d'avis publics facultatifs (Google, Trustpilot).
+        Route::get('/avis', [FeedbackController::class, 'create'])->name('help.reviews');
+        Route::post('/avis', [FeedbackController::class, 'store'])->middleware('throttle:10,60')->name('help.feedback.store');
+        Route::post('/avis/plus-tard', [FeedbackController::class, 'dismiss'])->middleware('throttle:30,1')->name('help.feedback.dismiss');
+        Route::get('/avis/lien/{platform}', [FeedbackController::class, 'link'])->where('platform', 'google|trustpilot')->middleware('throttle:30,1')->name('help.feedback.link');
         // Support : formulaire, tickets et conversation (docs/22). Un ticket se désigne par sa référence : NWS-1248.
         Route::get('/contact', [SupportController::class, 'create'])->name('help.contact');
         Route::post('/contact', [SupportController::class, 'store'])->name('help.contact.store');

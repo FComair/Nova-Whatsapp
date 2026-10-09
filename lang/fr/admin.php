@@ -141,6 +141,39 @@ return [
         'statuses' => ['open' => 'À payer', 'paid' => 'Payée', 'void' => 'Annulée', 'uncollectible' => 'Irrécouvrable'],
     ],
 
+    'feedback' => [
+        'singular' => 'Avis client',
+        'plural' => 'Avis des clients',
+        'navigation' => 'Avis des clients',
+        'note' => 'Avis PRIVÉS envoyés à Nova. Ce ne sont ni des avis Google ni des avis Trustpilot : les avis publics sont écrits par les clients sur ces plateformes et ne figurent pas ici.',
+        'created_at' => 'Reçu le',
+        'rating' => 'Note',
+        'comment' => 'Commentaire',
+        'source' => 'Origine',
+        'ticket' => 'Ticket',
+        'organization' => 'Compte client',
+        'clicks' => 'Lien d’avis public ouvert',
+        'no_comment' => 'Sans commentaire',
+        'none' => 'Aucun',
+        'sources' => [
+            'general' => 'Général',
+            'intervention' => 'Après une réponse du support',
+            'ticket' => 'Ticket résolu ou fermé',
+        ],
+        'platforms' => [
+            'google' => 'Google',
+            'trustpilot' => 'Trustpilot',
+        ],
+        'ratings' => [
+            1 => '1 étoile',
+            2 => '2 étoiles',
+            3 => '3 étoiles',
+            4 => '4 étoiles',
+            5 => '5 étoiles',
+        ],
+        'average' => 'Note moyenne privée : :average / 5 (:count avis)',
+    ],
+
     'navigation' => ['configuration' => 'Configuration', 'operations' => 'Opérations'],
 
     'sectors' => [

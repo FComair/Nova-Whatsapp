@@ -5,6 +5,7 @@ import AlertBox from '../../Components/AlertBox.vue';
 import Badge from '../../Components/Badge.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
+import FeedbackPrompt from '../../Components/FeedbackPrompt.vue';
 import FileAttachments from '../../Components/FileAttachments.vue';
 import HelpTabs from '../../Components/HelpTabs.vue';
 import TicketStatusBadge from '../../Components/TicketStatusBadge.vue';
@@ -42,6 +43,7 @@ const props = defineProps<{
     thread: Item[];
     can: { reply: boolean; close: boolean; solved: boolean; reopen: boolean };
     limits: AttachmentLimits;
+    feedback_prompt: { key: string; context: 'intervention' | 'ticket' } | null;
 }>();
 
 const { t } = useT();
@@ -202,6 +204,8 @@ onMounted(() => void nextTick(scrollToEnd));
             {{ t('support.closed_notice') }}
             <Link :href="`${routes.help}/contact`" class="ml-1 font-semibold underline">{{ t('support.ticket.closed_cta') }}</Link>
         </AlertBox>
+
+        <FeedbackPrompt v-if="feedback_prompt" :key="feedback_prompt.key" :prompt="feedback_prompt" :reference="ticket.reference" />
 
         <ConfirmDialog
             :open="confirmClose"

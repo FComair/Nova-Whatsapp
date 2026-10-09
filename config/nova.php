@@ -104,6 +104,13 @@ return [
     // Plans choisis à l'inscription (le catalogue et les prix vivent en base, étape facturation).
     'signup_plans' => ['trial', 'basic', 'business'],
 
+    // Pages publiques d'avis sur Nova (Google, Trustpilot), proposées à tous les clients, sans condition. Adresses https données par
+    // l'environnement, jamais écrites en dur ; sans adresse valide, le lien correspondant n'est pas affiché (voir docs/26).
+    'reviews' => [
+        'google' => env('NOVA_REVIEW_URL_GOOGLE'),
+        'trustpilot' => env('NOVA_REVIEW_URL_TRUSTPILOT'),
+    ],
+
     // Envoi du code téléphonique : `log` en développement. Le canal réel (SMS ou modèle WhatsApp) reste à décider.
     'phone_code_driver' => env('NOVA_PHONE_CODE_DRIVER', 'log'),
 ];

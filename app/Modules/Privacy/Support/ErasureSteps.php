@@ -23,6 +23,8 @@ final class ErasureSteps
 
     public const ALL = [
         'booking_events',
+        'booking_tip_allocations',
+        'booking_tips',
         'price_list_imports',
         'whatsapp_messages',
         'external_busy_slots',
@@ -34,6 +36,9 @@ final class ErasureSteps
         'practitioner_services',
         'invitations',
         'practitioners',
+        'review_link_clicks',
+        'feedback_prompt_dismissals',
+        'nova_feedback',
         'support_attachments',
         'support_ticket_events',
         'support_messages',

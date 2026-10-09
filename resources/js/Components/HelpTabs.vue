@@ -16,10 +16,12 @@ const tabs = computed(() => [
         key: 'help',
         href: routes.help,
         label: t('support.tabs.help'),
-        active: !url.value.startsWith(`${routes.help}/contact`) && !url.value.startsWith(`${routes.help}/tickets`),
+        active:
+            !url.value.startsWith(`${routes.help}/contact`) && !url.value.startsWith(`${routes.help}/tickets`) && !url.value.startsWith(`${routes.help}/avis`),
     },
     { key: 'contact', href: `${routes.help}/contact`, label: t('support.tabs.contact'), active: url.value.startsWith(`${routes.help}/contact`) },
     { key: 'tickets', href: `${routes.help}/tickets`, label: t('support.tabs.tickets'), active: url.value.startsWith(`${routes.help}/tickets`) },
+    { key: 'feedback', href: `${routes.help}/avis`, label: t('support.tabs.feedback'), active: url.value.startsWith(`${routes.help}/avis`) },
 ]);
 </script>
 

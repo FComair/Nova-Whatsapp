@@ -141,6 +141,39 @@ return [
         'statuses' => ['open' => 'Due', 'paid' => 'Paid', 'void' => 'Void', 'uncollectible' => 'Uncollectible'],
     ],
 
+    'feedback' => [
+        'singular' => 'Client feedback',
+        'plural' => 'Client feedback',
+        'navigation' => 'Client feedback',
+        'note' => 'PRIVATE feedback sent to Nova. These are not Google or Trustpilot ratings: public reviews are written by clients on those platforms and are not shown here.',
+        'created_at' => 'Received on',
+        'rating' => 'Rating',
+        'comment' => 'Comment',
+        'source' => 'Source',
+        'ticket' => 'Ticket',
+        'organization' => 'Client account',
+        'clicks' => 'Public review link opened',
+        'no_comment' => 'No comment',
+        'none' => 'None',
+        'sources' => [
+            'general' => 'General',
+            'intervention' => 'After a support reply',
+            'ticket' => 'Resolved or closed ticket',
+        ],
+        'platforms' => [
+            'google' => 'Google',
+            'trustpilot' => 'Trustpilot',
+        ],
+        'ratings' => [
+            1 => '1 star',
+            2 => '2 stars',
+            3 => '3 stars',
+            4 => '4 stars',
+            5 => '5 stars',
+        ],
+        'average' => 'Private average rating: :average / 5 (:count entries)',
+    ],
+
     'navigation' => ['configuration' => 'Configuration', 'operations' => 'Operations'],
 
     'sectors' => [

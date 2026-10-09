@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Support\Http\Controllers;
 
+use App\Modules\Feedback\Services\FeedbackService;
 use App\Modules\Help\Support\HelpCatalog;
 use App\Modules\Support\Exceptions\TicketRefused;
 use App\Modules\Support\Http\Requests\ReplyRequest;
@@ -43,6 +44,7 @@ final class SupportController
         private readonly CurrentTenant $current,
         private readonly TicketDesk $desk,
         private readonly HelpCatalog $catalog,
+        private readonly FeedbackService $feedback,
     ) {}
 
     public function create(Request $request): Response
@@ -173,6 +175,8 @@ final class SupportController
                 'reopen' => TicketStatus::canReopen($ticket),
             ],
             'limits' => ['files' => AttachmentStore::MAX_FILES, 'kilobytes' => AttachmentStore::MAX_KILOBYTES, 'types' => ['PNG', 'JPG', 'PDF']],
+            // Invitation à donner son avis (jamais exigée) : après une réponse de l'équipe, ou ticket résolu ou fermé ; à l'auteur seulement.
+            'feedback_prompt' => $request->user() === null ? null : $this->feedback->promptFor($request->user(), $ticket),
         ]);
     }
 

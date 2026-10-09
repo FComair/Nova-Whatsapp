@@ -141,6 +141,39 @@ return [
         'statuses' => ['open' => 'Te betalen', 'paid' => 'Betaald', 'void' => 'Geannuleerd', 'uncollectible' => 'Oninbaar'],
     ],
 
+    'feedback' => [
+        'singular' => 'Klantmening',
+        'plural' => 'Meningen van klanten',
+        'navigation' => 'Meningen van klanten',
+        'note' => 'PRIVÉ-meningen gestuurd naar Nova. Dit zijn geen Google- of Trustpilot-beoordelingen: openbare recensies worden door klanten op die platformen geschreven en staan hier niet.',
+        'created_at' => 'Ontvangen op',
+        'rating' => 'Beoordeling',
+        'comment' => 'Opmerking',
+        'source' => 'Herkomst',
+        'ticket' => 'Ticket',
+        'organization' => 'Klantaccount',
+        'clicks' => 'Openbare recensielink geopend',
+        'no_comment' => 'Geen opmerking',
+        'none' => 'Geen',
+        'sources' => [
+            'general' => 'Algemeen',
+            'intervention' => 'Na een antwoord van de support',
+            'ticket' => 'Opgelost of gesloten ticket',
+        ],
+        'platforms' => [
+            'google' => 'Google',
+            'trustpilot' => 'Trustpilot',
+        ],
+        'ratings' => [
+            1 => '1 ster',
+            2 => '2 sterren',
+            3 => '3 sterren',
+            4 => '4 sterren',
+            5 => '5 sterren',
+        ],
+        'average' => 'Gemiddelde privébeoordeling: :average / 5 (:count meningen)',
+    ],
+
     'navigation' => ['configuration' => 'Configuratie', 'operations' => 'Beheer'],
 
     'sectors' => [
