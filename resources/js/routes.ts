@@ -13,6 +13,7 @@ export const routes = {
     onboarding: '/configuration/assistant',
     planning: '/planning',
     customers: '/clients',
+    help: '/aide',
     calendars: '/calendriers',
     billing: '/facturation',
     profile: '/reglages/profil',

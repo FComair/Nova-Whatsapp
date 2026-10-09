@@ -24,6 +24,7 @@ use App\Modules\Catalog\Support\SamplePriceListReader;
 use App\Modules\Conversation\Contracts\LanguageModel;
 use App\Modules\Conversation\Support\NullModel;
 use App\Modules\Conversation\Support\OpenAiModel;
+use App\Modules\Help\Support\HelpCatalog;
 use App\Modules\Identity\Contracts\PhoneCodeSender;
 use App\Modules\Identity\Support\LogPhoneCodeSender;
 use App\Modules\Privacy\Console\ProcessDeletions;
@@ -53,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(TenantContext::class);
         $this->app->singleton(CurrentTenant::class);
+        $this->app->singleton(HelpCatalog::class, fn (): HelpCatalog => new HelpCatalog(resource_path('help')));
 
         $this->app->bind(HostResolver::class, DnsHostResolver::class);
 

@@ -11,6 +11,7 @@ use App\Modules\Calendars\Http\Controllers\FeedController;
 use App\Modules\Catalog\Http\Controllers\PriceListImportController;
 use App\Modules\Catalog\Http\Controllers\ServiceController;
 use App\Modules\Customers\Http\Controllers\CustomerController;
+use App\Modules\Help\Http\Controllers\HelpController;
 use App\Modules\Identity\Http\Controllers\EmailVerificationController;
 use App\Modules\Identity\Http\Controllers\LocaleController;
 use App\Modules\Identity\Http\Controllers\LoginController;
@@ -187,6 +188,17 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/rendez-vous/{booking}/annuler', [PlanningController::class, 'cancel'])->name('planning.cancel');
         Route::post('/rendez-vous/{booking}/resultat', [PlanningController::class, 'finish'])->name('planning.finish');
         Route::put('/rendez-vous/{booking}/paiement', [PlanningController::class, 'payment'])->name('planning.payment');
+    });
+
+    // Centre d'aide (docs/22) : tous les rôles ; contenu en fichiers Markdown, avis enregistré par personne.
+    Route::prefix('/aide')->group(function (): void {
+        $categories = implode('|', array_keys((array) config('help.categories')));
+
+        Route::get('/', [HelpController::class, 'index'])->name('help.index');
+        Route::get('/recherche', [HelpController::class, 'search'])->name('help.search');
+        Route::post('/retour', [HelpController::class, 'feedback'])->middleware('throttle:30,1')->name('help.feedback');
+        Route::get('/{category}', [HelpController::class, 'category'])->where('category', $categories)->name('help.category');
+        Route::get('/{category}/{slug}', [HelpController::class, 'show'])->where('category', $categories)->where('slug', '[a-z0-9-]+')->name('help.article');
     });
 
     // Fiches clients : PlanningAccess/CustomerController restreignent le praticien à ses propres clients (docs/02 §1).
