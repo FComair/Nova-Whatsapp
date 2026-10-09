@@ -837,6 +837,8 @@ return [
             'booked' => 'Temps réservé',
             'available' => 'Temps non réservé',
             'utilization' => 'Taux d\'occupation',
+            'refunds' => 'Remboursements',
+            'discounts' => 'Remises',
             'customers_total' => 'Clients',
         ],
         'help' => [
@@ -860,6 +862,7 @@ return [
             'avg_per_customer' => 'Rendez-vous non annulés de la période ÷ clients actifs.',
             'returning_rate' => 'Clients fidèles ÷ clients actifs.',
             'retention' => 'Part des clients actifs la période précédente qui le sont aussi pendant cette période.',
+            'unavailable' => 'Non disponible : la plateforme n\'enregistre pas ce chiffre, il n\'est donc ni affiché ni estimé.',
             'customers_total' => 'Clients de l\'établissement, hors archivés et effacés.',
             'booked_value' => 'Prix des rendez-vous non annulés (à venir, terminés, absences), tel qu\'enregistré à la réservation. Ce n\'est pas de l\'argent reçu.',
             'completed_value' => 'Prix des rendez-vous marqués « terminé ».',

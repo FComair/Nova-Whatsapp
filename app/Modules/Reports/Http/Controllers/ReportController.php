@@ -77,7 +77,7 @@ final class ReportController
             'access' => $this->accessProps(),
             'locale' => $this->locale(),
             'business' => ['id' => $organization?->id, 'name' => $organization?->name, 'logo_version' => $organization?->logo_updated_at?->getTimestamp()],
-            'generated_at' => now($filters->timezone)->toIso8601String(),
+            'generatedAt' => now($filters->timezone)->toIso8601String(),
             'auto' => $request->boolean('auto'),
             'reports' => $reports,
         ]);

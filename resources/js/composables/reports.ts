@@ -2,7 +2,7 @@
  * Mise en forme et comparaisons des rapports : nombres, taux, montants, durées et dates selon la langue de l'établissement,
  * jamais de couleur « bon / mauvais » sur une hausse ou une baisse, jamais de pourcentage sur une base nulle ou trop petite.
  */
-import type { Granularity, MetricKind, ReportFiltersValue, ReportMetric } from '../types/reports';
+import type { Granularity, MetricKind, OverviewData, ReportFiltersValue, ReportMetric, ReportView } from '../types/reports';
 import { formatDate } from './dates';
 import { formatPrice } from './money';
 
@@ -10,9 +10,14 @@ export function formatCount(value: number, locale: string, digits = 0): string {
     return new Intl.NumberFormat(locale, { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
 }
 
+/** Nombre avec au plus `digits` décimales, sans zéros inutiles (« 20 », « 8,3 »). */
+export function formatPlain(value: number, locale: string, digits = 1): string {
+    return new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
+}
+
 /** Taux 0 à 1 → « 12,5 % » ; vide quand il n'y a rien à diviser. */
 export function formatRate(value: number | null, locale: string): string {
-    return value === null ? '—' : `${formatCount(value * 100, locale, value > 0 && value < 0.1 ? 1 : 0)} %`;
+    return value === null ? '—' : `${formatPlain(value * 100, locale, value > 0 && value < 0.1 ? 1 : 0)} %`;
 }
 
 /** Minutes → « 12 h 30 » (« 45 min » sous une heure). */
@@ -84,9 +89,9 @@ export function changeOf(metric: ReportMetric, locale: string, currency = 'EUR',
     const direction: Direction = metric.delta > 0 ? 'up' : metric.delta < 0 ? 'down' : 'same';
     const delta =
         metric.kind === 'rate'
-            ? `${signed(formatCount(metric.delta, locale, 1), metric.delta)} pt`
+            ? `${signed(formatPlain(metric.delta, locale), metric.delta)} pt`
             : signed(formatMetric(metric.delta, metric.kind, locale, currency, digits), metric.delta);
-    const pct = metric.pct === null ? null : `${signed(formatCount(metric.pct, locale, 1), metric.pct)} %`;
+    const pct = metric.pct === null ? null : `${signed(formatPlain(metric.pct, locale), metric.pct)} %`;
 
     return { direction, delta, pct, note: metric.pct === null && metric.kind !== 'rate' ? metric.note : null };
 }
@@ -175,4 +180,52 @@ export function niceScale(max: number, ticks = 4): { max: number; step: number }
     const step = (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * magnitude;
 
     return { max: Math.ceil(max / step) * step, step };
+}
+
+/** Colonnes et lignes du tableau équivalent à une carte de chaleur : un jour par ligne, une heure par colonne. */
+export function heatmapTable(
+    heatmap: { cells: Record<string, number[]>; first_hour: number; last_hour: number },
+    labels: { day: string; weekday: (day: number) => string },
+): { columns: { key: string; label: string; align?: 'left' | 'right' }[]; rows: Record<string, string | number>[] } {
+    const hours = Array.from(
+        { length: Math.max(heatmap.first_hour, heatmap.last_hour) - Math.min(heatmap.first_hour, heatmap.last_hour) + 1 },
+        (_unused, index) => Math.min(heatmap.first_hour, heatmap.last_hour) + index,
+    );
+
+    return {
+        columns: [
+            { key: 'day', label: labels.day },
+            ...hours.map((hour) => ({ key: `h${hour}`, label: `${String(hour).padStart(2, '0')}:00`, align: 'right' as const })),
+        ],
+        rows: Array.from({ length: 7 }, (_unused, index) => index + 1).map((day) => ({
+            day: labels.weekday(day),
+            ...Object.fromEntries(hours.map((hour) => [`h${hour}`, heatmap.cells[String(day)][hour]])),
+        })),
+    };
+}
+
+/**
+ * Le rapport n'a rien à montrer pour la période : aucun rendez-vous (ou, selon la catégorie, aucun client, montant ou temps prévu).
+ * Sert à afficher l'état vide plutôt qu'une page remplie de zéros.
+ */
+export function isEmptyReport(category: ReportView, report: unknown): boolean {
+    if (report === null || report === undefined) {
+        return false;
+    }
+
+    const metricsOf = (group: unknown): Record<string, ReportMetric> => (group as { metrics?: Record<string, ReportMetric> } | null | undefined)?.metrics ?? {};
+    const zero = (metrics: Record<string, ReportMetric>, ...keys: string[]): boolean => keys.every((key) => (metrics[key]?.value ?? 0) === 0);
+
+    switch (category) {
+        case 'overview':
+            return zero(metricsOf((report as OverviewData).appointments), 'total');
+        case 'appointments':
+            return zero(metricsOf(report), 'total');
+        case 'customers':
+            return zero(metricsOf(report), 'active', 'new');
+        case 'financial':
+            return zero(metricsOf(report), 'booked_value', 'collected', 'cancelled_value');
+        default:
+            return zero(metricsOf(report), 'assigned', 'scheduled');
+    }
 }

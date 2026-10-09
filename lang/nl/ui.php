@@ -837,6 +837,8 @@ return [
             'booked' => 'Geboekte tijd',
             'available' => 'Niet-geboekte tijd',
             'utilization' => 'Bezettingsgraad',
+            'refunds' => 'Terugbetalingen',
+            'discounts' => 'Kortingen',
             'customers_total' => 'Klanten',
         ],
         'help' => [
@@ -860,6 +862,7 @@ return [
             'avg_per_customer' => 'Niet-geannuleerde afspraken van de periode ÷ actieve klanten.',
             'returning_rate' => 'Terugkerende klanten ÷ actieve klanten.',
             'retention' => 'Deel van de klanten die in de vorige periode actief waren en het ook in deze periode zijn.',
+            'unavailable' => 'Niet beschikbaar: het platform legt dit cijfer niet vast, dus het wordt niet getoond en niet geschat.',
             'customers_total' => 'Klanten van de zaak, zonder gearchiveerde en gewiste klanten.',
             'booked_value' => 'Prijs van niet-geannuleerde afspraken (aankomend, afgerond, niet verschenen) zoals vastgelegd bij de reservering. Dit is geen ontvangen geld.',
             'completed_value' => 'Prijs van afspraken gemarkeerd als "afgerond".',

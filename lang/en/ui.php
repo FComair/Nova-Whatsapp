@@ -837,6 +837,8 @@ return [
             'booked' => 'Booked time',
             'available' => 'Unbooked time',
             'utilization' => 'Utilization rate',
+            'refunds' => 'Refunds',
+            'discounts' => 'Discounts',
             'customers_total' => 'Customers',
         ],
         'help' => [
@@ -860,6 +862,7 @@ return [
             'avg_per_customer' => 'Non-cancelled appointments in the period ÷ active customers.',
             'returning_rate' => 'Returning customers ÷ active customers.',
             'retention' => 'Share of customers active in the previous period who are also active in this period.',
+            'unavailable' => 'Not available: the platform does not record this figure, so it is neither shown nor estimated.',
             'customers_total' => 'Customers of the business, excluding archived and erased ones.',
             'booked_value' => 'Price of non-cancelled appointments (upcoming, completed, no-shows) as recorded at booking. This is not money received.',
             'completed_value' => 'Price of appointments marked "completed".',
