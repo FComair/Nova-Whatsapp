@@ -24,6 +24,7 @@ use App\Modules\Identity\Http\Middleware\RequireTwoFactor;
 use App\Modules\Onboarding\Http\Controllers\OnboardingController;
 use App\Modules\Onboarding\Http\Controllers\SetupController;
 use App\Modules\Privacy\Http\Controllers\AccountDataController;
+use App\Modules\Reports\Http\Controllers\ReportController;
 use App\Modules\Staff\Http\Controllers\InvitationController;
 use App\Modules\Staff\Http\Controllers\PractitionerPhotoController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
@@ -197,6 +198,18 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/rendez-vous/{booking}/annuler', [PlanningController::class, 'cancel'])->name('planning.cancel');
         Route::post('/rendez-vous/{booking}/resultat', [PlanningController::class, 'finish'])->name('planning.finish');
         Route::put('/rendez-vous/{booking}/paiement', [PlanningController::class, 'payment'])->name('planning.payment');
+    });
+
+    // Rapports et analyses : propriétaire, responsable de site et praticien (docs/02 §1). ReportAccess limite les chiffres au rôle ;
+    // l'export est réservé au propriétaire et au responsable de site, le réglage des montants au propriétaire.
+    Route::middleware('role:owner,site_manager,practitioner')->prefix('/rapports')->group(function (): void {
+        Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/imprimer', [ReportController::class, 'print'])->name('reports.print');
+        Route::middleware('role:owner,site_manager')->group(function (): void {
+            Route::get('/export/apercu', [ReportController::class, 'preview'])->name('reports.export.preview');
+            Route::get('/export', [ReportController::class, 'export'])->middleware('throttle:20,1')->name('reports.export');
+        });
+        Route::put('/reglages', [ReportController::class, 'settings'])->middleware('role:owner')->name('reports.settings');
     });
 
     // Centre d'aide (docs/22) : tous les rôles ; contenu en fichiers Markdown, avis enregistré par personne.

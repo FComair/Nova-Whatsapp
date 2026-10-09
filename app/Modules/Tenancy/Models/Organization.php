@@ -41,6 +41,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $billing_name
  * @property string|null $billing_vat_number
  * @property array<string, mixed>|null $billing_address
+ * @property bool $reports_financial_managers
  */
 class Organization extends Model
 {
@@ -73,6 +74,7 @@ class Organization extends Model
             'unavailable_message' => 'array',
             'billing_address' => 'array',
             'data_sensitivity' => 'boolean',
+            'reports_financial_managers' => 'boolean',
             'trial_ends_at' => 'datetime',
             'logo_updated_at' => 'datetime',
             'paused_at' => 'datetime',

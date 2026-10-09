@@ -149,6 +149,33 @@ final class AvailabilityService
     }
 
     /**
+     * Temps de travail d'un praticien sur un site, jour par jour (jour local du site) : plages où il peut recevoir, c'est-à-dire
+     * horaires d'ouverture ∩ planning du praticien, fermetures exceptionnelles et indisponibilités déduites, disponibilités
+     * exceptionnelles ajoutées. Les rendez-vous ne sont PAS déduits : c'est le temps de travail prévu, pas le temps libre.
+     * `scheduled` dit si le planning habituel du praticien prévoit ce jour de la semaine.
+     *
+     * @return array<string, array{minutes: int, scheduled: bool}> date locale => temps de travail prévu
+     */
+    public function workingDays(Location $location, Practitioner $practitioner, string $fromDate, string $toDate): array
+    {
+        $context = $this->load($location, $practitioner, $fromDate, $toDate, null, CarbonImmutable::now(), false);
+        $days = [];
+
+        for ($day = CarbonImmutable::parse($fromDate, $location->timezone); $day->toDateString() <= $toDate; $day = $day->addDay()) {
+            $date = $day->toDateString();
+            $minutes = 0;
+
+            foreach ($this->windows($location, $date, $context) as [$start, $end]) {
+                $minutes += intdiv($end - $start, 60);
+            }
+
+            $days[$date] = ['minutes' => $minutes, 'scheduled' => ($context['schedule'][$day->isoWeekday()] ?? []) !== []];
+        }
+
+        return $days;
+    }
+
+    /**
      * @return list<Slot>
      */
     private function slotsFor(
@@ -249,7 +276,7 @@ final class AvailabilityService
      *
      * @return array{hours: array<int, list<array{0: string, 1: string}>>, exceptions: array<string, list<BusinessHourException>>, schedule: array<int, list<array{0: string, 1: string}>>, timeOff: list<PractitionerTimeOff>, blocked: list<array{0: int, 1: int}>}
      */
-    private function load(Location $location, Practitioner $practitioner, string $fromDate, string $toDate, ?string $ignoreBookingId, CarbonImmutable $now): array
+    private function load(Location $location, Practitioner $practitioner, string $fromDate, string $toDate, ?string $ignoreBookingId, CarbonImmutable $now, bool $withBusy = true): array
     {
         $tz = $location->timezone;
         $rangeStart = CarbonImmutable::parse($fromDate, $tz)->startOfDay()->utc();
@@ -272,6 +299,10 @@ final class AvailabilityService
 
         $timeOff = PractitionerTimeOff::query()->where('practitioner_id', $practitioner->id)
             ->where('starts_at', '<', $rangeEnd)->where('ends_at', '>', $rangeStart)->get()->all();
+
+        if (! $withBusy) {
+            return ['hours' => $hours, 'exceptions' => $exceptions, 'schedule' => $schedule, 'timeOff' => $timeOff, 'blocked' => []];
+        }
 
         // Un créneau en attente dont le blocage a expiré est libre (il sera libéré par la tâche planifiée).
         $blocked = Booking::query()->where('practitioner_id', $practitioner->id)
