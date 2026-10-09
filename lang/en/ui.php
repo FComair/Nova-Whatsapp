@@ -749,6 +749,7 @@ return [
         'no_practitioners' => 'No practitioner has a schedule at this location. Add practitioners and their availability to receive appointments.',
         'empty_week' => 'No appointments this week.',
         'working_hours' => 'Working hours',
+        'now' => 'Current time: :time',
         'views' => [
             'label' => 'Calendar view',
             'day' => 'Day',

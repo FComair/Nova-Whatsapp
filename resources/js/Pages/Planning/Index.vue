@@ -5,6 +5,8 @@ import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import BookingDetails from '../../Components/BookingDetails.vue';
 import BookingForm from '../../Components/BookingForm.vue';
+import CurrentTimeAxisLabel from '../../Components/CurrentTimeAxisLabel.vue';
+import CurrentTimeLine from '../../Components/CurrentTimeLine.vue';
 import ModalDialog from '../../Components/ModalDialog.vue';
 import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
@@ -410,6 +412,12 @@ function describe(booking: PlanningBooking): string {
                                         :title="t('planning.closing', { time: minutesToTime(opening.end) })"
                                     />
                                 </template>
+                                <CurrentTimeAxisLabel
+                                    v-if="location"
+                                    :dates="columns.map((column) => column.date)"
+                                    :timezone="location.timezone"
+                                    :range="range"
+                                />
                             </div>
                         </div>
 
@@ -455,6 +463,7 @@ function describe(booking: PlanningBooking): string {
                                     class="pointer-events-none absolute inset-x-0 border-t border-line"
                                     :style="{ top: `${(mark - range.from) * PIXELS_PER_MINUTE}px` }"
                                 />
+                                <CurrentTimeLine v-if="location" :date="day.date" :timezone="location.timezone" :range="range" />
                                 <button
                                     v-for="booking in day.bookings"
                                     :key="booking.id"

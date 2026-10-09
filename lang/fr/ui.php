@@ -749,6 +749,7 @@ return [
         'no_practitioners' => 'Aucun praticien n\'a de planning sur ce site. Ajoutez des praticiens et leurs disponibilités pour recevoir des rendez-vous.',
         'empty_week' => 'Aucun rendez-vous cette semaine.',
         'working_hours' => 'Heures de travail',
+        'now' => 'Heure actuelle : :time',
         'views' => [
             'label' => 'Vue du planning',
             'day' => 'Jour',

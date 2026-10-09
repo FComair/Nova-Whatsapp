@@ -749,6 +749,7 @@ return [
         'no_practitioners' => 'Geen enkele behandelaar heeft een rooster op deze locatie. Voeg behandelaars en hun beschikbaarheid toe om afspraken te ontvangen.',
         'empty_week' => 'Geen afspraken deze week.',
         'working_hours' => 'Werkuren',
+        'now' => 'Huidig uur: :time',
         'views' => [
             'label' => 'Planningweergave',
             'day' => 'Dag',

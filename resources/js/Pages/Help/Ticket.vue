@@ -127,18 +127,14 @@ onMounted(() => void nextTick(scrollToEnd));
             <div v-if="can.reply || can.close || can.solved || can.reopen" class="mt-4 flex flex-wrap gap-2">
                 <BaseButton v-if="can.reply" size="sm" @click="focusReply">{{ t('support.ticket.reply_action') }}</BaseButton>
                 <BaseButton v-if="can.solved" variant="secondary" class="!border-line-strong" size="sm" :loading="busy" @click="act('resolu')">
-{{
-                    t('support.ticket.solved')
-                }}
-</BaseButton>
+                    {{ t('support.ticket.solved') }}
+                </BaseButton>
                 <BaseButton v-if="can.reopen" variant="secondary" class="!border-line-strong" size="sm" :loading="busy" @click="act('rouvrir')">
                     {{ t('support.ticket.reopen') }}
                 </BaseButton>
                 <BaseButton v-if="can.close" variant="secondary" class="!border-line-strong" size="sm" @click="confirmClose = true">
-{{
-                    t('support.ticket.close')
-                }}
-</BaseButton>
+                    {{ t('support.ticket.close') }}
+                </BaseButton>
             </div>
         </header>
 
@@ -196,10 +192,8 @@ onMounted(() => void nextTick(scrollToEnd));
                 <div class="flex flex-col gap-2 sm:flex-row">
                     <BaseButton type="submit" :loading="form.processing" :disabled="form.body.trim().length < 2">{{ t('support.reply.send') }}</BaseButton>
                     <BaseButton variant="secondary" class="!border-line-strong" :disabled="form.processing" @click="form.reset()">
-{{
-                        t('support.reply.cancel')
-                    }}
-</BaseButton>
+                        {{ t('support.reply.cancel') }}
+                    </BaseButton>
                 </div>
             </form>
         </section>
