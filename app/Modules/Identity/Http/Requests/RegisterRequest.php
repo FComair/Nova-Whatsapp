@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Requests;
 
+use App\Modules\Billing\Services\SignupPlans;
 use App\Modules\Identity\Rules\StrongPassword;
 use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Support\ValidPhone;
@@ -38,7 +39,7 @@ final class RegisterRequest extends FormRequest
             'password' => ['required', 'string', new StrongPassword, 'max:200'],
             'phone' => ['required', 'string', new ValidPhone],
             'sector' => ['required', 'string', Rule::in(app(SectorCatalog::class)->codes())],
-            'plan' => ['nullable', 'string', Rule::in(config('nova.signup_plans'))],
+            'plan' => ['required', 'string', Rule::in(app(SignupPlans::class)->codes())],
             'accept_terms' => ['accepted'],
             'accept_privacy' => ['accepted'],
             'accept_dpa' => ['accepted'],
@@ -53,6 +54,9 @@ final class RegisterRequest extends FormRequest
         return [
             // E1 (flowchart 5A / catalogue 5E).
             'email.unique' => __('ui.errors.E1'),
+            // Formule absente, retirée ou devenue indisponible entre l'affichage et l'envoi : on repropose le choix.
+            'plan.required' => __('ui.register.plan_required'),
+            'plan.in' => __('ui.register.plan_unavailable'),
             'accept_terms.accepted' => __('ui.register.must_accept'),
             'accept_privacy.accepted' => __('ui.register.must_accept'),
             'accept_dpa.accepted' => __('ui.register.must_accept'),

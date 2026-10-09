@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $price_monthly_cents
  * @property string $currency
  * @property array<string, int|null> $limits
+ * @property bool $is_recommended désignée explicitement par la plateforme (au plus une)
  */
 class Plan extends Model
 {
@@ -28,6 +29,6 @@ class Plan extends Model
      */
     protected function casts(): array
     {
-        return ['limits' => 'array', 'is_active' => 'boolean'];
+        return ['limits' => 'array', 'is_active' => 'boolean', 'is_recommended' => 'boolean'];
     }
 }

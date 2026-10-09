@@ -101,9 +101,6 @@ return [
     // Couleurs proposées pour identifier un praticien dans le planning (contrastes suffisants sur fond blanc).
     'practitioner_colors' => ['#2A5BD7', '#12A594', '#B45309', '#7C3AED', '#DB2777', '#0E7490', '#4D7C0F', '#B91C1C'],
 
-    // Plans choisis à l'inscription (le catalogue et les prix vivent en base, étape facturation).
-    'signup_plans' => ['trial', 'basic', 'business'],
-
     // Pages publiques d'avis sur Nova (Google, Trustpilot), proposées à tous les clients, sans condition. Adresses https données par
     // l'environnement, jamais écrites en dur ; sans adresse valide, le lien correspondant n'est pas affiché (voir docs/26).
     'reviews' => [

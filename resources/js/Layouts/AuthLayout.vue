@@ -5,7 +5,7 @@ import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
 import { useT } from '../composables/useT';
 import type { SharedProps } from '../types';
 
-defineProps<{ title: string; subtitle?: string }>();
+defineProps<{ title: string; subtitle?: string; wide?: boolean }>();
 
 const page = usePage<SharedProps>();
 const { t } = useT();
@@ -19,12 +19,12 @@ const { t } = useT();
     </a>
 
     <div class="flex min-h-screen flex-col px-4 py-6 sm:px-6">
-        <header class="mx-auto flex w-full max-w-md items-center justify-between">
+        <header class="mx-auto flex w-full items-center justify-between" :class="wide ? 'max-w-4xl' : 'max-w-md'">
             <span class="text-2xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
             <LanguageSwitcher />
         </header>
 
-        <main id="contenu" class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-8">
+        <main id="contenu" class="mx-auto flex w-full flex-1 flex-col justify-center py-8" :class="wide ? 'max-w-4xl' : 'max-w-md'">
             <div class="rounded-card border border-line bg-surface shadow-xs p-6 shadow-sm sm:p-8">
                 <h1 class="text-2xl font-semibold text-nova-900">{{ title }}</h1>
                 <p v-if="subtitle" class="mt-2 text-neutral-600">{{ subtitle }}</p>

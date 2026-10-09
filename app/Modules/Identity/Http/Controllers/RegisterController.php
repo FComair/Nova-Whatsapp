@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Controllers;
 
+use App\Modules\Billing\Services\SignupPlans;
 use App\Modules\Identity\Exceptions\TooManyAttempts;
 use App\Modules\Identity\Http\Requests\RegisterRequest;
 use App\Modules\Identity\Notifications\VerifyEmailNotification;
@@ -21,11 +22,13 @@ use UnexpectedValueException;
 
 final class RegisterController
 {
-    public function create(Request $request): Response
+    public function create(Request $request, SignupPlans $plans): Response
     {
         return Inertia::render('Auth/Register', [
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale()),
-            'plan' => in_array($request->query('plan'), config('nova.signup_plans'), true) ? $request->query('plan') : 'trial',
+            // Formule préchoisie par un lien (?plan=…) seulement si elle existe encore ; sinon l'essai.
+            'plan' => in_array($request->query('plan'), $plans->codes(), true) ? $request->query('plan') : SignupPlans::TRIAL,
+            'offers' => $plans->options(),
         ]);
     }
 
