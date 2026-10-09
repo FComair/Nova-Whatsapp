@@ -119,6 +119,7 @@ final class ReportService
                 ->map(fn (object $row): array => ['id' => (string) $row->id, 'name' => (string) $row->name])->all(),
             'statuses' => ReportFilters::STATUSES,
             'sources' => ReportFilters::SOURCES,
+            'payment_statuses' => ReportFilters::PAYMENT_STATUSES,
             'presets' => ReportFilters::PRESETS,
         ];
     }

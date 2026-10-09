@@ -113,7 +113,7 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
                 <h3 class="text-base font-semibold text-nova-900">{{ t('reports.category.financial') }}</h3>
                 <Link :href="links.financial" class="text-sm font-semibold text-primary-700 underline print:hidden">{{ t('reports.overview.go') }}</Link>
             </div>
-            <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
                 <KpiCard
                     :label="t('reports.metric.booked_value')"
                     :help="t('reports.help.booked_value')"
@@ -139,6 +139,20 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
                     :label="t('reports.metric.avg_value')"
                     :help="t('reports.help.avg_value')"
                     :metric="m(overview.financial.metrics, 'avg_value')"
+                    :currency="overview.financial.currency"
+                    :previous="period.previous"
+                />
+                <KpiCard
+                    :label="t('reports.metric.tips')"
+                    :help="t('reports.help.tips')"
+                    :metric="m(overview.financial.metrics, 'tips')"
+                    :currency="overview.financial.currency"
+                    :previous="period.previous"
+                />
+                <KpiCard
+                    :label="t('reports.metric.total_paid')"
+                    :help="t('reports.help.total_paid')"
+                    :metric="m(overview.financial.metrics, 'total_paid')"
                     :currency="overview.financial.currency"
                     :previous="period.previous"
                 />

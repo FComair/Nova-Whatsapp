@@ -27,6 +27,18 @@ final class BookingRuleViolation extends RuntimeException
 
     public const INVALID_PAYMENT_STATUS = 'invalid_payment_status';
 
+    /** Pourboire sur un rendez-vous dont le paiement est « non payé » ou « perte » : aucun argent n'a été reçu. */
+    public const TIP_REQUIRES_PAYMENT = 'tip_requires_payment';
+
+    /** Aucun praticien actif n'est attribué au rendez-vous : une personne autorisée doit choisir qui reçoit le pourboire. */
+    public const TIP_RECIPIENT_REQUIRED = 'tip_recipient_required';
+
+    /** Bénéficiaire inconnu, inactif, ou indiqué deux fois. */
+    public const TIP_RECIPIENT_INVALID = 'tip_recipient_invalid';
+
+    /** Les parts ne totalisent pas le pourboire. */
+    public const TIP_ALLOCATION_MISMATCH = 'tip_allocation_mismatch';
+
     public function __construct(public readonly string $rule)
     {
         parent::__construct("Règle de réservation non respectée : {$rule}.");

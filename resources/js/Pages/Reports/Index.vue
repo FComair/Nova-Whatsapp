@@ -182,7 +182,16 @@ function saveManagers(value: boolean): void {
                     <BaseButton v-if="filtered" class="mt-4" variant="secondary" @click="reset">{{ t('reports.empty.reset') }}</BaseButton>
                 </div>
 
-                <ReportBody v-else-if="report" :category="category" :report="report" :period="period" :access="access" :links="links" :currency="currency" />
+                <ReportBody
+                    v-else-if="report"
+                    :category="category"
+                    :report="report"
+                    :period="period"
+                    :access="access"
+                    :links="links"
+                    :currency="currency"
+                    :payment-filtered="filters.payment !== null"
+                />
             </div>
 
             <section

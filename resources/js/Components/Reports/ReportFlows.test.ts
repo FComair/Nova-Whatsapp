@@ -26,6 +26,7 @@ const filters = {
     service: null,
     status: [] as string[],
     source: null,
+    payment: null,
 };
 const period = {
     from: '2026-06-01',
@@ -44,6 +45,7 @@ const options = {
     services: [{ id: 's1', name: 'Cut' }],
     statuses: ['confirmed', 'completed', 'no_show', 'cancelled'],
     sources: ['dashboard', 'whatsapp'],
+    payment_statuses: ['unpaid', 'paid_onsite'],
     presets: ['today', 'this_week', 'this_month', 'last_month', 'this_quarter', 'custom'],
 };
 const access = {

@@ -26,6 +26,8 @@ const props = defineProps<{
     links: Record<ReportCategory, string>;
     /** Devise des montants affichés hors du rapport financier (valeur des services, des praticiens). */
     currency: string;
+    /** Un filtre de statut de paiement est actif (rapport financier). */
+    paymentFiltered?: boolean;
 }>();
 
 const appointments = computed(() => props.report as AppointmentsReportData);
@@ -39,6 +41,6 @@ const overview = computed(() => props.report as OverviewData);
     <OverviewView v-if="category === 'overview'" :overview="overview" :period="period" :links="links" />
     <AppointmentsView v-else-if="category === 'appointments'" :report="appointments" :period="period" :currency="currency" :show-values="access.financial" />
     <CustomersView v-else-if="category === 'customers'" :report="customers" :period="period" :can-open-customers="access.role !== 'practitioner'" />
-    <FinancialView v-else-if="category === 'financial'" :report="financial" :period="period" />
+    <FinancialView v-else-if="category === 'financial'" :report="financial" :period="period" :payment-filtered="paymentFiltered" />
     <PractitionersView v-else :report="practitioners" :period="period" :currency="currency" :show-values="access.financial" :show-compare="access.staff" />
 </template>

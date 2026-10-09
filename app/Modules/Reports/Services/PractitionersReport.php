@@ -114,9 +114,14 @@ final class PractitionersReport
             ->selectRaw('b.practitioner_id as practitioner, s.id as id, s.name as name, count(*) as n')
             ->groupBy('b.practitioner_id', 's.id', 's.name')->orderByDesc('n')->get()->groupBy('practitioner');
 
+        // Pourboires REÇUS (d'après leur répartition) : un montant à part, jamais ajouté à la valeur ou à l'encaissé du praticien.
+        $tips = $withValues
+            ? $this->query->bookings($filters)->join('booking_tip_allocations as a', 'a.booking_id', '=', 'b.id')->selectRaw('a.practitioner_id as id, sum(a.amount_cents) as tips')->groupBy('a.practitioner_id')->pluck('tips', 'id')
+            : collect();
+
         $locations = $this->locations($filters);
 
-        return $practitioners->map(function (object $practitioner) use ($filters, $stats, $services, $locations, $withValues): array {
+        return $practitioners->map(function (object $practitioner) use ($filters, $stats, $services, $locations, $withValues, $tips): array {
             $row = $stats->get($practitioner->id);
             [$scheduled, $workingDays, $daysOff, $nonWorking] = $this->working($filters, (string) $practitioner->id, $locations);
             $booked = (int) round((float) ($row->booked ?? 0));
@@ -145,6 +150,7 @@ final class PractitionersReport
                 'non_working_days' => $nonWorking,
                 'value_cents' => $withValues ? (int) ($row->value ?? 0) : null,
                 'collected_cents' => $withValues ? (int) ($row->collected ?? 0) : null,
+                'tips_cents' => $withValues ? (int) ($tips[$practitioner->id] ?? 0) : null,
                 'services' => ($services->get($practitioner->id) ?? collect())->take(self::TOP_SERVICES)
                     ->map(fn (object $service): array => ['id' => (string) $service->id, 'name' => (string) $service->name, 'count' => (int) $service->n])->values()->all(),
             ];

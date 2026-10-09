@@ -35,6 +35,8 @@ final class FinancialReport
         $other = $this->query->bookings($filters)->where('b.currency', '!=', $currency)->count();
         $now = $this->totals($filters, $currency);
         $before = $this->totals($filters->previous(), $currency);
+        $tipsNow = $this->tipTotals($filters, $currency);
+        $tipsBefore = $this->tipTotals($filters->previous(), $currency);
 
         return [
             'currency' => $currency,
@@ -48,12 +50,19 @@ final class FinancialReport
                 'no_show_value' => Comparison::amount($now['no_show'], $before['no_show'], 'money'),
                 'cancelled_value' => Comparison::amount($now['cancelled'], $before['cancelled'], 'money'),
                 'avg_value' => Comparison::amount($now['active'] > 0 ? (int) round($now['booked'] / $now['active']) : 0, $before['active'] > 0 ? (int) round($before['booked'] / $before['active']) : 0, 'money'),
+                // Pourboires : toujours À PART. `collected` (service) ne les contient pas ; `total_paid` les additionne explicitement.
+                'tips' => Comparison::amount($tipsNow['tips'], $tipsBefore['tips'], 'money'),
+                'tips_count' => Comparison::amount($tipsNow['count'], $tipsBefore['count']),
+                'tips_avg' => Comparison::amount($tipsNow['count'] > 0 ? (int) round($tipsNow['tips'] / $tipsNow['count']) : 0, $tipsBefore['count'] > 0 ? (int) round($tipsBefore['tips'] / $tipsBefore['count']) : 0, 'money'),
+                'total_paid' => Comparison::amount($now['collected'] + $tipsNow['tips'], $before['collected'] + $tipsBefore['tips'], 'money'),
                 'collection_rate' => Comparison::rate(Comparison::ratio($now['collected_completed'], $now['completed']), Comparison::ratio($before['collected_completed'], $before['completed']), $now['completed_count'], $before['completed_count']),
             ],
             'series' => $this->series($filters, $currency),
-            'services' => $this->by($filters, $currency, 's.id', 's.name', 'services as s', 's.id', 'b.service_id'),
+            'services' => $this->withTips($this->by($filters, $currency, 's.id', 's.name', 'services as s', 's.id', 'b.service_id'), $filters, $currency, 'b.service_id'),
             'practitioners' => $this->access->canCompareStaff() ? $this->practitioners($filters, $currency) : null,
             'locations' => $this->locations($filters, $currency),
+            'tips_by_practitioner' => $this->access->canCompareStaff() ? $this->tipsByPractitioner($filters, $currency) : null,
+            'tips_split' => $this->splitCount($filters, $currency),
             'methods' => $this->methods($filters, $currency),
             'payment_statuses' => $this->paymentStatuses($filters, $currency),
             'unavailable' => ['refunds', 'discounts', 'payment_date', 'vat_breakdown'],
@@ -69,7 +78,65 @@ final class FinancialReport
 
     private function base(ReportFilters $filters, string $currency): Builder
     {
-        return $this->query->bookings($filters)->where('b.currency', $currency);
+        return $this->query->bookings($filters)->where('b.currency', $currency)
+            ->when($filters->paymentStatus !== null, fn (Builder $query) => $query->where('b.payment_status', $filters->paymentStatus));
+    }
+
+    /**
+     * Pourboires de la période (rendez-vous retenus par les filtres) : total et nombre. Séparés du montant encaissé du service.
+     *
+     * @return array{tips: int, count: int}
+     */
+    public function tipTotals(ReportFilters $filters, string $currency): array
+    {
+        $row = $this->base($filters, $currency)->join('booking_tips as t', 't.booking_id', '=', 'b.id')
+            ->selectRaw('coalesce(sum(t.amount_cents), 0) as tips, count(*) as n')->first();
+
+        return ['tips' => (int) ($row->tips ?? 0), 'count' => (int) ($row->n ?? 0)];
+    }
+
+    /**
+     * Ajoute à chaque ligne (service, site) les pourboires des rendez-vous concernés, dans la colonne `tips`.
+     *
+     * @param  list<array<string, mixed>>  $rows
+     * @return list<array<string, mixed>>
+     */
+    private function withTips(array $rows, ReportFilters $filters, string $currency, string $column): array
+    {
+        $tips = $this->base($filters, $currency)->join('booking_tips as t', 't.booking_id', '=', 'b.id')
+            ->selectRaw("{$column} as ref, sum(t.amount_cents) as tips")->groupBy($column)->pluck('tips', 'ref');
+
+        return array_map(fn (array $row): array => $row + ['tips' => (int) ($tips[$row['id']] ?? 0)], $rows);
+    }
+
+    /**
+     * Pourboires reçus par praticien (d'après leur répartition), parmi les rendez-vous retenus par les filtres. Le bénéficiaire peut
+     * être un autre praticien que celui du rendez-vous quand le pourboire est réparti.
+     *
+     * @return list<array{id: string, name: string, tips: int, count: int, share: float|null, photo_version: int|null}>
+     */
+    private function tipsByPractitioner(ReportFilters $filters, string $currency): array
+    {
+        $rows = $this->base($filters, $currency)->join('booking_tip_allocations as a', 'a.booking_id', '=', 'b.id')->join('practitioners as p', 'p.id', '=', 'a.practitioner_id')
+            ->selectRaw('p.id as id, p.name as name, p.photo_updated_at as photo, sum(a.amount_cents) as tips, count(*) as n')
+            ->groupBy('p.id', 'p.name', 'p.photo_updated_at')->orderByDesc('tips')->orderBy('p.name')->get();
+        $total = (int) $rows->sum('tips');
+
+        return $rows->map(fn (object $row): array => [
+            'id' => (string) $row->id,
+            'name' => (string) $row->name,
+            'tips' => (int) $row->tips,
+            'count' => (int) $row->n,
+            'share' => Comparison::ratio((int) $row->tips, $total),
+            'photo_version' => $row->photo === null ? null : (int) strtotime((string) $row->photo),
+        ])->all();
+    }
+
+    /** Nombre de pourboires répartis entre plusieurs praticiens. */
+    private function splitCount(ReportFilters $filters, string $currency): int
+    {
+        return $this->base($filters, $currency)->join('booking_tips as t', 't.booking_id', '=', 'b.id')
+            ->whereRaw('(select count(*) from booking_tip_allocations a where a.tip_id = t.id) > 1')->count();
     }
 
     /**
@@ -103,10 +170,13 @@ final class FinancialReport
         $rows = $this->base($filters, $currency)->selectRaw("{$bucket} as bucket,
             coalesce(sum(b.price_cents) filter (where b.status in ('confirmed', 'completed', 'no_show')), 0) as value,
             coalesce(sum(b.amount_collected_cents), 0) as collected")->groupByRaw($bucket)->get()->keyBy(fn (object $row): string => (string) $row->bucket);
+        // Pourboires rattachés au jour du rendez-vous, comme les montants encaissés.
+        $tips = $this->base($filters, $currency)->join('booking_tips as t', 't.booking_id', '=', 'b.id')
+            ->selectRaw("{$bucket} as bucket, sum(t.amount_cents) as tips")->groupByRaw($bucket)->pluck('tips', 'bucket');
 
         return [
             'granularity' => $granularity,
-            'buckets' => array_map(fn (string $key): array => ['key' => $key, 'value' => (int) ($rows->get($key)->value ?? 0), 'collected' => (int) ($rows->get($key)->collected ?? 0)], Buckets::keys($filters, $granularity)),
+            'buckets' => array_map(fn (string $key): array => ['key' => $key, 'value' => (int) ($rows->get($key)->value ?? 0), 'collected' => (int) ($rows->get($key)->collected ?? 0), 'tips' => (int) ($tips[$key] ?? 0)], Buckets::keys($filters, $granularity)),
         ];
     }
 

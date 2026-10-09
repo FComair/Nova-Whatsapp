@@ -98,6 +98,13 @@ export interface Suggestion {
 
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'no_show';
 
+/** Pourboire d'un rendez-vous et sa répartition entre praticiens (la somme des parts est égale au pourboire). */
+export interface BookingTip {
+    amount_cents: number;
+    paid_at: string;
+    allocations: { practitioner_id: string; practitioner_name: string | null; amount_cents: number }[];
+}
+
 /** Rendez-vous du planning. Les minutes sont comptées depuis minuit, à l'heure locale du site. */
 export interface PlanningBooking {
     id: string;
@@ -115,8 +122,13 @@ export interface PlanningBooking {
     end_minute: number;
     status: BookingStatus;
     price_cents: number;
+    /** Devise de l'établissement pour ce rendez-vous (prix, encaissé et pourboire). */
+    currency: string;
     payment_status: string;
+    /** Encaissé pour le SERVICE : ne contient jamais le pourboire. */
     amount_collected_cents: number;
+    /** Pourboire, à part du prix et de l'encaissé, avec sa répartition ; null s'il n'y en a pas. */
+    tip: BookingTip | null;
     notes: string | null;
     is_past: boolean;
 }

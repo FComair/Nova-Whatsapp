@@ -90,6 +90,7 @@ describe('reports : filtres et adresses', () => {
         service: null,
         status: ['completed', 'no_show'],
         source: 'whatsapp',
+        payment: null,
     };
 
     it('reproduit la période et les filtres, et change de catégorie sans les perdre', () => {

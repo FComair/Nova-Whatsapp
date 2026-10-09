@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useForm, usePage } from '@inertiajs/vue3';
-import { computed, ref, watch } from 'vue';
-import { formatPrice } from '../composables/money';
+import { computed, reactive, ref, watch } from 'vue';
+import { centsToInput, formatPrice } from '../composables/money';
 import { usePastTimeGuard } from '../composables/pastTime';
 import { extraError } from '../composables/planning';
+import { parseAmountCents, shareBalance, sharesToPayload, totalPaid } from '../composables/tips';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
 import type { PlanningBooking, PlanningPractitioner, PlanningService, SharedProps, Suggestion } from '../types';
@@ -14,6 +15,7 @@ import PractitionerField from './PractitionerField.vue';
 import SelectField from './SelectField.vue';
 import SlotSuggestions from './SlotSuggestions.vue';
 import TextField from './TextField.vue';
+import TipFields from './TipFields.vue';
 import TimeFields from './TimeFields.vue';
 
 const props = defineProps<{
@@ -55,7 +57,65 @@ function submitMove(): void {
 }
 const cancelForm = useForm({ reason: '', notify: true });
 const finishForm = useForm({ outcome: 'completed' });
-const paymentForm = useForm({ payment_status: props.booking.payment_status, amount: '', method: '' });
+// Paiement : prix encaissé, statut, moyen — et le pourboire, un montant À PART (jamais ajouté au prix ni à l'encaissé du service).
+// Le formulaire reprend le pourboire existant : l'enregistrer tel quel ne le modifie pas, le vider le supprime.
+const existingTip = props.booking.tip;
+const paymentForm = useForm({
+    payment_status: props.booking.payment_status,
+    amount: '',
+    method: '',
+    tip: existingTip === null ? '' : centsToInput(existingTip.amount_cents, locale.value),
+    tip_allocations: [] as { practitioner_id: string; amount: string }[],
+});
+const assignedActive = computed(() => props.practitioners.some((practitioner) => practitioner.id === props.booking.practitioner_id));
+const tipSplit = ref(
+    existingTip !== null && (existingTip.allocations.length > 1 || existingTip.allocations[0]?.practitioner_id !== props.booking.practitioner_id),
+);
+const tipShares = reactive<Record<string, string>>({});
+const tipSharesModel = computed({ get: () => tipShares, set: (value) => Object.assign(tipShares, value) });
+(existingTip?.allocations ?? []).forEach((row) => (tipShares[row.practitioner_id] = centsToInput(row.amount_cents, locale.value)));
+
+// En passant à la répartition, la totalité du pourboire est d'abord proposée au praticien du rendez-vous.
+watch(tipSplit, (on) => {
+    const cents = parseAmountCents(paymentForm.tip) ?? 0;
+
+    if (on && cents > 0 && Object.keys(tipShares).length === 0 && assignedActive.value) {
+        tipShares[props.booking.practitioner_id] = centsToInput(cents, locale.value);
+    }
+});
+watch(
+    () => paymentForm.tip,
+    () => paymentForm.clearErrors('tip', 'tip_allocations'),
+);
+
+// Contrôles du formulaire avant l'envoi ; le serveur revérifie tout (montant, répartition, bénéficiaires, droits).
+function submitPayment(): void {
+    const raw = paymentForm.tip.trim();
+    const cents = raw === '' ? 0 : parseAmountCents(raw);
+
+    if (cents === null) {
+        paymentForm.setError('tip', t('planning.tip.invalid_amount'));
+
+        return;
+    }
+
+    const distribute = cents > 0 && (tipSplit.value || !assignedActive.value);
+
+    if (distribute && shareBalance(cents, tipShares).state !== 'balanced') {
+        paymentForm.setError('tip_allocations', t('planning.errors.tip_allocation_mismatch'));
+
+        return;
+    }
+
+    paymentForm.transform((data) => ({ ...data, tip_allocations: distribute ? sharesToPayload(tipShares) : [] })).put(`${base.value}/paiement`, options);
+}
+const tipCents = computed(() => props.booking.tip?.amount_cents ?? 0);
+const tipRecipients = computed(() =>
+    (props.booking.tip?.allocations ?? [])
+        .map((row) => `${row.practitioner_name ?? '—'} (${formatPrice(row.amount_cents, locale.value, props.booking.currency)})`)
+        .join(' · '),
+);
+const money = (cents: number): string => formatPrice(cents, locale.value, props.booking.currency);
 
 // Praticiens actifs du site qui réalisent le service de ce rendez-vous.
 const eligible = computed(() => {
@@ -105,10 +165,27 @@ function pick(suggestion: Suggestion): void {
             <dt class="font-medium text-neutral-600">{{ t('planning.form.phone') }}</dt>
             <dd>{{ booking.customer.phone }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.payment.status') }}</dt>
-            <dd>
-                {{ t(`planning.payment.${booking.payment_status}`) }} ·
-                {{ t('planning.payment.price', { price: formatPrice(booking.price_cents, locale) }) }}
+            <dd>{{ t(`planning.payment.${booking.payment_status}`) }}</dd>
+            <!-- Le montant du service, le pourboire et le total payé sont trois lignes distinctes : le total dit qu'il inclut le pourboire. -->
+            <dt class="font-medium text-neutral-600">{{ t('planning.tip.service_price') }}</dt>
+            <dd data-testid="pay-price">{{ money(booking.price_cents) }}</dd>
+            <dt class="font-medium text-neutral-600">{{ t('planning.tip.service_paid') }}</dt>
+            <dd data-testid="pay-collected">{{ money(booking.amount_collected_cents) }}</dd>
+            <dt class="font-medium text-neutral-600">{{ t('planning.tip.line') }}</dt>
+            <dd data-testid="pay-tip">
+                <template v-if="booking.tip">
+                    {{ money(tipCents) }}
+                    <span class="block text-xs text-neutral-700">{{ t('planning.tip.to', { list: tipRecipients }) }}</span>
+                </template>
+                <template v-else>{{ t('planning.tip.none') }}</template>
             </dd>
+            <template v-if="booking.tip || booking.amount_collected_cents > 0">
+                <dt class="font-medium text-neutral-600">{{ t('planning.tip.total_paid') }}</dt>
+                <dd class="font-semibold" data-testid="pay-total">
+                    {{ money(totalPaid(booking.amount_collected_cents, tipCents)) }}
+                    <span class="block text-xs font-normal text-neutral-700">{{ t('planning.tip.includes_tip') }}</span>
+                </dd>
+            </template>
             <template v-if="booking.notes">
                 <dt class="font-medium text-neutral-600">{{ t('planning.form.notes') }}</dt>
                 <dd class="whitespace-pre-line">{{ booking.notes }}</dd>
@@ -166,7 +243,7 @@ function pick(suggestion: Suggestion): void {
             </div>
         </form>
 
-        <form v-else class="space-y-4" novalidate @submit.prevent="paymentForm.put(`${base}/paiement`, options)">
+        <form v-else class="space-y-4" novalidate @submit.prevent="submitPayment">
             <SelectField
                 v-model="paymentForm.payment_status"
                 :label="t('planning.payment.status')"
@@ -182,6 +259,16 @@ function pick(suggestion: Suggestion): void {
                 :placeholder="t('planning.form.choose')"
                 :options="['cash', 'card', 'other'].map((value) => ({ value, label: t(`planning.payment.${value}`) }))"
                 :error="paymentForm.errors.method"
+            />
+            <TipFields
+                v-model:tip="paymentForm.tip"
+                v-model:split="tipSplit"
+                v-model:shares="tipSharesModel"
+                :practitioners="practitioners"
+                :assigned="{ id: booking.practitioner_id, name: booking.practitioner_name, active: assignedActive }"
+                :currency="booking.currency"
+                :payment-status="paymentForm.payment_status"
+                :errors="{ tip: paymentForm.errors.tip, allocations: paymentForm.errors.tip_allocations }"
             />
             <div class="flex flex-col gap-2 sm:flex-row">
                 <BaseButton type="submit" :loading="paymentForm.processing">{{ t('planning.actions.save') }}</BaseButton>

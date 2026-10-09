@@ -8,6 +8,7 @@ use App\Modules\Catalog\Casts\VatRate;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Rendez-vous. Ne s'écrit QUE par le cœur de réservation (BookingCore) : jamais directement.
@@ -73,6 +74,16 @@ class Booking extends Model
             'reminder_sent_at' => 'immutable_datetime',
             'notes_enc' => 'encrypted',
         ];
+    }
+
+    /**
+     * Pourboire du rendez-vous (au plus un), distinct du prix et du montant encaissé.
+     *
+     * @return HasOne<BookingTip, $this>
+     */
+    public function tip(): HasOne
+    {
+        return $this->hasOne(BookingTip::class);
     }
 
     public function isBlocking(): bool

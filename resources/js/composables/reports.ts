@@ -110,6 +110,7 @@ export function filterQuery(filters: ReportFiltersValue, extra: Record<string, s
         ['practitioner', filters.practitioner],
         ['service', filters.service],
         ['source', filters.source],
+        ['payment', filters.payment],
     ];
 
     for (const [key, value] of optional) {
@@ -146,7 +147,9 @@ export function queryString(query: Record<string, string | string[]>): string {
 
 /** Nombre de filtres actifs, hors période. */
 export function activeFilterCount(filters: ReportFiltersValue): number {
-    return [filters.location, filters.practitioner, filters.service, filters.source].filter(Boolean).length + (filters.status.length > 0 ? 1 : 0);
+    return (
+        [filters.location, filters.practitioner, filters.service, filters.source, filters.payment].filter(Boolean).length + (filters.status.length > 0 ? 1 : 0)
+    );
 }
 
 /** Couleurs des séries : lisibles aussi en niveaux de gris (trame différente par série en plus de la teinte). */
@@ -162,6 +165,7 @@ export const SERIES_STYLE: Record<string, { color: string; pattern: 'solid' | 's
     active: { color: 'var(--color-primary-300)', pattern: 'stripes' },
     booked: { color: 'var(--color-primary-700)', pattern: 'solid' },
     available: { color: 'var(--color-primary-200)', pattern: 'dots' },
+    tips: { color: 'var(--color-amber)', pattern: 'dots' },
     dashboard: { color: 'var(--color-primary-700)', pattern: 'solid' },
     whatsapp: { color: 'var(--color-primary-300)', pattern: 'stripes' },
     staff_whatsapp: { color: 'var(--color-amber)', pattern: 'dots' },

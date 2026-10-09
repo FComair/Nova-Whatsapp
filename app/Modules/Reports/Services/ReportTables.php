@@ -109,13 +109,22 @@ final class ReportTables
     private function financial(array $report, ReportFilters $filters, bool $staff): array
     {
         $currency = $report['currency'];
-        $tables = [$this->summary($report['metrics'], ['booked_value', 'completed_value', 'collected', 'outstanding', 'waived', 'no_show_value', 'cancelled_value', 'avg_value', 'collection_rate'], 'financial', $currency)];
+        $tables = [$this->summary($report['metrics'], ['booked_value', 'completed_value', 'collected', 'outstanding', 'waived', 'no_show_value', 'cancelled_value', 'avg_value', 'collection_rate', 'tips', 'tips_count', 'tips_avg', 'total_paid'], 'financial', $currency)];
 
-        $tables[] = $this->table('over_time', 'breakdown', [$this->text('period'), $this->money('metric.booked_value', $currency), $this->money('metric.collected', $currency)],
-            array_map(fn (array $b): array => [$this->bucketLabel($b['key'], $report['series']['granularity']), $b['value'] / 100, $b['collected'] / 100], $report['series']['buckets']));
+        $tables[] = $this->table('over_time', 'breakdown', [$this->text('period'), $this->money('metric.booked_value', $currency), $this->money('metric.collected', $currency), $this->money('metric.tips', $currency)],
+            array_map(fn (array $b): array => [$this->bucketLabel($b['key'], $report['series']['granularity']), $b['value'] / 100, $b['collected'] / 100, ($b['tips'] ?? 0) / 100], $report['series']['buckets']));
 
-        $split = fn (string $title, string $label, array $rows): array => $this->table($title, 'breakdown', [$this->text($label), $this->int('appointments'), $this->money('metric.booked_value', $currency), $this->money('metric.collected', $currency)],
-            array_map(fn (array $r): array => [$r['name'], $r['count'], $r['value'] / 100, $r['collected'] / 100], $rows));
+        // Les pourboires ont leur colonne, à part : jamais fondus dans la valeur ni dans l'encaissé du service.
+        $split = function (string $title, string $label, array $rows) use ($currency): array {
+            $withTips = $rows !== [] && array_key_exists('tips', $rows[0]);
+            $columns = [$this->text($label), $this->int('appointments'), $this->money('metric.booked_value', $currency), $this->money('metric.collected', $currency)];
+
+            if ($withTips) {
+                $columns[] = $this->money('metric.tips', $currency);
+            }
+
+            return $this->table($title, 'breakdown', $columns, array_map(fn (array $r): array => [$r['name'], $r['count'], $r['value'] / 100, $r['collected'] / 100, ...($withTips ? [$r['tips'] / 100] : [])], $rows));
+        };
 
         $tables[] = $split('by_service', 'service', $report['services']);
 
@@ -125,6 +134,11 @@ final class ReportTables
 
         if ($report['locations'] !== null) {
             $tables[] = $split('by_location', 'location', $report['locations']);
+        }
+
+        if ($staff && $report['tips_by_practitioner'] !== null) {
+            $tables[] = $this->table('tips_by_practitioner', 'breakdown', [$this->text('practitioner'), $this->money('metric.tips', $currency), $this->int('tip_count'), $this->pct('share')],
+                array_map(fn (array $r): array => [$r['name'], $r['tips'] / 100, $r['count'], $r['share'] === null ? null : round($r['share'] * 100, 1)], $report['tips_by_practitioner']));
         }
 
         $tables[] = $this->table('by_method', 'breakdown', [$this->text('method'), $this->money('metric.collected', $currency)],
@@ -151,6 +165,7 @@ final class ReportTables
             if ($money) {
                 $columns[] = $this->money('metric.booked_value', $this->currencyLabel());
                 $columns[] = $this->money('metric.collected', $this->currencyLabel());
+                $columns[] = $this->money('metric.tips', $this->currencyLabel());
             }
 
             $tables[] = $this->table('comparison', 'breakdown', $columns, array_map(function (array $r) use ($money): array {
@@ -159,6 +174,7 @@ final class ReportTables
                 if ($money) {
                     $row[] = ($r['value_cents'] ?? 0) / 100;
                     $row[] = ($r['collected_cents'] ?? 0) / 100;
+                    $row[] = ($r['tips_cents'] ?? 0) / 100;
                 }
 
                 return $row;

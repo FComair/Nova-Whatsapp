@@ -7,9 +7,11 @@ namespace App\Modules\Booking\Http\Controllers;
 use App\Modules\Booking\Http\Requests\MoveBookingRequest;
 use App\Modules\Booking\Http\Requests\StoreBookingRequest;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\BookingTip;
 use App\Modules\Booking\Services\BookingCore;
 use App\Modules\Booking\Services\BookingNotifier;
 use App\Modules\Booking\Services\BookingRuleViolation;
+use App\Modules\Booking\Services\BookingTips;
 use App\Modules\Booking\Services\SlotUnavailable;
 use App\Modules\Booking\Support\Actor;
 use App\Modules\Booking\Support\NewBooking;
@@ -29,6 +31,7 @@ use App\Support\Money;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -45,6 +48,7 @@ final class PlanningController
         private readonly BookingCore $core,
         private readonly CustomerDirectory $customers,
         private readonly BookingNotifier $notifier,
+        private readonly BookingTips $tips,
     ) {}
 
     public function index(Request $request): Response
@@ -81,7 +85,10 @@ final class PlanningController
         $services = Service::query()->orderBy('position')->get();
         $serviceNames = $services->pluck('name', 'id');
         // Nom du praticien même s'il est devenu inactif ou supprimé depuis : le rendez-vous doit toujours dire à qui il est attribué.
-        $practitionerNames = Practitioner::withTrashed()->whereIn('id', $bookings->pluck('practitioner_id'))->pluck('name', 'id');
+        // Pourboires des rendez-vous affichés : leurs bénéficiaires sont nommés comme les praticiens des rendez-vous.
+        $tips = BookingTip::query()->with('allocations')->whereIn('booking_id', $bookings->pluck('id'))->get()->keyBy('booking_id');
+        $recipientIds = $tips->flatMap(fn (BookingTip $tip) => $tip->allocations->pluck('practitioner_id'));
+        $practitionerNames = Practitioner::withTrashed()->whereIn('id', $bookings->pluck('practitioner_id')->merge($recipientIds)->unique())->pluck('name', 'id');
         $seesNotes = $this->access->seesNotes();
 
         $open = BusinessHour::query()->where('location_id', $location->id)->get();
@@ -102,8 +109,10 @@ final class PlanningController
             'end_minute' => $localMinutes($booking->ends_at) ?: 1440,
             'status' => $booking->status,
             'price_cents' => $booking->price_cents,
+            'currency' => trim($booking->currency),
             'payment_status' => $booking->payment_status,
             'amount_collected_cents' => $booking->amount_collected_cents,
+            'tip' => $this->tipPayload($tips->get($booking->id), $practitionerNames),
             'notes' => $seesNotes ? $booking->notes_enc : null,
             'is_past' => $booking->starts_at <= now(),
         ])->values()->all();
@@ -232,6 +241,10 @@ final class PlanningController
         );
     }
 
+    /**
+     * Paiement du rendez-vous (prix encaissé, statut, moyen) et, s'il est envoyé, son pourboire : un montant SÉPARÉ, avec sa
+     * répartition entre praticiens. Les deux s'enregistrent ensemble ou pas du tout. Mêmes droits que le paiement.
+     */
     public function payment(Request $request, Booking $booking): RedirectResponse
     {
         $this->access->authorize($booking);
@@ -239,6 +252,10 @@ final class PlanningController
             'payment_status' => ['required', 'in:unpaid,paid_onsite,partially_paid,waived,written_off'],
             'amount' => ['nullable', 'string', 'max:12'],
             'method' => ['nullable', 'in:cash,card,other'],
+            'tip' => ['nullable', 'string', 'max:12'],
+            'tip_allocations' => ['nullable', 'array', 'max:20'],
+            'tip_allocations.*.practitioner_id' => ['required', 'uuid'],
+            'tip_allocations.*.amount' => ['required', 'string', 'max:12'],
         ]);
 
         $amount = ($data['amount'] ?? '') === '' ? null : Money::parseToCents($data['amount']);
@@ -247,7 +264,57 @@ final class PlanningController
             return back()->withErrors(['amount' => __('ui.planning.errors.amount_invalid')]);
         }
 
-        return $this->attempt(fn () => $this->core->recordPayment($booking, $data['payment_status'], $amount, $data['method'] ?? null, Actor::user((string) auth()->id())), 'ui.planning.updated');
+        // Pourboire : absent de la requête = on n'y touche pas ; vide ou 0 = on le supprime.
+        $withTip = $request->has('tip');
+        $tip = null;
+        $allocations = [];
+
+        if ($withTip && trim((string) ($data['tip'] ?? '')) !== '') {
+            $tip = Money::parseToCents((string) $data['tip']);
+
+            if ($tip === null) {
+                return back()->withErrors(['tip' => __('ui.planning.errors.tip_invalid')]);
+            }
+
+            foreach ($data['tip_allocations'] ?? [] as $row) {
+                $part = Money::parseToCents((string) $row['amount']);
+
+                if ($part === null) {
+                    return back()->withErrors(['tip_allocations' => __('ui.planning.errors.tip_invalid')]);
+                }
+
+                $allocations[] = ['practitioner_id' => (string) $row['practitioner_id'], 'amount_cents' => $part];
+            }
+        }
+
+        $actor = Actor::user((string) auth()->id());
+
+        return $this->attempt(fn () => DB::transaction(function () use ($booking, $data, $amount, $withTip, $tip, $allocations, $actor): Booking {
+            $updated = $this->core->recordPayment($booking, $data['payment_status'], $amount, $data['method'] ?? null, $actor);
+
+            if ($withTip) {
+                $this->tips->record($updated, $tip, $allocations, $actor);
+            }
+
+            return $updated;
+        }), 'ui.planning.updated');
+    }
+
+    /**
+     * @param  Collection<string, string>  $names
+     * @return array{amount_cents: int, paid_at: string, allocations: list<array{practitioner_id: string, practitioner_name: string|null, amount_cents: int}>}|null
+     */
+    private function tipPayload(?BookingTip $tip, Collection $names): ?array
+    {
+        if ($tip === null) {
+            return null;
+        }
+
+        return [
+            'amount_cents' => $tip->amount_cents,
+            'paid_at' => $tip->paid_at->toIso8601String(),
+            'allocations' => $tip->allocations->map(fn ($row): array => ['practitioner_id' => $row->practitioner_id, 'practitioner_name' => $names[$row->practitioner_id] ?? null, 'amount_cents' => $row->amount_cents])->values()->all(),
+        ];
     }
 
     /**

@@ -127,6 +127,7 @@ onMounted(() => {
                     :access="access"
                     :links="links"
                     :currency="currency"
+                    :payment-filtered="filters.payment !== null"
                 />
             </section>
         </main>

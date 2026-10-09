@@ -25,6 +25,9 @@ final readonly class ReportFilters
 
     public const SOURCES = ['dashboard', 'whatsapp', 'staff_whatsapp', 'api'];
 
+    /** Statuts de paiement : filtre du rapport financier (et de ses pourboires). */
+    public const PAYMENT_STATUSES = ['unpaid', 'paid_onsite', 'partially_paid', 'waived', 'written_off'];
+
     /**
      * @param  list<string>  $statuses
      */
@@ -38,6 +41,7 @@ final readonly class ReportFilters
         public array $statuses,
         public ?string $source,
         public string $timezone,
+        public ?string $paymentStatus = null,
     ) {}
 
     public static function fromRequest(Request $request, string $timezone, ?CarbonImmutable $now = null): self
@@ -60,6 +64,7 @@ final readonly class ReportFilters
             statuses: $statuses,
             source: in_array($source, self::SOURCES, true) ? (string) $source : null,
             timezone: $timezone,
+            paymentStatus: in_array($request->query('payment'), self::PAYMENT_STATUSES, true) ? (string) $request->query('payment') : null,
         );
     }
 
@@ -138,7 +143,7 @@ final readonly class ReportFilters
 
     public function with(?CarbonImmutable $from = null, ?CarbonImmutable $to = null): self
     {
-        return new self($this->preset, $from ?? $this->from, $to ?? $this->to, $this->locationId, $this->practitionerId, $this->serviceId, $this->statuses, $this->source, $this->timezone);
+        return new self($this->preset, $from ?? $this->from, $to ?? $this->to, $this->locationId, $this->practitionerId, $this->serviceId, $this->statuses, $this->source, $this->timezone, $this->paymentStatus);
     }
 
     /** Période encore en cours : des jours à venir s'y trouvent, la comparaison avec une période entière est partielle. */
@@ -164,7 +169,7 @@ final readonly class ReportFilters
 
     public function hasAnyFilter(): bool
     {
-        return $this->hasEntityFilter() || $this->statuses !== [];
+        return $this->hasEntityFilter() || $this->statuses !== [] || $this->paymentStatus !== null;
     }
 
     /**
@@ -183,6 +188,7 @@ final readonly class ReportFilters
             'service' => $this->serviceId,
             'status' => $this->statuses === [] ? null : $this->statuses,
             'source' => $this->source,
+            'payment' => $this->paymentStatus,
         ], fn ($value): bool => $value !== null);
     }
 }

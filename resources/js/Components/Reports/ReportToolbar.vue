@@ -80,6 +80,11 @@ const sourceOptions = computed(() => [
     ...props.options.sources.map((key) => ({ value: key, label: t(`reports.source.${key}`) })),
 ]);
 
+const paymentOptions = computed(() => [
+    { value: '', label: t('reports.filter.all_payments') },
+    ...props.options.payment_statuses.map((key) => ({ value: key, label: t(`planning.payment.${key}`) })),
+]);
+
 const count = computed(() => activeFilterCount(props.filters));
 const summary = computed(
     () =>
@@ -96,6 +101,7 @@ const activeText = computed(() => {
     if (props.filters.status.length > 0)
         parts.push(`${t('reports.filter.status')} : ${props.filters.status.map((status) => t(`reports.status.${status}`)).join(', ')}`);
     if (props.filters.source) parts.push(`${t('reports.filter.source')} : ${t(`reports.source.${props.filters.source}`)}`);
+    if (props.filters.payment) parts.push(`${t('reports.filter.payment')} : ${t(`planning.payment.${props.filters.payment}`)}`);
 
     return parts.join(' · ');
 });
@@ -181,6 +187,15 @@ function toggleStatus(status: string, on: boolean): void {
                         :options="sourceOptions"
                         @update:model-value="go({ source: $event || null })"
                     />
+                    <!-- Statut de paiement : propre au rapport financier (et à ses pourboires). -->
+                    <SelectField
+                        v-if="category === 'financial'"
+                        :model-value="filters.payment ?? ''"
+                        :label="t('reports.filter.payment')"
+                        :options="paymentOptions"
+                        data-testid="payment-filter"
+                        @update:model-value="go({ payment: $event || null })"
+                    />
                 </div>
                 <fieldset v-if="statusApplies" class="mt-3">
                     <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('reports.filter.status') }}</legend>
@@ -199,7 +214,7 @@ function toggleStatus(status: string, on: boolean): void {
                     v-if="count > 0"
                     type="button"
                     class="mt-3 text-sm font-semibold text-primary-700 underline"
-                    @click="go({ location: null, practitioner: null, service: null, source: null, status: [] })"
+                    @click="go({ location: null, practitioner: null, service: null, source: null, payment: null, status: [] })"
                 >
                     {{ t('reports.filter.reset') }}
                 </button>

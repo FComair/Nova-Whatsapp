@@ -106,10 +106,13 @@ no name, phone number or address appears in any report, export or print.
 
 ### 2.5 Financial *(owner; site manager if enabled; never practitioner/receptionist)*
 Notes first: currency, "collected amounts are attributed to the appointment day", and what is **unavailable**.
-KPIs: appointment value, collected, outstanding, average value, value of completed, share collected on completed, waived/written off,
+Three labelled groups — **Service amounts**, **Tips (separate from the service)** and **Total paid (includes tips)** — so a combined figure is never mistaken for service revenue (details of the tip model: docs/24).
+KPIs (service amounts): appointment value, collected, outstanding, average value, value of completed, share collected on completed, waived/written off,
 value of no-shows, value of cancellations, plus **Refunds** and **Discounts** shown as "—, not recorded".
-Charts: value vs collected over time, by service, by practitioner (not for a role that may not compare staff), by location (if
-several), collected by payment method, payment status of completed appointments.
+Tips KPIs: tips, number of tips, average tip; total paid. Charts: value vs collected vs **tips** over time, by service (with a Tips
+column), by practitioner (not for a role that may not compare staff), **tips received by practitioner**, by location (if several),
+collected by payment method, payment status of completed appointments. A **Payment status** filter (Financial only) narrows every
+figure and export of the report.
 Table columns: *Period, Value (EUR), Collected (EUR)* · *Name, Appointments, Value (EUR), Collected (EUR)* · *Method, Collected (EUR)* ·
 *Payment, Appointments, Price (EUR), Collected (EUR)*.
 
@@ -167,10 +170,14 @@ suggested file name when saving as PDF. Series patterns keep charts legible in g
 | No recent appointment | Had an appointment before, none in the last 90 days, none upcoming. |
 | **Appointment value** | Price (as recorded at booking) of non-cancelled appointments — upcoming, completed and no-shows. **Not money received.** |
 | Completed value | Price of completed appointments. |
-| **Collected (revenue)** | Amounts recorded as collected, attributed to the **appointment day** (the payment date is not stored). Refunds are not recorded. |
+| **Collected (service revenue)** | Amounts recorded as collected **for the service**, attributed to the **appointment day** (the payment date is not stored). **Never includes tips.** Refunds are not recorded. |
 | Outstanding | Price − collected, on completed appointments whose payment is *unpaid* or *partially paid*. Upcoming appointments are never "outstanding". |
 | Waived or written off | Price − collected, on completed appointments marked *waived* or *written off*. |
 | Average value | Appointment value ÷ non-cancelled appointments. |
+| **Tips** | Tips recorded on the period's appointments (docs/24), attributed to the appointment day. A separate amount: not part of appointment value, collected or any per-practitioner service figure. |
+| Number of tips / Average tip | Appointments with a tip / tips ÷ number of tips (appointments without a tip are not counted). |
+| **Total paid** | Collected for the service **+ tips**. Labelled "service collected + tips" and "includes tips"; never presented as service revenue. |
+| Tips received (per practitioner) | Sum of the practitioner's shares of tips (a split tip may reward someone other than the appointment's practitioner). |
 | Share collected on completed | Collected on completed appointments ÷ their price. |
 | Scheduled working time | Practitioner schedule slots within the site's opening hours, with time off and exceptional closures removed and exceptional availability added. **Not hours worked.** |
 | Booked time | Duration of non-cancelled appointments (upcoming, completed, no-show). **Not hours worked.** |
@@ -193,6 +200,8 @@ suggested file name when saving as PDF. Series patterns keep charts legible in g
 | Several currencies | One per appointment | Only the main currency of the period is totalled; a notice counts the rest |
 | Actual hours worked / attendance | No (only schedule and bookings) | Never shown; scheduled ≠ booked ≠ worked is spelled out |
 | Customer source ("how did they find us") | Only the channel of their first appointment | Used under that name |
+| Tips | Yes, since docs/24 (separate amount, per practitioner, one per appointment) | Own metrics, columns and tables; never merged into service figures |
+| Tax / payroll treatment of tips | No | None applied or implied (docs/24 §9) |
 | Cost, margin, commissions | No | Not offered |
 | Website bookings | Only as `api` | Labelled "Website / API" |
 

@@ -72,6 +72,11 @@ final class ReportExporter
         if (in_array('detail', $content, true) && array_intersect($categories, [ReportAccess::APPOINTMENTS, ReportAccess::FINANCIAL, ReportAccess::PRACTITIONERS]) !== []) {
             $money = $this->access->canSeeFinancial() && array_intersect($categories, [ReportAccess::FINANCIAL]) !== [];
             $tables[] = $this->detail->appointments($filters, $staff, $money, $currency);
+
+            // Une ligne par bénéficiaire de pourboire : la répartition, appointment par appointment (praticiens : droit requis).
+            if ($money && $staff) {
+                $tables[] = $this->detail->tips($filters, $currency);
+            }
         }
 
         return $tables;
@@ -212,6 +217,10 @@ final class ReportExporter
 
         if ($filters->source !== null) {
             $parts[] = __('ui.reports.filter.source').': '.__("ui.reports.source.{$filters->source}");
+        }
+
+        if ($filters->paymentStatus !== null) {
+            $parts[] = __('ui.reports.filter.payment').': '.__("ui.planning.payment.{$filters->paymentStatus}");
         }
 
         return $parts === [] ? (string) __('ui.reports.filter.none') : implode(' · ', $parts);

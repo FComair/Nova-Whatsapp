@@ -29,6 +29,8 @@ export interface ReportFiltersValue {
     service: string | null;
     status: string[];
     source: string | null;
+    /** Statut de paiement (rapport financier et pourboires). */
+    payment: string | null;
 }
 
 export interface ReportPeriod {
@@ -46,6 +48,7 @@ export interface ReportOptions {
     services: { id: string; name: string }[];
     statuses: string[];
     sources: string[];
+    payment_statuses: string[];
     presets: string[];
 }
 
@@ -106,6 +109,8 @@ export interface MoneyRow {
     count: number;
     value: number;
     collected: number;
+    /** Pourboires des rendez-vous concernés, à part de `value` et `collected` (services et sites). */
+    tips?: number;
     photo_version?: number | null;
 }
 
@@ -113,12 +118,16 @@ export interface FinancialReportData {
     currency: string;
     excluded_other_currency: number;
     metrics: Record<string, ReportMetric>;
-    series: { granularity: Granularity; buckets: { key: string; value: number; collected: number }[] };
+    series: { granularity: Granularity; buckets: { key: string; value: number; collected: number; tips: number }[] };
     services: MoneyRow[];
     practitioners: MoneyRow[] | null;
     locations: MoneyRow[] | null;
     methods: { key: string; collected: number }[];
     payment_statuses: { key: string; count: number; price: number; collected: number }[];
+    /** Pourboires reçus par praticien (d'après leur répartition) ; null sans droit de comparer l'équipe. */
+    tips_by_practitioner: { id: string; name: string; tips: number; count: number; share: number | null; photo_version: number | null }[] | null;
+    /** Nombre de pourboires répartis entre plusieurs praticiens. */
+    tips_split: number;
     unavailable: string[];
     insights: Insight[];
 }
@@ -144,6 +153,8 @@ export interface PractitionerRow {
     non_working_days: number;
     value_cents: number | null;
     collected_cents: number | null;
+    /** Pourboires reçus (à part de la valeur et de l'encaissé) ; null sans droit aux montants. */
+    tips_cents: number | null;
     services: { id: string; name: string; count: number }[];
 }
 

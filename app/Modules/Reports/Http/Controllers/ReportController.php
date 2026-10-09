@@ -160,6 +160,7 @@ final class ReportController
             'service' => $filters->serviceId,
             'status' => $filters->statuses,
             'source' => $filters->source,
+            'payment' => $filters->paymentStatus,
         ];
     }
 

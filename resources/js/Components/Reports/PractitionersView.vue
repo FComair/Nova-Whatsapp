@@ -40,6 +40,8 @@ const columns = computed(() => [
         ? [
               { key: 'value', label: `${t('reports.metric.booked_value')} (${props.currency})`, align: 'right' as const, sortable: true },
               { key: 'collected_money', label: `${t('reports.metric.collected')} (${props.currency})`, align: 'right' as const, sortable: true },
+              // Pourboires reçus : colonne à part, jamais ajoutée à la valeur ni à l'encaissé du praticien.
+              { key: 'tips', label: `${t('reports.metric.tips')} (${props.currency})`, align: 'right' as const, sortable: true },
           ]
         : []),
 ]);
@@ -57,6 +59,7 @@ const rows = computed(() =>
         days_off: row.days_off,
         value: { text: formatPrice(row.value_cents ?? 0, locale.value, props.currency), sort: row.value_cents ?? 0 },
         collected_money: { text: formatPrice(row.collected_cents ?? 0, locale.value, props.currency), sort: row.collected_cents ?? 0 },
+        tips: { text: formatPrice(row.tips_cents ?? 0, locale.value, props.currency), sort: row.tips_cents ?? 0 },
     })),
 );
 const over = computed(() => props.report.rows.some((row) => row.utilization !== null && row.utilization > 1));
