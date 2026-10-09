@@ -55,15 +55,11 @@ function submit(): void {
                 <p>{{ t('feedback.thanks') }}</p>
                 <div class="mt-3 flex flex-wrap gap-3 text-sm font-semibold">
                     <Link v-if="!ticket" :href="`${routes.help}/avis`" class="inline-flex min-h-9 items-center underline underline-offset-4">
-{{
-                        t('feedback.another')
-                    }}
-</Link>
+                        {{ t('feedback.another') }}
+                    </Link>
                     <Link :href="back" class="inline-flex min-h-9 items-center underline underline-offset-4">
-{{
-                        ticket ? ticket.reference : t('support.tabs.help')
-                    }}
-</Link>
+                        {{ ticket ? ticket.reference : t('support.tabs.help') }}
+                    </Link>
                 </div>
             </AlertBox>
 

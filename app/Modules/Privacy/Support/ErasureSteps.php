@@ -22,6 +22,11 @@ final class ErasureSteps
     public const RETAINED = ['subscriptions', 'invoice_lines', 'payments', 'whatsapp_usage'];
 
     public const ALL = [
+        'loyalty_ledger',
+        'loyalty_rewards',
+        'loyalty_members',
+        'loyalty_program_services',
+        'loyalty_programs',
         'booking_events',
         'booking_tip_allocations',
         'booking_tips',

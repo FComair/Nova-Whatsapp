@@ -51,7 +51,7 @@ final class MessageSender
      * @throws SendRefused
      * @throws TransportFailed
      */
-    public function sendTemplate(Organization $organization, Customer $customer, string $template, string $language, array $parameters): WhatsappMessage
+    public function sendTemplate(Organization $organization, Customer $customer, string $template, string $language, array $parameters, string $category = WhatsappUsage::UTILITY): WhatsappMessage
     {
         $account = $this->account($organization);
 
@@ -64,7 +64,7 @@ final class MessageSender
             $customer,
             'template',
             json_encode(['template' => $template, 'language' => $language, 'parameters' => $parameters], JSON_THROW_ON_ERROR),
-            WhatsappUsage::UTILITY,
+            $category,
             fn (): string => $this->transport->sendTemplate($account, $customer->phone_e164, $template, $language, $parameters),
         );
     }

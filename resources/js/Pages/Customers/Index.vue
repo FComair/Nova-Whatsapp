@@ -7,6 +7,7 @@ import BaseButton from '../../Components/BaseButton.vue';
 import CheckboxField from '../../Components/CheckboxField.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
 import CustomerFilters from '../../Components/CustomerFilters.vue';
+import CustomersTabs from '../../Components/CustomersTabs.vue';
 import PractitionerAvatar from '../../Components/PractitionerAvatar.vue';
 import TextField from '../../Components/TextField.vue';
 import {
@@ -234,6 +235,7 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
 
 <template>
     <AppLayout :title="t('customers.title')">
+        <CustomersTabs active="clients" />
         <header class="flex flex-wrap items-end justify-between gap-3">
             <div>
                 <h1 class="text-2xl font-semibold text-nova-900">{{ t('customers.title') }}</h1>

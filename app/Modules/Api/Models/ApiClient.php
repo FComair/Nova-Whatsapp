@@ -24,7 +24,7 @@ class ApiClient extends Model
 {
     use HasUuids;
 
-    public const SCOPES = ['availability:read', 'bookings:read', 'bookings:write', 'customers:write', 'conversations:write', 'config:read'];
+    public const SCOPES = ['availability:read', 'bookings:read', 'bookings:write', 'customers:write', 'conversations:write', 'config:read', 'loyalty:read'];
 
     protected $guarded = [];
 

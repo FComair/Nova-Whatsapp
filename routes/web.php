@@ -22,6 +22,9 @@ use App\Modules\Identity\Http\Controllers\RegisterController;
 use App\Modules\Identity\Http\Controllers\SecurityController;
 use App\Modules\Identity\Http\Controllers\TwoFactorChallengeController;
 use App\Modules\Identity\Http\Middleware\RequireTwoFactor;
+use App\Modules\Loyalty\Http\Controllers\LoyaltyController;
+use App\Modules\Loyalty\Http\Controllers\LoyaltyMemberController;
+use App\Modules\Loyalty\Http\Controllers\LoyaltyProgramController;
 use App\Modules\Onboarding\Http\Controllers\OnboardingController;
 use App\Modules\Onboarding\Http\Controllers\SetupController;
 use App\Modules\Privacy\Http\Controllers\AccountDataController;
@@ -240,6 +243,34 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         });
         Route::get('/{category}', [HelpController::class, 'category'])->where('category', $categories)->name('help.category');
         Route::get('/{category}/{slug}', [HelpController::class, 'show'])->where('category', $categories)->where('slug', '[a-z0-9-]+')->name('help.article');
+    });
+
+    // Programme de fidélité (docs/27) : lecture, utilisation d'une récompense (propriétaire, responsable de site, réceptionniste), corrections
+    // avec motif (propriétaire, responsable de site), configuration et messages (propriétaire). Avant /clients/{customer}.
+    Route::prefix('/clients/fidelite')->name('loyalty.')->group(function (): void {
+        Route::middleware('role:owner,site_manager,receptionist')->group(function (): void {
+            Route::get('/', [LoyaltyController::class, 'index'])->name('index');
+            Route::get('/clients', [LoyaltyController::class, 'customers'])->name('customers');
+            Route::get('/utiliser', [LoyaltyController::class, 'redeem'])->name('redeem');
+            Route::get('/rapport', [LoyaltyController::class, 'report'])->name('report');
+            Route::post('/recompenses/{reward}/utiliser', [LoyaltyMemberController::class, 'redeem'])->whereUuid('reward')->middleware('throttle:60,1')->name('rewards.redeem');
+        });
+        Route::middleware('role:owner,site_manager')->group(function (): void {
+            Route::post('/membres/{customer}/ajuster', [LoyaltyMemberController::class, 'adjust'])->whereUuid('customer')->middleware('throttle:60,1')->name('members.adjust');
+            Route::post('/membres/{customer}/inscrire', [LoyaltyMemberController::class, 'enroll'])->whereUuid('customer')->name('members.enroll');
+            Route::post('/membres/{customer}/quitter', [LoyaltyMemberController::class, 'optOut'])->whereUuid('customer')->name('members.opt-out');
+            Route::post('/membres/{customer}/reprendre', [LoyaltyMemberController::class, 'rejoin'])->whereUuid('customer')->name('members.rejoin');
+            Route::post('/recompenses/{reward}/annuler', [LoyaltyMemberController::class, 'reverse'])->whereUuid('reward')->middleware('throttle:60,1')->name('rewards.reverse');
+        });
+        Route::middleware('role:owner')->group(function (): void {
+            Route::get('/programme', [LoyaltyProgramController::class, 'show'])->name('program');
+            Route::put('/programme', [LoyaltyProgramController::class, 'save'])->name('program.save');
+            Route::post('/programme/activer', [LoyaltyProgramController::class, 'activate'])->name('program.activate');
+            Route::post('/programme/pause', [LoyaltyProgramController::class, 'pause'])->name('program.pause');
+            Route::post('/programme/archiver', [LoyaltyProgramController::class, 'archive'])->name('program.archive');
+            Route::get('/messages', [LoyaltyProgramController::class, 'messages'])->name('messages');
+            Route::put('/messages', [LoyaltyProgramController::class, 'saveMessages'])->name('messages.save');
+        });
     });
 
     // Fiches clients : PlanningAccess/CustomerController restreignent le praticien à ses propres clients (docs/02 §1).

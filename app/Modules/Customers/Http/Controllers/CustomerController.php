@@ -10,6 +10,8 @@ use App\Modules\Booking\Support\PlanningAccess;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerSavedView;
 use App\Modules\Customers\Services\CustomerListQuery;
+use App\Modules\Loyalty\Services\LoyaltyDirectory;
+use App\Modules\Loyalty\Support\LoyaltyAccess;
 use App\Modules\Privacy\Services\CustomerErasure;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Tenancy\Models\OrgMember;
@@ -159,7 +161,18 @@ final class CustomerController
         $timezone = (string) DB::table('locations')->orderBy('created_at')->value('timezone');
         $seesNotes = $this->access->seesNotes();
 
+        // Fidélité (docs/27) : progression, récompenses et historique, lisibles par tous les rôles qui voient ce client ; les actions suivent les droits.
+        $loyalty = app(LoyaltyDirectory::class);
+        $abilities = app(LoyaltyAccess::class)->abilities();
+        $program = $loyalty->program();
+
         return Inertia::render('Customers/Show', [
+            'loyalty' => $program === null && ! $abilities['configure'] ? null : [
+                'can' => $abilities,
+                'panel' => $loyalty->panel($customer, $program, app()->getLocale()),
+                'bookings' => $abilities['redeem'] && $program !== null ? $loyalty->redeemableBookings($customer) : [],
+                'configured' => $program !== null,
+            ],
             'customer' => [
                 'id' => $customer->id,
                 'name' => $customer->name,

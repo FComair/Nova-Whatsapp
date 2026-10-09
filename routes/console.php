@@ -16,3 +16,4 @@ Schedule::command('billing:run')->hourly()->withoutOverlapping();
 Schedule::command('accounts:end-pauses')->hourly()->withoutOverlapping();
 Schedule::command('whatsapp:sync-templates')->hourly()->withoutOverlapping();
 Schedule::command('pricelists:purge-files')->hourly()->withoutOverlapping();
+Schedule::command('loyalty:maintain')->dailyAt('06:00')->withoutOverlapping();

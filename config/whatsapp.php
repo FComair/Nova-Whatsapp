@@ -40,6 +40,16 @@ return [
         'cancellation' => env('WHATSAPP_TEMPLATE_CANCELLATION', 'appointment_cancelled'),
     ],
 
+    // Modèles du programme de fidélité (docs/27), catégorie marketing chez Meta : variables {{1}} établissement, {{2}} prénom, {{3}} progression (ex. 6/8), {{4}} récompense, {{5}} date d'expiration.
+    // À créer et faire approuver séparément (non soumis automatiquement : ils ne concernent que les établissements qui activent leurs messages).
+    'loyalty_templates' => [
+        'joined' => env('WHATSAPP_TEMPLATE_LOYALTY_JOINED', 'loyalty_joined'),
+        'progress' => env('WHATSAPP_TEMPLATE_LOYALTY_PROGRESS', 'loyalty_progress'),
+        'reward_earned' => env('WHATSAPP_TEMPLATE_LOYALTY_REWARD', 'loyalty_reward_earned'),
+        'reward_redeemed' => env('WHATSAPP_TEMPLATE_LOYALTY_REDEEMED', 'loyalty_reward_redeemed'),
+        'expiry_reminder' => env('WHATSAPP_TEMPLATE_LOYALTY_EXPIRY', 'loyalty_expiry_reminder'),
+    ],
+
     // n8n reçoit chaque message entrant (hors STOP/START) et répond via l'API interne. URL vide : aucun transfert.
     'n8n' => [
         'url' => env('N8N_INBOUND_URL'),

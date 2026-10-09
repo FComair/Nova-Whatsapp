@@ -22,6 +22,7 @@ use App\Modules\Booking\Support\Slot;
 use App\Modules\Catalog\Models\BusinessHour;
 use App\Modules\Catalog\Models\Service;
 use App\Modules\Customers\Services\CustomerDirectory;
+use App\Modules\Loyalty\Services\LoyaltyDirectory;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Models\PractitionerSchedule;
 use App\Modules\Tenancy\Models\Location;
@@ -95,6 +96,10 @@ final class PlanningController
         $minutes = fn (string $time): int => (int) substr($time, 0, 2) * 60 + (int) substr($time, 3, 2);
         $localMinutes = fn (CarbonImmutable $instant): int => (int) $instant->setTimezone($timezone)->format('G') * 60 + (int) $instant->setTimezone($timezone)->format('i');
 
+        // Fidélité (docs/27) : progression du client et récompense appliquée, affichées dans le détail du rendez-vous.
+        $loyaltyDirectory = app(LoyaltyDirectory::class);
+        $loyalty = $loyaltyDirectory->forBookings($loyaltyDirectory->program(), $bookings->pluck('customer_id')->unique()->values()->all(), $bookings->pluck('id')->all());
+
         $bookingRows = $bookings->map(fn (Booking $booking): array => [
             'id' => $booking->id,
             'practitioner_id' => $booking->practitioner_id,
@@ -113,6 +118,7 @@ final class PlanningController
             'payment_status' => $booking->payment_status,
             'amount_collected_cents' => $booking->amount_collected_cents,
             'tip' => $this->tipPayload($tips->get($booking->id), $practitionerNames),
+            'loyalty' => $loyalty[$booking->id] ?? null,
             'notes' => $seesNotes ? $booking->notes_enc : null,
             'is_past' => $booking->starts_at <= now(),
         ])->values()->all();

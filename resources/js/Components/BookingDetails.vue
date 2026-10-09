@@ -186,6 +186,23 @@ function pick(suggestion: Suggestion): void {
                     <span class="block text-xs font-normal text-neutral-700">{{ t('planning.tip.includes_tip') }}</span>
                 </dd>
             </template>
+            <!-- Fidélité (docs/27) : progression du client, tampon gagné ici, récompense appliquée (elle ne change ni le prix ni le paiement). -->
+            <template v-if="booking.loyalty">
+                <dt class="font-medium text-neutral-600">{{ t('loyalty.booking.title') }}</dt>
+                <dd data-testid="booking-loyalty">
+                    <template v-if="booking.loyalty.enrolled && booking.loyalty.stamps !== null">
+                        {{ t('loyalty.booking.progress', { stamps: booking.loyalty.stamps, required: booking.loyalty.required }) }}
+                    </template>
+                    <template v-else>{{ t('loyalty.booking.not_enrolled') }}</template>
+                    <span v-if="booking.loyalty.earned_here" class="block text-xs text-neutral-700">{{ t('loyalty.booking.earned_here') }}</span>
+                    <span v-if="booking.loyalty.reward_applied_cents !== null" class="block text-xs text-neutral-700">{{
+                        t('loyalty.booking.reward_applied', { amount: money(booking.loyalty.reward_applied_cents) })
+                    }}</span>
+                    <span v-if="booking.loyalty.rewards_available > 0" class="block text-xs font-semibold text-success-fg">{{
+                        t('loyalty.booking.available', { count: booking.loyalty.rewards_available })
+                    }}</span>
+                </dd>
+            </template>
             <template v-if="booking.notes">
                 <dt class="font-medium text-neutral-600">{{ t('planning.form.notes') }}</dt>
                 <dd class="whitespace-pre-line">{{ booking.notes }}</dd>

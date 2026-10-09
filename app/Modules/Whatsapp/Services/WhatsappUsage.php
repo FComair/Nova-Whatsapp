@@ -18,6 +18,8 @@ final class WhatsappUsage
 
     public const SERVICE = 'service';
 
+    public const MARKETING = 'marketing';
+
     public static function record(string $orgId, string $category, string $toE164): void
     {
         try {

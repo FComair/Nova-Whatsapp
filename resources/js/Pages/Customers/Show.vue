@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
+import LoyaltyPanel from '../../Components/LoyaltyPanel.vue';
 import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
@@ -11,10 +12,12 @@ import { formatDate } from '../../composables/dates';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 import type { Locale, SharedProps } from '../../types';
+import type { CustomerPanelData, LoyaltyAbilities } from '../../types/loyalty';
 
 const props = defineProps<{
     customer: { id: string; name: string | null; email: string | null; phone: string; language: Locale | null; is_blocked: boolean };
     history: { id: string; date: string; time: string; service: string | null; status: string; notes: string | null }[];
+    loyalty: { can: LoyaltyAbilities; panel: CustomerPanelData; bookings: unknown[]; configured: boolean } | null;
 }>();
 
 const { t } = useT();
@@ -97,6 +100,15 @@ function toggleBlock(): void {
                     </li>
                 </ul>
             </section>
+        </div>
+
+        <div v-if="loyalty" class="mt-8 rounded-card border border-line bg-surface p-5 shadow-xs">
+            <LoyaltyPanel :customer-id="customer.id" :panel="loyalty.panel" :can="loyalty.can" :configured="loyalty.configured" />
+            <p v-if="!loyalty.configured && loyalty.can.configure" class="mt-3 text-sm">
+                <Link :href="`${routes.loyalty}/programme`" class="font-semibold text-primary-700 underline underline-offset-2">
+                    {{ t('loyalty.empty.set_up') }}
+                </Link>
+            </p>
         </div>
 
         <ConfirmDialog

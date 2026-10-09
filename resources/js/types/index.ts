@@ -129,6 +129,8 @@ export interface PlanningBooking {
     amount_collected_cents: number;
     /** Pourboire, à part du prix et de l'encaissé, avec sa répartition ; null s'il n'y en a pas. */
     tip: BookingTip | null;
+    /** Fidélité du client pour ce rendez-vous (docs/27) ; null sans programme. */
+    loyalty?: import('./loyalty').BookingLoyalty | null;
     notes: string | null;
     is_past: boolean;
 }

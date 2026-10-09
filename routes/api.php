@@ -6,6 +6,7 @@ use App\Modules\Api\Http\Controllers\AvailabilityController;
 use App\Modules\Api\Http\Controllers\BookingApiController;
 use App\Modules\Api\Http\Controllers\ConfigController;
 use App\Modules\Api\Http\Controllers\CustomerApiController;
+use App\Modules\Api\Http\Controllers\LoyaltyApiController;
 use App\Modules\Api\Http\Controllers\MessageApiController;
 use App\Modules\Whatsapp\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::middleware(['throttle:api-client'])->group(function (): void {
 
     Route::post('/messages', [MessageApiController::class, 'store'])->middleware('api.auth:conversations:write');
 
+    Route::get('/loyalty', [LoyaltyApiController::class, 'show'])->middleware('api.auth:loyalty:read');
     Route::get('/bookings', [BookingApiController::class, 'index'])->middleware('api.auth:bookings:read');
     Route::post('/bookings', [BookingApiController::class, 'store'])->middleware('api.auth:bookings:write');
     Route::post('/bookings/{booking}/confirm', [BookingApiController::class, 'confirm'])->middleware('api.auth:bookings:write');

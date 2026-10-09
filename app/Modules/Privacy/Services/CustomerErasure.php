@@ -7,6 +7,7 @@ namespace App\Modules\Privacy\Services;
 use App\Modules\Audit\Audit;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Customers\Models\Customer;
+use App\Modules\Loyalty\Services\LoyaltyEngine;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Whatsapp\Models\WhatsappMessage;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,7 @@ final class CustomerErasure
 
         DB::transaction(function () use ($organization, $customer, $actorId): void {
             WhatsappMessage::query()->where('customer_id', $customer->id)->delete();
+            app(LoyaltyEngine::class)->customerErased($customer); // quitte le programme de fidélité, récompenses disponibles annulées
             Booking::query()->where('customer_id', $customer->id)->update(['notes_enc' => null]);
 
             $customer->forceFill([

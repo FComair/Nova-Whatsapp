@@ -10,6 +10,7 @@ use App\Modules\Booking\Support\Actor;
 use App\Modules\Booking\Support\NewBooking;
 use App\Modules\Catalog\Models\Service;
 use App\Modules\Customers\Models\Customer;
+use App\Modules\Loyalty\Services\LoyaltyEngine;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
@@ -273,6 +274,9 @@ final class BookingCore
 
         $this->record($booking, $actor, 'payment_updated', ['from' => $before, 'to' => ['payment_status' => $paymentStatus, 'amount_collected_cents' => $amount]]);
 
+        // Fidélité (docs/27) : un paiement reçu ou annulé peut faire gagner ou retirer un tampon. Après la transaction en cours, sans jamais bloquer.
+        DB::afterCommit(fn () => app(LoyaltyEngine::class)->onPaymentChanged($booking));
+
         return $booking;
     }
 
@@ -346,6 +350,11 @@ final class BookingCore
 
         $booking->forceFill(['status' => $status])->save();
         $this->record($booking, $actor, $action, ['status' => [Booking::CONFIRMED, $status]]);
+
+        if ($status === Booking::COMPLETED) {
+            // Fidélité (docs/27) : un rendez-vous terminé peut faire gagner un tampon (jamais un absent ni un annulé).
+            DB::afterCommit(fn () => app(LoyaltyEngine::class)->onBookingChanged($booking));
+        }
 
         return $booking;
     }

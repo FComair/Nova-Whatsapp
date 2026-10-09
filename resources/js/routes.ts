@@ -13,6 +13,7 @@ export const routes = {
     onboarding: '/configuration/assistant',
     planning: '/planning',
     customers: '/clients',
+    loyalty: '/clients/fidelite',
     reports: '/rapports',
     reportsPrint: '/rapports/imprimer',
     reportsExport: '/rapports/export',
