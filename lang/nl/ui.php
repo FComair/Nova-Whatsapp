@@ -749,6 +749,21 @@ return [
         'no_practitioners' => 'Geen enkele behandelaar heeft een rooster op deze locatie. Voeg behandelaars en hun beschikbaarheid toe om afspraken te ontvangen.',
         'empty_week' => 'Geen afspraken deze week.',
         'working_hours' => 'Werkuren',
+        'views' => [
+            'label' => 'Planningweergave',
+            'day' => 'Dag',
+            'days3' => '3 dagen',
+            'week' => 'Werkweek',
+            'practitioners' => 'Behandelaars',
+            'shown_practitioners' => 'Getoonde behandelaars',
+            'all_shown' => 'Geen keuze: alle behandelaars worden getoond.',
+        ],
+        'step' => [
+            'day' => ['previous' => 'Vorige dag', 'next' => 'Volgende dag'],
+            'days3' => ['previous' => 'Vorige 3 dagen', 'next' => 'Volgende 3 dagen'],
+            'week' => ['previous' => 'Vorige week', 'next' => 'Volgende week'],
+        ],
+        'empty_view' => 'Geen afspraken in deze periode.',
         'opening' => 'Opent om :time',
         'closing' => 'Sluit om :time',
         'legend' => [

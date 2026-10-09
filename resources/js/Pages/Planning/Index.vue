@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, usePage } from '@inertiajs/vue3';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import BookingDetails from '../../Components/BookingDetails.vue';
@@ -10,6 +10,7 @@ import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
 import { formatDate, formatWeekdayDate } from '../../composables/dates';
 import { blockStyle, hourMarks, isoWeekday, layoutLanes, minutesToTime, PIXELS_PER_MINUTE, shiftDate, visibleDays } from '../../composables/planning';
+import { columnMode, gridMinWidth, hidesClosedDays, PLANNING_VIEWS, parseView, stepDays, stepKey } from '../../composables/planningViews';
 import { useT } from '../../composables/useT';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
@@ -19,6 +20,7 @@ const props = defineProps<{
     locations: { id: string; name: string }[];
     location: { id: string; name: string; timezone: string } | null;
     date?: string;
+    view?: string;
     today?: string;
     range?: { from: number; to: number };
     week?: PlanningWeek;
@@ -37,33 +39,149 @@ const creating = ref(false);
 const selectedId = ref<string | null>(null);
 const selected = computed(() => props.bookings?.find((booking) => booking.id === selectedId.value) ?? null);
 
-/** Filtre de praticien (vide = tous) : purement visuel, la semaine complète reste chargée. */
-const practitionerFilter = ref('');
+const view = computed(() => parseView(props.view));
+
+/** Filtres mémorisés le temps de la session : ils survivent au changement de jour, de semaine ou de vue (la page est rechargée). */
+const FILTERS_KEY = 'nova.planning.filters';
+
+function readFilters(): { practitioner: string; chosen: string[] } {
+    const known = new Set((props.practitioners ?? []).map((practitioner) => practitioner.id));
+
+    try {
+        const stored = JSON.parse(sessionStorage.getItem(FILTERS_KEY) ?? '{}') as { practitioner?: string; chosen?: string[] };
+
+        return {
+            practitioner: stored.practitioner !== undefined && known.has(stored.practitioner) ? stored.practitioner : '',
+            chosen: (stored.chosen ?? []).filter((id) => known.has(id)),
+        };
+    } catch {
+        return { practitioner: '', chosen: [] };
+    }
+}
+
+const initial = readFilters();
+
+/** Filtre de praticien des vues Jour, 3 jours et Semaine (vide = tous) : purement visuel, les jours affichés restent chargés. */
+const practitionerFilter = ref(initial.practitioner);
+
+/** Praticiens choisis dans la vue « Praticiens » (vide = tous). */
+const chosenPractitioners = ref<string[]>(initial.chosen);
+
+watch([practitionerFilter, chosenPractitioners], () => {
+    try {
+        sessionStorage.setItem(FILTERS_KEY, JSON.stringify({ practitioner: practitionerFilter.value, chosen: chosenPractitioners.value }));
+    } catch {
+        // Stockage indisponible (navigation privée) : les filtres valent pour cette page seulement.
+    }
+});
+
+function togglePractitioner(id: string): void {
+    chosenPractitioners.value = chosenPractitioners.value.includes(id)
+        ? chosenPractitioners.value.filter((item) => item !== id)
+        : [...chosenPractitioners.value, id];
+}
 
 const range = computed(() => props.range ?? { from: 540, to: 1080 });
 const gridHeight = computed(() => `${(range.value.to - range.value.from) * PIXELS_PER_MINUTE}px`);
-const weekLabel = computed(() => (props.week === undefined ? '' : `${formatDate(props.week.start)} – ${formatDate(props.week.end)}`));
 const practitionerById = computed(() => new Map((props.practitioners ?? []).map((practitioner) => [practitioner.id, practitioner])));
 
-const visibleBookings = computed(() =>
-    (props.bookings ?? []).filter((booking) => practitionerFilter.value === '' || booking.practitioner_id === practitionerFilter.value),
+/** Praticiens affichés par la vue « Praticiens » : ceux qu'on a choisis, ou tous. */
+const shownPractitioners = computed(() => {
+    const all = props.practitioners ?? [];
+
+    return chosenPractitioners.value.length === 0 ? all : all.filter((practitioner) => chosenPractitioners.value.includes(practitioner.id));
+});
+const mode = computed(() => columnMode(view.value, shownPractitioners.value.length));
+const step = computed(() => stepDays(view.value, shownPractitioners.value.length));
+const stepLabelKey = computed(() => stepKey(view.value, shownPractitioners.value.length));
+
+/** Filtre appliqué aux colonnes de jours : le praticien unique de la vue « Praticiens », sinon la liste déroulante. */
+const dayFilter = computed(() =>
+    view.value === 'practitioners' ? (shownPractitioners.value.length === 1 ? shownPractitioners.value[0]!.id : '') : practitionerFilter.value,
 );
 
-/** Les rendez-vous de chaque jour de la semaine, avec leur colonne quand ils se chevauchent. */
+const visibleBookings = computed(() => {
+    const shown = new Set(shownPractitioners.value.map((practitioner) => practitioner.id));
+
+    return (props.bookings ?? []).filter((booking) =>
+        mode.value === 'practitioners' ? shown.has(booking.practitioner_id) : dayFilter.value === '' || booking.practitioner_id === dayFilter.value,
+    );
+});
+
+interface Column {
+    key: string;
+    date: string;
+    working: { start: number; end: number }[];
+    bookings: PlanningBooking[];
+    lanes: Record<string, { lane: number; lanes: number }>;
+    practitioner: PlanningPractitioner | null;
+}
+
 /**
- * Seuls les jours d'ouverture du site où le praticien (ou l'un des praticiens) travaille d'après son profil sont affichés.
- * Les heures en blanc sont celles du praticien filtré, ou celles d'ouverture du site quand tous sont affichés.
+ * Colonnes de la grille. Jours (Jour, 3 jours, Semaine, ou un seul praticien) : les heures en blanc sont celles du praticien filtré,
+ * ou celles d'ouverture du site ; la semaine et la vue « Praticiens » masquent les jours sans horaires. Praticiens (plusieurs
+ * affichés) : une colonne par praticien pour le jour choisi, avec ses propres heures de travail.
  */
-const days = computed(() => {
+const columns = computed<Column[]>(() => {
+    if (mode.value === 'practitioners') {
+        const date = props.date ?? '';
+
+        return shownPractitioners.value.map((practitioner) => {
+            const bookings = visibleBookings.value.filter((booking) => booking.practitioner_id === practitioner.id && booking.date === date);
+
+            return {
+                key: practitioner.id,
+                date,
+                working: practitioner.schedule[String(isoWeekday(date))] ?? [],
+                bookings,
+                lanes: layoutLanes(bookings),
+                practitioner,
+            };
+        });
+    }
+
     const bookedDates = new Set(visibleBookings.value.map((booking) => booking.date));
-    const chosen = practitionerById.value.get(practitionerFilter.value);
+    const chosen = practitionerById.value.get(dayFilter.value);
+    const all = props.week?.days ?? [];
+    const shown = hidesClosedDays(view.value) ? visibleDays(all, props.practitioners ?? [], bookedDates, dayFilter.value) : all;
 
-    return visibleDays(props.week?.days ?? [], props.practitioners ?? [], bookedDates, practitionerFilter.value).map((day) => {
+    return shown.map((day) => {
         const bookings = visibleBookings.value.filter((booking) => booking.date === day.date);
-        const working = chosen?.schedule[String(isoWeekday(day.date))] ?? day.open;
 
-        return { ...day, working, bookings, lanes: layoutLanes(bookings) };
+        return {
+            key: day.date,
+            date: day.date,
+            working: chosen?.schedule[String(isoWeekday(day.date))] ?? day.open,
+            bookings,
+            lanes: layoutLanes(bookings),
+            practitioner: null,
+        };
     });
+});
+
+/** Titre de la période affichée. */
+const heading = computed(() => {
+    if (props.week === undefined || props.date === undefined) {
+        return '';
+    }
+
+    if (view.value === 'day' || mode.value === 'practitioners') {
+        return formatWeekdayDate(props.date, locale.value);
+    }
+
+    const period = `${formatDate(props.week.start)} – ${formatDate(props.week.end)}`;
+    const only = view.value === 'practitioners' ? shownPractitioners.value[0] : undefined;
+
+    return only === undefined ? period : `${only.name} · ${period}`;
+});
+
+/** « Aujourd'hui » n'apparaît que quand la période affichée ne contient pas déjà aujourd'hui. */
+const showToday = computed(() => {
+    if (props.week === undefined || props.today === undefined || props.date === undefined) {
+        return false;
+    }
+
+    return mode.value === 'practitioners' ? props.today !== props.date : props.today < props.week.start || props.today > props.week.end;
 });
 
 /** Défilement vertical de la grille (la marge de 2 h reste visible au-dessus, l'utilisateur garde la main ensuite). */
@@ -71,7 +189,7 @@ const scroller = ref<HTMLElement | null>(null);
 
 /** Horaires d'ouverture ou de travail de la semaine : première ouverture et dernière fermeture, repères de l'axe. */
 const opening = computed(() => {
-    const slots = days.value.flatMap((day) => day.working);
+    const slots = columns.value.flatMap((column) => column.working);
 
     return slots.length === 0 ? null : { start: Math.min(...slots.map((slot) => slot.start)), end: Math.max(...slots.map((slot) => slot.end)) };
 });
@@ -84,21 +202,33 @@ function scrollToOpening(): void {
         return;
     }
 
-    const day = days.value.find((item) => item.date === props.date);
-    const starts = [...(day?.working.map((slot) => slot.start) ?? []), ...(day?.bookings.map((booking) => booking.start_minute) ?? [])];
+    const selectedColumns = columns.value.filter((column) => column.date === props.date);
+    const starts = selectedColumns.flatMap((column) => [
+        ...column.working.map((slot) => slot.start),
+        ...column.bookings.map((booking) => booking.start_minute),
+    ]);
     const target = starts.length > 0 ? Math.min(...starts) : (opening.value?.start ?? range.value.from);
 
     element.scrollTop = Math.max(0, (target - 30 - range.value.from) * PIXELS_PER_MINUTE);
 }
 
-onMounted(() => void nextTick(scrollToOpening));
+onMounted(() => {
+    // Sur un petit écran, sans vue choisie : la vue « Jour », plus lisible qu'une semaine entière.
+    if (props.location !== null && window.innerWidth < 640 && !new URLSearchParams(window.location.search).has('view')) {
+        visit({ view: 'day' });
+
+        return;
+    }
+
+    void nextTick(scrollToOpening);
+});
 
 function weekday(date: string): string {
     return new Intl.DateTimeFormat(locale.value, { weekday: 'short' }).format(new Date(`${date}T12:00:00`));
 }
 
 function visit(query: Record<string, string>): void {
-    router.get(routes.planning, { location: props.location?.id, date: props.date, ...query }, { preserveScroll: true, preserveState: false });
+    router.get(routes.planning, { location: props.location?.id, date: props.date, view: view.value, ...query }, { preserveScroll: true, preserveState: false });
 }
 
 function bookingStyle(booking: PlanningBooking, lanes: Record<string, { lane: number; lanes: number }>): Record<string, string> {
@@ -131,7 +261,34 @@ function describe(booking: PlanningBooking): string {
         <AlertBox v-if="!location" variant="info" class="mt-4">{{ t('planning.no_sites') }}</AlertBox>
 
         <template v-else>
-            <div class="mt-5 flex flex-wrap items-end gap-3">
+            <!-- Sélecteur de vue : boutons sur écran large, liste déroulante sur téléphone. -->
+            <div class="mt-5 hidden flex-wrap gap-2 sm:flex" role="group" :aria-label="t('planning.views.label')">
+                <button
+                    v-for="item in PLANNING_VIEWS"
+                    :key="item"
+                    type="button"
+                    class="min-h-10 rounded-full border-[1.5px] px-4 text-sm font-semibold transition"
+                    :class="
+                        view === item
+                            ? 'border-primary-600 bg-primary-50 text-primary-700'
+                            : 'border-neutral-300 bg-surface text-neutral-900 hover:border-primary-600'
+                    "
+                    :aria-pressed="view === item"
+                    @click="visit({ view: item })"
+                >
+                    {{ t(`planning.views.${item === '3days' ? 'days3' : item}`) }}
+                </button>
+            </div>
+            <div class="mt-5 sm:hidden">
+                <SelectField
+                    :model-value="view"
+                    :label="t('planning.views.label')"
+                    :options="PLANNING_VIEWS.map((item) => ({ value: item, label: t(`planning.views.${item === '3days' ? 'days3' : item}`) }))"
+                    @update:model-value="(value) => visit({ view: value })"
+                />
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-end gap-3">
                 <SelectField
                     v-if="locations.length > 1"
                     :model-value="location.id"
@@ -140,7 +297,7 @@ function describe(booking: PlanningBooking): string {
                     @update:model-value="(id) => visit({ location: id })"
                 />
                 <SelectField
-                    v-if="(practitioners?.length ?? 0) > 1"
+                    v-if="view !== 'practitioners' && (practitioners?.length ?? 0) > 1"
                     v-model="practitionerFilter"
                     :label="t('planning.practitioner')"
                     :options="[
@@ -154,8 +311,8 @@ function describe(booking: PlanningBooking): string {
                         variant="secondary"
                         class="shrink-0"
                         style="min-height: 46px"
-                        :aria-label="t('planning.previous_week')"
-                        @click="visit({ date: shiftDate(date!, -7) })"
+                        :aria-label="t(`planning.step.${stepLabelKey}.previous`)"
+                        @click="visit({ date: shiftDate(date!, -step) })"
                     >
                         ‹
                     </BaseButton>
@@ -164,28 +321,52 @@ function describe(booking: PlanningBooking): string {
                         variant="secondary"
                         class="shrink-0"
                         style="min-height: 46px"
-                        :aria-label="t('planning.next_week')"
-                        @click="visit({ date: shiftDate(date!, 7) })"
+                        :aria-label="t(`planning.step.${stepLabelKey}.next`)"
+                        @click="visit({ date: shiftDate(date!, step) })"
                     >
                         ›
                     </BaseButton>
                 </div>
-                <BaseButton
-                    v-if="week && (today! < week.start || today! > week.end)"
-                    variant="secondary"
-                    style="min-height: 46px"
-                    @click="visit({ date: today! })"
-                >
-                    {{ t('planning.this_week') }}
+                <BaseButton v-if="showToday" variant="secondary" style="min-height: 46px" @click="visit({ date: today! })">
+                    {{ stepLabelKey === 'week' ? t('planning.this_week') : t('planning.today') }}
                 </BaseButton>
             </div>
 
-            <h2 class="mt-5 text-lg font-semibold text-nova-900">{{ weekLabel }}</h2>
+            <div v-if="view === 'practitioners' && (practitioners?.length ?? 0) > 1" class="mt-3">
+                <div class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('planning.views.shown_practitioners')">
+                    <button
+                        v-for="item in practitioners"
+                        :key="item.id"
+                        type="button"
+                        class="inline-flex min-h-9 items-center gap-2 rounded-full border-[1.5px] px-3.5 text-sm font-semibold transition"
+                        :class="
+                            chosenPractitioners.includes(item.id)
+                                ? 'border-primary-600 bg-primary-50 text-primary-700'
+                                : 'border-neutral-300 bg-surface text-neutral-900 hover:border-primary-600'
+                        "
+                        :aria-pressed="chosenPractitioners.includes(item.id)"
+                        @click="togglePractitioner(item.id)"
+                    >
+                        <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: item.color }" aria-hidden="true" />
+                        {{ item.name }}
+                    </button>
+                    <BaseButton v-if="chosenPractitioners.length" variant="ghost" size="sm" @click="chosenPractitioners = []">
+                        {{ t('planning.all_practitioners') }}
+                    </BaseButton>
+                </div>
+                <p v-if="!chosenPractitioners.length" class="mt-1 text-sm text-neutral-700">{{ t('planning.views.all_shown') }}</p>
+            </div>
+
+            <h2 class="mt-5 text-lg font-semibold text-nova-900">{{ heading }}</h2>
 
             <AlertBox v-if="!practitioners?.length" variant="info" class="mt-4">{{ t('planning.no_practitioners') }}</AlertBox>
 
             <template v-else>
-                <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-700" :aria-label="t('planning.practitioner')">
+                <ul
+                    v-if="view !== 'practitioners'"
+                    class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-700"
+                    :aria-label="t('planning.practitioner')"
+                >
                     <li v-for="practitioner in practitioners" :key="practitioner.id" class="flex items-center gap-1.5">
                         <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                         {{ practitioner.name }}
@@ -204,7 +385,7 @@ function describe(booking: PlanningBooking): string {
                 </ul>
 
                 <div ref="scroller" class="mt-3 max-h-[75vh] overflow-auto rounded-card border border-line bg-surface shadow-xs">
-                    <div class="flex min-w-[52rem]">
+                    <div class="flex" :style="{ minWidth: `${gridMinWidth(columns.length, view)}px` }">
                         <div class="w-14 shrink-0 border-r border-line">
                             <div class="sticky top-0 z-20 h-12 border-b border-line bg-surface" />
                             <div class="relative" :style="{ height: gridHeight }">
@@ -233,13 +414,21 @@ function describe(booking: PlanningBooking): string {
                         </div>
 
                         <section
-                            v-for="day in days"
-                            :key="day.date"
+                            v-for="day in columns"
+                            :key="day.key"
                             class="min-w-0 flex-1 basis-0 border-r border-line last:border-r-0"
-                            :aria-label="formatWeekdayDate(day.date, locale)"
+                            :aria-label="day.practitioner ? day.practitioner.name : formatWeekdayDate(day.date, locale)"
                         >
                             <h3 class="sticky top-0 z-20 h-12 border-b border-line bg-surface">
+                                <span
+                                    v-if="day.practitioner"
+                                    class="flex size-full items-center justify-center gap-2 px-2 text-sm font-semibold text-neutral-900"
+                                >
+                                    <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: day.practitioner.color }" aria-hidden="true" />
+                                    <span class="truncate">{{ day.practitioner.name }}</span>
+                                </span>
                                 <button
+                                    v-else
                                     type="button"
                                     class="flex size-full flex-col items-center justify-center text-sm leading-tight hover:bg-surface-2 focus-visible:outline focus-visible:outline-2"
                                     :class="day.date === today ? 'bg-primary-50 text-primary-700' : 'text-neutral-900'"
@@ -284,13 +473,17 @@ function describe(booking: PlanningBooking): string {
                                 >
                                     <span class="block truncate font-semibold">{{ booking.starts }} {{ booking.customer.name ?? booking.customer.phone }}</span>
                                     <span class="block truncate">{{ booking.service }}</span>
+                                    <!-- La vue « Jour » a la place : praticien et état en plus. Les autres vues restent compactes. -->
+                                    <span v-if="view === 'day'" class="block truncate text-neutral-700">
+                                        {{ practitionerById.get(booking.practitioner_id)?.name }} · {{ t(`planning.status.${booking.status}`) }}
+                                    </span>
                                 </button>
                             </div>
                         </section>
                     </div>
                 </div>
 
-                <p v-if="!visibleBookings.length" class="mt-3 text-sm text-neutral-600">{{ t('planning.empty_week') }}</p>
+                <p v-if="!visibleBookings.length" class="mt-3 text-sm text-neutral-600">{{ t('planning.empty_view') }}</p>
             </template>
         </template>
 

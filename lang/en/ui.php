@@ -749,6 +749,21 @@ return [
         'no_practitioners' => 'No practitioner has a schedule at this location. Add practitioners and their availability to receive appointments.',
         'empty_week' => 'No appointments this week.',
         'working_hours' => 'Working hours',
+        'views' => [
+            'label' => 'Calendar view',
+            'day' => 'Day',
+            'days3' => '3 days',
+            'week' => 'Working week',
+            'practitioners' => 'Practitioners',
+            'shown_practitioners' => 'Practitioners shown',
+            'all_shown' => 'No selection: all practitioners are shown.',
+        ],
+        'step' => [
+            'day' => ['previous' => 'Previous day', 'next' => 'Next day'],
+            'days3' => ['previous' => 'Previous 3 days', 'next' => 'Next 3 days'],
+            'week' => ['previous' => 'Previous week', 'next' => 'Next week'],
+        ],
+        'empty_view' => 'No appointments in this period.',
         'opening' => 'Opens at :time',
         'closing' => 'Closes at :time',
         'legend' => [

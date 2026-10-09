@@ -749,6 +749,21 @@ return [
         'no_practitioners' => 'Aucun praticien n\'a de planning sur ce site. Ajoutez des praticiens et leurs disponibilités pour recevoir des rendez-vous.',
         'empty_week' => 'Aucun rendez-vous cette semaine.',
         'working_hours' => 'Heures de travail',
+        'views' => [
+            'label' => 'Vue du planning',
+            'day' => 'Jour',
+            'days3' => '3 jours',
+            'week' => 'Semaine de travail',
+            'practitioners' => 'Praticiens',
+            'shown_practitioners' => 'Praticiens affichés',
+            'all_shown' => 'Aucun choix : tous les praticiens sont affichés.',
+        ],
+        'step' => [
+            'day' => ['previous' => 'Jour précédent', 'next' => 'Jour suivant'],
+            'days3' => ['previous' => '3 jours précédents', 'next' => '3 jours suivants'],
+            'week' => ['previous' => 'Semaine précédente', 'next' => 'Semaine suivante'],
+        ],
+        'empty_view' => 'Aucun rendez-vous sur cette période.',
         'opening' => 'Ouverture à :time',
         'closing' => 'Fermeture à :time',
         'legend' => [

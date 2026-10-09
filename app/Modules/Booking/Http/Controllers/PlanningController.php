@@ -15,6 +15,7 @@ use App\Modules\Booking\Support\Actor;
 use App\Modules\Booking\Support\NewBooking;
 use App\Modules\Booking\Support\PlanningAccess;
 use App\Modules\Booking\Support\PlanningRange;
+use App\Modules\Booking\Support\PlanningWindow;
 use App\Modules\Booking\Support\Slot;
 use App\Modules\Catalog\Models\BusinessHour;
 use App\Modules\Catalog\Models\Service;
@@ -57,9 +58,11 @@ final class PlanningController
 
         $timezone = $location->timezone;
         $date = $this->dateFrom($request->query('date'), $timezone);
-        // Vue semaine : du lundi au dimanche autour de la date choisie (la date choisie reste le jour mis en avant).
-        $weekStart = CarbonImmutable::parse($date, $timezone)->startOfDay()->startOfWeek(CarbonImmutable::MONDAY);
-        $days = array_map(fn (int $offset): string => $weekStart->addDays($offset)->toDateString(), range(0, 6));
+        // Vue choisie (jour, 3 jours, semaine de travail, praticiens) : elle décide des jours chargés ; la date reste le jour mis en avant.
+        $view = PlanningWindow::view($request->query('view'));
+        $days = PlanningWindow::days($view, $date);
+        $windowStart = CarbonImmutable::parse($days[0], $timezone)->startOfDay();
+        $windowEnd = CarbonImmutable::parse($days[count($days) - 1], $timezone)->startOfDay()->addDay();
 
         $practitioners = Practitioner::query()->where('status', Practitioner::STATUS_ACTIVE)
             ->whereHas('schedules', fn ($query) => $query->where('location_id', $location->id))
@@ -69,7 +72,7 @@ final class PlanningController
         $schedules = PractitionerSchedule::query()->where('location_id', $location->id)->get();
 
         $bookings = Booking::query()->where('location_id', $location->id)
-            ->where('starts_at', '>=', $weekStart->utc())->where('starts_at', '<', $weekStart->addDays(7)->utc())
+            ->where('starts_at', '>=', $windowStart->utc())->where('starts_at', '<', $windowEnd->utc())
             ->whereIn('status', [Booking::PENDING, Booking::CONFIRMED, Booking::COMPLETED, Booking::NO_SHOW])
             ->when($this->access->isPractitioner(), fn ($query) => $query->where('practitioner_id', $this->access->practitionerId()))
             ->orderBy('starts_at')->get();
@@ -107,8 +110,9 @@ final class PlanningController
 
         // Plage horaire affichée : 2 h avant l'ouverture et 2 h après la fermeture (horaires du site et des praticiens de la semaine),
         // élargie aux rendez-vous de la semaine pour qu'aucun ne soit caché.
+        $shownWeekdays = array_map(fn (string $day): int => CarbonImmutable::parse($day)->isoWeekday(), $days);
         $range = PlanningRange::compute(
-            [...$open->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)])->all(), ...$schedules->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)])->all()],
+            [...$open->whereIn('weekday', $shownWeekdays)->map(fn (BusinessHour $hour): array => [$minutes($hour->starts_at), $minutes($hour->ends_at)])->all(), ...$schedules->whereIn('weekday', $shownWeekdays)->map(fn (PractitionerSchedule $slot): array => [$minutes($slot->starts_at), $minutes($slot->ends_at)])->all()],
             array_map(fn (array $row): array => [$row['start_minute'], $row['end_minute']], $bookingRows),
         );
 
@@ -116,14 +120,15 @@ final class PlanningController
             'locations' => $locations->map(fn (Location $item): array => ['id' => $item->id, 'name' => $item->name])->all(),
             'location' => ['id' => $location->id, 'name' => $location->name, 'timezone' => $timezone],
             'date' => $date,
+            'view' => $view,
             'today' => CarbonImmutable::now($timezone)->toDateString(),
             'range' => $range,
             'week' => [
                 'start' => $days[0],
-                'end' => $days[6],
-                'days' => collect($days)->map(fn (string $day, int $index): array => [
+                'end' => $days[count($days) - 1],
+                'days' => collect($days)->map(fn (string $day): array => [
                     'date' => $day,
-                    'open' => $open->where('weekday', $index + 1)->map(fn (BusinessHour $hour): array => ['start' => $minutes($hour->starts_at), 'end' => $minutes($hour->ends_at)])->values()->all(),
+                    'open' => $open->where('weekday', CarbonImmutable::parse($day)->isoWeekday())->map(fn (BusinessHour $hour): array => ['start' => $minutes($hour->starts_at), 'end' => $minutes($hour->ends_at)])->values()->all(),
                 ])->all(),
             ],
             'practitioners' => $practitioners->map(fn (Practitioner $practitioner): array => [
