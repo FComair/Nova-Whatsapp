@@ -128,19 +128,19 @@ final class QrRenderer
     }
 
     /**
-     * Affiche imprimable (une page A4 ou A6) : nom de l'établissement, code en vectoriel, légende. Écrite à la main : un PDF d'une
+     * Affiche imprimable (une page A4 ou A5) : nom de l'établissement, code en vectoriel, légende. Écrite à la main : un PDF d'une
      * page n'a besoin d'aucune bibliothèque.
      */
     public function pdf(string $data, string $color, string $title, string $caption, string $format = 'a4'): string
     {
         $this->assertColor($color);
-        [$width, $height, $qrSide, $titleSize, $captionSize] = $format === 'a6' ? [298, 420, 190, 18, 13] : [595, 842, 360, 30, 20];
+        [$width, $height, $qrSide, $titleSize, $captionSize] = $format === 'a5' ? [420, 595, 254, 21, 14] : [595, 842, 360, 30, 20];
         $modules = $this->matrix($data);
         $size = count($modules);
         $total = $size + 2 * self::QUIET;
         $unit = $qrSide / $total;
         $left = ($width - $qrSide) / 2;
-        $top = $height - ($format === 'a6' ? 110 : 190) - $qrSide;
+        $top = $height - ($format === 'a5' ? 134 : 190) - $qrSide;
 
         [$red, $green, $blue] = [hexdec(substr($color, 1, 2)) / 255, hexdec(substr($color, 3, 2)) / 255, hexdec(substr($color, 5, 2)) / 255];
         $stream = sprintf("%.3F %.3F %.3F rg\n", $red, $green, $blue);
@@ -154,8 +154,8 @@ final class QrRenderer
         }
 
         $stream .= "0.06 0.1 0.2 rg\n";
-        $stream .= $this->text($title, 'F2', $titleSize, $width, $top + $qrSide + ($format === 'a6' ? 50 : 80), $width - 40);
-        $stream .= $this->text($caption, 'F1', $captionSize, $width, $top - ($format === 'a6' ? 34 : 56), $width - 40);
+        $stream .= $this->text($title, 'F2', $titleSize, $width, $top + $qrSide + ($format === 'a5' ? 56 : 80), $width - 40);
+        $stream .= $this->text($caption, 'F1', $captionSize, $width, $top - ($format === 'a5' ? 40 : 56), $width - 40);
 
         $objects = [
             '<< /Type /Catalog /Pages 2 0 R >>',

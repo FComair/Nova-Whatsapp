@@ -95,7 +95,7 @@ final class WhatsappQrController
         return to_route('whatsapp.qr.show')->with('status', __('ui.whatsapp_qr.deleted'));
     }
 
-    /** Image du code : `svg` (aperçu et impression vectorielle), `png` (1000 × 1000 px) ou `pdf` (affiche A4 ou A6). */
+    /** Image du code : `svg` (aperçu et impression vectorielle), `png` (1000 × 1000 px) ou `pdf` (affiche A4 ou A5). */
     public function image(Request $request, string $code, string $format): HttpResponse
     {
         $organization = $this->organization();
@@ -114,7 +114,7 @@ final class WhatsappQrController
                     $qr->color,
                     $organization->name,
                     (string) __('ui.whatsapp_qr.poster_caption', [], $organization->locale),
-                    $request->query('size') === 'a6' ? 'a6' : 'a4',
+                    $request->query('size') === 'a5' ? 'a5' : 'a4',
                 ),
                 'application/pdf',
             ],

@@ -92,7 +92,7 @@ describe('images', function (): void {
             ->and($svg)->toContain('viewBox=')->toContain('fill="#0F5132"')->not->toContain('<script');
     });
 
-    it('produit une affiche PDF A4 ou A6 d\'une page', function (string $format, string $box): void {
+    it('produit une affiche PDF A4 ou A5 d\'une page', function (string $format, string $box): void {
         $pdf = (new QrRenderer)->pdf('https://wa.me/32465788580', '#0B1220', 'Salon Aurore & Fils', 'Scannez pour nous écrire sur WhatsApp', $format);
 
         expect($pdf)->toStartWith('%PDF-1.4')->toContain($box)->toContain('/Count 1')->toEndWith("%%EOF\n")
@@ -101,7 +101,7 @@ describe('images', function (): void {
         // Table de références : chaque objet est bien à l'endroit annoncé.
         preg_match('/startxref\n(\d+)/', $pdf, $start);
         expect(substr($pdf, (int) $start[1], 4))->toBe('xref');
-    })->with([['a4', '[0 0 595 842]'], ['a6', '[0 0 298 420]']]);
+    })->with([['a4', '[0 0 595 842]'], ['a5', '[0 0 420 595]']]);
 
     it('refuse une couleur hors de la liste (illisible ou clair sur clair)', function (): void {
         expect(fn () => (new QrRenderer)->svg('https://wa.me/1', '#FFFF00'))->toThrow(InvalidArgumentException::class);

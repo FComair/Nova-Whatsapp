@@ -103,6 +103,16 @@ async function copy(): Promise<void> {
         // Presse-papiers refusé : le lien reste sélectionnable dans le champ.
     }
 }
+// Liens de téléchargement : même gabarit (pilule de 56 px, icône + libellé + précision), survol, focus clavier, appui et état désactivé
+// comme les boutons Nova ; l'adresse de chaque lien ne change pas.
+const downloadBase =
+    'group flex min-h-14 items-center gap-3 rounded-full border-[1.5px] px-3.5 py-2 text-sm font-semibold transition duration-[180ms] ease-nova focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/30 active:translate-y-0 aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-neutral-300 aria-disabled:text-neutral-500 aria-disabled:shadow-none';
+const downloadPrimary = 'border-transparent bg-primary-600 text-white hover:-translate-y-px hover:bg-primary-700 hover:shadow-teal active:bg-primary-700';
+const downloadSecondary =
+    'border-line-strong bg-surface text-neutral-900 hover:border-primary-600 hover:bg-primary-50 hover:text-primary-700 active:bg-primary-100';
+const iconPrimary = 'inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-white';
+const iconSecondary =
+    'inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-mint text-primary-700 group-aria-disabled:bg-neutral-200 group-aria-disabled:text-neutral-500';
 </script>
 
 <template>
@@ -170,33 +180,123 @@ async function copy(): Promise<void> {
                     <div class="mx-auto mt-4 aspect-square w-full max-w-72 rounded-xl border border-line bg-white p-1.5">
                         <img :src="image(current, 'svg')" :alt="t('whatsapp_qr.preview_alt')" class="size-full" />
                     </div>
-                    <div class="mt-4 grid grid-cols-2 gap-2.5">
-                        <a
-                            :href="image(current, 'png', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-full bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-primary-700"
-                        >
-                            {{ t('whatsapp_qr.download_png') }}
-                            <span class="text-xs font-normal opacity-80">{{ t('whatsapp_qr.png_size') }}</span>
-                        </a>
-                        <a
-                            :href="image(current, 'svg', '&download=1')"
-                            class="flex min-h-11 flex-col items-center justify-center rounded-full border border-line-strong bg-surface px-3 py-1.5 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
-                        >
-                            {{ t('whatsapp_qr.download_svg') }}
-                            <span class="text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.vector') }}</span>
-                        </a>
-                        <a
-                            :href="image(current, 'pdf', '&size=a4&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-full border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
-                        >
-                            {{ t('whatsapp_qr.download_pdf_a4') }}
-                        </a>
-                        <a
-                            :href="image(current, 'pdf', '&size=a6&download=1')"
-                            class="flex min-h-11 items-center justify-center rounded-full border border-line-strong bg-surface px-3 text-sm font-semibold text-neutral-800 hover:bg-surface-2"
-                        >
-                            {{ t('whatsapp_qr.download_pdf_a6') }}
-                        </a>
+                    <div class="mt-5 space-y-4">
+                        <div>
+                            <p id="download-image" class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-700">
+                                {{ t('whatsapp_qr.download_image') }}
+                            </p>
+                            <div class="grid gap-2.5 sm:max-lg:grid-cols-2" role="group" aria-labelledby="download-image">
+                                <a
+                                    :href="image(current, 'png', '&download=1')"
+                                    :class="[downloadBase, downloadPrimary]"
+                                    :aria-disabled="current.link ? undefined : 'true'"
+                                    data-testid="download-png"
+                                >
+                                    <span :class="iconPrimary" aria-hidden="true">
+                                        <svg
+                                            class="size-5"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.75"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" />
+                                            <circle cx="9" cy="10" r="1.6" />
+                                            <path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="min-w-0 text-left leading-tight">
+                                        <span class="block">{{ t('whatsapp_qr.download_png') }}</span>
+                                        <span class="block text-xs font-normal opacity-85">{{ t('whatsapp_qr.png_size') }}</span>
+                                    </span>
+                                </a>
+                                <a
+                                    :href="image(current, 'svg', '&download=1')"
+                                    :class="[downloadBase, downloadSecondary]"
+                                    :aria-disabled="current.link ? undefined : 'true'"
+                                    data-testid="download-svg"
+                                >
+                                    <span :class="iconSecondary" aria-hidden="true">
+                                        <svg
+                                            class="size-5"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.75"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <circle cx="5.5" cy="18.5" r="2" />
+                                            <circle cx="18.5" cy="5.5" r="2" />
+                                            <path d="M7.5 17C9 8 13 8 16.5 7M7.5 18.5h9" />
+                                        </svg>
+                                    </span>
+                                    <span class="min-w-0 text-left leading-tight">
+                                        <span class="block">{{ t('whatsapp_qr.download_svg') }}</span>
+                                        <span class="block text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.vector') }}</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div>
+                            <p id="download-print" class="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-700">
+                                {{ t('whatsapp_qr.print_title') }}
+                            </p>
+                            <div class="grid gap-2.5 sm:max-lg:grid-cols-2" role="group" aria-labelledby="download-print">
+                                <a
+                                    :href="image(current, 'pdf', '&size=a4&download=1')"
+                                    :class="[downloadBase, downloadSecondary]"
+                                    :aria-disabled="current.link ? undefined : 'true'"
+                                    data-testid="download-a4"
+                                >
+                                    <span :class="iconSecondary" aria-hidden="true">
+                                        <svg
+                                            class="size-5"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.75"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M7 9V3.5h10V9M7 17H4.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1V16a1 1 0 0 1-1 1H17" />
+                                            <rect x="7" y="13.5" width="10" height="7" rx="1" />
+                                        </svg>
+                                    </span>
+                                    <span class="min-w-0 text-left leading-tight">
+                                        <span class="block">{{ t('whatsapp_qr.download_pdf_a4') }}</span>
+                                        <span class="block text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.size_a4') }}</span>
+                                    </span>
+                                </a>
+                                <a
+                                    :href="image(current, 'pdf', '&size=a5&download=1')"
+                                    :class="[downloadBase, downloadSecondary]"
+                                    :aria-disabled="current.link ? undefined : 'true'"
+                                    data-testid="download-a5"
+                                >
+                                    <span :class="iconSecondary" aria-hidden="true">
+                                        <svg
+                                            class="size-5"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="1.75"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M7 9V3.5h10V9M7 17H4.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1V16a1 1 0 0 1-1 1H17" />
+                                            <rect x="7" y="13.5" width="10" height="7" rx="1" />
+                                        </svg>
+                                    </span>
+                                    <span class="min-w-0 text-left leading-tight">
+                                        <span class="block">{{ t('whatsapp_qr.download_pdf_a5') }}</span>
+                                        <span class="block text-xs font-normal text-neutral-600">{{ t('whatsapp_qr.size_a5') }}</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
