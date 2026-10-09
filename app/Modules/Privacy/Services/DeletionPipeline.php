@@ -11,6 +11,7 @@ use App\Modules\Privacy\Models\DeletionRequest;
 use App\Modules\Privacy\Notifications\DeletionCompletedNotification;
 use App\Modules\Privacy\Notifications\DeletionFailedNotification;
 use App\Modules\Privacy\Support\ErasureSteps;
+use App\Modules\Staff\Services\PractitionerPhoto;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Services\OrganizationLogo;
 use Carbon\CarbonImmutable;
@@ -202,6 +203,8 @@ final class DeletionPipeline
         Storage::disk('local')->deleteDirectory("pricelists/{$organization->id}");
         // Les pièces jointes du support aussi.
         Storage::disk('local')->deleteDirectory("support/{$organization->id}");
+        // Et les photos de profil des praticiens.
+        app(PractitionerPhoto::class)->purgeOrganization($organization->id);
 
         $email = $request->owner_email_enc;
 

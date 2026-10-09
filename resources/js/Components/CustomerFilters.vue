@@ -3,12 +3,13 @@ import { computed, reactive, watch } from 'vue';
 import { type Filters, cleanFilters } from '../composables/customerList';
 import { useT } from '../composables/useT';
 import BaseButton from './BaseButton.vue';
+import PractitionerSelect from './PractitionerSelect.vue';
 import SelectField from './SelectField.vue';
 import TextField from './TextField.vue';
 
 const props = defineProps<{
     filters: Filters;
-    practitioners: { value: string; label: string }[];
+    practitioners: { value: string; label: string; photo_version: number | null }[];
     tags: string[];
 }>();
 const emit = defineEmits<{ apply: [filters: Filters]; close: [] }>();
@@ -49,7 +50,7 @@ const consentOptions = computed(() => options(['opted_in', 'opted_out', 'unknown
 const sourceOptions = computed(() =>
     options(['whatsapp_qr', 'whatsapp', 'website', 'walk_in', 'referral', 'social', 'manual', 'other'], 'customers.source_label'),
 );
-const practitionerOptions = computed(() => [any.value, ...props.practitioners]);
+const practitionerOptions = computed(() => [{ ...any.value, plain: true }, ...props.practitioners]);
 const tagOptions = computed(() => [any.value, ...props.tags.map((tag) => ({ value: tag, label: tag }))]);
 
 const number = (value: string): number | undefined =>
@@ -89,7 +90,12 @@ function reset(): void {
             <SelectField v-model="draft.appt" :label="t('customers.filters.appt')" :options="apptOptions" />
             <TextField v-if="draft.appt === 'inactive'" v-model="draft.days" :label="t('customers.filters.days')" inputmode="numeric" />
             <SelectField v-model="draft.consent" :label="t('customers.filters.consent')" :options="consentOptions" />
-            <SelectField v-if="practitioners.length" v-model="draft.practitioner" :label="t('customers.filters.practitioner')" :options="practitionerOptions" />
+            <PractitionerSelect
+                v-if="practitioners.length"
+                v-model="draft.practitioner"
+                :label="t('customers.filters.practitioner')"
+                :options="practitionerOptions"
+            />
             <SelectField v-if="tags.length" v-model="draft.tag" :label="t('customers.filters.tag')" :options="tagOptions" />
             <SelectField v-model="draft.source" :label="t('customers.filters.source')" :options="sourceOptions" />
             <TextField v-model="draft.created_days" :label="t('customers.filters.created_days')" inputmode="numeric" />

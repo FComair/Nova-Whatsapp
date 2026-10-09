@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Modules\Staff\Http\Controllers;
 
 use App\Modules\Catalog\Models\Service;
+use App\Modules\Staff\Http\Requests\PractitionerPhotoRequest;
 use App\Modules\Staff\Http\Requests\ScheduleRequest;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Services\PractitionerManager;
+use App\Modules\Staff\Services\PractitionerPhoto;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Support\CurrentTenant;
@@ -24,7 +26,7 @@ use InvalidArgumentException;
  */
 final class ProfileController
 {
-    public function __construct(private readonly CurrentTenant $current, private readonly PractitionerManager $manager) {}
+    public function __construct(private readonly CurrentTenant $current, private readonly PractitionerManager $manager, private readonly PractitionerPhoto $photos) {}
 
     public function show(): Response
     {
@@ -36,6 +38,7 @@ final class ProfileController
                 'id' => $practitioner->id,
                 'name' => $practitioner->name,
                 'color' => $practitioner->color,
+                'photo_version' => $practitioner->photoVersion(),
                 'status' => $practitioner->status,
                 'bookable' => $this->manager->isBookable($practitioner),
                 'service_ids' => $practitioner->services()->pluck('services.id')->all(),
@@ -69,6 +72,25 @@ final class ProfileController
         }
 
         return back()->with('status', __('ui.onboarding.saved'));
+    }
+
+    /** Le praticien envoie ou remplace SA photo (jamais celle d'un autre). */
+    public function photo(PractitionerPhotoRequest $request): RedirectResponse
+    {
+        try {
+            $this->photos->store($this->practitioner(), $request->file('photo') ?? abort(422), (string) auth()->id());
+        } catch (InvalidArgumentException) {
+            return back()->withErrors(['photo' => __('ui.practitioner_photo.errors.failed')]);
+        }
+
+        return back()->with('status', __('ui.practitioner_photo.saved'));
+    }
+
+    public function removePhoto(): RedirectResponse
+    {
+        $this->photos->remove($this->practitioner(), (string) auth()->id());
+
+        return back()->with('status', __('ui.practitioner_photo.removed'));
     }
 
     /** Fiche du praticien connecté. */

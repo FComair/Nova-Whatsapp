@@ -25,6 +25,7 @@ use App\Modules\Onboarding\Http\Controllers\OnboardingController;
 use App\Modules\Onboarding\Http\Controllers\SetupController;
 use App\Modules\Privacy\Http\Controllers\AccountDataController;
 use App\Modules\Staff\Http\Controllers\InvitationController;
+use App\Modules\Staff\Http\Controllers\PractitionerPhotoController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
 use App\Modules\Staff\Http\Controllers\StaffController;
 use App\Modules\Support\Http\Controllers\SupportController;
@@ -148,7 +149,12 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
         Route::put('/services', [ProfileController::class, 'saveServices'])->name('profile.services');
         Route::put('/horaires/{location}', [ProfileController::class, 'saveSchedule'])->name('profile.schedule');
+        Route::post('/photo', [ProfileController::class, 'photo'])->name('profile.photo');
+        Route::delete('/photo', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove');
     });
+
+    // Photo d'un praticien : lecture pour tous les membres de l'établissement (planning, listes, sélecteurs).
+    Route::get('/praticiens/{practitioner}/photo/{size}', [PractitionerPhotoController::class, 'show'])->whereNumber('size')->name('practitioners.photo.show');
 
     // Praticiens : propriétaire (docs/02 §1).
     Route::middleware('role:owner')->prefix('/configuration/praticiens')->group(function (): void {
@@ -156,6 +162,8 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/invitation', [StaffController::class, 'invite'])->name('practitioners.invite');
         Route::post('/{practitioner}/invitation', [StaffController::class, 'resendInvitation'])->name('practitioners.reinvite');
         Route::put('/{practitioner}', [StaffController::class, 'update'])->name('practitioners.update');
+        Route::post('/{practitioner}/photo', [StaffController::class, 'photo'])->name('practitioners.photo');
+        Route::delete('/{practitioner}/photo', [StaffController::class, 'removePhoto'])->name('practitioners.photo.remove');
         Route::delete('/{practitioner}', [StaffController::class, 'destroy'])->name('practitioners.destroy');
         Route::post('/{practitioner}/activer', [StaffController::class, 'activate'])->name('practitioners.activate');
         Route::put('/{practitioner}/horaires/{location}', [StaffController::class, 'saveSchedule'])->name('practitioners.schedule');

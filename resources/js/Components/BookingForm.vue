@@ -8,6 +8,7 @@ import type { PlanningPractitioner, PlanningService, SharedProps, Suggestion } f
 import AlertBox from './AlertBox.vue';
 import BaseButton from './BaseButton.vue';
 import CheckboxField from './CheckboxField.vue';
+import PractitionerSelect from './PractitionerSelect.vue';
 import SelectField from './SelectField.vue';
 import SlotSuggestions from './SlotSuggestions.vue';
 import TextareaField from './TextareaField.vue';
@@ -98,11 +99,11 @@ function submit(): void {
             <TextField v-model="form.date" type="date" :label="t('planning.form.date')" required :error="form.errors.date" />
             <TimeFields v-model="form.time" :label="t('planning.form.time')" required :error="form.errors.time" />
         </div>
-        <SelectField
+        <PractitionerSelect
             v-model="form.practitioner_id"
             :label="t('planning.form.practitioner')"
             :placeholder="t('planning.form.choose')"
-            :options="offering.map((practitioner) => ({ value: practitioner.id, label: practitioner.name }))"
+            :options="offering.map((practitioner) => ({ value: practitioner.id, label: practitioner.name, photo_version: practitioner.photo_version }))"
             :empty-label="t('planning.form.practitioner_empty')"
             required
             :error="form.errors.practitioner_id"

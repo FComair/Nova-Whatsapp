@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
+import PractitionerAvatar from '../../Components/PractitionerAvatar.vue';
 import PractitionerForm from '../../Components/PractitionerForm.vue';
 import TextField from '../../Components/TextField.vue';
 import WeekEditor from '../../Components/WeekEditor.vue';
@@ -41,6 +42,7 @@ const emptyForm = (isMe = false): PractitionerFormData => ({
     service_ids: props.services.map((service) => service.id),
     is_me: isMe,
     copy_hours: true,
+    photo: null,
 });
 
 const form = useForm<PractitionerFormData>(emptyForm());
@@ -97,7 +99,7 @@ function save(): void {
     const options = { preserveScroll: true, onSuccess: () => (editing.value = null) };
 
     if (editing.value === 'new') {
-        form.post(base, options);
+        form.post(base, { ...options, forceFormData: true });
     } else {
         form.put(`${base}/${editing.value}`, options);
     }
@@ -180,6 +182,7 @@ function statusLabel(practitioner: PractitionerItem): string {
                 <div v-if="editing !== practitioner.id" class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
                         <p class="flex flex-wrap items-center gap-2 font-medium text-nova-900">
+                            <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="md" />
                             <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                             <span class="break-words">{{ practitioner.name }}</span>
                             <span
@@ -241,6 +244,7 @@ function statusLabel(practitioner: PractitionerItem): string {
                 <PractitionerForm
                     v-else
                     v-model="form"
+                    :practitioner="practitioner"
                     :errors="form.errors"
                     :processing="form.processing"
                     :services="services"

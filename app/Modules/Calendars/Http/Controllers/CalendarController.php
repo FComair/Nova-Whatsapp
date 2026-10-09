@@ -51,6 +51,7 @@ final class CalendarController
             'practitioners' => $practitioners->map(fn (Practitioner $practitioner): array => [
                 'id' => $practitioner->id,
                 'name' => $practitioner->name,
+                'photo_version' => $practitioner->photoVersion(),
                 'feed_url' => $this->feeds->url($this->feeds->tokenFor($organization, $practitioner)),
                 'calendars' => ($calendars[$practitioner->id] ?? collect())->map(fn (ExternalCalendar $calendar): array => [
                     'id' => $calendar->id,

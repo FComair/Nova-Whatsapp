@@ -3,6 +3,8 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, useId, watch } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
+import PractitionerAvatar from '../../Components/PractitionerAvatar.vue';
+import PractitionerPhotoField from '../../Components/PractitionerPhotoField.vue';
 import WeekEditor from '../../Components/WeekEditor.vue';
 import { toDays, toPayload, type DayState, type TimeRange } from '../../composables/hours';
 import { useT } from '../../composables/useT';
@@ -10,7 +12,7 @@ import AppLayout from '../../Layouts/AppLayout.vue';
 import type { SharedProps } from '../../types';
 
 const props = defineProps<{
-    practitioner: { id: string; name: string; color: string; status: string; bookable: boolean; service_ids: string[] };
+    practitioner: { id: string; name: string; color: string; photo_version: number | null; status: string; bookable: boolean; service_ids: string[] };
     services: { id: string; name: string }[];
     locations: { id: string; name: string }[];
     schedules: Record<string, Record<string, TimeRange[]>>;
@@ -53,13 +55,20 @@ function saveSchedule(): void {
                 <span class="size-4 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                 {{ t('profile.title') }}
             </h1>
-            <p class="mt-1 text-neutral-600">{{ practitioner.name }} · {{ t('profile.body') }}</p>
+            <p class="mt-2 flex items-center gap-2 text-neutral-600">
+                <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="sm" />
+                <span>{{ practitioner.name }} · {{ t('profile.body') }}</span>
+            </p>
 
             <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4">{{ page.props.flash.status }}</AlertBox>
             <AlertBox v-if="practitioner.status === 'draft'" variant="warning" class="mt-4">{{ t('profile.draft') }}</AlertBox>
             <AlertBox v-else :variant="practitioner.bookable ? 'success' : 'info'" class="mt-4">
                 {{ practitioner.bookable ? t('profile.ready') : t('profile.incomplete') }}
             </AlertBox>
+
+            <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
+                <PractitionerPhotoField :practitioner="practitioner" upload-url="/mon-profil/photo" remove-url="/mon-profil/photo" />
+            </section>
 
             <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
                 <h2 class="text-lg font-semibold text-nova-900">{{ t('profile.services') }}</h2>

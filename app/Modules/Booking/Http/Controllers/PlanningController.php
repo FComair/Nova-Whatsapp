@@ -135,6 +135,7 @@ final class PlanningController
                 'id' => $practitioner->id,
                 'name' => $practitioner->name,
                 'color' => $practitioner->color,
+                'photo_version' => $practitioner->photoVersion(),
                 // Jours et heures de travail du profil, par jour de la semaine ISO (1 = lundi … 7 = dimanche).
                 'schedule' => $schedules->where('practitioner_id', $practitioner->id)->groupBy('weekday')
                     ->map(fn ($slots): array => $slots->map(fn (PractitionerSchedule $slot): array => ['start' => $minutes($slot->starts_at), 'end' => $minutes($slot->ends_at)])->values()->all())->all(),

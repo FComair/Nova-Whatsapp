@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * Praticien (ou employé) qui reçoit les rendez-vous. `draft` : ajouté au-delà de la limite du plan, non réservable.
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $color
  * @property string $status
  * @property int $position
+ * @property Carbon|null $photo_updated_at dernier envoi de la photo de profil (sert de version du fichier)
  */
 class Practitioner extends Model
 {
@@ -34,6 +36,20 @@ class Practitioner extends Model
     public const STATUS_INACTIVE = 'inactive';
 
     protected $guarded = [];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return ['photo_updated_at' => 'datetime'];
+    }
+
+    /** Version de la photo pour l'adresse de l'image (null sans photo). */
+    public function photoVersion(): ?int
+    {
+        return $this->photo_updated_at?->getTimestamp();
+    }
 
     /**
      * @return BelongsToMany<Service, $this>

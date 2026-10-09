@@ -42,6 +42,7 @@ const eligible = computed(() => {
 });
 const canChangePractitioner = computed(() => props.canReassign === true && isOpen.value);
 
+const currentPhoto = computed(() => props.practitioners.find((practitioner) => practitioner.id === props.booking.practitioner_id)?.photo_version ?? null);
 const isOpen = computed(() => props.booking.status === 'pending' || props.booking.status === 'confirmed');
 const canFinish = computed(() => props.booking.status === 'confirmed' && props.booking.is_past);
 const canPay = computed(() => ['confirmed', 'completed', 'no_show'].includes(props.booking.status));
@@ -75,7 +76,7 @@ function pick(suggestion: Suggestion): void {
             <dt class="font-medium text-neutral-600">{{ t('planning.form.service') }}</dt>
             <dd>{{ booking.service }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.practitioner') }}</dt>
-            <dd><PractitionerField :booking="booking" :eligible="eligible" :can-change="canChangePractitioner" /></dd>
+            <dd><PractitionerField :booking="booking" :eligible="eligible" :can-change="canChangePractitioner" :photo-version="currentPhoto" /></dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.name') }}</dt>
             <dd>{{ booking.customer.name ?? '—' }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.phone') }}</dt>

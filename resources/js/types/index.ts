@@ -66,6 +66,7 @@ export interface ServiceFormData {
 export interface PractitionerItem {
     id: string;
     name: string;
+    photo_version: number | null;
     bio: string | null;
     color: string;
     status: 'active' | 'draft' | 'inactive';
@@ -79,6 +80,8 @@ export interface PractitionerItem {
 
 export interface PractitionerFormData {
     name: string;
+    /** Photo choisie à la création (envoyée avec le formulaire). */
+    photo?: File | null;
     color: string;
     bio: string;
     service_ids: string[];
@@ -122,6 +125,8 @@ export interface PlanningPractitioner {
     id: string;
     name: string;
     color: string;
+    /** Version de la photo de profil (null : initiales). */
+    photo_version: number | null;
     /** Jours et heures de travail du profil, par jour ISO de la semaine (« 1 » = lundi … « 7 » = dimanche). */
     schedule: Record<string, { start: number; end: number }[]>;
 }

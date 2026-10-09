@@ -38,21 +38,27 @@ function form(practitioners: unknown[]) {
     return mount(BookingForm, { props: { locationId: 'l1', date: '2026-10-08', practitioners, services, seesNotes: false } as never });
 }
 
-const practitionerSelect = (wrapper: ReturnType<typeof form>) => wrapper.findAll('select')[3]!;
-const optionLabels = (wrapper: ReturnType<typeof form>) =>
-    practitionerSelect(wrapper)
-        .findAll('option')
-        .map((option) => option.text());
+const practitionerBox = (wrapper: ReturnType<typeof form>) => wrapper.find('[role="combobox"][aria-haspopup="listbox"]');
+/** Ouvre la liste des praticiens et renvoie les noms proposés (la liste ne s'ouvre jamais quand elle est vide). */
+const optionLabels = async (wrapper: ReturnType<typeof form>): Promise<string[]> => {
+    await practitionerBox(wrapper).trigger('click');
+
+    return wrapper
+        .find('[role="listbox"]')
+        .findAll('[role="option"]')
+        .map((option) => option.find('span.truncate').text());
+};
 
 describe('liste des praticiens du nouveau rendez-vous', () => {
     beforeEach(() => {
         shared.auth.organization.role = 'owner';
     });
 
-    it("propose tous les praticiens tant qu'aucun service n'est choisi", () => {
+    it("propose tous les praticiens tant qu'aucun service n'est choisi", async () => {
         const wrapper = form([anna, ben]);
 
-        expect(optionLabels(wrapper)).toEqual(['planning.form.choose', 'Anna', 'Ben']);
+        expect(practitionerBox(wrapper).text()).toContain('planning.form.choose');
+        expect(await optionLabels(wrapper)).toEqual(['Anna', 'Ben']);
         expect(wrapper.find('[data-testid="no-practitioners"]').exists()).toBe(false);
         expect(wrapper.find('[data-testid="nobody-offers"]').exists()).toBe(false);
     });
@@ -62,7 +68,7 @@ describe('liste des praticiens du nouveau rendez-vous', () => {
 
         await wrapper.findAll('select')[0]!.setValue('s2');
 
-        expect(optionLabels(wrapper)).toEqual(['planning.form.choose', 'Ben']);
+        expect(await optionLabels(wrapper)).toEqual(['Ben']);
         expect(wrapper.find('[data-testid="nobody-offers"]').exists()).toBe(false);
     });
 
@@ -71,16 +77,18 @@ describe('liste des praticiens du nouveau rendez-vous', () => {
 
         await wrapper.findAll('select')[0]!.setValue('s3');
 
-        expect(optionLabels(wrapper)).toEqual(['planning.form.choose', 'planning.form.practitioner_empty']);
+        expect(practitionerBox(wrapper).text()).toContain('planning.form.practitioner_empty');
+        expect(await optionLabels(wrapper)).toEqual([]);
         const notice = wrapper.find('[data-testid="nobody-offers"]');
         expect(notice.exists()).toBe(true);
         expect(notice.find('a').attributes('href')).toBe('/configuration/assistant/praticiens');
     });
 
-    it("explique quand il n'y a aucun praticien actif", () => {
+    it("explique quand il n'y a aucun praticien actif", async () => {
         const wrapper = form([]);
 
-        expect(optionLabels(wrapper)).toEqual(['planning.form.choose', 'planning.form.practitioner_empty']);
+        expect(practitionerBox(wrapper).text()).toContain('planning.form.practitioner_empty');
+        expect(await optionLabels(wrapper)).toEqual([]);
         expect(wrapper.find('[data-testid="no-practitioners"]').exists()).toBe(true);
         expect(wrapper.find('[data-testid="nobody-offers"]').exists()).toBe(false);
     });
@@ -96,6 +104,18 @@ describe('liste des praticiens du nouveau rendez-vous', () => {
     it("choisit d'office l'unique praticien", () => {
         const wrapper = form([anna]);
 
-        expect((practitionerSelect(wrapper).element as HTMLSelectElement).value).toBe('p1');
+        expect(practitionerBox(wrapper).text()).toContain('Anna');
+    });
+
+    it('montre la photo du praticien dans la liste et dans le champ une fois choisi', async () => {
+        const wrapper = form([{ ...anna, photo_version: 1760000000 }, ben]);
+        await practitionerBox(wrapper).trigger('click');
+
+        const rows = wrapper.findAll('[role="option"]');
+        expect(rows[0]!.find('img').attributes('src')).toBe('/praticiens/p1/photo/64?v=1760000000');
+        expect(rows[1]!.find('[data-testid="practitioner-initials"]').exists()).toBe(true);
+
+        await rows[0]!.trigger('mousedown');
+        expect(practitionerBox(wrapper).find('img').attributes('src')).toBe('/praticiens/p1/photo/64?v=1760000000');
     });
 });

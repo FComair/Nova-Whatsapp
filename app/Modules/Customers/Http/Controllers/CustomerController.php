@@ -60,7 +60,7 @@ final class CustomerController
                     'id' => $view->id, 'name' => $view->name, 'filters' => (object) $view->filters, 'columns' => $view->columns,
                     'sort' => $view->sort, 'dir' => $view->direction, 'shared' => $view->shared, 'mine' => $view->user_id === $userId,
                 ])->all(),
-            'practitioners' => Practitioner::query()->orderBy('name')->get(['id', 'name'])->map(fn (Practitioner $p): array => ['value' => $p->id, 'label' => (string) $p->name])->all(),
+            'practitioners' => Practitioner::query()->orderBy('name')->get(['id', 'name', 'photo_updated_at'])->map(fn (Practitioner $p): array => ['value' => $p->id, 'label' => (string) $p->name, 'photo_version' => $p->photoVersion()])->all(),
             'tags' => DB::table('customers')->whereNull('deleted_at')->selectRaw('distinct jsonb_array_elements_text(tags) as tag')->orderBy('tag')->limit(200)->pluck('tag')->all(),
             'can' => ['tag' => ! $this->access->isPractitioner(), 'archive' => $manages, 'share_views' => $manages],
             'scoped' => $this->access->isPractitioner(),

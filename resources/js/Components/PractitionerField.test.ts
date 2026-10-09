@@ -30,13 +30,32 @@ function field(options: { name?: string | null; eligible?: unknown[]; canChange?
     });
 }
 
+const box = (wrapper: ReturnType<typeof field>) => wrapper.find('[role="combobox"]');
+const buttonLabelled = (wrapper: ReturnType<typeof field>, label: string) => wrapper.findAll('button').find((button) => button.text() === label)!;
+const optionNames = (wrapper: ReturnType<typeof field>) =>
+    wrapper
+        .find('[role="listbox"]')
+        .findAll('[role="option"]')
+        .map((option) => option.find('span.truncate').text());
+
 describe('PractitionerField', () => {
     it('montre le nom et les initiales du praticien actuel', () => {
         const wrapper = field();
 
         expect(wrapper.text()).toContain('Anna Dupont');
-        expect(wrapper.text()).toContain('AD');
-        expect(wrapper.find('select').exists()).toBe(false);
+        expect(wrapper.find('[data-testid="practitioner-initials"]').text()).toBe('AD');
+        expect(box(wrapper).exists()).toBe(false);
+    });
+
+    it('montre la photo du praticien quand elle existe, à côté de son nom', () => {
+        const wrapper = mount(PractitionerField, {
+            props: { booking: booking('Anna Dupont'), eligible: [anna, ben], canChange: true, photoVersion: 1760000000 } as never,
+        });
+
+        const image = wrapper.find('img');
+        expect(image.attributes('src')).toBe('/praticiens/p1/photo/64?v=1760000000');
+        expect(image.attributes('alt')).toBe('practitioner_photo.alt');
+        expect(wrapper.text()).toContain('Anna Dupont');
     });
 
     it("n'offre aucune modification sans le droit de le faire", () => {
@@ -60,23 +79,37 @@ describe('PractitionerField', () => {
     it('ouvre la liste sur place avec les praticiens proposés, Enregistrer désactivé tant que rien ne change', async () => {
         const wrapper = field();
         await wrapper.find('button').trigger('click');
+        await box(wrapper).trigger('click');
 
-        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.reassign.select', 'Anna Dupont', 'Ben Martin']);
-        const [save, cancel] = wrapper.findAll('button');
-        expect(save!.attributes('disabled')).toBeDefined();
+        expect(optionNames(wrapper)).toEqual(['Anna Dupont', 'Ben Martin']);
+        expect(buttonLabelled(wrapper, 'planning.reassign.save').attributes('disabled')).toBeDefined();
 
-        await wrapper.find('select').setValue('p2');
-        expect(wrapper.findAll('button')[0]!.attributes('disabled')).toBeUndefined();
+        await wrapper.findAll('[role="option"]')[1]!.trigger('mousedown');
+        expect(box(wrapper).text()).toContain('Ben Martin');
+        expect(buttonLabelled(wrapper, 'common.cancel')).toBeDefined();
+        expect(buttonLabelled(wrapper, 'planning.reassign.save').attributes('disabled')).toBeUndefined();
 
-        await cancel!.trigger('click');
-        expect(wrapper.find('select').exists()).toBe(false);
+        await buttonLabelled(wrapper, 'common.cancel').trigger('click');
+        expect(box(wrapper).exists()).toBe(false);
         expect(wrapper.text()).toContain('Anna Dupont');
+    });
+
+    it('affiche une photo ou les initiales devant chaque praticien de la liste', async () => {
+        const withPhoto = { ...ben, photo_version: 1760000001 };
+        const wrapper = field({ eligible: [anna, withPhoto] });
+        await wrapper.find('button').trigger('click');
+        await box(wrapper).trigger('click');
+
+        const rows = wrapper.findAll('[role="option"]');
+        expect(rows[0]!.find('[data-testid="practitioner-initials"]').exists()).toBe(true);
+        expect(rows[1]!.find('img').attributes('src')).toBe('/praticiens/p2/photo/64?v=1760000001');
     });
 
     it("envoie le nouveau praticien à l'enregistrement", async () => {
         const wrapper = field();
         await wrapper.find('button').trigger('click');
-        await wrapper.find('select').setValue('p2');
+        await box(wrapper).trigger('click');
+        await wrapper.findAll('[role="option"]')[1]!.trigger('mousedown');
         await wrapper.find('form').trigger('submit');
 
         expect(put).toHaveBeenCalledWith('/planning/rendez-vous/b1/praticien', expect.objectContaining({ preserveScroll: true }));
@@ -87,7 +120,7 @@ describe('PractitionerField', () => {
         await wrapper.find('button').trigger('click');
 
         expect(wrapper.text()).toContain('planning.reassign.none_available');
-        expect(wrapper.find('select').exists()).toBe(false);
+        expect(box(wrapper).exists()).toBe(false);
     });
 
     it('propose une recherche seulement quand la liste est longue', async () => {
@@ -98,6 +131,7 @@ describe('PractitionerField', () => {
         expect(wrapper.find('input[type="text"]').exists()).toBe(true);
 
         await wrapper.find('input[type="text"]').setValue('personne 3');
-        expect(wrapper.findAll('option').map((option) => option.text())).toEqual(['planning.reassign.select', 'Personne 3']);
+        await box(wrapper).trigger('click');
+        expect(optionNames(wrapper)).toEqual(['Personne 3']);
     });
 });

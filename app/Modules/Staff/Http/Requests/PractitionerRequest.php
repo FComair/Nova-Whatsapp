@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Staff\Http\Requests;
 
+use App\Modules\Staff\Services\PractitionerPhoto;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -36,7 +37,17 @@ final class PractitionerRequest extends FormRequest
             'service_ids.*' => ['uuid', 'distinct', Rule::exists('services', 'id')->whereNull('deleted_at')],
             'is_me' => ['sometimes', 'boolean'],
             'copy_hours' => ['sometimes', 'boolean'],
+            // Photo facultative à la création ; à la modification la photo passe par son propre envoi (photo / retrait).
+            'photo' => ['nullable', ...PractitionerPhoto::rules()],
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return PractitionerPhoto::messages();
     }
 
     /**

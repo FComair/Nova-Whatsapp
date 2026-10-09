@@ -4,6 +4,7 @@ import AlertBox from '../Components/AlertBox.vue';
 import Badge from '../Components/Badge.vue';
 import { useT } from '../composables/useT';
 import { formatWeekdayDate } from '../composables/dates';
+import PractitionerAvatar from '../Components/PractitionerAvatar.vue';
 import AppLayout from '../Layouts/AppLayout.vue';
 import { onboardingStep, routes } from '../routes';
 
@@ -16,6 +17,8 @@ interface Appointment {
     customer: string | null;
     service: string | null;
     practitioner: string | null;
+    practitioner_id: string | null;
+    practitioner_photo: number | null;
     site: string | null;
     status: 'pending' | 'confirmed' | 'completed' | 'no_show';
     is_next: boolean;
@@ -108,7 +111,16 @@ function formatDate(iso: string): string {
             <p v-if="summary.next" class="mt-2 text-neutral-800" data-testid="next">
                 <strong>{{ summary.next.starts }}</strong>
                 {{ summary.next.customer }} · {{ summary.next.service }}
-                <span v-if="summary.next.practitioner" class="text-neutral-600">{{ t('dashboard.with', { name: summary.next.practitioner }) }}</span>
+                <span v-if="summary.next.practitioner" class="inline-flex items-center gap-1.5 align-middle text-neutral-600">
+                    <PractitionerAvatar
+                        v-if="summary.next.practitioner_id"
+                        :id="summary.next.practitioner_id"
+                        :name="summary.next.practitioner"
+                        :version="summary.next.practitioner_photo"
+                        size="xs"
+                    />
+                    {{ t('dashboard.with', { name: summary.next.practitioner }) }}
+                </span>
             </p>
             <p v-else class="mt-2 text-sm text-neutral-600">{{ t('dashboard.next_none') }}</p>
         </section>
@@ -130,7 +142,16 @@ function formatDate(iso: string): string {
                     <span class="w-24 shrink-0 font-semibold text-nova-900">{{ appointment.starts }}–{{ appointment.ends }}</span>
                     <span class="min-w-0 flex-1 text-neutral-800">
                         {{ appointment.customer }} · {{ appointment.service }}
-                        <span v-if="appointment.practitioner" class="text-neutral-600">{{ t('dashboard.with', { name: appointment.practitioner }) }}</span>
+                        <span v-if="appointment.practitioner" class="inline-flex items-center gap-1.5 align-middle text-neutral-600">
+                            <PractitionerAvatar
+                                v-if="appointment.practitioner_id"
+                                :id="appointment.practitioner_id"
+                                :name="appointment.practitioner"
+                                :version="appointment.practitioner_photo"
+                                size="xs"
+                            />
+                            {{ t('dashboard.with', { name: appointment.practitioner }) }}
+                        </span>
                         <span v-if="summary.multi_site && appointment.site" class="text-neutral-600"> · {{ appointment.site }}</span>
                     </span>
                     <Badge :variant="statusVariant[appointment.status]">{{ t(`dashboard.status.${appointment.status}`) }}</Badge>

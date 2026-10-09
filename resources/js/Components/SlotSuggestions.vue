@@ -2,6 +2,7 @@
 import { useT } from '../composables/useT';
 import { formatDate } from '../composables/dates';
 import type { PlanningPractitioner, Suggestion } from '../types';
+import PractitionerAvatar from './PractitionerAvatar.vue';
 
 defineProps<{ suggestions: Suggestion[]; practitioners: PlanningPractitioner[] }>();
 const emit = defineEmits<{ pick: [suggestion: Suggestion] }>();
@@ -26,7 +27,16 @@ function label(suggestion: Suggestion): string {
                     class="min-h-11 w-full rounded-control border border-primary-300 bg-surface px-3 py-2 text-left text-sm font-medium text-primary-700 hover:bg-primary-100"
                     @click="emit('pick', suggestion)"
                 >
-                    {{ label(suggestion) }} · {{ practitioners.find((p) => p.id === suggestion.practitioner_id)?.name }}
+                    <span class="flex items-center gap-2">
+                        <PractitionerAvatar
+                            v-if="practitioners.find((p) => p.id === suggestion.practitioner_id)"
+                            :id="suggestion.practitioner_id"
+                            :name="practitioners.find((p) => p.id === suggestion.practitioner_id)!.name"
+                            :version="practitioners.find((p) => p.id === suggestion.practitioner_id)!.photo_version"
+                            size="xs"
+                        />
+                        <span>{{ label(suggestion) }} · {{ practitioners.find((p) => p.id === suggestion.practitioner_id)?.name }}</span>
+                    </span>
                     <span class="sr-only">{{ t('planning.form.use_suggestion') }}</span>
                 </button>
             </li>

@@ -8,6 +8,8 @@ import BookingForm from '../../Components/BookingForm.vue';
 import CurrentTimeAxisLabel from '../../Components/CurrentTimeAxisLabel.vue';
 import CurrentTimeLine from '../../Components/CurrentTimeLine.vue';
 import ModalDialog from '../../Components/ModalDialog.vue';
+import PractitionerAvatar from '../../Components/PractitionerAvatar.vue';
+import PractitionerSelect from '../../Components/PractitionerSelect.vue';
 import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
 import { formatDate, formatWeekdayDate } from '../../composables/dates';
@@ -82,6 +84,9 @@ function togglePractitioner(id: string): void {
         ? chosenPractitioners.value.filter((item) => item !== id)
         : [...chosenPractitioners.value, id];
 }
+
+/** Avatar du praticien sur les cartes : utile quand plusieurs praticiens partagent la même colonne de jour. */
+const showCardAvatar = computed(() => mode.value === 'days' && (props.practitioners?.length ?? 0) > 1);
 
 const range = computed(() => props.range ?? { from: 540, to: 1080 });
 const gridHeight = computed(() => `${(range.value.to - range.value.from) * PIXELS_PER_MINUTE}px`);
@@ -298,15 +303,16 @@ function describe(booking: PlanningBooking): string {
                     :options="locations.map((item) => ({ value: item.id, label: item.name }))"
                     @update:model-value="(id) => visit({ location: id })"
                 />
-                <SelectField
-                    v-if="view !== 'practitioners' && (practitioners?.length ?? 0) > 1"
-                    v-model="practitionerFilter"
-                    :label="t('planning.practitioner')"
-                    :options="[
-                        { value: '', label: t('planning.all_practitioners') },
-                        ...(practitioners ?? []).map((item) => ({ value: item.id, label: item.name })),
-                    ]"
-                />
+                <div v-if="view !== 'practitioners' && (practitioners?.length ?? 0) > 1" class="min-w-60">
+                    <PractitionerSelect
+                        v-model="practitionerFilter"
+                        :label="t('planning.practitioner')"
+                        :options="[
+                            { value: '', label: t('planning.all_practitioners'), plain: true },
+                            ...(practitioners ?? []).map((item) => ({ value: item.id, label: item.name, photo_version: item.photo_version })),
+                        ]"
+                    />
+                </div>
                 <!-- Les flèches sont alignées sur le champ de date lui-même (pas sur son libellé) : même hauteur, bas aligné. -->
                 <div class="flex items-end gap-2">
                     <BaseButton
@@ -349,7 +355,7 @@ function describe(booking: PlanningBooking): string {
                         :aria-pressed="chosenPractitioners.includes(item.id)"
                         @click="togglePractitioner(item.id)"
                     >
-                        <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: item.color }" aria-hidden="true" />
+                        <PractitionerAvatar :id="item.id" :name="item.name" :version="item.photo_version" size="xs" />
                         {{ item.name }}
                     </button>
                     <BaseButton v-if="chosenPractitioners.length" variant="ghost" size="sm" @click="chosenPractitioners = []">
@@ -370,7 +376,8 @@ function describe(booking: PlanningBooking): string {
                     :aria-label="t('planning.practitioner')"
                 >
                     <li v-for="practitioner in practitioners" :key="practitioner.id" class="flex items-center gap-1.5">
-                        <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
+                        <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="xs" />
+                        <span class="size-2.5 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                         {{ practitioner.name }}
                     </li>
                 </ul>
@@ -432,7 +439,12 @@ function describe(booking: PlanningBooking): string {
                                     v-if="day.practitioner"
                                     class="flex size-full items-center justify-center gap-2 px-2 text-sm font-semibold text-neutral-900"
                                 >
-                                    <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: day.practitioner.color }" aria-hidden="true" />
+                                    <PractitionerAvatar
+                                        :id="day.practitioner.id"
+                                        :name="day.practitioner.name"
+                                        :version="day.practitioner.photo_version"
+                                        size="sm"
+                                    />
                                     <span class="truncate">{{ day.practitioner.name }}</span>
                                 </span>
                                 <button
@@ -480,6 +492,14 @@ function describe(booking: PlanningBooking): string {
                                     :aria-label="describe(booking)"
                                     @click="selectedId = booking.id"
                                 >
+                                    <PractitionerAvatar
+                                        v-if="showCardAvatar && practitionerById.get(booking.practitioner_id)"
+                                        :id="booking.practitioner_id"
+                                        :name="practitionerById.get(booking.practitioner_id)!.name"
+                                        :version="practitionerById.get(booking.practitioner_id)!.photo_version"
+                                        size="xs"
+                                        class="absolute right-1 top-1"
+                                    />
                                     <span class="block truncate font-semibold">{{ booking.starts }} {{ booking.customer.name ?? booking.customer.phone }}</span>
                                     <span class="block truncate">{{ booking.service }}</span>
                                     <!-- La vue « Jour » a la place : praticien et état en plus. Les autres vues restent compactes. -->

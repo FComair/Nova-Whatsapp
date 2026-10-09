@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
-import { initials } from '../composables/customerList';
 import { extraError } from '../composables/planning';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
 import type { PlanningBooking, PlanningPractitioner } from '../types';
 import BaseButton from './BaseButton.vue';
-import SelectField from './SelectField.vue';
+import PractitionerAvatar from './PractitionerAvatar.vue';
+import PractitionerSelect from './PractitionerSelect.vue';
 import TextField from './TextField.vue';
 
 /**
@@ -19,6 +19,8 @@ const props = defineProps<{
     /** Praticiens actifs du site qui réalisent le service du rendez-vous. */
     eligible: PlanningPractitioner[];
     canChange: boolean;
+    /** Version de la photo du praticien actuel (null : initiales). */
+    photoVersion?: number | null;
 }>();
 const emit = defineEmits<{ saved: [] }>();
 
@@ -43,7 +45,9 @@ const filtered = computed(() => {
 
     return chosen && !list.includes(chosen) ? [chosen, ...list] : list;
 });
-const options = computed(() => filtered.value.map((practitioner) => ({ value: practitioner.id, label: practitioner.name })));
+const options = computed(() =>
+    filtered.value.map((practitioner) => ({ value: practitioner.id, label: practitioner.name, photo_version: practitioner.photo_version })),
+);
 // Créneau déjà pris ou règle de réservation refusée : le serveur répond par `slot` ou `booking`.
 const error = computed(() => extraError(form.errors, 'slot') ?? extraError(form.errors, 'booking'));
 const unchanged = computed(() => form.practitioner_id === props.booking.practitioner_id);
@@ -55,7 +59,7 @@ async function edit(): Promise<void> {
     saved.value = false;
     editing.value = true;
     await nextTick();
-    select.value?.querySelector('select')?.focus();
+    select.value?.querySelector('button')?.focus();
 }
 
 async function close(): Promise<void> {
@@ -86,12 +90,7 @@ onBeforeUnmount(() => clearTimeout(hideTimer));
     <div>
         <div v-if="!editing" class="flex flex-wrap items-center gap-x-3 gap-y-1">
             <span class="inline-flex items-center gap-2" :class="{ 'text-neutral-700': !name }">
-                <span
-                    v-if="name"
-                    class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-mint text-[0.65rem] font-bold text-primary-700"
-                    aria-hidden="true"
-                    >{{ initials(name, '') }}</span
-                >
+                <PractitionerAvatar v-if="name" :id="booking.practitioner_id" :name="name" :version="photoVersion ?? null" size="sm" />
                 <span>{{ name ?? t('planning.reassign.none') }}</span>
             </span>
             <BaseButton
@@ -125,7 +124,7 @@ onBeforeUnmount(() => clearTimeout(hideTimer));
             <template v-else>
                 <TextField v-if="searchable" v-model="query" :label="t('planning.reassign.search')" autocomplete="off" />
                 <div ref="select">
-                    <SelectField
+                    <PractitionerSelect
                         v-model="form.practitioner_id"
                         :label="t('planning.form.practitioner')"
                         :placeholder="t('planning.reassign.select')"

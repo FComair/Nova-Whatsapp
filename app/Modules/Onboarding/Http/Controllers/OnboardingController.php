@@ -279,6 +279,7 @@ final class OnboardingController
                 'name' => $practitioner->name,
                 'bio' => $practitioner->bio,
                 'color' => $practitioner->color,
+                'photo_version' => $practitioner->photoVersion(),
                 'status' => $practitioner->status,
                 'is_me' => $practitioner->user_id !== null && $practitioner->user_id === (string) auth()->id(),
                 'bookable' => $this->staff->isBookable($practitioner),

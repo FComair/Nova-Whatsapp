@@ -53,7 +53,8 @@ final class DaySummary
 
         $customers = DB::table('customers')->whereIn('id', $today->pluck('customer_id'))->pluck('name', 'id');
         $services = Service::query()->pluck('name', 'id');
-        $practitioners = Practitioner::query()->pluck('name', 'id');
+        $practitionerRows = Practitioner::query()->get(['id', 'name', 'photo_updated_at'])->keyBy('id');
+        $practitioners = $practitionerRows->pluck('name', 'id');
         $sites = $locations->pluck('name', 'id');
 
         $upcoming = fn (Booking $booking): bool => in_array($booking->status, Booking::BLOCKING, true) && $booking->starts_at > $now;
@@ -66,6 +67,8 @@ final class DaySummary
             'customer' => $customers[$booking->customer_id] ?? null,
             'service' => $services[$booking->service_id] ?? null,
             'practitioner' => $practitioners[$booking->practitioner_id] ?? null,
+            'practitioner_id' => $booking->practitioner_id,
+            'practitioner_photo' => $practitionerRows[$booking->practitioner_id]?->photoVersion(),
             'site' => $sites[$booking->location_id] ?? null,
             'status' => $booking->status,
             'is_next' => $booking->id === $nextId,

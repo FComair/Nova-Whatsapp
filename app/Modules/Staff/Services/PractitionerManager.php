@@ -119,6 +119,8 @@ final class PractitionerManager
 
     public function delete(Organization $organization, Practitioner $practitioner): void
     {
+        // La photo est une donnée personnelle : ses fichiers partent avec le praticien.
+        app(PractitionerPhoto::class)->purge($practitioner);
         $practitioner->delete();
 
         Audit::record('practitioner.deleted', 'user', actorId: auth()->id(), orgId: $organization->id, entityType: 'practitioner', entityId: $practitioner->id, diff: ['name' => $practitioner->name]);

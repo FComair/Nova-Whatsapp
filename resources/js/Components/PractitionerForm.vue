@@ -4,6 +4,7 @@ import { useT } from '../composables/useT';
 import type { PractitionerFormData } from '../types';
 import BaseButton from './BaseButton.vue';
 import CheckboxField from './CheckboxField.vue';
+import PractitionerPhotoField from './PractitionerPhotoField.vue';
 import TextareaField from './TextareaField.vue';
 import TextField from './TextField.vue';
 
@@ -14,6 +15,8 @@ defineProps<{
     colors: string[];
     /** Propose « C'est moi » (création uniquement, si le propriétaire n'est pas déjà praticien). */
     canBeMe: boolean;
+    /** Praticien modifié (null à la création) : sa photo s'envoie et se retire tout de suite. */
+    practitioner?: { id: string; name: string; photo_version: number | null } | null;
 }>();
 const emit = defineEmits<{ submit: []; cancel: [] }>();
 
@@ -29,6 +32,17 @@ const id = useId();
         <CheckboxField v-if="canBeMe" v-model="data.is_me" :label="t('practitioners.fields.is_me')" :error="errors.is_me" />
 
         <TextField v-model="data.name" :label="t('practitioners.fields.name')" required :error="errors.name" />
+
+        <PractitionerPhotoField
+            v-if="practitioner"
+            :practitioner="practitioner"
+            :upload-url="'/configuration/praticiens/' + practitioner.id + '/photo'"
+            :remove-url="'/configuration/praticiens/' + practitioner.id + '/photo'"
+        />
+        <div v-else>
+            <PractitionerPhotoField v-model="data.photo" :practitioner="{ name: data.name, photo_version: null }" />
+            <p v-if="errors.photo" class="mt-1.5 text-sm font-medium text-danger-700" role="alert">{{ errors.photo }}</p>
+        </div>
 
         <fieldset>
             <legend class="mb-1.5 text-sm font-medium text-neutral-800">{{ t('practitioners.fields.color') }}</legend>

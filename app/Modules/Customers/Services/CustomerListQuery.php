@@ -114,7 +114,7 @@ final class CustomerListQuery
             ->leftJoin('practitioners as p', 'p.id', '=', 'b.practitioner_id')
             ->whereIn('b.customer_id', $customerIds)
             ->when($this->access->isPractitioner(), fn ($q) => $q->where('b.practitioner_id', $this->access->practitionerId()))
-            ->select('b.customer_id', 'b.starts_at', 'b.status', 's.name as service', 'p.name as practitioner')
+            ->select('b.customer_id', 'b.starts_at', 'b.status', 's.name as service', 'p.id as practitioner_id', 'p.name as practitioner', 'p.photo_updated_at as practitioner_photo')
             ->distinct('b.customer_id');
 
         $last = $base()->whereIn('b.status', [Booking::CONFIRMED, Booking::COMPLETED, Booking::NO_SHOW])->where('b.starts_at', '<=', now())
@@ -155,7 +155,7 @@ final class CustomerListQuery
                     default => 'unknown',
                 },
                 'last' => $last === null ? null : ['at' => $local($last->starts_at, $appointments['timezone']), 'service' => $last->service, 'status' => $last->status],
-                'next' => $next === null ? null : ['at' => $local($next->starts_at, $appointments['timezone']), 'service' => $next->service, 'practitioner' => $next->practitioner],
+                'next' => $next === null ? null : ['at' => $local($next->starts_at, $appointments['timezone']), 'service' => $next->service, 'practitioner' => $next->practitioner, 'practitioner_id' => $next->practitioner_id, 'practitioner_photo' => $next->practitioner_photo === null ? null : strtotime((string) $next->practitioner_photo)],
                 'visits' => (int) $customer->getAttribute('visits'),
                 'no_shows' => (int) $customer->getAttribute('no_shows'),
                 'value_cents' => (int) $customer->getAttribute('value_cents'),

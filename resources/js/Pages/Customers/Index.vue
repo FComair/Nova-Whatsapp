@@ -7,6 +7,7 @@ import BaseButton from '../../Components/BaseButton.vue';
 import CheckboxField from '../../Components/CheckboxField.vue';
 import ConfirmDialog from '../../Components/ConfirmDialog.vue';
 import CustomerFilters from '../../Components/CustomerFilters.vue';
+import PractitionerAvatar from '../../Components/PractitionerAvatar.vue';
 import TextField from '../../Components/TextField.vue';
 import {
     ALL_COLUMNS,
@@ -39,7 +40,7 @@ interface Row {
     source: string | null;
     whatsapp: 'opted_in' | 'opted_out' | 'unknown';
     last: { at: string | null; service: string | null; status: string } | null;
-    next: { at: string | null; service: string | null; practitioner: string | null } | null;
+    next: { at: string | null; service: string | null; practitioner: string | null; practitioner_id: string | null; practitioner_photo: number | null } | null;
     visits: number;
     no_shows: number;
     value_cents: number;
@@ -65,7 +66,7 @@ const props = defineProps<{
     customers: Row[];
     pagination: { page: number; last_page: number; total: number };
     views: SavedView[];
-    practitioners: { value: string; label: string }[];
+    practitioners: { value: string; label: string; photo_version: number | null }[];
     tags: string[];
     can: { tag: boolean; archive: boolean; share_views: boolean };
     scoped: boolean;
@@ -464,7 +465,19 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
                                 <template v-if="row.next">
                                     <span class="block">{{ day(row.next.at) }}</span>
                                     <span class="block max-w-44 truncate text-xs text-neutral-700"
-                                        >{{ row.next.service }}<template v-if="row.next.practitioner"> · {{ row.next.practitioner }}</template></span
+                                        >{{ row.next.service
+                                        }}<template v-if="row.next.practitioner">
+                                            ·
+                                            <PractitionerAvatar
+                                                v-if="row.next.practitioner_id"
+                                                :id="row.next.practitioner_id"
+                                                :name="row.next.practitioner"
+                                                :version="row.next.practitioner_photo"
+                                                size="xs"
+                                                class="align-middle"
+                                            />
+                                            {{ row.next.practitioner }}
+                                        </template></span
                                     >
                                 </template>
                                 <span v-else class="text-neutral-700">—</span>

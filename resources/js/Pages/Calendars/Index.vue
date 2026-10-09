@@ -24,6 +24,7 @@ interface CalendarItem {
 interface PractitionerCalendars {
     id: string;
     name: string;
+    photo_version: number | null;
     feed_url: string;
     calendars: CalendarItem[];
 }
@@ -93,7 +94,10 @@ function rotate(): void {
         </details>
 
         <section v-for="practitioner in practitioners" :key="practitioner.id" class="mt-8 max-w-3xl" :aria-label="practitioner.name">
-            <h2 class="text-lg font-semibold text-nova-900">{{ practitioner.name }}</h2>
+            <h2 class="flex items-center gap-2.5 text-lg font-semibold text-nova-900">
+                <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="md" />
+                {{ practitioner.name }}
+            </h2>
 
             <p v-if="!practitioner.calendars.length" class="mt-3 text-sm text-neutral-600">{{ t('calendars.empty') }}</p>
             <ul v-else class="mt-3 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
