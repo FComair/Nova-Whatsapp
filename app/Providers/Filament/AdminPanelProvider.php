@@ -7,8 +7,13 @@ namespace App\Providers\Filament;
 use App\Http\Middleware\SetLocale;
 use App\Modules\Admin\Filament\Pages\AdminDashboard;
 use App\Modules\Admin\Filament\Pages\ClientReports;
+use App\Modules\Admin\Filament\Pages\Legal\LegalDocumentDetail;
+use App\Modules\Admin\Filament\Pages\Legal\LegalDocumentHistory;
+use App\Modules\Admin\Filament\Pages\Legal\LegalDocuments;
+use App\Modules\Admin\Filament\Pages\Legal\LegalDocumentUpload;
 use App\Modules\Admin\Filament\Pages\Login;
 use App\Modules\Admin\Filament\Pages\SupportReports;
+use App\Modules\Admin\Http\Controllers\LegalFileController;
 use App\Modules\Admin\Http\Controllers\SupportAttachmentController;
 use App\Modules\Admin\Http\Middleware\EnforceAdminIpAllowlist;
 use App\Modules\Admin\Support\AdminMfa;
@@ -56,12 +61,14 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.configuration')),
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.operations')),
             ])
-            ->pages([AdminDashboard::class, ClientReports::class, SupportReports::class])
+            ->pages([AdminDashboard::class, ClientReports::class, SupportReports::class, LegalDocuments::class, LegalDocumentDetail::class, LegalDocumentUpload::class, LegalDocumentHistory::class])
             // Notifications des agents (cloche) : table réservée au rôle de la plateforme (PlatformNotification).
             ->databaseNotifications()
             // Téléchargement d'une pièce jointe de ticket : même authentification et même liste blanche d'adresses que le panel.
             ->authenticatedRoutes(function (): void {
                 Route::get('/support-attachments/{attachment}', SupportAttachmentController::class)->name('support.attachment');
+                // Téléchargement contrôlé d'un PDF juridique (version en vigueur ou archivée) : Super Admin seulement, tracé.
+                Route::get('/legal-documents/{document}/versions/{version}/file', LegalFileController::class)->name('legal.file');
             })
             ->widgets([])
             ->middleware([

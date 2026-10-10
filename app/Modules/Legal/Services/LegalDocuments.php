@@ -36,10 +36,16 @@ final class LegalDocuments
             ->orderByDesc('effective_on')->orderByDesc('published_at')->first();
     }
 
+    /**
+     * Une version publiée et déjà en vigueur, lisible publiquement. Un PDF ARCHIVÉ (remplacé par un autre) n'est plus public : il reste en base,
+     * téléchargeable par le Super Admin seulement (docs/35).
+     */
     public function find(string $code, string $version): ?LegalDocumentVersion
     {
-        return LegalDocumentVersion::query()->where('document', $code)->where('version', $version)->where('status', LegalDocumentVersion::PUBLISHED)
+        $found = LegalDocumentVersion::query()->where('document', $code)->where('version', $version)->where('status', LegalDocumentVersion::PUBLISHED)
             ->whereDate('effective_on', '<=', CarbonImmutable::today()->toDateString())->first();
+
+        return $found !== null && $found->hasFile() && $this->current($code)?->id !== $found->id ? null : $found;
     }
 
     /**
@@ -49,8 +55,11 @@ final class LegalDocuments
      */
     public function versions(string $code): Collection
     {
+        $current = $this->current($code);
+
         return LegalDocumentVersion::query()->where('document', $code)->where('status', LegalDocumentVersion::PUBLISHED)
-            ->whereDate('effective_on', '<=', CarbonImmutable::today()->toDateString())->orderByDesc('effective_on')->orderByDesc('published_at')->get();
+            ->whereDate('effective_on', '<=', CarbonImmutable::today()->toDateString())->orderByDesc('effective_on')->orderByDesc('published_at')->get()
+            ->reject(fn (LegalDocumentVersion $row): bool => $row->hasFile() && $current?->id !== $row->id)->values();
     }
 
     /**
@@ -60,6 +69,11 @@ final class LegalDocuments
      */
     public function localised(LegalDocumentVersion $version, string $locale): array
     {
+        // Version déposée en PDF : pas de texte, le titre est le nom du document dans la langue demandée (le PDF est dans la langue de son auteur).
+        if ($version->hasFile()) {
+            return ['title' => (string) __("ui.legal.documents.{$version->document}", [], $locale), 'markdown' => '', 'locale' => $locale, 'fallback' => false];
+        }
+
         foreach ([$locale, 'fr', 'en'] as $candidate) {
             $body = trim((string) ($version->body[$candidate] ?? ''));
 

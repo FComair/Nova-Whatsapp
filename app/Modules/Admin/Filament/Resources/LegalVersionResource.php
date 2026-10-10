@@ -65,6 +65,12 @@ class LegalVersionResource extends Resource
         return __('admin.navigation.configuration');
     }
 
+    // Le menu pointe vers « Documents juridiques » (dépôt de PDF, docs/35) ; la liste des versions texte reste accessible depuis cette page.
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     // Les écritures passent par les actions (et LegalVersionManager), pas par les pages de création / édition de Filament.
     public static function canCreate(): bool
     {

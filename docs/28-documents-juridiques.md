@@ -64,3 +64,5 @@ Cases natives avec libellé lié, liens soulignés avec nouvel onglet annoncé, 
 ## 8. Données
 
 `legal_document_versions` (globale, lecture seule pour l'application cliente) ; `user_consents` reçoit `user_agent` et `locale` et ses deux garde-fous ; la version des documents n'est plus lue dans `config/nova.php` (supprimée), seulement en base.
+
+> Dépôt de documents au format PDF : voir `docs/35-documents-juridiques-pdf.md`.

@@ -24,7 +24,8 @@ final class SecurityHeaders
         $response = $next($request);
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
-        $response->headers->set('X-Frame-Options', 'DENY');
+        // Le PDF d'un document juridique s'affiche dans un cadre de SA PROPRE page (docs/35) : seul cet affichage est autorisé, et seulement par l'origine elle-même.
+        $response->headers->set('X-Frame-Options', $request->is('legal/*/file') ? 'SAMEORIGIN' : 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');

@@ -107,6 +107,18 @@ describe('page d’un document juridique', () => {
         expect(text).toContain('legal.page.viewing');
     });
 
+    it('affiche un document déposé en PDF dans un cadre, avec un lien de secours et le téléchargement du PDF', () => {
+        const wrapper = show({}, { html: '', toc: [], file: { url: '/legal/terms-of-use/file', name: 'cgu.pdf', size: 1024 } });
+
+        expect(wrapper.find('[data-testid="legal-pdf"] iframe').attributes('src')).toBe('/legal/terms-of-use/file');
+        expect(wrapper.find('[data-testid="legal-pdf"] a').attributes('href')).toBe('/legal/terms-of-use/file');
+        expect(wrapper.find('a[download]').text()).toContain('legal.page.download_pdf');
+    });
+
+    it('n’affiche pas de cadre PDF pour un texte', () => {
+        expect(show().find('[data-testid="legal-pdf"]').exists()).toBe(false);
+    });
+
     it('dit quand la langue demandée n’existe pas encore', () => {
         expect(show({}, { fallback: true, language: 'fr' }).find('[data-testid="legal-fallback"]').exists()).toBe(true);
         expect(show().find('[data-testid="legal-fallback"]').exists()).toBe(false);

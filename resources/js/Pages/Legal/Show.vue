@@ -22,6 +22,8 @@ defineProps<{
         is_current: boolean;
         current_url: string;
         changes: string | null;
+        /** PDF déposé par l'administrateur (docs/35) : affiché dans la page à la place du texte. */
+        file?: { url: string; name: string; size: number } | null;
     };
     versions: { version: string; effective_on: string; href: string; current: boolean; viewing: boolean }[];
     documents: { code: string; slug: string; title: string; active: boolean }[];
@@ -107,7 +109,7 @@ function print(): void {
                             class="inline-flex min-h-10 items-center rounded-full border-[1.5px] border-line-strong px-4 text-sm font-semibold text-neutral-900 hover:border-primary-600"
                             download
                         >
-                            {{ t('legal.page.download') }}
+                            {{ document.file ? t('legal.page.download_pdf') : t('legal.page.download') }}
                         </a>
                     </div>
                 </header>
@@ -123,8 +125,21 @@ function print(): void {
                     <span class="font-semibold">{{ t('legal.page.changes') }} :</span> {{ document.changes }}
                 </p>
 
+                <div v-if="document.file" class="mt-6" data-testid="legal-pdf">
+                    <iframe
+                        :src="document.file.url"
+                        :title="document.title"
+                        class="h-[80vh] w-full rounded-card border border-line bg-surface-2 print:hidden"
+                    />
+                    <p class="mt-3 text-sm text-neutral-700">
+                        {{ t('legal.page.pdf_fallback') }}
+                        <a :href="document.file.url" target="_blank" rel="noopener" class="font-semibold text-primary-700 underline">{{
+                            t('legal.page.open_pdf')
+                        }}</a>
+                    </p>
+                </div>
                 <!-- eslint-disable-next-line vue/no-v-html -->
-                <div class="legal-body mt-6" :lang="document.language" v-html="document.html" />
+                <div v-else class="legal-body mt-6" :lang="document.language" v-html="document.html" />
             </article>
         </div>
     </LegalLayout>

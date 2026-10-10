@@ -21,6 +21,12 @@ use Illuminate\Support\Carbon;
  * @property array<string, string> $body Markdown par langue
  * @property array<string, string> $changes résumé des changements par langue
  * @property Carbon|null $published_at
+ * @property string|null $file_path chemin aléatoire du PDF déposé (disque privé) ; null = version saisie en texte
+ * @property string|null $file_name nom d'origine du PDF
+ * @property int|null $file_size taille en octets
+ * @property string|null $file_sha256 empreinte du PDF
+ * @property string|null $uploaded_by Super Admin qui l'a déposé
+ * @property Carbon|null $uploaded_at
  */
 class LegalDocumentVersion extends Model
 {
@@ -44,11 +50,18 @@ class LegalDocumentVersion extends Model
             'body' => 'array',
             'changes' => 'array',
             'published_at' => 'datetime',
+            'uploaded_at' => 'datetime',
         ];
     }
 
     public function isPublished(): bool
     {
         return $this->status === self::PUBLISHED;
+    }
+
+    /** Version déposée en PDF (et non saisie en texte). */
+    public function hasFile(): bool
+    {
+        return $this->file_path !== null;
     }
 }

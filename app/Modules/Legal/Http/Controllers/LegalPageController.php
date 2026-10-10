@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Legal\Http\Controllers;
 
+use App\Modules\Admin\Services\LegalDocumentFiles;
 use App\Modules\Legal\Models\LegalDocumentVersion;
 use App\Modules\Legal\Services\LegalDocuments;
 use App\Modules\Legal\Support\LegalDocument;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Pages publiques des documents juridiques (docs/28) : lisibles sans connexion, à une adresse stable (/legal/terms-of-use, /legal/privacy-policy,
@@ -18,7 +21,16 @@ use Inertia\Response;
  */
 final class LegalPageController
 {
-    public function __construct(private readonly LegalDocuments $documents) {}
+    public function __construct(private readonly LegalDocuments $documents, private readonly LegalDocumentFiles $files) {}
+
+    private function currentFile(string $slug): LegalDocumentVersion
+    {
+        $code = LegalDocument::code($slug) ?? abort(404);
+        $version = $this->documents->current($code) ?? abort(404);
+        abort_unless($version->hasFile() && Storage::disk(LegalDocumentFiles::DISK)->exists((string) $version->file_path), 404);
+
+        return $version;
+    }
 
     public function show(string $slug): Response
     {
@@ -35,11 +47,25 @@ final class LegalPageController
         return $this->page($code, $found, $this->documents->current($code)?->id === $found->id);
     }
 
-    /** Texte brut (Markdown) de la version en vigueur, pour le conserver ou le joindre à un dossier. */
-    public function download(string $slug): HttpResponse
+    /** PDF de la version en vigueur, affiché dans la page (docs/35). Les versions archivées ne sont jamais servies ici. */
+    public function file(string $slug): StreamedResponse
+    {
+        $version = $this->currentFile($slug);
+
+        return Storage::disk(LegalDocumentFiles::DISK)->response((string) $version->file_path, $this->files->downloadName($version), $this->files->headers() + ['Content-Disposition' => 'inline; filename="'.$this->files->downloadName($version).'"']);
+    }
+
+    /** Version en vigueur à conserver ou à joindre à un dossier : le PDF déposé, sinon le texte brut (Markdown). */
+    public function download(string $slug): HttpResponse|StreamedResponse
     {
         $code = LegalDocument::code($slug) ?? abort(404);
         $version = $this->documents->current($code) ?? abort(404);
+
+        if ($version->hasFile()) {
+            abort_unless(Storage::disk(LegalDocumentFiles::DISK)->exists((string) $version->file_path), 404);
+
+            return Storage::disk(LegalDocumentFiles::DISK)->download((string) $version->file_path, $this->files->downloadName($version), $this->files->headers());
+        }
         $text = $this->documents->localised($version, app()->getLocale());
 
         return response("# {$text['title']}\n\n{$text['markdown']}\n", 200, [
@@ -69,6 +95,8 @@ final class LegalPageController
                 'is_current' => $isCurrent,
                 'current_url' => LegalDocument::url($code),
                 'changes' => $version->changes[$locale] ?? $version->changes['fr'] ?? null,
+                // PDF déposé (docs/35) : affiché dans la page ; le texte reste vide.
+                'file' => $version->hasFile() ? ['url' => '/legal/'.LegalDocument::slug($code).'/file', 'name' => $this->files->downloadName($version), 'size' => (int) $version->file_size] : null,
             ],
             'versions' => $this->documents->versions($code)->map(fn (LegalDocumentVersion $row): array => [
                 'version' => $row->version,

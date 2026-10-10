@@ -78,6 +78,7 @@ Route::get('/ics/{token}.ics', [FeedController::class, 'show'])->where('token', 
 // Documents juridiques (docs/28) : publics, sans connexion, à des adresses stables (e-mails, factures, support). Chaque version publiée garde la sienne.
 Route::prefix('/legal')->name('legal.')->whereIn('slug', ['terms-of-use', 'privacy-policy', 'dpa'])->group(function (): void {
     Route::get('/{slug}', [LegalPageController::class, 'show'])->name('show');
+    Route::get('/{slug}/file', [LegalPageController::class, 'file'])->name('file');
     Route::get('/{slug}/download', [LegalPageController::class, 'download'])->name('download');
     Route::get('/{slug}/versions/{version}', [LegalPageController::class, 'version'])->where('version', '[0-9A-Za-z._-]{1,30}')->name('version');
 });
