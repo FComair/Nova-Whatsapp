@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\OrganizationResource\Pages\ListOrganizations;
 use App\Modules\Admin\Filament\Resources\OrganizationResource\Pages\ViewOrganization;
+use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Models\PlatformSector;
 use App\Modules\Tenancy\Models\Organization;
@@ -31,6 +32,8 @@ use Illuminate\Support\Facades\Cache;
  */
 class OrganizationResource extends Resource
 {
+    use HiddenFromSupportAgents;
+
     protected static ?string $model = PlatformOrganization::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';

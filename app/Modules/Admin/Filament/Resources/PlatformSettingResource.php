@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\PlatformSettingResource\Pages\ListPlatformSettings;
+use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
 use App\Modules\Admin\Models\PlatformSetting;
 use App\Modules\Admin\Services\PlatformAudit;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PlatformSettingResource extends Resource
 {
+    use HiddenFromSupportAgents;
+
     protected static ?string $model = PlatformSetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
@@ -72,7 +75,7 @@ class PlatformSettingResource extends Resource
             ->paginated(false)
             ->columns([
                 TextColumn::make('key')->label(__('admin.settings.name'))->formatStateUsing(fn (string $state): string => __("admin.settings.keys.{$state}.label")),
-                TextColumn::make('value')->label(__('admin.settings.value'))->formatStateUsing(fn (string $state, PlatformSetting $record): string => trans_choice('admin.settings.'.($record->key === 'dunning_max_attempts' ? 'attempts' : 'days'), (int) json_decode($state, true))),
+                TextColumn::make('value')->label(__('admin.settings.value'))->formatStateUsing(fn (string $state, PlatformSetting $record): string => trans_choice('admin.settings.'.self::unit($record->key), (int) json_decode($state, true))),
                 TextColumn::make('description')->label(__('admin.settings.description'))->state(fn (PlatformSetting $record): string => __("admin.settings.keys.{$record->key}.help"))->wrap(),
                 TextColumn::make('updated_at')->label(__('admin.settings.updated_at'))->dateTime()->placeholder('—'),
             ])
@@ -98,6 +101,17 @@ class PlatformSettingResource extends Resource
                         Notification::make()->success()->title(__('admin.settings.saved'))->send();
                     }),
             ]);
+    }
+
+    /** Unité d'un réglage, d'après son nom : tentatives, heures, pourcentage ou jours. */
+    private static function unit(string $key): string
+    {
+        return match (true) {
+            $key === 'dunning_max_attempts' => 'attempts',
+            str_ends_with($key, '_hours') => 'hours',
+            str_ends_with($key, '_percent') => 'percent',
+            default => 'days',
+        };
     }
 
     public static function getPages(): array

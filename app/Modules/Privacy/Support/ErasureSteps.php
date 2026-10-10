@@ -44,6 +44,8 @@ final class ErasureSteps
         'review_link_clicks',
         'feedback_prompt_dismissals',
         'nova_feedback',
+        'support_ticket_links',
+        'support_ticket_tags',
         'support_attachments',
         'support_ticket_events',
         'support_messages',

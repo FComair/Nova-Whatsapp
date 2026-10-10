@@ -53,7 +53,7 @@ See the README table. In short: `composer dev` (foreground app), `composer migra
 - Databases: `nova` (development) and `nova_test` (automated tests; the test suite migrates it itself).
 - Migrations always run with `--database=pgsql_owner` (`composer migrate`).
 - Demo data: `database/seeders/DevelopmentSeeder.php` creates "Salon Démo" with the owner `owner@nova.test` / `nova-dev-only`, a service, a practitioner, opening hours and a customer. It refuses to run outside `APP_ENV=local` and is idempotent.
-- Super Admin (separate guard, TOTP required unless `NOVA_ADMIN_REQUIRE_MFA=false`): `php artisan nova:create-admin <email>`; in development `php artisan nova:dev-admin-link` prints a sign-in link.
+- Super Admin (separate guard, TOTP required unless `NOVA_ADMIN_REQUIRE_MFA=false`): `php artisan nova:create-admin <email>`; in development (`APP_ENV=local`) `php artisan nova:dev-admin-link` prints a signed, single-use link (valid 10 minutes, local addresses only) that signs the first Super Admin in.
 - Reset: `composer reset` (migrate:fresh + seed). To also recreate the roles and the test database, delete the volume: stop the app, `docker volume rm <project>_pgdata` (find it with `docker volume ls`) from a terminal outside the container, then rebuild the container.
 
 ## Debugging with Xdebug

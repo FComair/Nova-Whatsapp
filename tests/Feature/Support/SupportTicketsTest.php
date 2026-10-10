@@ -80,7 +80,7 @@ describe('création', function (): void {
         $ticket = $this->asOwner(fn () => SupportTicket::query()->firstOrFail());
 
         $response->assertRedirect('/aide/contact/envoye/'.$ticket->reference());
-        expect($ticket->reference())->toMatch('/^NWS-\d{4,}$/')->and($ticket->status)->toBe('open')->and($ticket->user_id)->toBe($this->owner->id)->and($ticket->reply_email)->toBe('contact@example.com');
+        expect($ticket->reference())->toMatch('/^NWS-\d{4,}$/')->and($ticket->status)->toBe('new')->and($ticket->user_id)->toBe($this->owner->id)->and($ticket->reply_email)->toBe('contact@example.com');
         expect($this->asOwner(fn () => SupportMessage::query()->where('ticket_id', $ticket->id)->value('author_type')))->toBe('client');
         expect($this->asOwner(fn () => SupportTicketEvent::query()->where('ticket_id', $ticket->id)->value('action')))->toBe('created');
         Notification::assertSentOnDemand(TicketCreatedNotification::class, fn ($notification, $channels, $notifiable) => $notifiable->routes['mail'] === 'contact@example.com');
@@ -238,7 +238,7 @@ describe('conversation et états', function (): void {
         $reply = fn (string $text = 'Voici la précision demandée.') => ($this->as)()->post("/aide/tickets/{$ticket->reference()}/reponse", ['body' => $text]);
 
         $reply()->assertSessionHasNoErrors();
-        expect(($this->fresh)($ticket)->status)->toBe('open');
+        expect(($this->fresh)($ticket)->status)->toBe('new');
 
         ($this->desk)(fn (TicketDesk $desk) => $desk->staffReply(($this->fresh)($ticket), null, 'Pouvez-vous préciser ?', 'waiting_on_you'));
         expect(($this->fresh)($ticket)->status)->toBe('waiting_on_you');
@@ -248,7 +248,7 @@ describe('conversation et états', function (): void {
         ($this->desk)(fn (TicketDesk $desk) => $desk->staffReply(($this->fresh)($ticket), null, 'C\'est réglé.', 'resolved'));
         expect(($this->fresh)($ticket)->status)->toBe('resolved');
         $reply('Cela ne fonctionne toujours pas.')->assertSessionHasNoErrors();
-        expect(($this->fresh)($ticket))->status->toBe('open')->resolved_at->toBeNull();
+        expect(($this->fresh)($ticket))->status->toBe('reopened')->resolved_at->toBeNull();
         expect($this->asOwner(fn () => SupportTicketEvent::query()->where('ticket_id', $ticket->id)->where('action', 'reopened')->exists()))->toBeTrue();
 
         ($this->as)()->post("/aide/tickets/{$ticket->reference()}/fermer")->assertSessionHasNoErrors();
@@ -273,7 +273,7 @@ describe('conversation et états', function (): void {
         ($this->desk)(fn (TicketDesk $desk) => $desk->staffReply(($this->fresh)($ticket), null, 'Réglé.', 'resolved'));
         ($this->as)()->post($url('fermer'))->assertSessionHasErrors('ticket');
         ($this->as)()->post($url('rouvrir'))->assertSessionHasNoErrors();
-        expect(($this->fresh)($ticket)->status)->toBe('open');
+        expect(($this->fresh)($ticket)->status)->toBe('reopened');
 
         ($this->desk)(fn (TicketDesk $desk) => $desk->staffReply(($this->fresh)($ticket), null, 'Réglé cette fois.', 'resolved'));
         $this->travel(15)->days();

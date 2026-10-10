@@ -90,6 +90,8 @@ return [
         'saved' => 'Setting saved.',
         'attempts' => '{1} :count attempt|[2,*] :count attempts',
         'days' => '{1} :count day|[2,*] :count days',
+        'hours' => '{1} :count hour|[2,*] :count hours',
+        'percent' => ':count %',
         'keys' => [
             'deletion_delay_days' => ['label' => 'Delay before deletion', 'help' => 'Delay between the deletion request and the erasure of data.'],
             'pause_max_days' => ['label' => 'Maximum length of a pause', 'help' => 'Free pause of an account. End-of-period rule still to be confirmed.'],
@@ -98,6 +100,11 @@ return [
             'dunning_retry_days' => ['label' => 'Delay between two payment retries', 'help' => 'Interval between two payment attempts after a decline.'],
             'dunning_max_attempts' => ['label' => 'Payment attempts before suspension', 'help' => 'After this many declines, the account is suspended.'],
             'suspension_max_days' => ['label' => 'Maximum length of a suspension', 'help' => 'After a pause has run out: beyond this length, deletion is scheduled automatically.'],
+            'support_sla_urgent_hours' => ['label' => 'First response target: urgent tickets', 'help' => 'Hours elapsed (24/7 clock) between creation and the first public reply.'],
+            'support_sla_high_hours' => ['label' => 'First response target: high priority', 'help' => 'Hours elapsed (24/7 clock) between creation and the first public reply.'],
+            'support_sla_medium_hours' => ['label' => 'First response target: medium priority', 'help' => 'Hours elapsed (24/7 clock) between creation and the first public reply.'],
+            'support_sla_low_hours' => ['label' => 'First response target: low priority', 'help' => 'Hours elapsed (24/7 clock) between creation and the first public reply.'],
+            'support_at_risk_percent' => ['label' => 'Support: "at risk" threshold', 'help' => 'A ticket without a first reply is "at risk" once this share of its target has elapsed.'],
         ],
     ],
     'audit' => [

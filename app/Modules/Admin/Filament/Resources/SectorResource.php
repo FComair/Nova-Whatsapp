@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\SectorResource\Pages\ListSectors;
+use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
 use App\Modules\Admin\Models\PlatformSector;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SectorManager;
@@ -34,6 +35,8 @@ use Illuminate\Support\Facades\DB;
  */
 class SectorResource extends Resource
 {
+    use HiddenFromSupportAgents;
+
     protected static ?string $model = PlatformSector::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';

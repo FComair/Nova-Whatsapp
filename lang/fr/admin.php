@@ -90,6 +90,8 @@ return [
         'saved' => 'Paramètre enregistré.',
         'attempts' => '{1} :count tentative|[2,*] :count tentatives',
         'days' => '{1} :count jour|[2,*] :count jours',
+        'hours' => '{1} :count heure|[2,*] :count heures',
+        'percent' => ':count %',
         'keys' => [
             'deletion_delay_days' => ['label' => 'Délai avant suppression', 'help' => 'Délai entre la demande de suppression et l\'effacement des données.'],
             'pause_max_days' => ['label' => 'Durée maximale d\'une pause', 'help' => 'Pause gratuite d\'un compte. Règle de fin de période à confirmer.'],
@@ -98,6 +100,11 @@ return [
             'dunning_retry_days' => ['label' => 'Délai entre deux relances d\'impayé', 'help' => 'Intervalle entre deux tentatives de paiement après un refus.'],
             'dunning_max_attempts' => ['label' => 'Tentatives de paiement avant suspension', 'help' => 'Après ce nombre de refus, le compte est suspendu.'],
             'suspension_max_days' => ['label' => 'Durée maximale d\'une suspension', 'help' => 'Après une pause arrivée à échéance : au-delà de cette durée, la suppression est programmée automatiquement.'],
+            'support_sla_urgent_hours' => ['label' => 'Délai de première réponse : tickets urgents', 'help' => 'Heures écoulées (horloge continue) entre la création et la première réponse publique.'],
+            'support_sla_high_hours' => ['label' => 'Délai de première réponse : priorité haute', 'help' => 'Heures écoulées (horloge continue) entre la création et la première réponse publique.'],
+            'support_sla_medium_hours' => ['label' => 'Délai de première réponse : priorité moyenne', 'help' => 'Heures écoulées (horloge continue) entre la création et la première réponse publique.'],
+            'support_sla_low_hours' => ['label' => 'Délai de première réponse : priorité basse', 'help' => 'Heures écoulées (horloge continue) entre la création et la première réponse publique.'],
+            'support_at_risk_percent' => ['label' => 'Support : seuil « à risque »', 'help' => 'Un ticket sans première réponse est « à risque » dès que cette part de son délai est écoulée.'],
         ],
     ],
     'audit' => [

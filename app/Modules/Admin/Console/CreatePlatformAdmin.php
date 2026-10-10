@@ -16,9 +16,9 @@ use Illuminate\Validation\Rules\Password;
  */
 final class CreatePlatformAdmin extends Command
 {
-    protected $signature = 'nova:create-admin {email : Adresse e-mail du Super Admin}';
+    protected $signature = 'nova:create-admin {email : Adresse e-mail du compte} {--support-agent : Agent de support : accès limité aux tickets (jamais aux comptes, à la facturation ni aux réglages)}';
 
-    protected $description = 'Crée un compte Super Admin (le 2FA est imposé à la première connexion)';
+    protected $description = 'Crée un compte Super Admin, ou un agent de support avec --support-agent (le 2FA est imposé à la première connexion)';
 
     public function handle(): int
     {
@@ -45,9 +45,13 @@ final class CreatePlatformAdmin extends Command
 
         $admin = PlatformAdmin::query()->create(['email' => $email, 'password' => $password]);
 
-        Audit::record('platform_admin.created', 'system', entityType: 'platform_admin', entityId: $admin->id);
+        if ($this->option('support-agent')) {
+            $admin->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
+        }
 
-        $this->info("Super Admin créé : {$email}");
+        Audit::record('platform_admin.created', 'system', entityType: 'platform_admin', entityId: $admin->id, diff: ['support_role' => $admin->support_role]);
+
+        $this->info(($admin->isSupportAgent() ? 'Agent de support créé : ' : 'Super Admin créé : ').$email);
         $this->line('À la première connexion, configurez l\'application d\'authentification (2FA obligatoire) et conservez les codes de secours.');
 
         return self::SUCCESS;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\DeletionRequestResource\Pages\ListDeletionRequests;
+use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Privacy\Models\DeletionRequest;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeletionRequestResource extends Resource
 {
+    use HiddenFromSupportAgents;
+
     protected static ?string $model = DeletionRequest::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-trash';

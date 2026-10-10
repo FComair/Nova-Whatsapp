@@ -176,5 +176,17 @@ return [
             'intro' => 'We believe we have settled your request “:subject”.',
             'reopen' => 'If not, reply within :days days: the ticket will be reopened. Otherwise it will close by itself.',
         ],
+        'status' => [
+            'subject' => 'Your request #:reference has been updated',
+            'intro' => 'The status of your request “:subject” has changed.',
+            'open' => 'Your request is open again and our team will pick it up.',
+            'in_progress' => 'Our team is working on it.',
+            'waiting_on_you' => 'We need more information or an action from you. Please reply from your tickets page.',
+        ],
+        'closed' => [
+            'subject' => 'Your request #:reference is closed',
+            'intro' => 'Our team has closed your request “:subject”.',
+            'new_ticket' => 'You can no longer reply to this ticket. If you still need help, please open a new request.',
+        ],
     ],
 ];

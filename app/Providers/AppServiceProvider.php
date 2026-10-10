@@ -6,7 +6,9 @@ namespace App\Providers;
 
 use App\Console\Commands\Preflight;
 use App\Modules\Admin\Console\CreatePlatformAdmin;
+use App\Modules\Admin\Console\DevAdminLink;
 use App\Modules\Admin\Console\SetAdminIpAllowlist;
+use App\Modules\Admin\Console\WatchSupportSla;
 use App\Modules\Api\Console\CreateApiClient;
 use App\Modules\Billing\Console\RunBilling;
 use App\Modules\Billing\Contracts\PaymentGateway;
@@ -108,7 +110,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class]);
+            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class, DevAdminLink::class, WatchSupportSla::class]);
         }
     }
 }

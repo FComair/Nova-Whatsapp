@@ -176,5 +176,17 @@ return [
             'intro' => 'Nous pensons avoir réglé votre demande « :subject ».',
             'reopen' => 'Si ce n’est pas le cas, répondez dans les :days jours : le ticket sera rouvert. Sinon il se fermera tout seul.',
         ],
+        'status' => [
+            'subject' => 'Votre demande #:reference a évolué',
+            'intro' => 'L’état de votre demande « :subject » a changé.',
+            'open' => 'Votre demande est de nouveau ouverte et notre équipe va la reprendre.',
+            'in_progress' => 'Notre équipe s’en occupe.',
+            'waiting_on_you' => 'Nous avons besoin d’informations ou d’une action de votre part. Merci de répondre depuis la page de vos tickets.',
+        ],
+        'closed' => [
+            'subject' => 'Votre demande #:reference est fermée',
+            'intro' => 'Notre équipe a fermé votre demande « :subject ».',
+            'new_ticket' => 'Vous ne pouvez plus répondre à ce ticket. Si vous avez encore besoin d’aide, ouvrez une nouvelle demande.',
+        ],
     ],
 ];

@@ -21,6 +21,12 @@ final class PlatformSettings
         'trial_reminder_days' => ['min' => 1, 'max' => 30],
         'dunning_retry_days' => ['min' => 1, 'max' => 30],
         'dunning_max_attempts' => ['min' => 1, 'max' => 10],
+        // Support (docs/29 §6) : délai cible de première réponse par priorité (heures écoulées) et seuil « à risque » (% du délai).
+        'support_sla_urgent_hours' => ['min' => 1, 'max' => 720],
+        'support_sla_high_hours' => ['min' => 1, 'max' => 720],
+        'support_sla_medium_hours' => ['min' => 1, 'max' => 720],
+        'support_sla_low_hours' => ['min' => 1, 'max' => 720],
+        'support_at_risk_percent' => ['min' => 10, 'max' => 99],
     ];
 
     public function integer(string $key): int

@@ -176,5 +176,17 @@ return [
             'intro' => 'We denken uw aanvraag “:subject” te hebben afgehandeld.',
             'reopen' => 'Is dat niet zo, antwoord dan binnen :days dagen: het ticket wordt heropend. Anders sluit het vanzelf.',
         ],
+        'status' => [
+            'subject' => 'Uw aanvraag #:reference is bijgewerkt',
+            'intro' => 'De status van uw aanvraag “:subject” is gewijzigd.',
+            'open' => 'Uw aanvraag is opnieuw open en ons team pakt ze weer op.',
+            'in_progress' => 'Ons team werkt eraan.',
+            'waiting_on_you' => 'We hebben meer informatie of een actie van u nodig. Antwoord via de pagina met uw tickets.',
+        ],
+        'closed' => [
+            'subject' => 'Uw aanvraag #:reference is gesloten',
+            'intro' => 'Ons team heeft uw aanvraag “:subject” gesloten.',
+            'new_ticket' => 'U kunt niet meer antwoorden op dit ticket. Hebt u nog hulp nodig, dien dan een nieuwe aanvraag in.',
+        ],
     ],
 ];

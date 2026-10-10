@@ -13,7 +13,9 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use SensitiveParameter;
 
 /**
@@ -24,12 +26,17 @@ use SensitiveParameter;
  * @property string $email
  * @property string|null $app_authentication_secret
  * @property list<string>|null $app_authentication_recovery_codes
+ * @property string|null $support_role
+ * @property array<string, list<string>>|null $support_notifications
  */
 #[Fillable(['email', 'password'])]
 #[Hidden(['password', 'remember_token', 'app_authentication_secret', 'app_authentication_recovery_codes'])]
 class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasName
 {
-    use HasUuids, InteractsWithAppAuthentication;
+    use HasUuids, InteractsWithAppAuthentication, Notifiable;
+
+    /** Rôle de support limité aux tickets (docs/29 §5). Sans rôle : Super Admin, accès complet. */
+    public const SUPPORT_AGENT = 'agent';
 
     protected $connection = 'pgsql_platform';
 
@@ -45,7 +52,23 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
             'app_authentication_recovery_codes' => 'encrypted:array',
             'last_login_at' => 'datetime',
             'ip_allowlist' => 'array',
+            'support_notifications' => 'array',
         ];
+    }
+
+    /**
+     * Notifications du panel : table réservée au rôle `nova_platform` (la table `notifications` par défaut serait lisible par le rôle client).
+     *
+     * @return MorphMany<PlatformNotification, $this>
+     */
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(PlatformNotification::class, 'notifiable')->latest();
+    }
+
+    public function isSupportAgent(): bool
+    {
+        return $this->support_role === self::SUPPORT_AGENT;
     }
 
     /** Nom affiché dans le menu du panel : l'adresse e-mail (pas de nom saisi). */

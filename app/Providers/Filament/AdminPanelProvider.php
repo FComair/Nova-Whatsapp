@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
+use App\Modules\Admin\Filament\Pages\AdminDashboard;
 use App\Modules\Admin\Filament\Pages\Login;
+use App\Modules\Admin\Filament\Pages\SupportReports;
+use App\Modules\Admin\Http\Controllers\SupportAttachmentController;
 use App\Modules\Admin\Http\Middleware\EnforceAdminIpAllowlist;
 use App\Modules\Admin\Support\AdminMfa;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
@@ -14,7 +17,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -23,6 +25,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 /**
@@ -47,10 +50,17 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Modules/Admin/Filament/Resources'), for: 'App\\Modules\\Admin\\Filament\\Resources')
             // Menu : tableau de bord, clients et factures, puis « Configuration » (secteurs, paramètres) et « Opérations » (suppressions, journal).
             ->navigationGroups([
+                NavigationGroup::make()->label(fn (): string => __('tickets.navigation.group')),
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.configuration')),
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.operations')),
             ])
-            ->pages([Dashboard::class])
+            ->pages([AdminDashboard::class, SupportReports::class])
+            // Notifications des agents (cloche) : table réservée au rôle de la plateforme (PlatformNotification).
+            ->databaseNotifications()
+            // Téléchargement d'une pièce jointe de ticket : même authentification et même liste blanche d'adresses que le panel.
+            ->authenticatedRoutes(function (): void {
+                Route::get('/support-attachments/{attachment}', SupportAttachmentController::class)->name('support.attachment');
+            })
             ->widgets([])
             ->middleware([
                 EncryptCookies::class,

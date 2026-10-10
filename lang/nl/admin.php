@@ -90,6 +90,8 @@ return [
         'saved' => 'Instelling opgeslagen.',
         'attempts' => '{1} :count poging|[2,*] :count pogingen',
         'days' => '{1} :count dag|[2,*] :count dagen',
+        'hours' => ':count uur',
+        'percent' => ':count %',
         'keys' => [
             'deletion_delay_days' => ['label' => 'Termijn vóór verwijdering', 'help' => 'Termijn tussen het verwijderingsverzoek en het wissen van de gegevens.'],
             'pause_max_days' => ['label' => 'Maximale duur van een pauze', 'help' => 'Gratis pauze van een account. Regel voor het einde van de periode nog te bevestigen.'],
@@ -98,6 +100,11 @@ return [
             'dunning_retry_days' => ['label' => 'Termijn tussen twee betalingsherinneringen', 'help' => 'Interval tussen twee betalingspogingen na een weigering.'],
             'dunning_max_attempts' => ['label' => 'Betalingspogingen vóór opschorting', 'help' => 'Na dit aantal weigeringen wordt het account opgeschort.'],
             'suspension_max_days' => ['label' => 'Maximale duur van een opschorting', 'help' => 'Na een verstreken pauze: na deze duur wordt de verwijdering automatisch gepland.'],
+            'support_sla_urgent_hours' => ['label' => 'Streeftijd eerste antwoord: dringende tickets', 'help' => 'Verstreken uren (doorlopende klok) tussen aanmaak en het eerste openbare antwoord.'],
+            'support_sla_high_hours' => ['label' => 'Streeftijd eerste antwoord: hoge prioriteit', 'help' => 'Verstreken uren (doorlopende klok) tussen aanmaak en het eerste openbare antwoord.'],
+            'support_sla_medium_hours' => ['label' => 'Streeftijd eerste antwoord: gemiddelde prioriteit', 'help' => 'Verstreken uren (doorlopende klok) tussen aanmaak en het eerste openbare antwoord.'],
+            'support_sla_low_hours' => ['label' => 'Streeftijd eerste antwoord: lage prioriteit', 'help' => 'Verstreken uren (doorlopende klok) tussen aanmaak en het eerste openbare antwoord.'],
+            'support_at_risk_percent' => ['label' => 'Support: drempel "in gevaar"', 'help' => 'Een ticket zonder eerste antwoord is "in gevaar" zodra dit deel van de streeftijd verstreken is.'],
         ],
     ],
     'audit' => [

@@ -99,7 +99,7 @@ final class SupportController
         $user = $request->user() ?? abort(403);
         $owner = $this->isOwner();
         $filters = [
-            'status' => in_array($request->query('status'), [...TicketStatus::ACTIVE, 'done'], true) ? (string) $request->query('status') : null,
+            'status' => in_array($request->query('status'), [...array_slice(TicketStatus::CLIENT, 0, 3), 'done'], true) ? (string) $request->query('status') : null,
             'category' => in_array($request->query('category'), SupportTicket::CATEGORIES, true) ? (string) $request->query('category') : null,
             'urgency' => in_array($request->query('urgency'), SupportTicket::URGENCIES, true) ? (string) $request->query('urgency') : null,
             'attention' => $request->boolean('attention') ? '1' : null,
@@ -111,7 +111,7 @@ final class SupportController
 
         $query = SupportTicket::query()->visibleTo($user->id, $filters['scope'] === 'all')
             ->when($filters['status'] === 'done', fn (Builder $q) => $q->whereIn('status', [TicketStatus::RESOLVED, TicketStatus::CLOSED]))
-            ->when($filters['status'] !== null && $filters['status'] !== 'done', fn (Builder $q) => $q->where('status', $filters['status']))
+            ->when($filters['status'] !== null && $filters['status'] !== 'done', fn (Builder $q) => $q->whereIn('status', TicketStatus::staffStatesFor((string) $filters['status'])))
             ->when($filters['category'], fn (Builder $q, string $category) => $q->where('category', $category))
             ->when($filters['urgency'], fn (Builder $q, string $urgency) => $q->where('urgency', $urgency))
             ->when($filters['attention'] !== null, fn (Builder $q) => $q->where('user_id', $user->id)->where('status', '!=', TicketStatus::CLOSED)->where(
@@ -160,7 +160,7 @@ final class SupportController
                 'attachments' => $message->attachments->map(fn (SupportAttachment $file): array => ['id' => $file->id, 'name' => $file->original_name, 'size' => $file->size, 'mime' => $file->mime])->all(),
             ])->all(),
             ...$events->map(fn (SupportTicketEvent $event): array => [
-                'type' => 'event', 'id' => $event->id, 'action' => $event->action, 'to' => $event->to_status, 'reason' => $event->note, 'at' => $event->created_at->toIso8601String(),
+                'type' => 'event', 'id' => $event->id, 'action' => $event->action, 'to' => $event->to_status === null ? null : TicketStatus::forClient($event->to_status), 'reason' => $event->note, 'at' => $event->created_at->toIso8601String(),
             ])->all(),
         ];
         usort($items, fn (array $a, array $b): int => $a['at'] <=> $b['at']);
@@ -299,7 +299,7 @@ final class SupportController
         return [
             'reference' => $ticket->reference(),
             'subject' => $ticket->subject,
-            'status' => $ticket->status,
+            'status' => TicketStatus::forClient($ticket->status),
             'category' => $ticket->category,
             'related_to' => $ticket->related_to,
             'urgency' => $ticket->urgency,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\AccountStateController;
 use App\Http\Controllers\DashboardController;
+use App\Modules\Admin\Http\Controllers\DevAdminLoginController;
 use App\Modules\Billing\Http\Controllers\BillingController;
 use App\Modules\Booking\Http\Controllers\PlanningController;
 use App\Modules\Calendars\Http\Controllers\CalendarController;
@@ -55,6 +56,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::redirect('/', '/connexion');
+
+if (app()->environment('local')) {
+    // Connexion directe au Super Admin, développement local uniquement (lien signé créé par `php artisan nova:dev-admin-link`).
+    Route::get('/dev/admin-login/{nonce}', DevAdminLoginController::class)->middleware('signed')->name('dev.admin-login');
+}
 
 Route::post('/langue', [LocaleController::class, 'update'])->name('locale.update');
 
