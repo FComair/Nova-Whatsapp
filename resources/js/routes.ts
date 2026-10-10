@@ -23,6 +23,7 @@ export const routes = {
     legalSettings: '/reglages/juridique',
     legalAccept: '/reglages/juridique/accepter',
     calendars: '/calendriers',
+    team: '/reglages/equipe',
     billing: '/facturation',
     profile: '/reglages/profil',
     profileCompany: '/reglages/profil/entreprise',

@@ -105,8 +105,10 @@ return new class extends Migration
         // Recherche des rattachements d'un utilisateur AVANT que le contexte d'organisation existe (choix de l'organisation
         // à la connexion). Fonction SECURITY DEFINER volontairement étroite : elle ne renvoie que les colonnes nécessaires.
         // Le propriétaire de la fonction doit disposer de BYPASSRLS (ou être superuser).
+        // DROP d'abord : migrate:fresh ne supprime pas les fonctions, et une version plus récente (avec les permissions, docs/34) peut exister.
+        DB::statement('DROP FUNCTION IF EXISTS auth_memberships(uuid)');
         DB::statement(<<<'SQL'
-            CREATE OR REPLACE FUNCTION auth_memberships(p_user_id uuid)
+            CREATE FUNCTION auth_memberships(p_user_id uuid)
             RETURNS TABLE (org_id uuid, role varchar, status varchar)
             LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
             AS $$

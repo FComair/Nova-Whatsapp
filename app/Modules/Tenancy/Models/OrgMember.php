@@ -18,6 +18,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $org_id
  * @property string $user_id
  * @property string $role
+ * @property string $status
+ * @property string|null $name
+ * @property string|null $phone
+ * @property string|null $preset
+ * @property array<string, bool>|null $permissions
+ * @property string|null $notes
  */
 class OrgMember extends Model
 {
@@ -35,6 +41,14 @@ class OrgMember extends Model
     public const ROLES = [self::ROLE_OWNER, self::ROLE_SITE_MANAGER, self::ROLE_PRACTITIONER, self::ROLE_RECEPTIONIST];
 
     protected $guarded = [];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return ['permissions' => 'array', 'invited_at' => 'datetime', 'suspended_at' => 'datetime', 'removed_at' => 'datetime'];
+    }
 
     /**
      * @return BelongsTo<User, $this>

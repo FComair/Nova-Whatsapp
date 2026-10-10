@@ -113,7 +113,7 @@ final class CustomerListQuery
             ->leftJoin('services as s', 's.id', '=', 'b.service_id')
             ->leftJoin('practitioners as p', 'p.id', '=', 'b.practitioner_id')
             ->whereIn('b.customer_id', $customerIds)
-            ->when($this->access->isPractitioner(), fn ($q) => $q->where('b.practitioner_id', $this->access->practitionerId()))
+            ->when($this->access->customersScoped(), fn ($q) => $q->where('b.practitioner_id', $this->access->practitionerId()))
             ->select('b.customer_id', 'b.starts_at', 'b.status', 's.name as service', 'p.id as practitioner_id', 'p.name as practitioner', 'p.photo_updated_at as practitioner_photo')
             ->distinct('b.customer_id');
 
@@ -173,7 +173,7 @@ final class CustomerListQuery
      */
     private function scopeToPractitioner(Builder $query): void
     {
-        if ($this->access->isPractitioner()) {
+        if ($this->access->customersScoped()) {
             $query->whereExists($this->bookings());
         }
     }
@@ -182,7 +182,7 @@ final class CustomerListQuery
     private function bookings(): QueryBuilder
     {
         return DB::table('bookings as b')->whereColumn('b.customer_id', 'customers.id')
-            ->when($this->access->isPractitioner(), fn ($q) => $q->where('b.practitioner_id', $this->access->practitionerId()));
+            ->when($this->access->customersScoped(), fn ($q) => $q->where('b.practitioner_id', $this->access->practitionerId()));
     }
 
     private function marketingStatus(): QueryBuilder

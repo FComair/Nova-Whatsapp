@@ -13,7 +13,7 @@ defineProps<{ title: string }>();
 const page = usePage<SharedProps>();
 const { t } = useT();
 
-const groups = computed(() => settingsGroups(page.props.auth.organization?.role ?? null));
+const groups = computed(() => settingsGroups(page.props.auth.organization?.role ?? null, page.props.auth.organization?.permissions ?? []));
 const items = computed(() => groups.value.flatMap((group) => group.items));
 const active = computed(() => activeSettings((page as unknown as { url?: string }).url ?? ''));
 const activeHref = computed(() => items.value.find((item) => item.key === active.value)?.href ?? '');

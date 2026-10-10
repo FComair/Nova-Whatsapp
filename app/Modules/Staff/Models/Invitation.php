@@ -13,7 +13,15 @@ use Illuminate\Support\Carbon;
  *
  * @property string $id
  * @property string $org_id
- * @property string $practitioner_id
+ * @property string|null $practitioner_id
+ * @property string $role
+ * @property string|null $name
+ * @property string|null $phone
+ * @property string|null $preset
+ * @property array<string, bool>|null $permissions
+ * @property string|null $notes
+ * @property string|null $invited_by
+ * @property Carbon|null $created_at
  * @property string $email
  * @property string $token_hash
  * @property Carbon $expires_at
@@ -31,7 +39,7 @@ class Invitation extends Model
      */
     protected function casts(): array
     {
-        return ['expires_at' => 'datetime', 'used_at' => 'datetime', 'revoked_at' => 'datetime'];
+        return ['expires_at' => 'datetime', 'used_at' => 'datetime', 'revoked_at' => 'datetime', 'permissions' => 'array'];
     }
 
     public static function hash(string $token): string

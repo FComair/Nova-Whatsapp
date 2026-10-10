@@ -16,7 +16,7 @@ final class SettingsSearchController
 {
     public function __invoke(CurrentTenant $current, SettingsSearchIndex $index): JsonResponse
     {
-        return response()->json(['entries' => $index->forRole($current->role())])
+        return response()->json(['entries' => $index->forRole($current->role(), $current->permissions())])
             ->header('Cache-Control', 'private, no-store');
     }
 }

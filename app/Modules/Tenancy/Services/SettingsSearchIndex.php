@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Tenancy\Services;
 
+use App\Modules\Team\Support\Capabilities;
+
 /**
  * Index de la recherche dans les Réglages : une entrée par page, section ou étape, avec son titre, sa description et ses mots-clés
  * dans les trois langues. Les textes viennent des fichiers de traduction existants (aucune copie à maintenir) ; seuls les mots-clés
@@ -24,35 +26,43 @@ final class SettingsSearchIndex
     ];
 
     /**
-     * Entrées accessibles à un rôle.
+     * Entrées accessibles à un rôle et à ses permissions (par défaut celles du rôle).
      *
+     * @param  list<string>|null  $permissions
      * @return list<array{id: string, group: string, page: string, href: string, anchor: string|null, title: array<string, string>, description: array<string, string>|null, keywords: array<string, string>}>
      */
-    public function forRole(?string $role): array
+    public function forRole(?string $role, ?array $permissions = null): array
     {
+        $permissions ??= $role === null ? [] : Capabilities::effective($role);
+
         return array_values(array_map(
             fn (array $entry): array => $this->expand($entry),
-            array_filter($this->definitions(), fn (array $entry): bool => $this->allowed($entry, $role)),
+            array_filter($this->definitions(), fn (array $entry): bool => $this->allowed($entry, $role, $permissions)),
         ));
     }
 
     /**
      * @param  array{page: string, owner?: bool}  $entry
+     * @param  list<string>  $permissions
      */
-    private function allowed(array $entry, ?string $role): bool
+    private function allowed(array $entry, ?string $role, array $permissions): bool
     {
         if ($role === null) {
             return false;
         }
 
-        if (($entry['owner'] ?? false) && $role !== 'owner') {
+        // Entrées réservées à qui règle l'entreprise (logo, facturation) : le propriétaire, ou celui qui a reçu la permission pour le profil.
+        if (($entry['owner'] ?? false) && $role !== 'owner' && ! ($entry['page'] === 'profile' && in_array('settings.business', $permissions, true))) {
             return false;
         }
 
         return match ($entry['page']) {
             'profile', 'security', 'legal' => true,
-            'calendars' => $role !== 'receptionist',
-            default => $role === 'owner', // Mise en route, WhatsApp, Mes données
+            'calendars' => array_intersect(['calendars.own', 'settings.integrations'], $permissions) !== [],
+            'whatsapp' => array_intersect(['whatsapp.connect', 'whatsapp.templates'], $permissions) !== [],
+            'whatsapp-qr' => in_array('whatsapp.connect', $permissions, true),
+            'team' => in_array('settings.team', $permissions, true),
+            default => $role === 'owner', // Mise en route, Mes données
         };
     }
 
@@ -84,6 +94,11 @@ final class SettingsSearchIndex
         $entries[] = $profile + ['id' => 'profile-phone', 'anchor' => 'phone', 'title' => 'security.phone_section'];
         $entries[] = $profile + ['id' => 'profile-company', 'anchor' => 'company', 'title' => 'account_profile.company_title', 'description' => 'account_profile.company_intro'];
         $entries[] = $profile + ['id' => 'profile-billing', 'anchor' => 'identity', 'title' => 'billing.identity_title', 'description' => 'billing.identity_hint', 'owner' => true];
+
+        $team = ['group' => 'account', 'page' => 'team', 'href' => '/reglages/equipe'];
+        $entries[] = $team + ['id' => 'team', 'title' => 'team.title', 'description' => 'team.intro'];
+        $entries[] = $team + ['id' => 'team-add', 'title' => 'team.add', 'description' => 'team.add_hint'];
+        $entries[] = $team + ['id' => 'team-permissions', 'title' => 'team.permissions_title', 'description' => 'team.permissions_intro'];
 
         $calendars = ['group' => 'integrations', 'page' => 'calendars', 'href' => '/calendriers'];
         $entries[] = $calendars + ['id' => 'calendars', 'title' => 'calendars.title', 'description' => 'calendars.intro'];

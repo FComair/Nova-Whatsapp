@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use RuntimeException;
 
 /**
- * Services de l'organisation. Propriétaire et responsable de site (docs/02 §1).
+ * Services de l'organisation. Chaque action a sa permission : créer, modifier, archiver, et régler les prix (docs/34).
  */
 final class ServiceController
 {
@@ -29,7 +29,15 @@ final class ServiceController
 
     public function update(ServiceRequest $request, Service $service): RedirectResponse
     {
-        $this->catalog->update($this->organization(), $service, $request->service());
+        $changes = $request->service();
+
+        // Le prix et la TVA se règlent avec leur propre permission : modifier le reste d'un service ne suffit pas (docs/34).
+        abort_if(
+            ! $this->current->can('services.prices') && ((int) $changes['price_cents'] !== (int) $service->price_cents || (float) $changes['vat_rate'] !== (float) $service->vat_rate),
+            403,
+        );
+
+        $this->catalog->update($this->organization(), $service, $changes);
 
         return back()->with('status', __('ui.onboarding.saved'));
     }

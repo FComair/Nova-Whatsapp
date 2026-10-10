@@ -16,6 +16,7 @@ final class PractitionerInvitationNotification extends Notification
         private readonly string $organizationName,
         private readonly string $practitionerName,
         private readonly string $token,
+        private readonly string $role = 'practitioner',
     ) {}
 
     /**
@@ -33,7 +34,7 @@ final class PractitionerInvitationNotification extends Notification
         return (new MailMessage)
             ->subject(__('mail.invitation.subject', ['organization' => $this->organizationName]))
             ->greeting(__('mail.invitation.greeting', ['name' => $this->practitionerName]))
-            ->line(__('mail.invitation.intro', ['organization' => $this->organizationName]))
+            ->line(__($this->role === 'practitioner' ? 'mail.invitation.intro' : 'mail.invitation.intro_assistant', ['organization' => $this->organizationName]))
             ->action(__('mail.invitation.action'), url(route('invitation.show', ['token' => $this->token], false)))
             ->line(__('mail.invitation.expires', ['days' => $days]))
             ->line(__('mail.ignore_if_not_you'));

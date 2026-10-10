@@ -8,6 +8,7 @@ return [
         'subject' => ':organization invites you to Nova',
         'greeting' => 'Hello :name,',
         'intro' => ':organization invites you to join its team on Nova. Create your account to enter your services and availability.',
+        'intro_assistant' => ':organization invites you to join its team on Nova. Create your account to help run the calendar and customers.',
         'action' => 'Accept the invitation',
         'expires' => 'This link is valid for :days days. After that, ask for a new invitation.',
     ],
@@ -193,5 +194,13 @@ return [
             'intro' => 'Our team has closed your request “:subject”.',
             'new_ticket' => 'You can no longer reply to this ticket. If you still need help, please open a new request.',
         ],
+    ],
+
+    'team_access' => [
+        'contact' => 'If this is unexpected, contact the account owner.',
+        'access_changed' => ['subject' => 'Your access to :organization has changed', 'intro' => 'The owner of :organization changed what you can see and do on Nova. Sign in to see your access.'],
+        'suspended' => ['subject' => 'Your access to :organization is suspended', 'intro' => 'Your access to :organization on Nova has been suspended. You will not be able to sign in until it is reactivated.'],
+        'reactivated' => ['subject' => 'Your access to :organization is back', 'intro' => 'Your access to :organization on Nova has been reactivated. You can sign in again.'],
+        'removed' => ['subject' => 'Your access to :organization was removed', 'intro' => 'Your access to :organization on Nova has been removed. You can no longer sign in to this account.'],
     ],
 ];

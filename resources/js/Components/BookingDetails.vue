@@ -24,6 +24,8 @@ const props = defineProps<{
     practitioners: PlanningPractitioner[];
     services?: PlanningService[];
     canReassign?: boolean;
+    /** Droits de la personne sur un rendez-vous (permissions) ; tout est permis si le serveur ne les fournit pas. */
+    can?: { reschedule: boolean; cancel: boolean; complete: boolean; no_show: boolean; payment: boolean };
     /** Fuseau du site : l'heure « maintenant » du formulaire de déplacement. */
     timezone: string;
 }>();
@@ -127,8 +129,9 @@ const canChangePractitioner = computed(() => props.canReassign === true && isOpe
 
 const currentPhoto = computed(() => props.practitioners.find((practitioner) => practitioner.id === props.booking.practitioner_id)?.photo_version ?? null);
 const isOpen = computed(() => props.booking.status === 'pending' || props.booking.status === 'confirmed');
-const canFinish = computed(() => props.booking.status === 'confirmed' && props.booking.is_past);
-const canPay = computed(() => ['confirmed', 'completed', 'no_show'].includes(props.booking.status));
+const allowed = (action: 'reschedule' | 'cancel' | 'complete' | 'no_show' | 'payment'): boolean => props.can?.[action] !== false;
+const canFinish = computed(() => props.booking.status === 'confirmed' && props.booking.is_past && (allowed('complete') || allowed('no_show')));
+const canPay = computed(() => ['confirmed', 'completed', 'no_show'].includes(props.booking.status) && allowed('payment'));
 const suggestions = computed(() => (extraError(moveForm.errors, 'slot') ? page.props.flash.suggestions : []));
 const errors = computed(
     () =>
@@ -210,13 +213,15 @@ function pick(suggestion: Suggestion): void {
         </dl>
 
         <div v-if="mode === 'view'" class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-            <BaseButton v-if="canFinish" :loading="finishForm.processing" @click="finish('completed')">{{ t('planning.actions.completed') }}</BaseButton>
-            <BaseButton v-if="canFinish" variant="secondary" :loading="finishForm.processing" @click="finish('no_show')">
+            <BaseButton v-if="canFinish && allowed('complete')" :loading="finishForm.processing" @click="finish('completed')">{{
+                t('planning.actions.completed')
+            }}</BaseButton>
+            <BaseButton v-if="canFinish && allowed('no_show')" variant="secondary" :loading="finishForm.processing" @click="finish('no_show')">
                 {{ t('planning.actions.no_show') }}
             </BaseButton>
-            <BaseButton v-if="isOpen" variant="secondary" @click="mode = 'move'">{{ t('planning.actions.move') }}</BaseButton>
+            <BaseButton v-if="isOpen && allowed('reschedule')" variant="secondary" @click="mode = 'move'">{{ t('planning.actions.move') }}</BaseButton>
             <BaseButton v-if="canPay" variant="secondary" @click="mode = 'payment'">{{ t('planning.actions.payment') }}</BaseButton>
-            <BaseButton v-if="isOpen" variant="danger" @click="mode = 'cancel'">{{ t('planning.actions.cancel') }}</BaseButton>
+            <BaseButton v-if="isOpen && allowed('cancel')" variant="danger" @click="mode = 'cancel'">{{ t('planning.actions.cancel') }}</BaseButton>
         </div>
 
         <form v-else-if="mode === 'move'" class="space-y-4" novalidate @submit.prevent="submitMove">

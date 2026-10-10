@@ -47,7 +47,10 @@ const recent = ref<string[]>(readRecent());
 
 const uiLocale = computed<SearchLocale>(() => (['fr', 'nl', 'en'].includes(locale.value) ? (locale.value as SearchLocale) : 'en'));
 const typed = computed(() => normalize(settled.value).length >= MIN_QUERY_LENGTH);
-const cacheKey = computed(() => `${page.props.auth.organization?.id ?? ''}:${page.props.auth.organization?.role ?? ''}`);
+const cacheKey = computed(
+    () =>
+        `${page.props.auth.organization?.id ?? ''}:${page.props.auth.organization?.role ?? ''}:${(page.props.auth.organization?.permissions ?? []).join(',')}`,
+);
 
 /** Libellé de chaque page du menu, pour le chemin « Groupe → Page ». */
 const pageLabels = computed(() => {

@@ -33,6 +33,7 @@ const props = defineProps<{
     services?: PlanningService[];
     canCreate?: boolean;
     canReassign?: boolean;
+    can?: { reschedule: boolean; cancel: boolean; complete: boolean; no_show: boolean; payment: boolean };
     seesNotes?: boolean;
 }>();
 
@@ -537,6 +538,7 @@ function describe(booking: PlanningBooking): string {
                 :practitioners="practitioners ?? []"
                 :services="services ?? []"
                 :can-reassign="canReassign ?? false"
+                :can="can"
                 :timezone="location?.timezone ?? 'UTC'"
                 @done="selectedId = null"
             />

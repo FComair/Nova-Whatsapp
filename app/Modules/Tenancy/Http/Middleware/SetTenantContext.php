@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Tenancy\Http\Middleware;
 
+use App\Modules\Team\Support\Capabilities;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Tenancy\Support\TenantContext;
@@ -51,7 +52,8 @@ final class SetTenantContext
                 abort(403);
             }
 
-            $this->current->set($organization, $membership->role);
+            $permissions = $membership->permissions === null ? null : (array) json_decode((string) $membership->permissions, true);
+            $this->current->set($organization, $membership->role, $permissions === null ? null : Capabilities::clean($permissions));
 
             return $next($request);
         } finally {

@@ -58,6 +58,8 @@ final class HandleInertiaRequests extends Middleware
                         'status' => $organization->status,
                         'logo_version' => $organization->logo_updated_at?->getTimestamp(),
                         'role' => $current->role(),
+                        // Capacités du membre (docs/34) : l'interface masque ce qui serait refusé ; le serveur reste seul juge.
+                        'permissions' => $current->permissions(),
                     ],
                 ];
             },

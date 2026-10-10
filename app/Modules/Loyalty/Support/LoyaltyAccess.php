@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Modules\Loyalty\Support;
 
-use App\Modules\Tenancy\Models\OrgMember;
 use App\Modules\Tenancy\Support\CurrentTenant;
 
 /**
@@ -26,22 +25,22 @@ final class LoyaltyAccess
 
     public function canConfigure(): bool
     {
-        return $this->role() === OrgMember::ROLE_OWNER;
+        return $this->current->can('loyalty.configure');
     }
 
     public function canView(): bool
     {
-        return in_array($this->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER, OrgMember::ROLE_RECEPTIONIST], true);
+        return $this->current->can('loyalty.view');
     }
 
     public function canRedeem(): bool
     {
-        return $this->canView();
+        return $this->current->can('loyalty.redeem');
     }
 
     public function canAdjust(): bool
     {
-        return in_array($this->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
+        return $this->current->can('loyalty.adjust');
     }
 
     /** Voit la progression sur la fiche d'un client et dans un rendez-vous (tous les rôles ; le praticien seulement pour ses clients, géré par l'écran appelant). */

@@ -3,7 +3,18 @@ import { routes } from '../routes';
 export type SetupCategory = 'business' | 'team' | 'messages' | 'launch';
 
 export type SettingsKey =
-    'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security';
+    | 'setup-business'
+    | 'setup-team'
+    | 'setup-messages'
+    | 'setup-launch'
+    | 'profile'
+    | 'team'
+    | 'calendars'
+    | 'whatsapp'
+    | 'whatsapp-qr'
+    | 'data'
+    | 'legal'
+    | 'security';
 
 export interface SettingsItem {
     key: SettingsKey;
@@ -21,8 +32,8 @@ export interface SettingsGroup {
     items: SettingsItem[];
 }
 
-/** Droits d'accès de chaque page, identiques à ceux des routes (routes/web.php). */
-function visible(key: SettingsKey, role: string | null): boolean {
+/** Droits d'accès de chaque page, identiques à ceux des routes (routes/web.php) : les permissions du membre, avec ses défauts de rôle. */
+function visible(key: SettingsKey, role: string | null, permissions: string[]): boolean {
     if (role === null) {
         return false;
     }
@@ -31,15 +42,18 @@ function visible(key: SettingsKey, role: string | null): boolean {
         return role === 'owner';
     }
 
+    const has = (...capabilities: string[]): boolean => capabilities.some((capability) => permissions.includes(capability));
+
     return {
         profile: true,
-        calendars: role !== 'receptionist',
-        whatsapp: role === 'owner',
-        'whatsapp-qr': role === 'owner',
+        team: has('settings.team'),
+        calendars: has('calendars.own', 'settings.integrations'),
+        whatsapp: has('whatsapp.connect', 'whatsapp.templates'),
+        'whatsapp-qr': has('whatsapp.connect'),
         data: role === 'owner',
         legal: true,
         security: true,
-    }[key as 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security'];
+    }[key as 'profile' | 'team' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security'];
 }
 
 function setupItem(category: SetupCategory): SettingsItem {
@@ -50,7 +64,10 @@ function setupItem(category: SetupCategory): SettingsItem {
 
 const all: Record<SettingsGroup['key'], SettingsItem[]> = {
     setup: [setupItem('business'), setupItem('team'), setupItem('messages'), setupItem('launch')],
-    account: [{ key: 'profile', href: routes.profile, label: 'account_profile.nav', prefixes: [routes.profile] }],
+    account: [
+        { key: 'profile', href: routes.profile, label: 'account_profile.nav', prefixes: [routes.profile] },
+        { key: 'team', href: routes.team, label: 'team.nav', prefixes: [routes.team] },
+    ],
     integrations: [
         { key: 'calendars', href: routes.calendars, label: 'calendars.nav', prefixes: [routes.calendars] },
         { key: 'whatsapp', href: routes.whatsapp, label: 'whatsapp.nav', prefixes: [routes.whatsapp] },
@@ -66,8 +83,8 @@ const all: Record<SettingsGroup['key'], SettingsItem[]> = {
 const order: SettingsGroup['key'][] = ['setup', 'account', 'integrations', 'privacy'];
 
 /** Groupes du menu Réglages pour un rôle : un groupe sans page accessible disparaît. */
-export function settingsGroups(role: string | null): SettingsGroup[] {
-    return order.map((key) => ({ key, items: all[key].filter((item) => visible(item.key, role)) })).filter((group) => group.items.length > 0);
+export function settingsGroups(role: string | null, permissions: string[] = []): SettingsGroup[] {
+    return order.map((key) => ({ key, items: all[key].filter((item) => visible(item.key, role, permissions)) })).filter((group) => group.items.length > 0);
 }
 
 /** Page d'accueil des réglages : le profil, accessible à tous les rôles. */

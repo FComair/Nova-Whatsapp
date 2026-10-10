@@ -5,6 +5,8 @@ Sources : spec §4.1, §9, §10 ; flowcharts 2B, 3A–3C, 4A–4D ; décisions d
 
 ## 1. Espace client — rôles
 
+> **Depuis docs/34 (Équipe et accès)**, le tableau ci-dessous donne les droits PAR DÉFAUT de chaque rôle. Le propriétaire peut les ajuster personne par personne (capacité par capacité) ; le serveur applique les droits effectifs (`CurrentTenant::can()`), le propriétaire et les droits sensibles restant protégés.
+
 Rôles de la spec : **propriétaire**, **responsable de site**, **praticien**, **réceptionniste**. Un seul propriétaire par organisation (le flowchart 4C : « seul le propriétaire peut demander la suppression »).
 
 | Fonction | Propriétaire | Resp. de site | Praticien | Réceptionniste |

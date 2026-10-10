@@ -37,15 +37,22 @@ final class PlanningAccess
         return $this->current->role() ?? abort(403);
     }
 
+    /** Limité à ses propres rendez-vous : le cas du praticien, qui n'a pas la permission « voir tous les rendez-vous » (docs/34). */
     public function isPractitioner(): bool
     {
-        return $this->role() === OrgMember::ROLE_PRACTITIONER;
+        return ! $this->current->can('appointments.view_all');
     }
 
-    /** Les notes de rendez-vous (données sensibles) sont masquées aux réceptionnistes. */
+    /** Limité aux clients dont il s'est occupé : sans la permission « voir tous les clients » (le cas du praticien). */
+    public function customersScoped(): bool
+    {
+        return ! $this->current->can('customers.view_all');
+    }
+
+    /** Les notes de rendez-vous (données sensibles) ne se voient qu'avec la permission « voir les notes » (masquées aux assistants par défaut). */
     public function seesNotes(): bool
     {
-        return $this->role() !== OrgMember::ROLE_RECEPTIONIST;
+        return $this->current->can('appointments.view_notes');
     }
 
     /** Fiche praticien du compte connecté (rôle praticien uniquement). */

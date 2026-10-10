@@ -39,6 +39,7 @@ use App\Modules\Staff\Http\Controllers\PractitionerPhotoController;
 use App\Modules\Staff\Http\Controllers\ProfileController;
 use App\Modules\Staff\Http\Controllers\StaffController;
 use App\Modules\Support\Http\Controllers\SupportController;
+use App\Modules\Team\Http\Controllers\TeamController;
 use App\Modules\Tenancy\Http\Controllers\AccountProfileController;
 use App\Modules\Tenancy\Http\Controllers\PauseController;
 use App\Modules\Tenancy\Http\Controllers\SettingsSearchController;
@@ -144,11 +145,25 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     // Réglages > Profil : coordonnées de chacun (tous les rôles) ; entreprise et facturation réservées au propriétaire.
     Route::prefix('/reglages/profil')->name('settings.profile.')->group(function (): void {
         Route::get('/', [AccountProfileController::class, 'show'])->name('show');
-        Route::put('/entreprise', [AccountProfileController::class, 'updateCompany'])->middleware('role:owner')->name('company');
+        Route::put('/entreprise', [AccountProfileController::class, 'updateCompany'])->middleware('permission:settings.business')->name('company');
         // Logo de l'établissement : lecture pour tous les rôles (barre de navigation), envoi et retrait réservés au propriétaire.
         Route::get('/logo/{size}', [AccountProfileController::class, 'showLogo'])->whereNumber('size')->name('logo.show');
-        Route::post('/logo', [AccountProfileController::class, 'storeLogo'])->middleware(['role:owner', 'throttle:10,1'])->name('logo.store');
-        Route::delete('/logo', [AccountProfileController::class, 'destroyLogo'])->middleware(['role:owner', 'throttle:10,1'])->name('logo.destroy');
+        Route::post('/logo', [AccountProfileController::class, 'storeLogo'])->middleware(['permission:settings.business', 'throttle:10,1'])->name('logo.store');
+        Route::delete('/logo', [AccountProfileController::class, 'destroyLogo'])->middleware(['permission:settings.business', 'throttle:10,1'])->name('logo.destroy');
+    });
+
+    // Réglages > Équipe et accès (docs/34) : praticiens et assistants, leurs permissions, invitations, suspension et retrait. Réservé à qui peut
+    // gérer l'équipe (le propriétaire, et ceux à qui il a donné cette permission) ; chaque règle est revérifiée côté serveur par TeamManager.
+    Route::middleware('permission:settings.team')->prefix('/reglages/equipe')->name('team.')->group(function (): void {
+        Route::get('/', [TeamController::class, 'index'])->name('index');
+        Route::post('/', [TeamController::class, 'invite'])->middleware('throttle:20,1')->name('invite');
+        Route::put('/{id}', [TeamController::class, 'update'])->whereUuid('id')->name('update');
+        Route::post('/{id}/suspendre', [TeamController::class, 'suspend'])->whereUuid('id')->name('suspend');
+        Route::post('/{id}/reactiver', [TeamController::class, 'reactivate'])->whereUuid('id')->name('reactivate');
+        Route::delete('/{id}', [TeamController::class, 'remove'])->whereUuid('id')->name('remove');
+        Route::post('/{id}/invitation', [TeamController::class, 'resend'])->whereUuid('id')->middleware('throttle:20,1')->name('resend');
+        Route::delete('/{id}/invitation', [TeamController::class, 'cancel'])->whereUuid('id')->name('cancel');
+        Route::post('/{id}/mot-de-passe', [TeamController::class, 'resetPassword'])->whereUuid('id')->middleware('throttle:10,1')->name('reset');
     });
 
     // Réglages > Mise en route : liste des tâches par catégorie, qui renvoie vers les écrans existants (propriétaire uniquement).
@@ -177,7 +192,7 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     });
 
     // Espace du praticien : il renseigne lui-même ses services et disponibilités (docs/02 §1).
-    Route::middleware('role:practitioner,owner')->prefix('/mon-profil')->group(function (): void {
+    Route::middleware('permission:schedules.edit_own')->prefix('/mon-profil')->group(function (): void {
         Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
         Route::put('/services', [ProfileController::class, 'saveServices'])->name('profile.services');
         Route::put('/horaires/{location}', [ProfileController::class, 'saveSchedule'])->name('profile.schedule');
@@ -189,7 +204,7 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     Route::get('/praticiens/{practitioner}/photo/{size}', [PractitionerPhotoController::class, 'show'])->whereNumber('size')->name('practitioners.photo.show');
 
     // Praticiens : propriétaire (docs/02 §1).
-    Route::middleware('role:owner')->prefix('/configuration/praticiens')->group(function (): void {
+    Route::middleware('permission:settings.practitioners')->prefix('/configuration/praticiens')->group(function (): void {
         Route::post('/', [StaffController::class, 'store'])->name('practitioners.store');
         Route::post('/invitation', [StaffController::class, 'invite'])->name('practitioners.invite');
         Route::post('/{practitioner}/invitation', [StaffController::class, 'resendInvitation'])->name('practitioners.reinvite');
@@ -213,34 +228,36 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     });
 
     // Catalogue de services : propriétaire et responsable de site (docs/02 §1).
-    Route::middleware('role:owner,site_manager')->prefix('/configuration/services')->group(function (): void {
-        Route::post('/', [ServiceController::class, 'store'])->name('services.store');
-        Route::post('/modele', [ServiceController::class, 'applyTemplate'])->name('services.template');
-        Route::put('/{service}', [ServiceController::class, 'update'])->name('services.update');
-        Route::delete('/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    // Le prix et la TVA se règlent avec la permission « services.prices » (contrôlée dans le contrôleur).
+    Route::prefix('/configuration/services')->group(function (): void {
+        Route::post('/', [ServiceController::class, 'store'])->middleware('permission:services.create')->name('services.store');
+        Route::post('/modele', [ServiceController::class, 'applyTemplate'])->middleware('permission:services.create')->name('services.template');
+        Route::put('/{service}', [ServiceController::class, 'update'])->middleware('permission:services.edit')->name('services.update');
+        Route::delete('/{service}', [ServiceController::class, 'destroy'])->middleware('permission:services.delete')->name('services.destroy');
     });
 
     // Planning : tous les rôles y accèdent ; PlanningAccess restreint aux sites et rendez-vous autorisés (docs/02 §1).
-    Route::prefix('/planning')->group(function (): void {
+    Route::prefix('/planning')->middleware('permission:calendar.view')->group(function (): void {
         Route::get('/', [PlanningController::class, 'index'])->name('planning.index');
-        Route::post('/rendez-vous', [PlanningController::class, 'store'])->name('planning.store');
-        Route::put('/rendez-vous/{booking}/deplacer', [PlanningController::class, 'move'])->name('planning.move');
-        Route::put('/rendez-vous/{booking}/praticien', [PlanningController::class, 'reassign'])->name('planning.reassign');
-        Route::post('/rendez-vous/{booking}/annuler', [PlanningController::class, 'cancel'])->name('planning.cancel');
-        Route::post('/rendez-vous/{booking}/resultat', [PlanningController::class, 'finish'])->name('planning.finish');
-        Route::put('/rendez-vous/{booking}/paiement', [PlanningController::class, 'payment'])->name('planning.payment');
+        Route::post('/rendez-vous', [PlanningController::class, 'store'])->middleware('permission:appointments.create')->name('planning.store');
+        Route::put('/rendez-vous/{booking}/deplacer', [PlanningController::class, 'move'])->middleware('permission:appointments.reschedule')->name('planning.move');
+        Route::put('/rendez-vous/{booking}/praticien', [PlanningController::class, 'reassign'])->middleware('permission:appointments.edit')->name('planning.reassign');
+        Route::post('/rendez-vous/{booking}/annuler', [PlanningController::class, 'cancel'])->middleware('permission:appointments.cancel')->name('planning.cancel');
+        // « Terminé » et « absent » sont deux permissions : le contrôleur vérifie celle qui correspond au résultat choisi.
+        Route::post('/rendez-vous/{booking}/resultat', [PlanningController::class, 'finish'])->middleware('permission:appointments.complete,appointments.no_show')->name('planning.finish');
+        Route::put('/rendez-vous/{booking}/paiement', [PlanningController::class, 'payment'])->middleware('permission:payments.record')->name('planning.payment');
     });
 
     // Rapports et analyses : propriétaire, responsable de site et praticien (docs/02 §1). ReportAccess limite les chiffres au rôle ;
     // l'export est réservé au propriétaire et au responsable de site, le réglage des montants au propriétaire.
-    Route::middleware('role:owner,site_manager,practitioner')->prefix('/rapports')->group(function (): void {
+    Route::middleware('permission:reports.view')->prefix('/rapports')->group(function (): void {
         Route::get('/', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/imprimer', [ReportController::class, 'print'])->name('reports.print');
-        Route::middleware('role:owner,site_manager')->group(function (): void {
+        Route::middleware('permission:reports.export')->group(function (): void {
             Route::get('/export/apercu', [ReportController::class, 'preview'])->name('reports.export.preview');
             Route::get('/export', [ReportController::class, 'export'])->middleware('throttle:20,1')->name('reports.export');
         });
-        Route::put('/reglages', [ReportController::class, 'settings'])->middleware('role:owner')->name('reports.settings');
+        Route::put('/reglages', [ReportController::class, 'settings'])->middleware('permission:reports.configure')->name('reports.settings');
     });
 
     // Centre d'aide (docs/22) : tous les rôles ; contenu en fichiers Markdown, avis enregistré par personne.
@@ -257,17 +274,19 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/avis/plus-tard', [FeedbackController::class, 'dismiss'])->middleware('throttle:30,1')->name('help.feedback.dismiss');
         Route::get('/avis/lien/{platform}', [FeedbackController::class, 'link'])->where('platform', 'google|trustpilot')->middleware('throttle:30,1')->name('help.feedback.link');
         // Support : formulaire, tickets et conversation (docs/22). Un ticket se désigne par sa référence : NWS-1248.
-        Route::get('/contact', [SupportController::class, 'create'])->name('help.contact');
-        Route::post('/contact', [SupportController::class, 'store'])->name('help.contact.store');
-        Route::get('/contact/envoye/{reference}', [SupportController::class, 'sent'])->where('reference', 'NWS-\d+')->name('help.ticket.sent');
-        Route::get('/tickets', [SupportController::class, 'index'])->name('help.tickets');
-        Route::prefix('/tickets/{reference}')->where(['reference' => 'NWS-\d+'])->group(function (): void {
-            Route::get('/', [SupportController::class, 'show'])->name('help.ticket');
-            Route::post('/reponse', [SupportController::class, 'reply'])->middleware('throttle:30,60')->name('help.ticket.reply');
-            Route::post('/fermer', [SupportController::class, 'close'])->name('help.ticket.close');
-            Route::post('/resolu', [SupportController::class, 'solved'])->name('help.ticket.solved');
-            Route::post('/rouvrir', [SupportController::class, 'reopen'])->name('help.ticket.reopen');
-            Route::get('/pieces/{attachment}', [SupportController::class, 'attachment'])->whereUuid('attachment')->name('help.ticket.attachment');
+        Route::middleware('permission:support.use')->group(function (): void {
+            Route::get('/contact', [SupportController::class, 'create'])->name('help.contact');
+            Route::post('/contact', [SupportController::class, 'store'])->name('help.contact.store');
+            Route::get('/contact/envoye/{reference}', [SupportController::class, 'sent'])->where('reference', 'NWS-\d+')->name('help.ticket.sent');
+            Route::get('/tickets', [SupportController::class, 'index'])->name('help.tickets');
+            Route::prefix('/tickets/{reference}')->where(['reference' => 'NWS-\d+'])->group(function (): void {
+                Route::get('/', [SupportController::class, 'show'])->name('help.ticket');
+                Route::post('/reponse', [SupportController::class, 'reply'])->middleware('throttle:30,60')->name('help.ticket.reply');
+                Route::post('/fermer', [SupportController::class, 'close'])->name('help.ticket.close');
+                Route::post('/resolu', [SupportController::class, 'solved'])->name('help.ticket.solved');
+                Route::post('/rouvrir', [SupportController::class, 'reopen'])->name('help.ticket.reopen');
+                Route::get('/pieces/{attachment}', [SupportController::class, 'attachment'])->whereUuid('attachment')->name('help.ticket.attachment');
+            });
         });
         Route::get('/{category}', [HelpController::class, 'category'])->where('category', $categories)->name('help.category');
         Route::get('/{category}/{slug}', [HelpController::class, 'show'])->where('category', $categories)->where('slug', '[a-z0-9-]+')->name('help.article');
@@ -276,21 +295,23 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     // Programme de fidélité (docs/27) : lecture, utilisation d'une récompense (propriétaire, responsable de site, réceptionniste), corrections
     // avec motif (propriétaire, responsable de site), configuration et messages (propriétaire). Avant /clients/{customer}.
     Route::prefix('/clients/fidelite')->name('loyalty.')->group(function (): void {
-        Route::middleware('role:owner,site_manager,receptionist')->group(function (): void {
+        Route::middleware('permission:loyalty.view')->group(function (): void {
             Route::get('/', [LoyaltyController::class, 'index'])->name('index');
             Route::get('/clients', [LoyaltyController::class, 'customers'])->name('customers');
-            Route::get('/utiliser', [LoyaltyController::class, 'redeem'])->name('redeem');
             Route::get('/rapport', [LoyaltyController::class, 'report'])->name('report');
+        });
+        Route::middleware('permission:loyalty.redeem')->group(function (): void {
+            Route::get('/utiliser', [LoyaltyController::class, 'redeem'])->name('redeem');
             Route::post('/recompenses/{reward}/utiliser', [LoyaltyMemberController::class, 'redeem'])->whereUuid('reward')->middleware('throttle:60,1')->name('rewards.redeem');
         });
-        Route::middleware('role:owner,site_manager')->group(function (): void {
+        Route::middleware('permission:loyalty.adjust')->group(function (): void {
             Route::post('/membres/{customer}/ajuster', [LoyaltyMemberController::class, 'adjust'])->whereUuid('customer')->middleware('throttle:60,1')->name('members.adjust');
             Route::post('/membres/{customer}/inscrire', [LoyaltyMemberController::class, 'enroll'])->whereUuid('customer')->name('members.enroll');
             Route::post('/membres/{customer}/quitter', [LoyaltyMemberController::class, 'optOut'])->whereUuid('customer')->name('members.opt-out');
             Route::post('/membres/{customer}/reprendre', [LoyaltyMemberController::class, 'rejoin'])->whereUuid('customer')->name('members.rejoin');
             Route::post('/recompenses/{reward}/annuler', [LoyaltyMemberController::class, 'reverse'])->whereUuid('reward')->middleware('throttle:60,1')->name('rewards.reverse');
         });
-        Route::middleware('role:owner')->group(function (): void {
+        Route::middleware('permission:loyalty.configure')->group(function (): void {
             Route::get('/programme', [LoyaltyProgramController::class, 'show'])->name('program');
             Route::put('/programme', [LoyaltyProgramController::class, 'save'])->name('program.save');
             Route::post('/programme/activer', [LoyaltyProgramController::class, 'activate'])->name('program.activate');
@@ -302,20 +323,20 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     });
 
     // Fiches clients : PlanningAccess/CustomerController restreignent le praticien à ses propres clients (docs/02 §1).
-    Route::prefix('/clients')->group(function (): void {
+    Route::prefix('/clients')->middleware('permission:customers.view_own')->group(function (): void {
         Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
         Route::post('/actions', [CustomerController::class, 'bulk'])->name('customers.bulk');
         Route::post('/vues', [CustomerController::class, 'saveView'])->name('customers.views.store');
         Route::delete('/vues/{view}', [CustomerController::class, 'deleteView'])->name('customers.views.destroy');
         Route::get('/{customer}', [CustomerController::class, 'show'])->name('customers.show');
-        Route::put('/{customer}', [CustomerController::class, 'update'])->name('customers.update');
-        Route::put('/{customer}/blocage', [CustomerController::class, 'block'])->name('customers.block');
+        Route::put('/{customer}', [CustomerController::class, 'update'])->middleware('permission:customers.edit')->name('customers.update');
+        Route::put('/{customer}/blocage', [CustomerController::class, 'block'])->middleware('permission:customers.edit')->name('customers.block');
         // Effacement à la demande du client final (E14) : propriétaire et responsable de site (docs/02 §1).
-        Route::post('/{customer}/effacement', [CustomerController::class, 'erase'])->middleware('role:owner,site_manager')->name('customers.erase');
+        Route::post('/{customer}/effacement', [CustomerController::class, 'erase'])->middleware('permission:customers.erase')->name('customers.erase');
     });
 
     // Facturation : propriétaire uniquement ; accessible quel que soit le statut du compte, pour pouvoir régulariser (docs/02 §4).
-    Route::middleware('role:owner')->prefix('/facturation')->group(function (): void {
+    Route::middleware('permission:settings.billing')->prefix('/facturation')->group(function (): void {
         Route::get('/', [BillingController::class, 'index'])->name('billing.index');
         Route::post('/abonnement', [BillingController::class, 'choosePlan'])->name('billing.plan');
         Route::post('/moyen-de-paiement', [BillingController::class, 'changeMethod'])->name('billing.method');
@@ -343,17 +364,17 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     });
 
     // WhatsApp : connexion du numéro et modèles de messages (étapes 7 et 8 de l'assistant, puis paramètres) ; propriétaire uniquement.
-    Route::middleware('role:owner')->prefix('/whatsapp')->name('whatsapp.')->group(function (): void {
-        Route::get('/', [WhatsappController::class, 'show'])->name('show');
-        Route::post('/', [WhatsappController::class, 'connect'])->name('connect');
-        Route::post('/meta', [WhatsappController::class, 'embedded'])->middleware('throttle:10,1')->name('embedded');
-        Route::delete('/', [WhatsappController::class, 'disconnect'])->name('disconnect');
-        Route::post('/modeles', [WhatsappController::class, 'submitTemplates'])->name('templates.submit');
-        Route::post('/modeles/synchroniser', [WhatsappController::class, 'syncTemplates'])->name('templates.sync');
+    Route::prefix('/whatsapp')->name('whatsapp.')->group(function (): void {
+        Route::get('/', [WhatsappController::class, 'show'])->middleware('permission:whatsapp.connect,whatsapp.templates')->name('show');
+        Route::post('/', [WhatsappController::class, 'connect'])->middleware('permission:whatsapp.connect')->name('connect');
+        Route::post('/meta', [WhatsappController::class, 'embedded'])->middleware(['permission:whatsapp.connect', 'throttle:10,1'])->name('embedded');
+        Route::delete('/', [WhatsappController::class, 'disconnect'])->middleware('permission:whatsapp.connect')->name('disconnect');
+        Route::post('/modeles', [WhatsappController::class, 'submitTemplates'])->middleware('permission:whatsapp.templates')->name('templates.submit');
+        Route::post('/modeles/synchroniser', [WhatsappController::class, 'syncTemplates'])->middleware('permission:whatsapp.templates')->name('templates.sync');
     });
 
     // QR codes WhatsApp : liens wa.me imprimables vers l'assistant ; propriétaire uniquement.
-    Route::middleware('role:owner')->prefix('/qr-whatsapp')->name('whatsapp.qr.')->group(function (): void {
+    Route::middleware('permission:whatsapp.connect')->prefix('/qr-whatsapp')->name('whatsapp.qr.')->group(function (): void {
         Route::get('/', [WhatsappQrController::class, 'show'])->name('show');
         Route::post('/', [WhatsappQrController::class, 'store'])->middleware('throttle:30,1')->name('store');
         Route::put('/{code}', [WhatsappQrController::class, 'update'])->name('update');
@@ -362,7 +383,7 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     });
 
     // Calendriers externes : propriétaire, responsable de site (ses sites) et praticien (les siens) ; pas de réceptionniste (docs/02 §1).
-    Route::middleware('role:owner,site_manager,practitioner')->prefix('/calendriers')->group(function (): void {
+    Route::middleware('permission:calendars.own,settings.integrations')->prefix('/calendriers')->group(function (): void {
         Route::get('/', [CalendarController::class, 'index'])->name('calendars.index');
         Route::post('/', [CalendarController::class, 'store'])->name('calendars.store');
         Route::post('/{calendar}/synchroniser', [CalendarController::class, 'refresh'])->name('calendars.refresh');

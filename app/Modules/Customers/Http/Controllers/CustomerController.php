@@ -48,7 +48,7 @@ final class CustomerController
 
         $page = $this->list->build($search, $filters, $sort, $direction)->paginate(self::PER_PAGE)->withQueryString();
         $userId = (string) auth()->id();
-        $manages = in_array($this->access->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
+        $manages = $this->current->can('customers.archive');
 
         return Inertia::render('Customers/Index', [
             'q' => $search,
@@ -64,8 +64,8 @@ final class CustomerController
                 ])->all(),
             'practitioners' => Practitioner::query()->orderBy('name')->get(['id', 'name', 'photo_updated_at'])->map(fn (Practitioner $p): array => ['value' => $p->id, 'label' => (string) $p->name, 'photo_version' => $p->photoVersion()])->all(),
             'tags' => DB::table('customers')->whereNull('deleted_at')->selectRaw('distinct jsonb_array_elements_text(tags) as tag')->orderBy('tag')->limit(200)->pluck('tag')->all(),
-            'can' => ['tag' => ! $this->access->isPractitioner(), 'archive' => $manages, 'share_views' => $manages],
-            'scoped' => $this->access->isPractitioner(),
+            'can' => ['tag' => $this->current->can('customers.organize'), 'archive' => $manages, 'share_views' => $manages],
+            'scoped' => $this->access->customersScoped(),
         ]);
     }
 
@@ -83,8 +83,7 @@ final class CustomerController
         ]);
         $action = (string) $data['action'];
 
-        abort_if($this->access->isPractitioner(), 403);
-        abort_if(in_array($action, ['archive', 'unarchive'], true) && $this->access->role() === OrgMember::ROLE_RECEPTIONIST, 403);
+        abort_unless($this->current->can(in_array($action, ['archive', 'unarchive'], true) ? 'customers.archive' : 'customers.organize'), 403);
 
         $tag = isset($data['tag']) ? trim((string) $data['tag']) : null;
         $changed = 0;
@@ -125,7 +124,7 @@ final class CustomerController
             'dir' => ['nullable', 'in:asc,desc'],
             'shared' => ['nullable', 'boolean'],
         ]);
-        $shared = (bool) ($data['shared'] ?? false) && in_array($this->access->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
+        $shared = (bool) ($data['shared'] ?? false) && $this->current->can('customers.archive');
 
         CustomerSavedView::query()->create([
             'org_id' => $this->current->organization()?->id,
@@ -154,7 +153,7 @@ final class CustomerController
         $this->authorizeCustomer($customer);
 
         $bookings = Booking::query()->where('customer_id', $customer->id)
-            ->when($this->access->isPractitioner(), fn ($query) => $query->where('practitioner_id', $this->access->practitionerId()))
+            ->when($this->access->customersScoped(), fn ($query) => $query->where('practitioner_id', $this->access->practitionerId()))
             ->orderByDesc('starts_at')->limit(50)->get();
 
         $services = DB::table('services')->whereIn('id', $bookings->pluck('service_id'))->pluck('name', 'id');
@@ -257,7 +256,7 @@ final class CustomerController
      */
     private function visible(Builder $query): Builder
     {
-        if (! $this->access->isPractitioner()) {
+        if (! $this->access->customersScoped()) {
             return $query;
         }
 

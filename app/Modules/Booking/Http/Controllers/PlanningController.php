@@ -162,8 +162,16 @@ final class PlanningController
                 'duration_minutes' => $service->duration_minutes,
                 'practitioner_ids' => DB::table('practitioner_services')->where('service_id', $service->id)->pluck('practitioner_id')->all(),
             ])->values()->all(),
-            'canReassign' => ! $this->access->isPractitioner(),
-            'canCreate' => ! $this->access->isPractitioner() || $this->access->practitionerId() !== null,
+            'canReassign' => ! $this->access->isPractitioner() && $this->current->can('appointments.edit'),
+            'canCreate' => $this->current->can('appointments.create') && (! $this->access->isPractitioner() || $this->access->practitionerId() !== null),
+            // Ce que la personne peut faire d'un rendez-vous (docs/34) : l'écran masque le reste, le serveur refuse de toute façon.
+            'can' => [
+                'reschedule' => $this->current->can('appointments.reschedule'),
+                'cancel' => $this->current->can('appointments.cancel'),
+                'complete' => $this->current->can('appointments.complete'),
+                'no_show' => $this->current->can('appointments.no_show'),
+                'payment' => $this->current->can('payments.record'),
+            ],
             'seesNotes' => $seesNotes,
         ]);
     }
@@ -239,6 +247,8 @@ final class PlanningController
     {
         $this->access->authorize($booking);
         $data = $request->validate(['outcome' => ['required', 'in:completed,no_show']]);
+        // « Terminé » et « absent » sont deux permissions distinctes (docs/34) : celle du résultat choisi est exigée.
+        abort_unless($this->current->can($data['outcome'] === 'completed' ? 'appointments.complete' : 'appointments.no_show'), 403);
         $actor = Actor::user((string) auth()->id());
 
         return $this->attempt(

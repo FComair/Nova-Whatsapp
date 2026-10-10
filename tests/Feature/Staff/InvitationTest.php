@@ -113,7 +113,7 @@ describe('envoi de l\'invitation', function (): void {
         $token = ($this->token)();
 
         $log = $this->asOwner(fn () => DB::table('audit_logs')->where('action', 'invitation.sent')->first());
-        expect(json_decode($log->diff, true))->toBe(['email' => 'lea@example.com'])
+        expect(json_decode($log->diff, true))->toEqual(['email' => 'lea@example.com', 'role' => 'practitioner', 'preset' => null, 'permissions' => null])
             ->and(json_encode($log))->not->toContain($token);
     });
 

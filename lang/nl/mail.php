@@ -8,6 +8,7 @@ return [
         'subject' => ':organization nodigt u uit op Nova',
         'greeting' => 'Hallo :name,',
         'intro' => ':organization nodigt u uit om het team op Nova te vervoegen. Maak uw account aan om uw diensten en beschikbaarheid in te vullen.',
+        'intro_assistant' => ':organization nodigt u uit om het team op Nova te vervoegen. Maak uw account aan om de agenda en de klanten te helpen beheren.',
         'action' => 'Uitnodiging aanvaarden',
         'expires' => 'Deze link is :days dagen geldig. Vraag daarna een nieuwe uitnodiging aan.',
     ],
@@ -193,5 +194,13 @@ return [
             'intro' => 'Ons team heeft uw aanvraag “:subject” gesloten.',
             'new_ticket' => 'U kunt niet meer antwoorden op dit ticket. Hebt u nog hulp nodig, dien dan een nieuwe aanvraag in.',
         ],
+    ],
+
+    'team_access' => [
+        'contact' => 'Verwacht u dit niet, neem dan contact op met de accounteigenaar.',
+        'access_changed' => ['subject' => 'Uw toegang tot :organization is gewijzigd', 'intro' => 'De eigenaar van :organization heeft gewijzigd wat u op Nova kunt zien en doen. Meld u aan om uw toegang te zien.'],
+        'suspended' => ['subject' => 'Uw toegang tot :organization is opgeschort', 'intro' => 'Uw toegang tot :organization op Nova is opgeschort. U kunt niet inloggen tot ze wordt geheractiveerd.'],
+        'reactivated' => ['subject' => 'Uw toegang tot :organization is hersteld', 'intro' => 'Uw toegang tot :organization op Nova is geheractiveerd. U kunt opnieuw inloggen.'],
+        'removed' => ['subject' => 'Uw toegang tot :organization is ingetrokken', 'intro' => 'Uw toegang tot :organization op Nova is ingetrokken. U kunt niet meer inloggen op dit account.'],
     ],
 ];

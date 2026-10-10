@@ -27,7 +27,7 @@ const form = useForm({ name: props.customer.name ?? '', email: props.customer.em
 const blocking = useForm({ blocked: !props.customer.is_blocked });
 
 const erasing = ref(false);
-const canErase = computed(() => ['owner', 'site_manager'].includes(page.props.auth.organization?.role ?? ''));
+const canErase = computed(() => (page.props.auth.organization?.permissions ?? []).includes('customers.erase'));
 const eraseError = computed(() => (page.props.errors as Record<string, string | undefined>).erase);
 
 function erase(): void {

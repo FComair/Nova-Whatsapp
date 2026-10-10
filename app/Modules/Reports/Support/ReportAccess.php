@@ -41,12 +41,13 @@ final class ReportAccess
 
     public function canView(): bool
     {
-        return in_array($this->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER, OrgMember::ROLE_PRACTITIONER], true);
+        return $this->current->can('reports.view');
     }
 
+    /** Chiffres limités à ses propres rendez-vous : sans la permission « voir toute l'activité » (le cas du praticien). */
     public function isPractitioner(): bool
     {
-        return $this->role() === OrgMember::ROLE_PRACTITIONER;
+        return ! $this->current->can('reports.all_data');
     }
 
     public function isOwner(): bool
@@ -57,28 +58,24 @@ final class ReportAccess
     /** Montants (valeur des rendez-vous, encaissements). */
     public function canSeeFinancial(): bool
     {
-        return match ($this->role()) {
-            OrgMember::ROLE_OWNER => true,
-            OrgMember::ROLE_SITE_MANAGER => (bool) $this->current->organization()?->reports_financial_managers,
-            default => false,
-        };
+        return $this->current->can('reports.financial');
     }
 
     /** Export CSV / Excel : propriétaire et responsable de site (docs/02 §1). L'impression reste ouverte à qui voit le rapport. */
     public function canExport(): bool
     {
-        return in_array($this->role(), [OrgMember::ROLE_OWNER, OrgMember::ROLE_SITE_MANAGER], true);
+        return $this->current->can('reports.export');
     }
 
     /** Détail par praticien (tableau de comparaison, répartition des montants) : jamais pour un praticien. */
     public function canCompareStaff(): bool
     {
-        return ! $this->isPractitioner();
+        return $this->current->can('reports.staff');
     }
 
     public function canConfigure(): bool
     {
-        return $this->isOwner();
+        return $this->current->can('reports.configure');
     }
 
     /**

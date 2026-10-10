@@ -12,7 +12,7 @@ import type { SharedProps } from '../types';
 const props = defineProps<{ active: 'clients' | 'loyalty' }>();
 const { t } = useT();
 const page = usePage<SharedProps>();
-const showLoyalty = computed(() => ['owner', 'site_manager', 'receptionist'].includes(page.props.auth.organization?.role ?? ''));
+const showLoyalty = computed(() => (page.props.auth.organization?.permissions ?? []).includes('loyalty.view'));
 
 const tabs = computed(() => [
     { key: 'clients', href: routes.customers, label: t('loyalty.tabs.clients') },

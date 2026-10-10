@@ -13,6 +13,8 @@ export interface AuthOrganization {
     /** Date d'envoi du logo (horodatage) : sert de numéro de version ; null = pas de logo. */
     logo_version: number | null;
     role: 'owner' | 'site_manager' | 'practitioner' | 'receptionist' | null;
+    /** Capacités du membre (docs/34) : l'interface masque ce qui serait refusé, le serveur reste seul juge. */
+    permissions: string[];
 }
 
 export interface WizardStep {

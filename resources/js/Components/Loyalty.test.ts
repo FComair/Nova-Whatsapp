@@ -9,7 +9,13 @@ import LoyaltyTrend from './LoyaltyTrend.vue';
 import StampRow from './StampRow.vue';
 
 const post = vi.fn();
-const shared = reactive({ locale: 'fr', translations: {}, auth: { organization: { role: 'owner' } }, flash: {}, errors: {} as Record<string, string> });
+const shared = reactive({
+    locale: 'fr',
+    translations: {},
+    auth: { organization: { role: 'owner', permissions: ['loyalty.view'] } },
+    flash: {},
+    errors: {} as Record<string, string>,
+});
 
 vi.mock('@inertiajs/vue3', () => ({
     usePage: () => ({ props: shared }),
@@ -28,7 +34,7 @@ vi.mock('@inertiajs/vue3', () => ({
 
 beforeEach(() => {
     post.mockReset();
-    shared.auth = { organization: { role: 'owner' } };
+    shared.auth = { organization: { role: 'owner', permissions: ['loyalty.view'] } };
 });
 
 describe('StampRow', () => {
@@ -125,7 +131,7 @@ describe('CustomersTabs', () => {
         ['receptionist', 2],
         ['practitioner', 1],
     ])('propose la fidélité selon le rôle : %s', (role, count) => {
-        shared.auth = { organization: { role } };
+        shared.auth = { organization: { role, permissions: count === 2 ? ['loyalty.view'] : [] } };
         const wrapper = mount(CustomersTabs, { props: { active: 'clients' } });
 
         expect(wrapper.findAll('a').length || 1).toBe(count === 1 ? 1 : count);

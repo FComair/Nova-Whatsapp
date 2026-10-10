@@ -11,8 +11,10 @@ use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Services\InvitationInvalid;
 use App\Modules\Staff\Services\InvitationService;
 use App\Modules\Tenancy\Models\Organization;
+use App\Modules\Tenancy\Models\OrgMember;
 use App\Modules\Tenancy\Support\TenantContext;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -42,7 +44,7 @@ final class InvitationController
             return Inertia::render('Invitation/Accept', [
                 'token' => $token,
                 'organization' => Organization::query()->find($invitation->org_id)?->name,
-                'name' => Practitioner::query()->find($invitation->practitioner_id)?->name,
+                'name' => $invitation->name ?? Practitioner::query()->find($invitation->practitioner_id)?->name,
                 'email' => $invitation->email,
             ]);
         });
@@ -56,10 +58,12 @@ final class InvitationController
             return redirect()->route('invitation.show', ['token' => $token]);
         }
 
-        // Compte créé et e-mail prouvé par le lien : connexion directe, puis espace du praticien.
+        // Compte créé et e-mail prouvé par le lien : connexion directe, puis espace du praticien (il renseigne ses services et ses horaires) ou
+        // tableau de bord pour un assistant.
         $session->start($request, $user);
+        $role = collect(DB::select('select * from auth_memberships(?)', [$user->id]))->first()?->role;
 
-        return redirect()->route('profile.show');
+        return $role === OrgMember::ROLE_PRACTITIONER ? redirect()->route('profile.show') : redirect()->route('dashboard');
     }
 
     private function expired(): Response

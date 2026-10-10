@@ -40,7 +40,7 @@ final class AccountProfileController
     {
         $user = $request->user() ?? abort(403);
         $organization = $this->organization();
-        $owner = $this->current->role() === 'owner';
+        $owner = $this->current->can('settings.business');
 
         return Inertia::render('Account/Profile', [
             'personal' => [

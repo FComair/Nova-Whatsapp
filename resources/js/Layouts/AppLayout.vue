@@ -21,8 +21,11 @@ function navClass(active: boolean): string {
     return `flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium transition-colors duration-150 ${active ? 'bg-primary-100 text-primary-700' : 'text-neutral-800 hover:bg-surface-2 hover:text-primary-600'}`;
 }
 
-// Rapports : propriétaire, responsable de site et praticien (docs/02 §1) ; pas le réceptionniste.
-const canSeeReports = computed(() => ['owner', 'site_manager', 'practitioner'].includes(page.props.auth.organization?.role ?? ''));
+// Menu principal selon les permissions du membre (docs/34) : planning, clients et rapports ne s'affichent que s'ils lui sont ouverts.
+const can = (...capabilities: string[]): boolean => capabilities.some((capability) => (page.props.auth.organization?.permissions ?? []).includes(capability));
+const canSeeReports = computed(() => can('reports.view'));
+const canSeePlanning = computed(() => can('calendar.view'));
+const canSeeCustomers = computed(() => can('customers.view_own', 'customers.view_all'));
 const inSettings = computed(() => activeSettings((page as unknown as { url?: string }).url ?? '') !== null);
 
 function logout(): void {
@@ -77,6 +80,7 @@ function logout(): void {
                         {{ t('dashboard.title') }}
                     </Link>
                     <Link
+                        v-if="canSeePlanning"
                         :href="routes.planning"
                         :class="navClass(currentUrl.startsWith(routes.planning))"
                         :aria-current="currentUrl.startsWith(routes.planning) ? 'page' : undefined"
@@ -84,6 +88,7 @@ function logout(): void {
                         {{ t('planning.nav') }}
                     </Link>
                     <Link
+                        v-if="canSeeCustomers"
                         :href="routes.customers"
                         :class="navClass(currentUrl.startsWith(routes.customers))"
                         :aria-current="currentUrl.startsWith(routes.customers) ? 'page' : undefined"

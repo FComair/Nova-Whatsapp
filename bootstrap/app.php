@@ -4,6 +4,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Modules\Api\Http\Middleware\AuthenticateApiClient;
+use App\Modules\Tenancy\Http\Middleware\EnsurePermission;
 use App\Modules\Tenancy\Http\Middleware\EnsureRole;
 use App\Modules\Tenancy\Http\Middleware\SetTenantContext;
 use Illuminate\Foundation\Application;
@@ -31,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
         ]);
 
-        $middleware->alias(['role' => EnsureRole::class, 'api.auth' => AuthenticateApiClient::class]);
+        $middleware->alias(['role' => EnsureRole::class, 'permission' => EnsurePermission::class, 'api.auth' => AuthenticateApiClient::class]);
 
         // Le contexte d'organisation doit être posé AVANT la résolution des modèles de route (SubstituteBindings) :
         // sinon la RLS ne voit aucune ligne et tout {location} renverrait 404.
