@@ -18,7 +18,7 @@
             <h2 id="nl-upload">{{ __('admin.legal_files.upload.title', ['name' => $this->documentName()]) }}</h2>
             <p class="nl-note">{{ __('admin.legal_files.upload.intro') }}</p>
 
-            <form wire:submit.prevent>{{ $this->form }}</form>
+            <form wire:submit.prevent data-unsaved-ignore>{{ $this->form }}</form>
 
             <div class="nl-actions">
                 <a class="nl-btn" href="{{ $links['back'] }}" @click="if (dirty && !confirm(message)) { $event.preventDefault() }">{{ __('admin.legal_files.cancel') }}</a>

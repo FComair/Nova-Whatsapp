@@ -10,7 +10,7 @@ services:
       - .:/var/www/html
       - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       # Le serveur PHP intégré traite une requête à la fois par défaut : plusieurs workers pour le développement.
       PHP_CLI_SERVER_WORKERS: 4
@@ -41,7 +41,7 @@ services:
     volumes:
       - .:/var/www/html
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
 
   postgres:
@@ -54,7 +54,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nova_owner -d nova"]
       interval: 5s
@@ -64,13 +64,13 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
 
   mailpit:
     image: axllent/mailpit
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
 
 volumes:
   pgdata:

@@ -41,7 +41,7 @@
     </style>
 
     <div class="nr">
-        <form aria-label="{{ __('tickets.reports.filters') }}">{{ $this->form }}</form>
+        <form data-unsaved-ignore aria-label="{{ __('tickets.reports.filters') }}">{{ $this->form }}</form>
 
         <p class="nr-defs" style="margin:0">{{ __('tickets.reports.period', ['from' => \Illuminate\Support\Carbon::parse($m['period']['from'])->format('d/m/Y'), 'until' => \Illuminate\Support\Carbon::parse($m['period']['until'])->format('d/m/Y')]) }}</p>
 

@@ -8,6 +8,7 @@ use App\Modules\Admin\Exceptions\LegalFileRejected;
 use App\Modules\Admin\Models\PlatformLegalVersion;
 use App\Modules\Legal\Models\LegalDocumentVersion;
 use App\Modules\Legal\Support\LegalDocument;
+use App\Support\Files\PdfInspector;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -35,9 +36,6 @@ final class LegalDocumentFiles
     public const MAX_BYTES = self::MAX_MB * 1024 * 1024;
 
     public const DISK = 'local';
-
-    /** Contenus actifs refusés dans un PDF : JavaScript, lancement d'un programme, fichier ou média incorporé. */
-    private const ACTIVE_CONTENT = '#/(Launch|JavaScript|JS|EmbeddedFile|RichMedia)(?![A-Za-z0-9])#';
 
     /**
      * Contrôle un fichier avant de le garder.
@@ -68,11 +66,11 @@ final class LegalDocumentFiles
 
         $content = (string) file_get_contents($path);
 
-        if (! str_contains(substr($content, 0, 1024), '%PDF-')) {
+        if (! PdfInspector::hasSignature($content)) {
             throw LegalFileRejected::because('not_pdf');
         }
 
-        if (preg_match(self::ACTIVE_CONTENT, $content) === 1) {
+        if (PdfInspector::hasActiveContent($content)) {
             throw LegalFileRejected::because('active_content');
         }
     }

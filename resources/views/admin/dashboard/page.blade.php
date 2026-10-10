@@ -28,7 +28,7 @@
         @else
             {{-- 1. Contexte et période --}}
             <section class="nd-section nd-filter" aria-label="{{ __('dashboard.period.label') }}">
-                <form wire:submit.prevent>{{ $this->form }}</form>
+                <form wire:submit.prevent data-unsaved-ignore>{{ $this->form }}</form>
                 @if ($d)
                     <div class="nd-context">
                         <span class="nd-chip">{{ __('dashboard.showing', ['from' => \Illuminate\Support\Carbon::parse($d['period']['from'])->format('d/m/Y'), 'until' => \Illuminate\Support\Carbon::parse($d['period']['until'])->format('d/m/Y')]) }}</span>

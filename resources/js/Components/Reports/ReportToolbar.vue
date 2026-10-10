@@ -143,7 +143,13 @@ function toggleStatus(status: string, on: boolean): void {
             </div>
         </div>
 
-        <form v-if="customOpen" class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end" data-testid="custom-range" @submit.prevent="applyCustom">
+        <form
+            v-if="customOpen"
+            data-unsaved-ignore
+            class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+            data-testid="custom-range"
+            @submit.prevent="applyCustom"
+        >
             <TextField v-model="custom.from" type="date" :label="t('reports.period.from')" required />
             <TextField v-model="custom.to" type="date" :label="t('reports.period.to')" required />
             <BaseButton type="submit" :disabled="customInvalid">{{ t('reports.period.apply') }}</BaseButton>

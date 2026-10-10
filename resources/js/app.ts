@@ -1,8 +1,15 @@
 import '../css/app.css';
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import type { DefineComponent } from 'vue';
+import { trackNavigation } from './composables/backNav';
+import { installUnsavedGuard } from './composables/unsaved';
 
 const pages = import.meta.glob<DefineComponent>('./Pages/**/*.vue');
+
+// Pile des écrans visités (bouton « Retour ») et protection des modifications non enregistrées.
+trackNavigation(`${window.location.pathname}${window.location.search}`);
+router.on('navigate', (event) => trackNavigation(event.detail.page.url));
+installUnsavedGuard();
 
 createInertiaApp({
     title: (title) => (title ? `${title} · Nova` : 'Nova'),

@@ -15,6 +15,7 @@ use App\Modules\Admin\Filament\Pages\Login;
 use App\Modules\Admin\Filament\Pages\SupportReports;
 use App\Modules\Admin\Http\Controllers\LegalFileController;
 use App\Modules\Admin\Http\Controllers\SupportAttachmentController;
+use App\Modules\Admin\Http\Middleware\EnforceAdminIdleTimeout;
 use App\Modules\Admin\Http\Middleware\EnforceAdminIpAllowlist;
 use App\Modules\Admin\Support\AdminMfa;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
@@ -26,6 +27,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -70,6 +72,8 @@ class AdminPanelProvider extends PanelProvider
                 // Téléchargement contrôlé d'un PDF juridique (version en vigueur ou archivée) : Super Admin seulement, tracé.
                 Route::get('/legal-documents/{document}/versions/{version}/file', LegalFileController::class)->name('legal.file');
             })
+            // Bouton « Retour » en haut à gauche de chaque écran profond, et confirmation avant de quitter un formulaire modifié (docs/36).
+            ->renderHook(PanelsRenderHook::CONTENT_START, fn (): string => view('admin.back')->render())
             ->widgets([])
             ->middleware([
                 EncryptCookies::class,
@@ -83,7 +87,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 SetLocale::class,
             ])
-            ->authMiddleware([Authenticate::class, EnforceAdminIpAllowlist::class]);
+            ->authMiddleware([Authenticate::class, EnforceAdminIpAllowlist::class, EnforceAdminIdleTimeout::class]);
 
         // Authentification à deux facteurs (TOTP) OBLIGATOIRE, avec codes de secours. Seul le développement local peut la désactiver (AdminMfa).
         if (AdminMfa::required()) {

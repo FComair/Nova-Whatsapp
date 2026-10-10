@@ -328,4 +328,21 @@ return [
             'store_failed' => 'Het bestand kon niet worden opgeslagen. Er is niets gewijzigd: probeer opnieuw.',
         ],
     ],
+
+    'back' => [
+        'aria' => 'Terugnavigatie',
+        'dashboard' => 'Terug naar het dashboard',
+        'clients' => 'Terug naar klanten',
+        'tickets' => 'Terug naar aanvragen',
+        'support_team' => 'Terug naar het supportteam',
+        'faq' => 'Terug naar de FAQ',
+        'faq_editor' => 'Terug naar de FAQ-editor',
+        'legal' => 'Terug naar juridische documenten',
+        'unsaved' => [
+            'message' => 'Je hebt niet-opgeslagen wijzigingen. Weet je zeker dat je wilt vertrekken zonder op te slaan?',
+            'save' => 'Blijven en opslaan',
+            'leave' => 'Vertrekken zonder op te slaan',
+            'cancel' => 'Annuleren',
+        ],
+    ],
 ];

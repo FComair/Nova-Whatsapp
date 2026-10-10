@@ -73,6 +73,7 @@ const percent = (rate: number | null): string =>
         <p class="mt-1 text-sm text-neutral-700">{{ t('loyalty.report.intro') }} {{ formatDate(report.period.from) }} – {{ formatDate(report.period.to) }}.</p>
 
         <form
+            data-unsaved-ignore
             class="mt-4 grid gap-3 rounded-card border border-line bg-surface p-4 shadow-xs sm:grid-cols-2 lg:grid-cols-6"
             :aria-label="t('loyalty.report.filters')"
             @submit.prevent="apply"

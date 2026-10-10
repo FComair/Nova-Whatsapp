@@ -328,4 +328,21 @@ return [
             'store_failed' => 'The file could not be saved. Nothing was changed: try again.',
         ],
     ],
+
+    'back' => [
+        'aria' => 'Back navigation',
+        'dashboard' => 'Back to Dashboard',
+        'clients' => 'Back to Clients',
+        'tickets' => 'Back to Tickets',
+        'support_team' => 'Back to Support Team',
+        'faq' => 'Back to FAQ',
+        'faq_editor' => 'Back to FAQ editor',
+        'legal' => 'Back to Legal Documents',
+        'unsaved' => [
+            'message' => 'You have unsaved changes. Are you sure you want to leave without saving?',
+            'save' => 'Stay and save',
+            'leave' => 'Leave without saving',
+            'cancel' => 'Cancel',
+        ],
+    ],
 ];

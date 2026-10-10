@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, useId, watch } from 'vue';
+import { askBeforeLeaving } from '../composables/unsaved';
 import { accessWarnings, baseRoleOf, diffCapabilities, sameCapabilities, type TeamCatalog, type TeamMember, type TeamPreset } from '../composables/team';
 import { useT } from '../composables/useT';
 import AlertBox from './AlertBox.vue';
@@ -63,6 +64,10 @@ const excluded = computed(() => allKeys.value.filter((key) => !caps.value.includ
 const canSubmit = computed(() => (warnings.value.length === 0 || acknowledged.value) && (sensitiveGranted.value.length === 0 || sensitiveConfirmed.value));
 const duplicate = computed(() => props.errorCode === 'already_member' || props.errorCode === 'already_member_inactive');
 
+/** État des champs à l'ouverture : sert à savoir si quelque chose serait perdu en fermant (l'assistant change de champs à chaque étape, d'où un état propre plutôt que le formulaire). */
+let opened = '';
+const state = (): string => JSON.stringify([name.value, email.value, phone.value, notes.value, role.value, [...caps.value].sort()]);
+
 // <dialog> natif : focus piégé, fermeture par Échap, arrière-plan inerte (accessibilité).
 watch(
     () => props.open,
@@ -81,6 +86,23 @@ watch(
     },
     { immediate: true },
 );
+
+/** Fermer : si des champs ont changé, confirmation à trois choix (« Rester et enregistrer » n'enregistre qu'à la dernière étape). */
+async function close(): Promise<void> {
+    if (state() === opened) {
+        emit('close');
+
+        return;
+    }
+
+    const choice = await askBeforeLeaving();
+
+    if (choice === 'leave') {
+        emit('close');
+    } else if (choice === 'save' && current.value === 'review' && canSubmit.value) {
+        submit();
+    }
+}
 
 function init(): void {
     step.value = 0;
@@ -102,6 +124,8 @@ function init(): void {
         role.value = 'practitioner';
         caps.value = [...props.presets.practitioner.capabilities];
     }
+
+    opened = state();
 }
 
 /** Changer de rôle repart des accès par défaut de ce rôle, sauf si la personne avait déjà personnalisé ceux de l'ancien. */
@@ -156,7 +180,7 @@ watch(
         ref="dialog"
         :aria-labelledby="titleId"
         class="m-auto max-h-[92vh] w-[calc(100%-1.5rem)] max-w-2xl overflow-y-auto rounded-modal border border-line bg-surface p-5 shadow-xl backdrop:bg-nova-900/55 sm:p-6"
-        @cancel.prevent="emit('close')"
+        @cancel.prevent="close"
     >
         <div class="flex items-start justify-between gap-4">
             <div>
@@ -167,7 +191,7 @@ watch(
                     {{ t('team.dialog.step', { current: step + 1, total: steps.length }) }} · {{ t(`team.dialog.steps.${current}`) }}
                 </p>
             </div>
-            <button type="button" class="-mr-2 -mt-1 rounded-control px-2 py-1 text-sm font-medium text-neutral-600 hover:bg-surface-2" @click="emit('close')">
+            <button type="button" class="-mr-2 -mt-1 rounded-control px-2 py-1 text-sm font-medium text-neutral-600 hover:bg-surface-2" @click="close">
                 {{ t('common.cancel') }}
             </button>
         </div>
@@ -179,7 +203,7 @@ watch(
             </button>
         </AlertBox>
 
-        <form class="mt-5 space-y-5" novalidate @submit.prevent="current === 'review' ? submit() : next()">
+        <form data-unsaved-ignore class="mt-5 space-y-5" novalidate @submit.prevent="current === 'review' ? submit() : next()">
             <!-- 1. Coordonnées (ajout seulement) -->
             <div v-if="current === 'details'" class="space-y-4">
                 <TextField v-model="name" :label="t('team.fields.name')" required autocomplete="off" :error="fieldErrors.name" />
@@ -313,7 +337,7 @@ watch(
             </div>
 
             <div class="flex flex-col-reverse gap-3 border-t border-line pt-4 sm:flex-row sm:justify-between">
-                <BaseButton variant="secondary" @click="step === 0 ? emit('close') : (step -= 1)">{{
+                <BaseButton variant="secondary" @click="step === 0 ? close() : (step -= 1)">{{
                     step === 0 ? t('common.cancel') : t('team.dialog.back')
                 }}</BaseButton>
                 <BaseButton v-if="current !== 'review'" type="submit" :disabled="current === 'details' && !detailsValid">{{

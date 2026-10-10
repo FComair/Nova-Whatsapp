@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Support\Services;
 
+use App\Support\Files\PdfInspector;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -39,6 +40,9 @@ final class AttachmentStore
 
         if ($mime !== 'application/pdf') {
             $contents = $this->reencode($contents, $mime);
+        } elseif (PdfInspector::hasActiveContent($contents)) {
+            // Un PDF qui lance un programme, exécute du JavaScript ou embarque un fichier est refusé (RGPD art. 32, docs/37).
+            throw new InvalidArgumentException('type');
         }
 
         $path = "support/{$orgId}/{$ticketId}/".Str::uuid7().'.'.$extension;

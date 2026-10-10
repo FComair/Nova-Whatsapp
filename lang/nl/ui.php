@@ -2929,4 +2929,24 @@ return [
             'not_found' => 'Deze persoon of uitnodiging bestaat niet meer.',
         ],
     ],
+
+    'back_nav' => [
+        'aria' => 'Terugnavigatie',
+        'dashboard' => 'Terug naar het dashboard',
+        'customers' => 'Terug naar klanten',
+        'loyalty' => 'Terug naar loyaliteit',
+        'billing' => 'Terug naar facturatie',
+        'reports' => 'Terug naar rapporten',
+        'help' => 'Terug naar hulp',
+        'help_topic' => 'Terug naar het hulponderwerp',
+        'tickets' => 'Terug naar aanvragen',
+        'whatsapp' => 'Terug naar WhatsApp',
+        'settings' => 'Terug naar instellingen',
+    ],
+
+    'unsaved' => [
+        'message' => 'Je hebt niet-opgeslagen wijzigingen. Weet je zeker dat je wilt vertrekken zonder op te slaan?',
+        'save' => 'Blijven en opslaan',
+        'leave' => 'Vertrekken zonder op te slaan',
+    ],
 ];

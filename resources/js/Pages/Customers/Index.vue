@@ -325,7 +325,12 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
             <BaseButton v-if="hasCriteria && !saving" variant="ghost" size="sm" @click="saving = true">{{ t('customers.views.save') }}</BaseButton>
         </div>
 
-        <form v-if="saving" class="mt-3 flex max-w-xl flex-wrap items-end gap-3 rounded-card border border-line bg-surface p-4" @submit.prevent="saveView">
+        <form
+            v-if="saving"
+            data-unsaved-ignore
+            class="mt-3 flex max-w-xl flex-wrap items-end gap-3 rounded-card border border-line bg-surface p-4"
+            @submit.prevent="saveView"
+        >
             <div class="min-w-48 flex-1"><TextField v-model="viewName" :label="t('customers.views.name')" :maxlength="60" required /></div>
             <CheckboxField v-if="can.share_views" v-model="viewShared" :label="t('customers.views.share')" />
             <BaseButton type="submit" :disabled="viewName.trim() === ''">{{ t('customers.views.confirm') }}</BaseButton>
@@ -362,7 +367,7 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
             </template>
             <BaseButton variant="ghost" size="sm" @click="selected = []">{{ t('customers.bulk.clear') }}</BaseButton>
 
-            <form v-if="tagMode" class="flex w-full flex-wrap items-end gap-3" @submit.prevent="bulk(tagMode)">
+            <form v-if="tagMode" data-unsaved-ignore class="flex w-full flex-wrap items-end gap-3" @submit.prevent="bulk(tagMode)">
                 <div class="min-w-48"><TextField v-model="tagInput" :label="t('customers.bulk.tag_label')" :maxlength="30" :suggestions="tags" required /></div>
                 <BaseButton type="submit" size="sm" :loading="bulkBusy" :disabled="tagInput.trim() === ''">{{ t('customers.bulk.tag_apply') }}</BaseButton>
             </form>

@@ -56,6 +56,8 @@ return [
 
         // Double authentification du Super Admin : désactivable UNIQUEMENT en développement local (ignoré ailleurs, voir AdminMfa).
         'admin_mfa_required' => env('NOVA_ADMIN_REQUIRE_MFA', true),
+        // Inactivité maximale d'une session Super Admin, en minutes (0 = désactivé) : plus courte que la session générale (docs/37).
+        'admin_idle_minutes' => (int) env('NOVA_ADMIN_IDLE_MINUTES', 60),
 
         // Politique de contenu (CSP) : 'report-only' par défaut (signale sans bloquer), 'enforce' après vérification, 'off' pour couper.
         'csp' => env('NOVA_CSP', 'report-only'),

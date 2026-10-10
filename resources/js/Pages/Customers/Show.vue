@@ -42,9 +42,7 @@ function toggleBlock(): void {
 
 <template>
     <AppLayout :title="customer.name ?? customer.phone">
-        <Link :href="routes.customers" class="text-sm font-medium text-primary-700 underline">{{ t('customers.back') }}</Link>
-
-        <div class="mt-3 flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
             <h1 class="text-2xl font-semibold text-nova-900">{{ customer.name ?? t('customers.unnamed') }}</h1>
             <span v-if="customer.is_blocked" class="rounded-full bg-danger-50 px-2.5 py-0.5 text-xs font-semibold text-danger-700">{{
                 t('customers.blocked_badge')

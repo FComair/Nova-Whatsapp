@@ -102,8 +102,6 @@ onMounted(() => void nextTick(scrollToEnd));
     <AppLayout :title="`#${ticket.reference} · ${ticket.subject}`">
         <HelpTabs />
 
-        <Link :href="`${routes.help}/tickets`" class="text-sm font-semibold text-primary-700 underline underline-offset-4">{{ t('support.ticket.back') }}</Link>
-
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4" role="status">{{ page.props.flash.status }}</AlertBox>
         <AlertBox v-if="form.errors.body && !can.reply" variant="error" class="mt-4">{{ form.errors.body }}</AlertBox>
 

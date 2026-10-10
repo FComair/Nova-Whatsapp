@@ -328,4 +328,21 @@ return [
             'store_failed' => 'Le fichier n’a pas pu être enregistré. Rien n’a été modifié : réessayez.',
         ],
     ],
+
+    'back' => [
+        'aria' => 'Navigation de retour',
+        'dashboard' => 'Retour au tableau de bord',
+        'clients' => 'Retour aux clients',
+        'tickets' => 'Retour aux demandes',
+        'support_team' => 'Retour à l’équipe support',
+        'faq' => 'Retour à la FAQ',
+        'faq_editor' => 'Retour à l’éditeur de la FAQ',
+        'legal' => 'Retour aux documents juridiques',
+        'unsaved' => [
+            'message' => 'Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter sans enregistrer ?',
+            'save' => 'Rester et enregistrer',
+            'leave' => 'Quitter sans enregistrer',
+            'cancel' => 'Annuler',
+        ],
+    ],
 ];

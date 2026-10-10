@@ -9,6 +9,7 @@ use App\Modules\Admin\Console\CreatePlatformAdmin;
 use App\Modules\Admin\Console\DevAdminLink;
 use App\Modules\Admin\Console\SetAdminIpAllowlist;
 use App\Modules\Admin\Console\WatchSupportSla;
+use App\Modules\Admin\Listeners\RecordAdminAuthentication;
 use App\Modules\Api\Console\CreateApiClient;
 use App\Modules\Billing\Console\RunBilling;
 use App\Modules\Billing\Contracts\PaymentGateway;
@@ -45,8 +46,11 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -103,6 +107,10 @@ class AppServiceProvider extends ServiceProvider
         $capitalised = fn (mixed $state): mixed => is_string($state) ? Str::ucfirst($state) : $state;
         TextColumn::configureUsing(fn (TextColumn $column): TextColumn => $column->formatStateUsing($capitalised));
         TextEntry::configureUsing(fn (TextEntry $entry): TextEntry => $entry->formatStateUsing($capitalised));
+
+        // Super Admin : connexions réussies et échouées tracées dans le journal d'audit (docs/37).
+        Event::listen(Login::class, [RecordAdminAuthentication::class, 'succeeded']);
+        Event::listen(Failed::class, [RecordAdminAuthentication::class, 'failed']);
 
         // API interne : plafond par clé, et par adresse pour les clés inventées.
         RateLimiter::for('api-client', fn (Request $request): array => [

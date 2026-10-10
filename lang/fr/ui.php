@@ -2929,4 +2929,24 @@ return [
             'not_found' => 'Cette personne ou cette invitation n’existe plus.',
         ],
     ],
+
+    'back_nav' => [
+        'aria' => 'Navigation de retour',
+        'dashboard' => 'Retour au tableau de bord',
+        'customers' => 'Retour aux clients',
+        'loyalty' => 'Retour à la fidélité',
+        'billing' => 'Retour à la facturation',
+        'reports' => 'Retour aux rapports',
+        'help' => 'Retour à l’aide',
+        'help_topic' => 'Retour à la rubrique d’aide',
+        'tickets' => 'Retour aux demandes',
+        'whatsapp' => 'Retour à WhatsApp',
+        'settings' => 'Retour aux réglages',
+    ],
+
+    'unsaved' => [
+        'message' => 'Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter sans enregistrer ?',
+        'save' => 'Rester et enregistrer',
+        'leave' => 'Quitter sans enregistrer',
+    ],
 ];

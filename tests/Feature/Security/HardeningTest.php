@@ -150,7 +150,7 @@ describe('contrôle de mise en production', function (): void {
             'app.debug' => false, 'nova.security.two_factor_required' => true, 'session.secure' => true, 'session.encrypt' => true, 'nova.phone_code_driver' => 'sms', 'nova.billing.gateway' => 'mollie',
             'whatsapp.driver' => 'meta', 'whatsapp.app_secret' => 'secret-reel', 'whatsapp.verify_token' => 'jeton-reel', 'mail.default' => 'smtp', 'mail.mailers.smtp.host' => 'smtp.example.eu',
             'nova.billing.seller' => ['name' => 'Nova SRL', 'vat_number' => 'BE0123456789', 'address' => 'Rue 1, 1000 Bruxelles'], 'nova.founder_email' => 'fondateur@nova.test',
-            'database.connections.pgsql.password' => 'mot-de-passe-de-production',
+            'database.connections.pgsql.password' => 'mot-de-passe-de-production', 'app.url' => 'https://nova.example.eu',
         ]);
         $this->app['env'] = 'production';
 

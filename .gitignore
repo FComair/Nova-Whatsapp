@@ -19,6 +19,9 @@
 *.pem
 *.key
 
+# Rapport d'audit RGPD (confidentiel) : /output/
+/output/
+
 # Données locales
 /storage/app/private/
 /storage/app/public/

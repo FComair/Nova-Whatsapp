@@ -6,5 +6,7 @@ export default defineConfig({
     test: {
         environment: 'jsdom',
         include: ['resources/js/**/*.test.ts'],
+        // Le premier montage d'une page importe tout son arbre de composants : à froid, 5 s ne suffisent pas toujours.
+        testTimeout: 20000,
     },
 });

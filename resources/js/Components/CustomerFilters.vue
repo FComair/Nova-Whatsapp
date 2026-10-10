@@ -85,7 +85,7 @@ function reset(): void {
             <BaseButton variant="ghost" size="sm" @click="emit('close')">{{ t('customers.filters.close') }}</BaseButton>
         </div>
 
-        <form class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" @submit.prevent="apply">
+        <form data-unsaved-ignore class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" @submit.prevent="apply">
             <SelectField v-model="draft.status" :label="t('customers.filters.status')" :options="statusOptions" />
             <SelectField v-model="draft.appt" :label="t('customers.filters.appt')" :options="apptOptions" />
             <TextField v-if="draft.appt === 'inactive'" v-model="draft.days" :label="t('customers.filters.days')" inputmode="numeric" />

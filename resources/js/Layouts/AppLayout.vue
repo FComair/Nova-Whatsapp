@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import BackLink from '../Components/BackLink.vue';
 import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
 import LegalNotice from '../Components/LegalNotice.vue';
 import ShopAvatar from '../Components/ShopAvatar.vue';
+import UnsavedChangesDialog from '../Components/UnsavedChangesDialog.vue';
+import { backTarget } from '../composables/backNav';
 import { activeSettings, settingsHome } from '../composables/settingsNav';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
@@ -26,6 +29,7 @@ const can = (...capabilities: string[]): boolean => capabilities.some((capabilit
 const canSeeReports = computed(() => can('reports.view'));
 const canSeePlanning = computed(() => can('calendar.view'));
 const canSeeCustomers = computed(() => can('customers.view_own', 'customers.view_all'));
+const back = computed(() => backTarget(currentUrl.value));
 const inSettings = computed(() => activeSettings((page as unknown as { url?: string }).url ?? '') !== null);
 
 function logout(): void {
@@ -176,7 +180,9 @@ function logout(): void {
 
         <main id="contenu" class="mx-auto min-w-0 max-w-6xl px-4 py-8 sm:px-6">
             <LegalNotice />
+            <BackLink v-if="back" :href="back.href" :label="back.label" />
             <slot />
         </main>
+        <UnsavedChangesDialog />
     </div>
 </template>

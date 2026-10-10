@@ -147,7 +147,7 @@ async function submit(): Promise<void> {
 
 <template>
     <ModalDialog :open="open" :title="t('reports.export.title')" @close="emit('close')">
-        <form class="space-y-5" data-testid="export-form" @submit.prevent="submit">
+        <form class="space-y-5" data-unsaved-ignore data-testid="export-form" @submit.prevent="submit">
             <p class="text-sm text-neutral-800">{{ t('reports.export.scope', { period: scope }) }}</p>
 
             <fieldset>

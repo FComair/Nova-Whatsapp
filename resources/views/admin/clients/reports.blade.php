@@ -23,7 +23,7 @@
     </style>
 
     <div class="cp">
-        <form aria-label="{{ __('clients.reports.filters') }}">{{ $this->form }}</form>
+        <form data-unsaved-ignore aria-label="{{ __('clients.reports.filters') }}">{{ $this->form }}</form>
         <p style="color: var(--cp-muted); margin: 0">{{ __('clients.reports.period', ['from' => \Illuminate\Support\Carbon::parse($m['period']['from'])->format('d/m/Y'), 'until' => \Illuminate\Support\Carbon::parse($m['period']['until'])->format('d/m/Y')]) }}</p>
 
         <dl class="cr-cards">

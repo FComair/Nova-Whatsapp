@@ -2929,4 +2929,24 @@ return [
             'not_found' => 'This person or invitation no longer exists.',
         ],
     ],
+
+    'back_nav' => [
+        'aria' => 'Back navigation',
+        'dashboard' => 'Back to Dashboard',
+        'customers' => 'Back to Customers',
+        'loyalty' => 'Back to Loyalty',
+        'billing' => 'Back to Billing',
+        'reports' => 'Back to Reports',
+        'help' => 'Back to Help',
+        'help_topic' => 'Back to Help topic',
+        'tickets' => 'Back to Tickets',
+        'whatsapp' => 'Back to WhatsApp',
+        'settings' => 'Back to Settings',
+    ],
+
+    'unsaved' => [
+        'message' => 'You have unsaved changes. Are you sure you want to leave without saving?',
+        'save' => 'Stay and save',
+        'leave' => 'Leave without saving',
+    ],
 ];

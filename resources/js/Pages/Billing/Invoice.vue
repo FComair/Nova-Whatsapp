@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
 import BaseButton from '../../Components/BaseButton.vue';
 import { formatPrice } from '../../composables/money';
 import { useT } from '../../composables/useT';
 import { formatDate } from '../../composables/dates';
 import AppLayout from '../../Layouts/AppLayout.vue';
-import { routes } from '../../routes';
 
 interface Party {
     name?: string | null;
@@ -54,8 +52,7 @@ function address(party: Party): string {
 
 <template>
     <AppLayout :title="t('billing.invoice_title', { number: invoice.number })">
-        <div class="flex flex-wrap items-center justify-between gap-3 print:hidden">
-            <Link :href="routes.billing" class="text-sm font-medium text-primary-700 underline">{{ t('billing.invoice_back') }}</Link>
+        <div class="flex flex-wrap items-center justify-end gap-3 print:hidden">
             <BaseButton variant="secondary" @click="print">{{ t('billing.invoice_print') }}</BaseButton>
         </div>
 
