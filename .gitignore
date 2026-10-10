@@ -41,3 +41,6 @@ Thumbs.db
 # Fichiers locaux de développement (identifiants de test, outils)
 *.local.txt
 /storage/inertia-devtools/
+
+# Conteneur de développement (processus en arrière-plan)
+.devcontainer/.dev.pid

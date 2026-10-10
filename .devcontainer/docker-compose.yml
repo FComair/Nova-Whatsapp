@@ -1,0 +1,54 @@
+name: nova-codespaces
+
+# Services du conteneur de développement (Codespaces ou VS Code Dev Containers). Aucun secret réel : les mots de passe de base sont des
+# valeurs de développement jetables, identiques à celles de docker-compose.yml et de .env.example, et la base n'est joignable que depuis
+# ce réseau (aucun port de base de données n'est publié).
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspaces/${localWorkspaceFolderBasename}:cached
+    # Garde le conteneur en vie : l'application se lance à la demande (composer dev) ou depuis postStartCommand.
+    command: sleep infinity
+    environment:
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MAIL_HOST: mailpit
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mailpit:
+        condition: service_started
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nova
+      POSTGRES_USER: nova_owner
+      POSTGRES_PASSWORD: nova_dev_only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Rôles (propriétaire, application soumise à la RLS, Super Admin), extensions et base de test : exécutés à la création du volume.
+      - ../docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nova_owner -d nova"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  # Boîte de réception de développement : tous les e-mails (vérification, réinitialisation, factures) arrivent ici, aucun ne part.
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,99 @@
+{
+    "name": "Nova WhatsApp (Laravel 13 + Vue 3, PostgreSQL 16, Redis, Mailpit)",
+
+    // Le conteneur de développement est le service « app » de .devcontainer/docker-compose.yml : PHP 8.4 + Node 24 dans le même
+    // conteneur, avec PostgreSQL, Redis et Mailpit à côté (mêmes noms d'hôte que le docker-compose.yml du dépôt : postgres, redis, mailpit).
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "runServices": ["app", "postgres", "redis", "mailpit"],
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "shutdownAction": "stopCompose",
+
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "username": "vscode",
+            "uid": "1000",
+            "gid": "1000",
+            "installZsh": false,
+            "configureZshAsDefaultShell": false,
+            "upgradePackages": false
+        },
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/node:1": { "version": "24", "nodeGypDependencies": false }
+    },
+    "remoteUser": "vscode",
+
+    // Valeurs de DÉVELOPPEMENT jetables uniquement. Les secrets réels (voir « secrets » plus bas) arrivent par les secrets Codespaces :
+    // une variable d'environnement prime sur le fichier .env.
+    "containerEnv": {
+        "COMPOSER_ALLOW_SUPERUSER": "1",
+        "COMPOSER_NO_INTERACTION": "1",
+        "PHP_CLI_SERVER_WORKERS": "4",
+        "XDEBUG_MODE": "off",
+        "NOVA_DEVCONTAINER": "1"
+    },
+
+    // Ports : tous PRIVÉS (visibles du seul propriétaire du Codespace). Pour recevoir de vrais webhooks Meta, rendre temporairement le port 8000 public (voir README).
+    "forwardPorts": [8000, 5173, 8025],
+    "portsAttributes": {
+        "8000": { "label": "Nova (application)", "onAutoForward": "openBrowserOnce", "visibility": "private" },
+        "5173": { "label": "Vite (assets, rechargement à chaud)", "onAutoForward": "silent", "visibility": "private" },
+        "8025": { "label": "Mailpit (e-mails de développement)", "onAutoForward": "notify", "visibility": "private" },
+        "9003": { "label": "Xdebug (débogueur PHP)", "onAutoForward": "silent", "visibility": "private" }
+    },
+
+    // Installation et préparation, du plus lent (une fois) au plus rapide (à chaque démarrage).
+    "onCreateCommand": "bash .devcontainer/on-create.sh",
+    "updateContentCommand": "bash .devcontainer/update-content.sh",
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
+    "postStartCommand": "bash .devcontainer/post-start.sh",
+
+    "hostRequirements": { "cpus": 2, "memory": "4gb", "storage": "32gb" },
+
+    // Secrets Codespaces (Settings > Codespaces > Secrets). AUCUN n'est obligatoire : sans eux, WhatsApp, la facturation et la lecture
+    // de liste de prix tournent en mode simulé. Ne jamais les écrire dans le dépôt.
+    "secrets": {
+        "CONVERSATION_AI_API_KEY": { "description": "Facultatif. Clé API IA (assistant WhatsApp natif, lecture de listes de prix). Sans clé : menus seuls, import de prix en mode simulé (PRICELIST_DRIVER=fake)." },
+        "N8N_SIGNING_SECRET": { "description": "Facultatif. Secret de signature partagé avec n8n si vous testez l'assistant via un n8n réel." },
+        "WHATSAPP_VERIFY_TOKEN": { "description": "Facultatif. Jeton de vérification du webhook Meta (test avec la vraie API WhatsApp uniquement)." },
+        "WHATSAPP_APP_SECRET": { "description": "Facultatif. Secret de l'application Meta (signature des webhooks, test réel uniquement)." },
+        "META_APP_ID": { "description": "Facultatif. Identifiant PUBLIC de l'application Meta pour la connexion intégrée WhatsApp." },
+        "META_EMBEDDED_SIGNUP_CONFIG_ID": { "description": "Facultatif. Identifiant de configuration de la connexion intégrée Meta." }
+    },
+
+    "customizations": {
+        "codespaces": {
+            "openFiles": ["README.md", ".devcontainer/README.md"]
+        },
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "xdebug.php-debug",
+                "open-southeners.laravel-pint",
+                "Vue.volar",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "vitest.explorer",
+                "ckolkman.vscode-postgres",
+                "EditorConfig.EditorConfig",
+                "GitHub.vscode-pull-request-github"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "files.eol": "\n",
+                "files.insertFinalNewline": true,
+                "editor.formatOnSave": true,
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "[php]": { "editor.defaultFormatter": "open-southeners.laravel-pint" },
+                "php.validate.executablePath": "/usr/local/bin/php",
+                "intelephense.environment.phpVersion": "8.4.0",
+                "intelephense.telemetry.enabled": false,
+                "eslint.workingDirectories": [{ "mode": "auto" }],
+                "typescript.tsdk": "node_modules/typescript/lib",
+                "vitest.rootConfig": "vitest.config.ts"
+            }
+        }
+    }
+}

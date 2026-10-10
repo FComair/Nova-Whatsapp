@@ -5,11 +5,17 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
+        "dev:all": "concurrently -k --names web,queue,vite --prefix-colors blue,magenta,yellow \"php artisan serve --host=0.0.0.0 --port=8000\" \"php artisan queue:work --sleep=1 --tries=3 --max-time=3600\" \"npm run dev\"",
+        "dev:start": "bash .devcontainer/dev.sh start",
+        "dev:stop": "bash .devcontainer/dev.sh stop",
+        "dev:restart": "bash .devcontainer/dev.sh restart",
+        "dev:logs": "bash .devcontainer/dev.sh logs",
         "typecheck": "vue-tsc --noEmit",
         "lint": "eslint resources/js",
         "format": "prettier --write resources/js",
         "format:check": "prettier --check resources/js",
-        "test": "vitest run"
+        "test": "vitest run",
+        "check": "npm run format:check && npm run lint && npm run typecheck && npm run test"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
