@@ -20,6 +20,8 @@ export const routes = {
     reportsExportPreview: '/rapports/export/apercu',
     reportsSettings: '/rapports/reglages',
     help: '/aide',
+    legalSettings: '/reglages/juridique',
+    legalAccept: '/reglages/juridique/accepter',
     calendars: '/calendriers',
     billing: '/facturation',
     profile: '/reglages/profil',

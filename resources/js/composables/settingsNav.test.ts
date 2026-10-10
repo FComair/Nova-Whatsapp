@@ -16,14 +16,15 @@ describe('menu des réglages', () => {
             'whatsapp',
             'whatsapp-qr',
             'data',
+            'legal',
             'security',
         ]);
     });
 
     it("réserve la mise en route au propriétaire, comme l'assistant, et suit les droits des routes pour le reste", () => {
-        expect(keys('site_manager')).toEqual(['profile', 'calendars', 'security']);
-        expect(keys('practitioner')).toEqual(['profile', 'calendars', 'security']);
-        expect(keys('receptionist')).toEqual(['profile', 'security']);
+        expect(keys('site_manager')).toEqual(['profile', 'calendars', 'legal', 'security']);
+        expect(keys('practitioner')).toEqual(['profile', 'calendars', 'legal', 'security']);
+        expect(keys('receptionist')).toEqual(['profile', 'legal', 'security']);
     });
 
     it('refuse un rôle inconnu et ne garde que les groupes qui ont une page accessible', () => {
@@ -55,6 +56,7 @@ describe('menu des réglages', () => {
         expect(activeSettings('/compte/donnees')).toBe('data');
         expect(activeSettings('/compte/pause')).toBe('data');
         expect(activeSettings('/securite')).toBe('security');
+        expect(activeSettings('/reglages/juridique')).toBe('legal');
         expect(activeSettings('/planning')).toBeNull();
         expect(activeSettings('/whatsappx')).toBeNull();
     });

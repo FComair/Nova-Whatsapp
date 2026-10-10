@@ -64,6 +64,7 @@ trait AuthScenarios
             'accept_terms' => true,
             'accept_privacy' => true,
             'accept_dpa' => true,
+            'legal_versions' => ['terms' => '2026-10-01', 'privacy' => '2026-10-01', 'dpa' => '2026-10-01'],
         ], $overrides);
     }
 }

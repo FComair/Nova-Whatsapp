@@ -11,6 +11,8 @@ use App\Modules\Identity\Notifications\VerifyEmailNotification;
 use App\Modules\Identity\Services\RegisterOrganization;
 use App\Modules\Identity\Services\SendLimiter;
 use App\Modules\Identity\Support\PendingVerification;
+use App\Modules\Legal\Services\LegalDocuments;
+use App\Modules\Legal\Support\LegalDocument;
 use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Support\Phone;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -22,13 +24,14 @@ use UnexpectedValueException;
 
 final class RegisterController
 {
-    public function create(Request $request, SignupPlans $plans): Response
+    public function create(Request $request, SignupPlans $plans, LegalDocuments $legal): Response
     {
         return Inertia::render('Auth/Register', [
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale()),
             // Formule préchoisie par un lien (?plan=…) seulement si elle existe encore ; sinon l'essai.
             'plan' => in_array($request->query('plan'), $plans->codes(), true) ? $request->query('plan') : SignupPlans::TRIAL,
             'offers' => $plans->options(),
+            'legal' => $this->legal($legal),
         ]);
     }
 
@@ -43,7 +46,8 @@ final class RegisterController
                 'phone_e164' => $phone,
                 'sector' => $request->string('sector')->toString(),
                 'plan' => $request->input('plan'),
-            ], app()->getLocale(), $request->ip());
+                'accepted' => $request->acceptedDocuments(),
+            ], app()->getLocale(), $request->ip(), $request->userAgent());
         } catch (UniqueConstraintViolationException) {
             // Course entre deux inscriptions avec le même e-mail : même message que la validation (E1).
             return back()->withInput($request->except('password'))->withErrors(['email' => __('ui.errors.E1')]);
@@ -59,5 +63,29 @@ final class RegisterController
         }
 
         return redirect()->route('verification.notice');
+    }
+
+    /**
+     * Documents affichés à l'inscription : titre, version et adresse stable de chacun, et ceux dont l'acceptation est exigée.
+     *
+     * @return array{documents: list<array<string, mixed>>, dpa_required: bool}
+     */
+    private function legal(LegalDocuments $legal): array
+    {
+        $documents = [];
+
+        foreach (LegalDocument::codes() as $code) {
+            $current = $legal->current($code);
+
+            $documents[] = [
+                'code' => $code,
+                'slug' => LegalDocument::slug($code),
+                'title' => $current === null ? '' : $legal->localised($current, app()->getLocale())['title'],
+                'version' => $current?->version,
+                'href' => LegalDocument::url($code),
+            ];
+        }
+
+        return ['documents' => $documents, 'dpa_required' => (bool) config('nova.legal.dpa_required_at_signup')];
     }
 }

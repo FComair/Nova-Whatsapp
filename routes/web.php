@@ -22,6 +22,9 @@ use App\Modules\Identity\Http\Controllers\RegisterController;
 use App\Modules\Identity\Http\Controllers\SecurityController;
 use App\Modules\Identity\Http\Controllers\TwoFactorChallengeController;
 use App\Modules\Identity\Http\Middleware\RequireTwoFactor;
+use App\Modules\Legal\Http\Controllers\LegalPageController;
+use App\Modules\Legal\Http\Controllers\LegalSettingsController;
+use App\Modules\Legal\Http\Middleware\RequireLegalReacceptance;
 use App\Modules\Loyalty\Http\Controllers\LoyaltyController;
 use App\Modules\Loyalty\Http\Controllers\LoyaltyMemberController;
 use App\Modules\Loyalty\Http\Controllers\LoyaltyProgramController;
@@ -58,6 +61,13 @@ Route::post('/langue', [LocaleController::class, 'update'])->name('locale.update
 // Flux ICS sortant d'un praticien : adresse secrète (jeton), sans session.
 Route::get('/ics/{token}.ics', [FeedController::class, 'show'])->where('token', 'nf_[A-Za-z0-9]{40}')->middleware('throttle:60,1')->name('calendar.feed');
 
+// Documents juridiques (docs/28) : publics, sans connexion, à des adresses stables (e-mails, factures, support). Chaque version publiée garde la sienne.
+Route::prefix('/legal')->name('legal.')->whereIn('slug', ['terms-of-use', 'privacy-policy', 'dpa'])->group(function (): void {
+    Route::get('/{slug}', [LegalPageController::class, 'show'])->name('show');
+    Route::get('/{slug}/download', [LegalPageController::class, 'download'])->name('download');
+    Route::get('/{slug}/versions/{version}', [LegalPageController::class, 'version'])->where('version', '[0-9A-Za-z._-]{1,30}')->name('version');
+});
+
 // --- Visiteurs (flowcharts 1A, 2A, 5A) ---
 Route::middleware('guest')->group(function (): void {
     Route::get('/inscription', [RegisterController::class, 'create'])->name('register');
@@ -91,7 +101,7 @@ Route::middleware('guest')->group(function (): void {
 });
 
 // --- Espace connecté : chaque route s'exécute dans le contexte de l'organisation (RLS) ---
-Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, RequireTwoFactor::class, EnsureOrganizationUsable::class])->group(function (): void {
+Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, RequireTwoFactor::class, EnsureOrganizationUsable::class, RequireLegalReacceptance::class])->group(function (): void {
     Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/tableau-de-bord', DashboardController::class)->name('dashboard');
     Route::get('/compte', AccountStateController::class)->name('account.state');
@@ -110,6 +120,10 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::post('/2fa/codes', [SecurityController::class, 'regenerateRecoveryCodes'])->middleware('throttle:10,1')->name('two-factor.codes');
         Route::delete('/2fa', [SecurityController::class, 'disableTwoFactor'])->middleware('throttle:10,1')->name('two-factor.disable');
     });
+
+    // Réglages › Juridique (docs/28) : tous les rôles ; visiter la page n'oblige à rien, l'acceptation est un acte explicite.
+    Route::get('/reglages/juridique', [LegalSettingsController::class, 'show'])->name('legal.settings');
+    Route::post('/reglages/juridique/accepter', [LegalSettingsController::class, 'accept'])->middleware('throttle:20,1')->name('legal.settings.accept');
 
     // Recherche dans les Réglages : index multilingue, filtré selon le rôle (lecture seule).
     Route::get('/reglages/recherche', SettingsSearchController::class)->name('settings.search');

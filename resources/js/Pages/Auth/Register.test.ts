@@ -57,9 +57,18 @@ const offers = (override: Partial<Offers> = {}): Offers => ({
     ...override,
 });
 const sectors = [{ value: 'hairdressing', label: 'Coiffure' }];
+const legal = (override: Record<string, unknown> = {}) => ({
+    dpa_required: true,
+    documents: [
+        { code: 'terms', slug: 'terms-of-use', title: 'Conditions d’utilisation', version: '2026-10-01', href: '/legal/terms-of-use' },
+        { code: 'privacy', slug: 'privacy-policy', title: 'Politique de confidentialité', version: '2026-10-01', href: '/legal/privacy-policy' },
+        { code: 'dpa', slug: 'dpa', title: 'Accord de sous-traitance (DPA)', version: '2026-10-01', href: '/legal/dpa' },
+    ],
+    ...override,
+});
 const mountRegister = (props: Record<string, unknown> = {}) =>
     mount(Register, {
-        props: { sectors, plan: 'trial', offers: offers(), ...props } as never,
+        props: { sectors, plan: 'trial', offers: offers(), legal: legal(), ...props } as never,
         global: { stubs: { AuthLayout: { template: '<div><slot /><slot name="footer" /></div>' } } },
     });
 
@@ -249,5 +258,82 @@ describe('Register', () => {
 
         expect(wrapper.find('[data-testid="summary"]').text()).toContain('register.trial_summary_after');
         expect(wrapper.find('[data-testid="plan-trial"]').text()).toContain('register.trial_after');
+    });
+});
+
+describe('acceptation des documents juridiques', () => {
+    const goToPlan = async (wrapper: ReturnType<typeof mountRegister>) => {
+        await wrapper.find('input[type="email"]').setValue('nouveau@example.com');
+        await wrapper.find('input[type="password"]').setValue('Sol1de-Phrase-Pour-Test!');
+        await wrapper.find('input[type="tel"]').setValue('+32 470 12 34 56');
+        await wrapper.find('select').setValue('hairdressing');
+        await wrapper
+            .findAll('button')
+            .find((button) => button.text() === 'register.continue')!
+            .trigger('click');
+    };
+
+    it('propose trois cases distinctes, jamais précochées, avec le titre de chaque document en lien vers sa page', async () => {
+        const wrapper = mountRegister();
+        await goToPlan(wrapper);
+        const boxes = wrapper.findAll('[data-testid="legal-acceptance"] input[type="checkbox"]');
+        const links = wrapper.findAll('[data-testid="legal-acceptance"] a');
+
+        expect(boxes).toHaveLength(3);
+        expect(boxes.every((box) => !(box.element as HTMLInputElement).checked)).toBe(true);
+        expect(links.map((link) => link.attributes('href'))).toEqual(['/legal/terms-of-use', '/legal/privacy-policy', '/legal/dpa']);
+        expect(links.every((link) => link.attributes('target') === '_blank' && link.attributes('rel')?.includes('noopener'))).toBe(true);
+    });
+
+    it('chaque lien annonce qu’il s’ouvre dans un nouvel onglet, et chaque case montre la version qu’elle accepte', async () => {
+        const wrapper = mountRegister();
+        await goToPlan(wrapper);
+        const block = wrapper.find('[data-testid="legal-acceptance"]');
+
+        expect(block.findAll('a .sr-only')).toHaveLength(3);
+        expect(block.text()).toContain('legal.signup.version');
+        expect(block.text()).toContain('legal.signup.required');
+    });
+
+    it('envoie les versions vues avec les acceptations', async () => {
+        const wrapper = mountRegister();
+        const form = (wrapper.vm as unknown as { form: Record<string, unknown> }).form;
+
+        expect(form.legal_versions).toEqual({ terms: '2026-10-01', privacy: '2026-10-01', dpa: '2026-10-01' });
+        expect([form.accept_terms, form.accept_privacy, form.accept_dpa]).toEqual([false, false, false]);
+    });
+
+    it('bloque l’envoi quand un document n’est pas disponible', async () => {
+        const documents = legal().documents.map((doc) => (doc.code === 'dpa' ? { ...doc, version: null } : doc));
+        const wrapper = mountRegister({ legal: legal({ documents }) });
+        await goToPlan(wrapper);
+
+        expect(wrapper.text()).toContain('legal.signup.unavailable');
+        expect(wrapper.find('button[type="submit"]').attributes('disabled')).toBeDefined();
+    });
+
+    it('si un document a changé pendant l’inscription, redemande les acceptations avec les nouvelles versions', async () => {
+        const wrapper = mountRegister();
+        await goToPlan(wrapper);
+        const form = (wrapper.vm as unknown as { form: Record<string, unknown> }).form;
+        form.accept_terms = true;
+        form.accept_privacy = true;
+        form.accept_dpa = true;
+
+        await wrapper.setProps({ legal: legal({ documents: legal().documents.map((doc) => ({ ...doc, version: '2026-12-01' })) }) } as never);
+
+        expect(form.legal_versions).toEqual({ terms: '2026-12-01', privacy: '2026-12-01', dpa: '2026-12-01' });
+        expect([form.accept_terms, form.accept_privacy, form.accept_dpa]).toEqual([false, false, false]);
+    });
+
+    it('affiche les erreurs d’acceptation manquante sous chaque case', async () => {
+        const wrapper = mountRegister();
+        await goToPlan(wrapper);
+        const form = (wrapper.vm as unknown as { form: { errors: Record<string, string> } }).form;
+
+        form.errors = { accept_terms: 'Vous devez accepter ce document.', accept_privacy: 'Vous devez accepter ce document.' };
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.findAll('[data-testid="legal-acceptance"] [role="alert"]').length).toBe(2);
     });
 });

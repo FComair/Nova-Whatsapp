@@ -2,6 +2,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
+import LegalNotice from '../Components/LegalNotice.vue';
 import ShopAvatar from '../Components/ShopAvatar.vue';
 import { activeSettings, settingsHome } from '../composables/settingsNav';
 import { useT } from '../composables/useT';
@@ -168,6 +169,9 @@ function logout(): void {
             </div>
         </header>
 
-        <main id="contenu" class="mx-auto min-w-0 max-w-6xl px-4 py-8 sm:px-6"><slot /></main>
+        <main id="contenu" class="mx-auto min-w-0 max-w-6xl px-4 py-8 sm:px-6">
+            <LegalNotice />
+            <slot />
+        </main>
     </div>
 </template>

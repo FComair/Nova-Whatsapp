@@ -20,7 +20,9 @@ const describedBy = computed(() => (props.error ? errorId : undefined));
                 :aria-describedby="describedBy"
                 class="nova-check mt-0.5"
             />
-            <label :for="id" class="text-sm text-neutral-900">{{ label }}</label>
+            <label :for="id" class="text-sm text-neutral-900"
+                ><slot name="label">{{ label }}</slot></label
+            >
         </div>
         <p v-if="error" :id="errorId" class="mt-1.5 text-sm font-medium text-danger-fg" role="alert">{{ error }}</p>
     </div>

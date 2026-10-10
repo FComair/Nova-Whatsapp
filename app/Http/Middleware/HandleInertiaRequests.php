@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Modules\Identity\Models\User;
+use App\Modules\Legal\Services\LegalDocuments;
 use App\Modules\Onboarding\Services\SetupChecklist;
 use App\Modules\Support\Models\SupportTicket;
 use App\Modules\Support\Support\TicketStatus;
+use App\Modules\Tenancy\Models\OrgMember;
 use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Models\WhatsappAccount;
 use Illuminate\Http\Request;
@@ -77,6 +80,17 @@ final class HandleInertiaRequests extends Middleware
             },
             // Pastille du menu Aide : tickets de la personne qui attendent son attention (réponse non lue ou « En attente de vous »).
             // Calculée au rendu, dans le contexte d'organisation, comme « auth ».
+            // Documents juridiques à accepter (docs/28) : jamais accepté (avis simple) ou nouvelle version significative (bloquante). Calculé au rendu, dans le contexte d'organisation.
+            'legal' => function () use ($request): ?array {
+                $user = $request->user();
+                $current = app(CurrentTenant::class);
+
+                if (! $user instanceof User || $current->organization() === null) {
+                    return null;
+                }
+
+                return ['pending' => app(LegalDocuments::class)->pending($user, $current->role() === OrgMember::ROLE_OWNER, app()->getLocale())];
+            },
             'support' => function () use ($request): ?array {
                 if ($request->user() === null || app(CurrentTenant::class)->organization() === null) {
                     return null;

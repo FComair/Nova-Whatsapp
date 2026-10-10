@@ -50,7 +50,7 @@ final class SettingsSearchIndex
         }
 
         return match ($entry['page']) {
-            'profile', 'security' => true,
+            'profile', 'security', 'legal' => true,
             'calendars' => $role !== 'receptionist',
             default => $role === 'owner', // Mise en route, WhatsApp, Mes données
         };
@@ -106,6 +106,8 @@ final class SettingsSearchIndex
         $entries[] = $data + ['id' => 'data-export', 'anchor' => 'export', 'title' => 'account_data.export_title', 'description' => 'account_data.export_body'];
         $entries[] = ['id' => 'data-pause', 'group' => 'privacy', 'page' => 'data', 'href' => '/compte/pause', 'title' => 'pause.title', 'description' => 'pause.intro'];
         $entries[] = $data + ['id' => 'data-delete', 'anchor' => 'delete', 'title' => 'account_data.delete_title'];
+
+        $entries[] = ['id' => 'legal', 'group' => 'privacy', 'page' => 'legal', 'href' => '/reglages/juridique', 'title' => 'legal.settings.title', 'description' => 'legal.settings.intro'];
 
         $security = ['group' => 'privacy', 'page' => 'security', 'href' => '/securite'];
         $entries[] = $security + ['id' => 'security', 'title' => 'security.title', 'description' => 'security.intro'];

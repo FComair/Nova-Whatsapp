@@ -3,7 +3,7 @@ import { routes } from '../routes';
 export type SetupCategory = 'business' | 'team' | 'messages' | 'launch';
 
 export type SettingsKey =
-    'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'security';
+    'setup-business' | 'setup-team' | 'setup-messages' | 'setup-launch' | 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security';
 
 export interface SettingsItem {
     key: SettingsKey;
@@ -37,8 +37,9 @@ function visible(key: SettingsKey, role: string | null): boolean {
         whatsapp: role === 'owner',
         'whatsapp-qr': role === 'owner',
         data: role === 'owner',
+        legal: true,
         security: true,
-    }[key as 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'security'];
+    }[key as 'profile' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security'];
 }
 
 function setupItem(category: SetupCategory): SettingsItem {
@@ -57,6 +58,7 @@ const all: Record<SettingsGroup['key'], SettingsItem[]> = {
     ],
     privacy: [
         { key: 'data', href: routes.accountData, label: 'account_data.nav', prefixes: [routes.accountData, routes.accountPause, routes.accountDeletion] },
+        { key: 'legal', href: routes.legalSettings, label: 'legal.nav', prefixes: [routes.legalSettings] },
         { key: 'security', href: routes.security.show, label: 'security.nav', prefixes: [routes.security.show] },
     ],
 };

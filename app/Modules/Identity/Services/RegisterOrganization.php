@@ -7,6 +7,8 @@ namespace App\Modules\Identity\Services;
 use App\Modules\Admin\Services\PlatformSettings;
 use App\Modules\Audit\Audit;
 use App\Modules\Identity\Models\User;
+use App\Modules\Legal\Services\LegalDocuments;
+use App\Modules\Legal\Support\LegalDocument;
 use App\Modules\Onboarding\Models\OnboardingProgress;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
@@ -23,12 +25,12 @@ use Illuminate\Support\Str;
  */
 final class RegisterOrganization
 {
-    public function __construct(private readonly TenantContext $tenant) {}
+    public function __construct(private readonly TenantContext $tenant, private readonly LegalDocuments $legal) {}
 
     /**
-     * @param  array{email: string, password: string, phone_e164: string, sector: string, plan?: string|null}  $data
+     * @param  array{email: string, password: string, phone_e164: string, sector: string, plan?: string|null, accepted?: list<string>}  $data
      */
-    public function handle(array $data, string $locale, ?string $ip): User
+    public function handle(array $data, string $locale, ?string $ip, ?string $userAgent = null): User
     {
         $orgId = (string) Str::uuid7();
 
@@ -36,7 +38,7 @@ final class RegisterOrganization
         $this->tenant->set($orgId);
 
         try {
-            return DB::transaction(function () use ($data, $locale, $ip, $orgId): User {
+            return DB::transaction(function () use ($data, $locale, $ip, $userAgent, $orgId): User {
                 $user = User::query()->create([
                     'email' => mb_strtolower(trim($data['email'])),
                     'password' => $data['password'],
@@ -73,7 +75,8 @@ final class RegisterOrganization
                     'status' => 'active',
                 ]);
 
-                $this->recordConsents($user, $ip);
+                // Acceptations : version en vigueur, horodatage, IP, agent utilisateur et langue affichée (docs/28).
+                $this->legal->accept($user, $data['accepted'] ?? [LegalDocument::TERMS, LegalDocument::PRIVACY, LegalDocument::DPA], LegalDocument::SIGNUP, true, $ip, $userAgent, $locale, $orgId);
 
                 Audit::record(
                     'account.registered',
@@ -89,29 +92,6 @@ final class RegisterOrganization
             });
         } finally {
             $this->tenant->clear();
-        }
-    }
-
-    private function recordConsents(User $user, ?string $ip): void
-    {
-        $versions = [
-            'terms' => config('nova.legal.terms_version'),
-            'privacy' => config('nova.legal.privacy_version'),
-            'dpa' => config('nova.legal.dpa_version'),
-        ];
-
-        foreach ($versions as $type => $version) {
-            DB::table('user_consents')->insert([
-                'id' => (string) Str::uuid7(),
-                'user_id' => $user->id,
-                'type' => $type,
-                'document_version' => $version,
-                'granted_at' => now(),
-                'source' => 'signup',
-                'ip' => $ip,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
         }
     }
 }

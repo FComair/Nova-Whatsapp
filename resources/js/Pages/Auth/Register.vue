@@ -17,7 +17,20 @@ import { routes } from '../../routes';
  * de facturation, acceptations. Rien n'est créé avant la validation finale ; revenir à l'étape 1 conserve tout ce qui a été saisi
  * (sauf le mot de passe après un envoi). L'inscription n'enregistre aucun moyen de paiement et ne crée jamais d'abonnement.
  */
-const props = defineProps<{ sectors: { value: string; label: string }[]; plan: string; offers: Offers }>();
+interface LegalDoc {
+    code: 'terms' | 'privacy' | 'dpa';
+    slug: string;
+    title: string;
+    version: string | null;
+    href: string;
+}
+
+const props = defineProps<{
+    sectors: { value: string; label: string }[];
+    plan: string;
+    offers: Offers;
+    legal: { documents: LegalDoc[]; dpa_required: boolean };
+}>();
 const { t, locale } = useT();
 
 const form = useForm({
@@ -29,12 +42,23 @@ const form = useForm({
     accept_terms: false,
     accept_privacy: false,
     accept_dpa: false,
+    // Versions vues par la personne : le serveur refuse l'envoi si un document a changé entre-temps (docs/28).
+    legal_versions: Object.fromEntries(props.legal.documents.map((doc) => [doc.code, doc.version ?? ''])) as Record<string, string>,
 });
 
 const step = ref<1 | 2>(1);
 const heading = ref<HTMLElement | null>(null);
 const errors = computed(() => form.errors as Record<string, string | undefined>);
 const sectorOptions = computed(() => props.sectors);
+const docs = computed(() => Object.fromEntries(props.legal.documents.map((doc) => [doc.code, doc])) as Record<'terms' | 'privacy' | 'dpa', LegalDoc>);
+const legalReady = computed(() => props.legal.documents.every((doc) => doc.version !== null));
+
+/** « J'accepte les [Conditions d'utilisation]. » : le texte du modèle est coupé autour de :link, qui devient le lien du document. */
+function parts(key: 'terms' | 'privacy' | 'dpa'): [string, string] {
+    const [before = '', after = ''] = t(`legal.signup.${key}`).split(':link');
+
+    return [before, after];
+}
 const summary = computed(() => summaryLines(props.offers, form.plan, t, locale.value));
 const DETAIL_FIELDS = ['email', 'password', 'phone', 'sector'] as const;
 
@@ -64,6 +88,17 @@ function next(): void {
 function submit(): void {
     form.post(routes.register, { onFinish: () => form.reset('password') });
 }
+
+// Un document juridique publié pendant l'inscription : on affiche la nouvelle version et on redemande les acceptations, jamais l'ancienne en silence.
+watch(
+    () => props.legal.documents.map((doc) => doc.version).join('|'),
+    () => {
+        form.legal_versions = Object.fromEntries(props.legal.documents.map((doc) => [doc.code, doc.version ?? '']));
+        form.accept_terms = false;
+        form.accept_privacy = false;
+        form.accept_dpa = false;
+    },
+);
 
 // Une erreur sur une coordonnée ramène à l'étape 1 (le mot de passe est à ressaisir) ; une erreur de formule reste à l'étape 2.
 watch(
@@ -166,15 +201,35 @@ watch(
                     </dl>
                 </section>
 
-                <div class="space-y-3">
-                    <CheckboxField v-model="form.accept_terms" :label="t('register.accept_terms')" :error="form.errors.accept_terms" />
-                    <CheckboxField v-model="form.accept_privacy" :label="t('register.accept_privacy')" :error="form.errors.accept_privacy" />
-                    <CheckboxField v-model="form.accept_dpa" :label="t('register.accept_dpa')" :error="form.errors.accept_dpa" />
-                </div>
+                <fieldset class="space-y-3 rounded-card border border-line bg-surface p-4" data-testid="legal-acceptance">
+                    <legend class="px-1 text-sm font-semibold text-nova-900">{{ t('legal.signup.title') }}</legend>
+                    <AlertBox v-if="!legalReady" variant="error">{{ t('legal.signup.unavailable') }}</AlertBox>
+                    <AlertBox v-if="errors.legal" variant="error" data-testid="legal-changed">{{ errors.legal }}</AlertBox>
+                    <CheckboxField
+                        v-for="code in ['terms', 'privacy', 'dpa'] as const"
+                        :key="code"
+                        v-model="form[`accept_${code}`]"
+                        :label="docs[code].title"
+                        :error="form.errors[`accept_${code}`]"
+                    >
+                        <template #label>
+                            {{ parts(code)[0]
+                            }}<a :href="docs[code].href" target="_blank" rel="noopener" class="font-semibold text-primary-700 underline underline-offset-2"
+                                >{{ docs[code].title }}<span class="sr-only"> {{ t('legal.signup.new_tab') }}</span></a
+                            >{{ parts(code)[1] }}
+                            <span class="block text-xs text-neutral-600"
+                                >{{ t('legal.signup.version', { version: docs[code].version ?? '' })
+                                }}<template v-if="code !== 'dpa' || legal.dpa_required"> · {{ t('legal.signup.required') }}</template></span
+                            >
+                        </template>
+                    </CheckboxField>
+                </fieldset>
 
                 <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
                     <BaseButton variant="secondary" class="!border-line-strong" :disabled="form.processing" @click="go(1)">{{ t('register.back') }}</BaseButton>
-                    <BaseButton type="submit" :loading="form.processing">{{ form.processing ? t('register.creating') : t('register.submit_plan') }}</BaseButton>
+                    <BaseButton type="submit" :loading="form.processing" :disabled="!legalReady">
+                        {{ form.processing ? t('register.creating') : t('register.submit_plan') }}
+                    </BaseButton>
                 </div>
             </div>
         </form>

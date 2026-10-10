@@ -61,12 +61,12 @@ return [
         'csp' => env('NOVA_CSP', 'report-only'),
     ],
 
-    // Versions des documents juridiques acceptés à l'inscription (CGU, confidentialité, DPA).
-    // Les textes eux-mêmes sont à faire valider par un juriste.
+    // Documents juridiques (docs/28) : les versions et leurs textes vivent en base (legal_document_versions), éditées par le Super Admin.
+    // Les textes eux-mêmes sont à faire valider par un juriste. Le DPA est exigé à l'inscription : l'établissement est responsable du traitement
+    // des données de ses clients et Nova est son sous-traitant (RGPD art. 28), ce qui impose un accord écrit.
     'legal' => [
-        'terms_version' => '2026-10-01',
-        'privacy_version' => '2026-10-01',
-        'dpa_version' => '2026-10-01',
+        'first_version' => '2026-10-01',
+        'dpa_required_at_signup' => true,
     ],
 
     // Pays proposés pour l'entreprise et ses sites (marché belge et pays limitrophes).
