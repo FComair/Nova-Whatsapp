@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
 use App\Modules\Admin\Filament\Pages\AdminDashboard;
+use App\Modules\Admin\Filament\Pages\ClientReports;
 use App\Modules\Admin\Filament\Pages\Login;
 use App\Modules\Admin\Filament\Pages\SupportReports;
 use App\Modules\Admin\Http\Controllers\SupportAttachmentController;
@@ -51,10 +52,11 @@ class AdminPanelProvider extends PanelProvider
             // Menu : tableau de bord, clients et factures, puis « Configuration » (secteurs, paramètres) et « Opérations » (suppressions, journal).
             ->navigationGroups([
                 NavigationGroup::make()->label(fn (): string => __('tickets.navigation.group')),
+                NavigationGroup::make()->label(fn (): string => __('faq.navigation.group')),
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.configuration')),
                 NavigationGroup::make()->label(fn (): string => __('admin.navigation.operations')),
             ])
-            ->pages([AdminDashboard::class, SupportReports::class])
+            ->pages([AdminDashboard::class, ClientReports::class, SupportReports::class])
             // Notifications des agents (cloche) : table réservée au rôle de la plateforme (PlatformNotification).
             ->databaseNotifications()
             // Téléchargement d'une pièce jointe de ticket : même authentification et même liste blanche d'adresses que le panel.

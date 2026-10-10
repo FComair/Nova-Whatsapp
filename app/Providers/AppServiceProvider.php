@@ -26,6 +26,7 @@ use App\Modules\Catalog\Support\SamplePriceListReader;
 use App\Modules\Conversation\Contracts\LanguageModel;
 use App\Modules\Conversation\Support\NullModel;
 use App\Modules\Conversation\Support\OpenAiModel;
+use App\Modules\Help\Console\ImportHelpFiles;
 use App\Modules\Help\Support\HelpCatalog;
 use App\Modules\Identity\Contracts\PhoneCodeSender;
 use App\Modules\Identity\Support\LogPhoneCodeSender;
@@ -110,7 +111,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class, DevAdminLink::class, WatchSupportSla::class]);
+            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class, DevAdminLink::class, WatchSupportSla::class, ImportHelpFiles::class]);
         }
     }
 }

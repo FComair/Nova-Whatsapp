@@ -76,7 +76,9 @@ final class SupportNotifier
      */
     private function recipients(string $event, SupportTicket $ticket, ?string $actorAdminId, ?string $assigneeId): array
     {
-        $query = PlatformAdmin::query()->when($actorAdminId !== null, fn ($q) => $q->where('id', '!=', $actorAdminId));
+        // Un éditeur de contenu n'a pas accès aux tickets : il n'est jamais prévenu.
+        $query = PlatformAdmin::query()->where(fn ($q) => $q->whereNull('support_role')->orWhere('support_role', '!=', PlatformAdmin::SUPPORT_EDITOR))
+            ->when($actorAdminId !== null, fn ($q) => $q->where('id', '!=', $actorAdminId));
 
         $target = $event === 'assigned' ? $assigneeId : $ticket->assigned_admin_id;
 

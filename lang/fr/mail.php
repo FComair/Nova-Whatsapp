@@ -111,6 +111,11 @@ return [
             'subject' => 'La suppression de votre compte Nova « :name » est annulée',
             'intro' => 'La suppression programmée du compte Nova de « :name » a été annulée : vos données sont conservées.',
         ],
+        'trial_extended' => [
+            'subject' => 'L’essai de votre compte Nova « :name » a été prolongé',
+            'intro' => 'Nova a prolongé l’essai gratuit de « :name » : votre compte est pleinement utilisable.',
+        ],
+        'trial_end' => 'Votre essai se termine désormais le :date. Choisissez une formule avant cette date pour continuer sans interruption.',
         'reason' => 'Motif : :reason',
         'deletion_date' => 'Vos données seront effacées le :date. Vous pouvez exporter vos données d\'ici là.',
         'contact' => 'Pour toute question, contactez le support Nova en répondant à cet e-mail.',

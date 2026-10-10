@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\InvoiceResource\Pages\ListInvoices;
-use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
+use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformInvoice;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InvoiceResource extends Resource
 {
-    use HiddenFromSupportAgents;
+    use SuperAdminOnly;
 
     protected static ?string $model = PlatformInvoice::class;
 

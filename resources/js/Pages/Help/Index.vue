@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import HelpIcon from '../../Components/HelpIcon.vue';
 import HelpSearch from '../../Components/HelpSearch.vue';
 import type { HelpEntry } from '../../composables/helpSearch';
+import { useHelpCategories } from '../../composables/helpCategories';
 import { useT } from '../../composables/useT';
 import HelpTabs from '../../Components/HelpTabs.vue';
 import BaseButton from '../../Components/BaseButton.vue';
@@ -17,6 +18,7 @@ defineProps<{
 }>();
 
 const { t } = useT();
+const { categoryName, categoryDescription } = useHelpCategories();
 </script>
 
 <template>
@@ -40,8 +42,8 @@ const { t } = useT();
                         <span class="inline-flex size-10 items-center justify-center rounded-xl bg-mint text-primary-700"
                             ><HelpIcon :name="category.icon"
                         /></span>
-                        <span class="font-semibold text-neutral-900">{{ t(`help.categories.${category.slug}.name`) }}</span>
-                        <span class="hidden text-sm text-neutral-700 sm:block">{{ t(`help.categories.${category.slug}.description`) }}</span>
+                        <span class="font-semibold text-neutral-900">{{ categoryName(category.slug) }}</span>
+                        <span class="hidden text-sm text-neutral-700 sm:block">{{ categoryDescription(category.slug) }}</span>
                         <span class="mt-auto pt-1 text-xs font-semibold text-neutral-600">{{ t('help.articles_count', { count: category.count }) }}</span>
                     </Link>
                 </li>
@@ -58,9 +60,7 @@ const { t } = useT();
                     >
                         <span class="flex flex-wrap items-center gap-2">
                             <span class="font-semibold text-neutral-900">{{ article.title }}</span>
-                            <span class="rounded-full bg-mint px-2.5 py-0.5 text-xs font-semibold text-primary-700">{{
-                                t(`help.categories.${article.category}.name`)
-                            }}</span>
+                            <span class="rounded-full bg-mint px-2.5 py-0.5 text-xs font-semibold text-primary-700">{{ categoryName(article.category) }}</span>
                         </span>
                         <span class="mt-0.5 block text-sm text-neutral-700">{{ article.summary }}</span>
                     </Link>

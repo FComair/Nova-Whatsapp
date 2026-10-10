@@ -16,12 +16,18 @@ use Illuminate\Validation\Rules\Password;
  */
 final class CreatePlatformAdmin extends Command
 {
-    protected $signature = 'nova:create-admin {email : Adresse e-mail du compte} {--support-agent : Agent de support : accès limité aux tickets (jamais aux comptes, à la facturation ni aux réglages)}';
+    protected $signature = 'nova:create-admin {email : Adresse e-mail du compte} {--support-agent : Agent de support : accès limité aux tickets (jamais aux comptes, à la facturation ni aux réglages)} {--content-editor : Éditeur de contenu : accès limité aux FAQ et à leurs catégories}';
 
-    protected $description = 'Crée un compte Super Admin, ou un agent de support avec --support-agent (le 2FA est imposé à la première connexion)';
+    protected $description = 'Crée un compte Super Admin, un agent de support (--support-agent) ou un éditeur de contenu (--content-editor) ; le 2FA est imposé à la première connexion';
 
     public function handle(): int
     {
+        if ($this->option('support-agent') && $this->option('content-editor')) {
+            $this->error('--support-agent et --content-editor sont exclusifs : choisissez un seul rôle.');
+
+            return self::FAILURE;
+        }
+
         $email = mb_strtolower(trim((string) $this->argument('email')));
 
         $password = (string) $this->secret('Mot de passe (16 caractères minimum)');
@@ -47,11 +53,13 @@ final class CreatePlatformAdmin extends Command
 
         if ($this->option('support-agent')) {
             $admin->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
+        } elseif ($this->option('content-editor')) {
+            $admin->forceFill(['support_role' => PlatformAdmin::SUPPORT_EDITOR])->save();
         }
 
         Audit::record('platform_admin.created', 'system', entityType: 'platform_admin', entityId: $admin->id, diff: ['support_role' => $admin->support_role]);
 
-        $this->info(($admin->isSupportAgent() ? 'Agent de support créé : ' : 'Super Admin créé : ').$email);
+        $this->info(($admin->isSupportAgent() ? 'Agent de support créé : ' : ($admin->isContentEditor() ? 'Éditeur de contenu créé : ' : 'Super Admin créé : ')).$email);
         $this->line('À la première connexion, configurez l\'application d\'authentification (2FA obligatoire) et conservez les codes de secours.');
 
         return self::SUCCESS;

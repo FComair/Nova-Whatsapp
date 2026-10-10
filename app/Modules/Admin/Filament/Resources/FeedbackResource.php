@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\FeedbackResource\Pages\ListFeedback;
-use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
+use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformFeedback;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
  */
 class FeedbackResource extends Resource
 {
-    use HiddenFromSupportAgents;
+    use SuperAdminOnly;
 
     protected static ?string $model = PlatformFeedback::class;
 

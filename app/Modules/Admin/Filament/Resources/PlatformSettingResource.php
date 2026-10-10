@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\PlatformSettingResource\Pages\ListPlatformSettings;
-use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
+use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformSetting;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\PlatformSettings;
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class PlatformSettingResource extends Resource
 {
-    use HiddenFromSupportAgents;
+    use SuperAdminOnly;
 
     protected static ?string $model = PlatformSetting::class;
 

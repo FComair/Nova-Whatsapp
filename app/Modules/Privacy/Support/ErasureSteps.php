@@ -17,9 +17,10 @@ final class ErasureSteps
 {
     /**
      * Tables gardées telles quelles (obligation comptable de 7 ans, aucune donnée de carte). Les factures sont pseudonymisées par
-     * l'étape invoices ; les lignes, paiements et abonnements ne contiennent aucune donnée personnelle.
+     * l'étape invoices ; les lignes, paiements et abonnements ne contiennent aucune donnée personnelle. `platform_admin_client_scopes`
+     * (périmètre d'un agent de support : deux identifiants, aucune donnée personnelle) disparaît en cascade avec l'organisation.
      */
-    public const RETAINED = ['subscriptions', 'invoice_lines', 'payments', 'whatsapp_usage'];
+    public const RETAINED = ['subscriptions', 'invoice_lines', 'payments', 'whatsapp_usage', 'platform_admin_client_scopes'];
 
     public const ALL = [
         'loyalty_ledger',
@@ -44,6 +45,8 @@ final class ErasureSteps
         'review_link_clicks',
         'feedback_prompt_dismissals',
         'nova_feedback',
+        'client_notes',
+        'client_tags',
         'support_ticket_links',
         'support_ticket_tags',
         'support_attachments',

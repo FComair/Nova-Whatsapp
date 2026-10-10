@@ -1,6 +1,6 @@
 # Nova — Help centre, contact form and support tickets (spec)
 
-Status: phases 1 (Help centre), 2 (tickets for clients) and 3 (support console in the Super Admin, see docs/29) built; phases 4 and 5 to come. Statuses are now eight on the team side (new, waiting on internal team and reopened were added; the client still sees five): see docs/29 §2. Same visual language as the app (docs/20: teal tokens, Bricolage Grotesque and Instrument Sans, pill buttons, status badge pairs). No change to existing screens except one new top-level menu entry. UI text in fr / nl / en, dates DD/MM/YYYY (CLAUDE.md).
+Status: phases 1 (Help centre), 2 (tickets for clients) and 3 (support console in the Super Admin, see docs/29) built; articles can now also be managed from the Super Admin (docs/30); phases 4 and 5 to come. Statuses are now eight on the team side (new, waiting on internal team and reopened were added; the client still sees five): see docs/29 §2. Same visual language as the app (docs/20: teal tokens, Bricolage Grotesque and Instrument Sans, pill buttons, status badge pairs). No change to existing screens except one new top-level menu entry. UI text in fr / nl / en, dates DD/MM/YYYY (CLAUDE.md).
 
 ## 1. What this adds, and what it reuses
 

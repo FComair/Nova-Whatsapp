@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\LegalVersionResource\Pages\ListLegalVersions;
-use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
+use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformLegalVersion;
 use App\Modules\Admin\Services\LegalVersionManager;
 use App\Modules\Legal\Models\LegalDocumentVersion;
@@ -37,7 +37,7 @@ use InvalidArgumentException;
  */
 class LegalVersionResource extends Resource
 {
-    use HiddenFromSupportAgents;
+    use SuperAdminOnly;
 
     protected static ?string $model = PlatformLegalVersion::class;
 

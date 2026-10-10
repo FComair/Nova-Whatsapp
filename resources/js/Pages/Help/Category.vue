@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import HelpIcon from '../../Components/HelpIcon.vue';
+import { useHelpCategories } from '../../composables/helpCategories';
 import { useT } from '../../composables/useT';
 import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
@@ -14,7 +15,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useT();
-const name = computed(() => t(`help.categories.${props.category.slug}.name`));
+const { categoryName, categoryDescription } = useHelpCategories();
+const name = computed(() => categoryName(props.category.slug));
 </script>
 
 <template>
@@ -27,7 +29,7 @@ const name = computed(() => t(`help.categories.${props.category.slug}.name`));
             <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-xl bg-mint text-primary-700"><HelpIcon :name="category.icon" /></span>
             <div>
                 <h1 class="font-display text-2xl font-bold text-nova-900">{{ name }}</h1>
-                <p class="mt-1 text-neutral-700">{{ t(`help.categories.${category.slug}.description`) }}</p>
+                <p class="mt-1 text-neutral-700">{{ categoryDescription(category.slug) }}</p>
             </div>
         </header>
 

@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * Prévient le propriétaire d'une décision de la plateforme sur son compte (suspension, levée, suppression programmée ou annulée).
+ * Prévient le propriétaire d'une décision de la plateforme sur son compte (suspension, levée, suppression programmée ou annulée, essai prolongé).
  * Notification légale et de sécurité : non désactivable (docs/02 §1). Envoyée dans la langue du propriétaire.
  */
 final class AccountStatusNotification extends Notification
@@ -20,6 +20,7 @@ final class AccountStatusNotification extends Notification
         'organization.deletion_scheduled' => 'deletion_scheduled',
         'organization.deletion_immediate' => 'deletion_scheduled',
         'organization.deletion_cancelled' => 'deletion_cancelled',
+        'organization.trial_extended' => 'trial_extended',
     ];
 
     public function __construct(
@@ -28,6 +29,7 @@ final class AccountStatusNotification extends Notification
         private readonly ?string $reason,
         private readonly ?CarbonInterface $deletionDate,
         string $locale,
+        private readonly ?CarbonInterface $trialEnd = null,
     ) {
         $this->locale(in_array($locale, (array) config('nova.locales'), true) ? $locale : (string) config('app.fallback_locale'));
     }
@@ -54,6 +56,10 @@ final class AccountStatusNotification extends Notification
 
         if ($this->deletionDate !== null && in_array($this->action, ['organization.deletion_scheduled', 'organization.deletion_immediate'], true)) {
             $mail->line(__('mail.account_status.deletion_date', ['date' => $this->deletionDate->locale($this->locale ?? 'fr')->isoFormat('DD/MM/YYYY')]));
+        }
+
+        if ($this->trialEnd !== null && $this->action === 'organization.trial_extended') {
+            $mail->line(__('mail.account_status.trial_end', ['date' => $this->trialEnd->locale($this->locale ?? 'fr')->isoFormat('DD/MM/YYYY')]));
         }
 
         return $mail->line(__('mail.account_status.contact'));

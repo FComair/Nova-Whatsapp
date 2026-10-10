@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import HelpSearch from '../../Components/HelpSearch.vue';
 import { type HelpEntry, MIN_QUERY, searchHelp } from '../../composables/helpSearch';
+import { useHelpCategories } from '../../composables/helpCategories';
 import { useT } from '../../composables/useT';
 import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
@@ -12,6 +13,7 @@ import { routes } from '../../routes';
 const props = defineProps<{ q: string; index: HelpEntry[] }>();
 
 const { t } = useT();
+const { categoryName } = useHelpCategories();
 const results = computed(() => searchHelp(props.index, props.q, 50));
 const searched = computed(() => props.q.trim().length >= MIN_QUERY);
 
@@ -49,7 +51,7 @@ const groups = computed(() => {
             <p class="text-sm text-neutral-700" aria-live="polite">{{ t('help.results_count', { count: results.length }) }}</p>
 
             <section v-for="[category, entries] in groups" :key="category" class="mt-6">
-                <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-700">{{ t(`help.categories.${category}.name`) }}</h2>
+                <h2 class="text-sm font-semibold uppercase tracking-wide text-neutral-700">{{ categoryName(category) }}</h2>
                 <ul class="mt-2 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="entry in entries" :key="entry.slug">
                         <Link

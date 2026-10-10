@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Modules\Help\Support\HelpCatalog;
 use App\Modules\Identity\Models\User;
 use App\Modules\Legal\Services\LegalDocuments;
 use App\Modules\Onboarding\Services\SetupChecklist;
@@ -91,6 +92,8 @@ final class HandleInertiaRequests extends Middleware
 
                 return ['pending' => app(LegalDocuments::class)->pending($user, $current->role() === OrgMember::ROLE_OWNER, app()->getLocale())];
             },
+            // Catégories du centre d'aide dans la langue du client (docs/30) : seulement sur les pages d'aide.
+            'helpCategories' => fn (): ?array => $request->is('aide', 'aide/*') && $request->user() !== null ? app(HelpCatalog::class)->categoryInfo(app()->getLocale()) : null,
             'support' => function () use ($request): ?array {
                 if ($request->user() === null || app(CurrentTenant::class)->organization() === null) {
                     return null;

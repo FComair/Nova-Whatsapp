@@ -16,7 +16,7 @@ use Inertia\Response;
 
 /**
  * Centre d'aide (docs/22) : accueil, catégories, articles, recherche et avis. Réservé aux personnes connectées ; le contenu vient
- * de fichiers Markdown (HelpCatalog), dans la langue de l'interface.
+ * de fichiers Markdown et des articles publiés par le Super Admin (HelpCatalog, docs/30), dans la langue de l'interface.
  */
 final class HelpController
 {
@@ -26,11 +26,12 @@ final class HelpController
     {
         $locale = app()->getLocale();
         $all = $this->catalog->articles($locale);
+        $info = $this->catalog->categoryInfo($locale);
 
         return Inertia::render('Help/Index', [
             'categories' => array_map(fn (string $slug): array => [
                 'slug' => $slug,
-                'icon' => config("help.categories.{$slug}"),
+                'icon' => $info[$slug]['icon'],
                 'count' => count($this->catalog->inCategory($locale, $slug)),
             ], $this->catalog->categories()),
             'popular' => array_map($this->card(...), $this->catalog->popular($locale, (int) config('help.popular'))),
@@ -49,8 +50,13 @@ final class HelpController
 
     public function category(string $category): Response
     {
+        $info = $this->catalog->categoryInfo(app()->getLocale());
+
+        // Une catégorie inconnue, désactivée ou sans nom connu n'existe pas pour le client.
+        abort_unless(isset($info[$category]), 404);
+
         return Inertia::render('Help/Category', [
-            'category' => ['slug' => $category, 'icon' => config("help.categories.{$category}")],
+            'category' => ['slug' => $category, 'icon' => $info[$category]['icon']],
             'articles' => array_map($this->card(...), $this->catalog->inCategory(app()->getLocale(), $category)),
         ]);
     }

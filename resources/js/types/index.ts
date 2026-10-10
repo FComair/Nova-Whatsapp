@@ -190,6 +190,8 @@ export interface SharedProps {
     legal?: { pending: { code: string; slug: string; title: string; version: string; blocking: boolean }[] } | null;
     /** Pastille du menu Aide : tickets qui attendent l'attention de la personne. */
     support: { attention: number } | null;
+    /** Catégories du centre d'aide dans la langue du client (docs/30) ; null hors des pages d'aide. */
+    helpCategories?: Record<string, { name: string; description: string; icon: string }> | null;
     flash: { status: string | null; warning: string | null; first_login: boolean; suggestions: Suggestion[] };
     [key: string]: unknown;
 }

@@ -18,6 +18,12 @@ return [
         'troubleshooting' => 'wrench',
     ],
 
+    /**
+     * Langues dont la traduction doit être prête pour publier une FAQ en mode « langues disponibles » (docs/30 §4). En mode « toutes les
+     * langues », fr, nl et en doivent être prêtes.
+     */
+    'required_locales' => ['fr', 'en'],
+
     /** Nombre d'articles « populaires » affichés sur la page d'accueil. */
     'popular' => 6,
 ];

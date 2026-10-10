@@ -5,26 +5,39 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources\OrganizationResource\Pages;
 
 use App\Modules\Admin\Filament\Resources\OrganizationResource;
+use App\Modules\Admin\Filament\Support\ClientActions;
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
+use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Services\AccessRecovery;
+use App\Modules\Admin\Services\ClientDirectory;
+use App\Modules\Admin\Services\ClientManager;
 use App\Modules\Admin\Services\OrganizationLifecycle;
 use App\Modules\Tenancy\Models\Organization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use InvalidArgumentException;
 
 /**
- * Fiche d'un client et actions de cycle de vie. Chaque action exige motif, mot de passe et code 2FA ; la suppression exige
- * en plus la saisie du nom de l'organisation (docs/02 §3.3).
+ * Fiche d'un client (docs/31) : vue d'ensemble, informations et équipe, abonnement, usage et santé, notes, puis factures, activité et
+ * support ; actions : modifier, prolonger l'essai, noter, étiqueter, exporter la fiche, et les actions de cycle de vie (suspendre, lever,
+ * supprimer : motif facultatif, docs/02 §3.3). L'ouverture de la fiche est consignée (consultation de données client).
  */
 class ViewOrganization extends ViewRecord
 {
     protected static string $resource = OrganizationResource::class;
+
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        app(ClientManager::class)->viewed(ClientActions::admin(), $this->organization());
+    }
 
     /**
      * @return array<Action>
@@ -32,6 +45,11 @@ class ViewOrganization extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            ClientActions::editDetails()->record(fn () => $this->organization()),
+            ClientActions::extendTrial()->record(fn () => $this->organization()),
+            $this->noteAction(),
+            ClientActions::tag()->record(fn () => $this->organization()),
+            $this->exportProfileAction(),
             $this->lifecycleAction('suspend', 'danger', [Organization::STATUS_TRIAL, Organization::STATUS_ACTIVE, Organization::STATUS_PAST_DUE, Organization::STATUS_PAUSED], 'suspend'),
             $this->lifecycleAction('lift', 'success', [Organization::STATUS_SUSPENDED], 'lift'),
             $this->lifecycleAction('schedule_deletion', 'danger', [Organization::STATUS_TRIAL, Organization::STATUS_ACTIVE, Organization::STATUS_PAST_DUE, Organization::STATUS_SUSPENDED, Organization::STATUS_PAUSED], 'scheduleDeletion'),
@@ -39,6 +57,22 @@ class ViewOrganization extends ViewRecord
             $this->lifecycleAction('cancel_deletion', 'success', [Organization::STATUS_PENDING_DELETION], 'cancelDeletion'),
             $this->unblockAccessAction(),
         ];
+    }
+
+    private function noteAction(): Action
+    {
+        return Action::make('add_note')->label(__('clients.actions.add_note'))->icon('heroicon-m-pencil-square')->color('gray')->modalHeading(__('clients.actions.add_note'))
+            ->schema([Textarea::make('body')->label(__('clients.notes.body'))->required()->rows(5)->maxLength(5000)->helperText(__('clients.notes.help'))])
+            ->action(fn (array $data) => ClientActions::perform(fn (PlatformAdmin $admin) => app(ClientManager::class)->addNote($admin, $this->organization(), (string) $data['body']), __('clients.notes.saved')));
+    }
+
+    /** Export CSV de la fiche d'un client (mêmes catégories, même avertissement, consigné). */
+    private function exportProfileAction(): Action
+    {
+        return Action::make('export_profile')->label(__('clients.actions.export_profile'))->icon('heroicon-m-arrow-down-tray')->color('gray')
+            ->modalHeading(__('clients.export.heading'))->modalDescription(__('clients.export.description', ['count' => 1]))->modalSubmitActionLabel(__('clients.export.confirm'))
+            ->schema(ClientActions::exportFields())
+            ->action(fn (array $data) => ClientActions::download(ClientDirectory::query()->where('organizations.id', $this->organization()->id), (array) ($data['groups'] ?? []), [], 'profile'));
     }
 
     /**

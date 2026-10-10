@@ -71,7 +71,7 @@ abstract class TestCase extends BaseTestCase
 
         // session_replication_role = replica désactive les triggers « ajout seul » le temps de vider les tables.
         $owner->unprepared('SET session_replication_role = replica');
-        $owner->unprepared('TRUNCATE invoice_sequences, audit_logs, user_consents, password_reset_tokens, org_member_locations, org_members, locations, organizations, platform_admins, platform_notifications, support_saved_views, users RESTART IDENTITY CASCADE');
+        $owner->unprepared('TRUNCATE invoice_sequences, audit_logs, user_consents, password_reset_tokens, org_member_locations, org_members, locations, organizations, platform_admins, platform_notifications, support_saved_views, faq_categories, users RESTART IDENTITY CASCADE');
         $owner->unprepared('SET session_replication_role = DEFAULT');
 
         // Les secteurs sont des données de référence que certains tests modifient : retour aux secteurs de départ à chaque test.

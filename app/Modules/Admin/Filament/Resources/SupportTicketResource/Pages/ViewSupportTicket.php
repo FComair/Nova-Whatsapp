@@ -11,6 +11,7 @@ use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SupportConsole;
 use App\Modules\Admin\Support\SupportAccess;
+use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Exceptions\TicketChanged;
 use App\Modules\Support\Exceptions\TicketRefused;
 use App\Modules\Support\Models\SupportAttachment;
@@ -202,7 +203,7 @@ class ViewSupportTicket extends Page
         return [
             Action::make('assign')->label(__('tickets.actions.assign'))->icon('heroicon-m-user-plus')->color('gray')->hidden($closed)
                 ->fillForm(fn (): array => ['agent' => $this->ticket()->assigned_admin_id ?? 'none'])
-                ->schema([Select::make('agent')->label(__('tickets.columns.assignee'))->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignees()])->required()])
+                ->schema([Select::make('agent')->label(__('tickets.columns.assignee'))->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignableBy(SupportAccess::admin() ?? new PlatformAdmin, $this->ticket()->org_id)])->required()])
                 ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->assign($admin, $ticket, $data['agent'] === 'none' ? null : (string) $data['agent'], $this->version))),
             Action::make('status')->label(__('tickets.actions.status'))->icon('heroicon-m-arrow-path')->color('gray')->hidden($closed)
                 ->fillForm(fn (): array => ['status' => in_array($this->ticket()->status, TicketStatus::STAFF_SETTABLE, true) ? $this->ticket()->status : null])
@@ -210,7 +211,7 @@ class ViewSupportTicket extends Page
                     ->options(fn (): array => collect(TicketStatus::STAFF_SETTABLE)->mapWithKeys(fn (string $status): array => [$status => __("tickets.statuses.{$status}")])->all())
                     ->helperText(__('tickets.actions.status_help'))])
                 ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->setStatus($admin, $ticket, (string) $data['status'], $this->version))),
-            Action::make('priority')->label(__('tickets.actions.priority'))->icon('heroicon-m-flag')->color('gray')->hidden($closed)
+            Action::make('priority')->label(__('tickets.actions.priority'))->icon('heroicon-m-flag')->color('gray')->hidden($closed || ! $this->allowed(SupportPermissions::CHANGE_PRIORITY))
                 ->fillForm(fn (): array => ['priority' => $this->ticket()->priority()])
                 ->schema([Select::make('priority')->label(__('tickets.columns.priority'))->required()->native(false)
                     ->options(fn (): array => collect(SupportTicket::PRIORITIES)->mapWithKeys(fn (string $priority): array => [$priority => __("tickets.priorities.{$priority}")])->all())])
@@ -220,11 +221,11 @@ class ViewSupportTicket extends Page
                 ->requiresConfirmation()->modalHeading(__('tickets.actions.resolve_heading'))->modalDescription(__('tickets.actions.resolve_description'))
                 ->action(fn () => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->setStatus($admin, $ticket, TicketStatus::RESOLVED, $this->version))),
             Action::make('reopen')->label(__('tickets.actions.reopen'))->icon('heroicon-m-arrow-uturn-left')->color('warning')
-                ->visible(fn (): bool => in_array($this->ticket()->status, [TicketStatus::RESOLVED, TicketStatus::CLOSED], true))
+                ->visible(fn (): bool => in_array($this->ticket()->status, [TicketStatus::RESOLVED, TicketStatus::CLOSED], true) && $this->allowed(SupportPermissions::REOPEN_TICKETS))
                 ->requiresConfirmation()->modalHeading(__('tickets.actions.reopen_heading'))->modalDescription(__('tickets.actions.reopen_description'))
                 ->action(fn () => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->reopen($admin, $ticket, $this->version))),
             ActionGroup::make([
-                Action::make('tags')->label(__('tickets.actions.tag'))->icon('heroicon-m-tag')->hidden($closed)
+                Action::make('tags')->label(__('tickets.actions.tag'))->icon('heroicon-m-tag')->hidden($closed || ! $this->allowed(SupportPermissions::MANAGE_TAGS))
                     ->schema([TextInput::make('tag')->label(__('tickets.tag'))->maxLength(30)->required()->helperText(__('tickets.actions.tag_help'))])
                     ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->addTag($admin, $ticket, (string) $data['tag']))),
                 Action::make('link')->label(__('tickets.actions.link'))->icon('heroicon-m-link')
@@ -246,7 +247,46 @@ class ViewSupportTicket extends Page
                     ->requiresConfirmation()->modalHeading(__('tickets.actions.close_heading'))->modalDescription(__('tickets.actions.close_description'))
                     ->action(fn () => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->close($admin, $ticket, $this->version))),
             ])->label(__('tickets.actions.more'))->icon('heroicon-m-ellipsis-horizontal')->button()->color('gray'),
+            $this->deleteAction(),
         ];
+    }
+
+    private function allowed(string $permission): bool
+    {
+        $admin = SupportAccess::admin();
+
+        return $admin !== null && SupportPermissions::can($admin, $permission);
+    }
+
+    /**
+     * Suppression définitive : visible seulement avec la permission, confirmée en saisissant la référence du ticket (docs/32 §1).
+     */
+    private function deleteAction(): Action
+    {
+        return Action::make('delete')->label(__('tickets.delete.label'))->icon('heroicon-m-trash')->color('danger')
+            ->visible(fn (): bool => $this->allowed(SupportPermissions::DELETE_TICKETS))
+            ->modalHeading(fn (): string => __('tickets.delete.heading', ['reference' => $this->ticket()->reference()]))
+            ->modalDescription(__('tickets.delete.description'))
+            ->modalIcon('heroicon-o-exclamation-triangle')->modalSubmitActionLabel(__('tickets.delete.submit'))
+            ->schema([
+                TextInput::make('confirmation')->label(fn (): string => __('tickets.delete.confirm_label', ['reference' => $this->ticket()->reference()]))->required()->autocomplete(false)
+                    ->in(fn (): array => [$this->ticket()->reference()])->validationMessages(['in' => __('tickets.delete.confirm_mismatch')]),
+                Textarea::make('reason')->label(__('tickets.delete.reason'))->rows(2)->maxLength(500)->helperText(__('tickets.delete.reason_help')),
+            ])
+            ->action(function (array $data): void {
+                $admin = SupportAccess::admin() ?? abort(403);
+                $reference = $this->ticket()->reference();
+                $reason = trim((string) ($data['reason'] ?? ''));
+
+                try {
+                    app(SupportConsole::class)->delete($admin, $this->ticketId, $reason === '' ? null : $reason);
+                } catch (AuthorizationException) {
+                    abort(403);
+                }
+
+                Notification::make()->success()->title(__('tickets.delete.done', ['reference' => $reference]))->send();
+                $this->redirect(SupportTicketResource::getUrl('index'));
+            });
     }
 
     /** Un lien vers un autre ticket se saisit par sa référence (NWS-1042) ; on retrouve alors le ticket pour le relier à son identifiant. */
@@ -338,7 +378,7 @@ class ViewSupportTicket extends Page
     public function summary(): array
     {
         $ticket = $this->ticket();
-        $agents = SupportAccess::assignees();
+        $agents = SupportAccess::names();
         $sla = app(SupportSla::class);
         $organization = DB::connection(PlatformAudit::CONNECTION)->table('organizations')->where('id', $ticket->org_id)->value('name');
 

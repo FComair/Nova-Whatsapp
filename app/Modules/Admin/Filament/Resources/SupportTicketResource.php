@@ -12,14 +12,17 @@ use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\PlatformSettings;
 use App\Modules\Admin\Services\SupportConsole;
 use App\Modules\Admin\Support\SupportAccess;
+use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Models\SupportTicket;
 use App\Modules\Support\Services\SupportSla;
 use App\Modules\Support\Support\TicketStatus;
 use BackedEnum;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -110,6 +113,12 @@ class SupportTicketResource extends Resource
         return __('tickets.navigation.badge');
     }
 
+    /** Les tickets sont réservés au Super Admin et aux agents de support (pas aux éditeurs de contenu). */
+    public static function canAccess(): bool
+    {
+        return SupportAccess::canUseTickets() && parent::canAccess();
+    }
+
     public static function canCreate(): bool
     {
         return true;
@@ -144,7 +153,7 @@ class SupportTicketResource extends Resource
         return $query
             ->leftJoin('organizations as org', 'org.id', '=', 'support_tickets.org_id')
             ->leftJoin('platform_admins as agent', 'agent.id', '=', 'support_tickets.assigned_admin_id')
-            ->select('support_tickets.*', 'org.name as organization_name', 'agent.email as assignee_email')
+            ->select('support_tickets.*', 'org.name as organization_name', DB::raw("coalesce(nullif(agent.name, ''), agent.email) as assignee_email"))
             ->addSelect(DB::raw(self::PRIORITY_RANK_SQL.' as priority_rank'))
             ->addSelect(DB::raw('(select string_agg(t.tag, \',\' order by t.tag) from support_ticket_tags t where t.ticket_id = support_tickets.id) as tag_list'));
     }
@@ -205,7 +214,7 @@ class SupportTicketResource extends Resource
                 SelectFilter::make('category')->label(__('tickets.columns.category'))->multiple()
                     ->options(fn (): array => collect(SupportTicket::CATEGORIES)->mapWithKeys(fn (string $category): array => [$category => __("tickets.categories.{$category}")])->all()),
                 SelectFilter::make('assignee')->label(__('tickets.columns.assignee'))
-                    ->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignees()])
+                    ->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::names()])
                     ->query(fn (Builder $query, array $data): Builder => match ($data['value'] ?? null) {
                         null, '' => $query,
                         'none' => $query->whereNull('support_tickets.assigned_admin_id'),
@@ -234,7 +243,7 @@ class SupportTicketResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    self::bulkAssign(), self::bulkStatus(), self::bulkPriority(), self::bulkTag(), self::bulkClose(),
+                    self::bulkAssign(), self::bulkStatus(), self::bulkPriority(), self::bulkTag(), self::bulkClose(), self::bulkDelete(),
                 ])->label(__('tickets.bulk.label')),
             ])
             ->emptyStateHeading(__('tickets.empty.heading'))
@@ -308,7 +317,7 @@ class SupportTicketResource extends Resource
     private static function bulkAssign(): BulkAction
     {
         return BulkAction::make('assign')->label(__('tickets.bulk.assign'))->icon('heroicon-m-user-plus')->deselectRecordsAfterCompletion()
-            ->schema([Select::make('agent')->label(__('tickets.columns.assignee'))->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignees()])->required()])
+            ->schema([Select::make('agent')->label(__('tickets.columns.assignee'))->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignableBy(SupportAccess::admin() ?? new PlatformAdmin)])->required()])
             ->action(fn (Collection $records, array $data) => self::runBulk($records, 'assign', fn (SupportConsole $console, $admin, $ticket) => $console->assign($admin, $ticket, $data['agent'] === 'none' ? null : (string) $data['agent'])));
     }
 
@@ -321,16 +330,47 @@ class SupportTicketResource extends Resource
 
     private static function bulkPriority(): BulkAction
     {
-        return BulkAction::make('priority')->label(__('tickets.bulk.priority'))->icon('heroicon-m-flag')->deselectRecordsAfterCompletion()
+        return BulkAction::make('priority')->label(__('tickets.bulk.priority'))->icon('heroicon-m-flag')->visible(fn (): bool => self::allowed(SupportPermissions::CHANGE_PRIORITY))->deselectRecordsAfterCompletion()
             ->schema([Select::make('priority')->label(__('tickets.columns.priority'))->options(fn (): array => collect(SupportTicket::PRIORITIES)->mapWithKeys(fn (string $priority): array => [$priority => __("tickets.priorities.{$priority}")])->all())->required()])
             ->action(fn (Collection $records, array $data) => self::runBulk($records, 'priority', fn (SupportConsole $console, $admin, $ticket) => $console->setPriority($admin, $ticket, (string) $data['priority'])));
     }
 
     private static function bulkTag(): BulkAction
     {
-        return BulkAction::make('tag')->label(__('tickets.bulk.tag'))->icon('heroicon-m-tag')->deselectRecordsAfterCompletion()
+        return BulkAction::make('tag')->label(__('tickets.bulk.tag'))->icon('heroicon-m-tag')->visible(fn (): bool => self::allowed(SupportPermissions::MANAGE_TAGS))->deselectRecordsAfterCompletion()
             ->schema([TextInput::make('tag')->label(__('tickets.tag'))->maxLength(30)->required()])
             ->action(fn (Collection $records, array $data) => self::runBulk($records, 'tag', fn (SupportConsole $console, $admin, $ticket) => $console->addTag($admin, $ticket, (string) $data['tag'])));
+    }
+
+    private static function allowed(string $permission): bool
+    {
+        $admin = SupportAccess::admin();
+
+        return $admin !== null && SupportPermissions::can($admin, $permission);
+    }
+
+    /**
+     * Suppression définitive en lot (docs/32 §1) : visible seulement avec la permission, confirmée par case à cocher et saisie du nombre
+     * de tickets. Chaque ticket est contrôlé et audité séparément ; ceux qui sont refusés sont comptés « ignorés ».
+     */
+    private static function bulkDelete(): BulkAction
+    {
+        return BulkAction::make('delete')->label(__('tickets.delete.bulk_label'))->icon('heroicon-m-trash')->color('danger')->deselectRecordsAfterCompletion()
+            ->visible(fn (): bool => self::allowed(SupportPermissions::DELETE_TICKETS))
+            ->modalHeading(fn (Collection $records): string => __('tickets.delete.bulk_heading', ['count' => $records->count()]))
+            ->modalDescription(__('tickets.delete.bulk_description'))
+            ->modalIcon('heroicon-o-exclamation-triangle')->modalSubmitActionLabel(__('tickets.delete.submit'))
+            ->schema(fn (Collection $records): array => [
+                Checkbox::make('understood')->label(__('tickets.delete.understood'))->accepted()->validationMessages(['accepted' => __('tickets.delete.understood_required')]),
+                TextInput::make('count')->label(__('tickets.delete.type_count', ['count' => $records->count()]))->required()->autocomplete(false)
+                    ->in([(string) $records->count()])->validationMessages(['in' => __('tickets.delete.confirm_mismatch')]),
+                Textarea::make('reason')->label(__('tickets.delete.reason'))->rows(2)->maxLength(500)->helperText(__('tickets.delete.reason_help')),
+            ])
+            ->action(function (Collection $records, array $data): void {
+                $reason = trim((string) ($data['reason'] ?? ''));
+
+                self::runBulk($records, 'delete', fn (SupportConsole $console, $admin, $ticket) => $console->delete($admin, $ticket->id, $reason === '' ? null : $reason));
+            });
     }
 
     private static function bulkClose(): BulkAction

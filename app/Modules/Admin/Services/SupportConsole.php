@@ -7,15 +7,20 @@ namespace App\Modules\Admin\Services;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Support\SupportAccess;
+use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Exceptions\TicketChanged;
 use App\Modules\Support\Exceptions\TicketRefused;
 use App\Modules\Support\Models\SupportMessage;
+use App\Modules\Support\Services\AttachmentStore;
 use App\Modules\Support\Services\TicketDesk;
 use App\Modules\Support\Support\TicketStatus;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 /**
  * Point d'entrée unique du Super Admin pour agir sur les tickets (docs/29) : vérifie le droit de voir le ticket, détecte une modification
@@ -93,6 +98,7 @@ final class SupportConsole
      */
     public function setPriority(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $priority, ?int $version = null): void
     {
+        $this->authorize($admin, SupportPermissions::CHANGE_PRIORITY);
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->priority();
         $this->desk->staffSetPriority($ticket, $admin->id, $priority);
@@ -104,18 +110,26 @@ final class SupportConsole
      */
     public function assign(PlatformAdmin $admin, PlatformSupportTicket $ticket, ?string $assigneeId, ?int $version = null): void
     {
-        if ($assigneeId !== null && ! array_key_exists($assigneeId, SupportAccess::assignees())) {
+        $ticket = $this->fresh($admin, $ticket, $version);
+        $from = $ticket->assigned_admin_id;
+
+        // Un compte inactif (invité, suspendu, retiré), un éditeur ou un agent hors périmètre ne reçoit jamais de ticket.
+        if ($assigneeId !== null && ! array_key_exists($assigneeId, SupportAccess::assignees($ticket->org_id))) {
             throw new AuthorizationException;
         }
 
-        $ticket = $this->fresh($admin, $ticket, $version);
-        $from = $ticket->assigned_admin_id;
+        // Sans la permission « assigner à d'autres », un agent prend un ticket pour lui ou remet le sien dans la file.
+        if (! SupportPermissions::can($admin, SupportPermissions::ASSIGN_OTHERS) && ! ($assigneeId === $admin->id || ($assigneeId === null && $from === $admin->id))) {
+            throw new AuthorizationException;
+        }
+
         $this->desk->staffAssign($ticket, $admin->id, $assigneeId);
         $this->audit($admin, 'support.ticket.assigned', $ticket, ['assigned_to' => [$from, $assigneeId]]);
     }
 
     public function addTag(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $tag): void
     {
+        $this->authorize($admin, SupportPermissions::MANAGE_TAGS);
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffAddTag($ticket, $admin->id, $tag);
         $this->audit($admin, 'support.ticket.tag_added', $ticket, ['tag' => TicketDesk::cleanTag($tag)]);
@@ -123,6 +137,7 @@ final class SupportConsole
 
     public function removeTag(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $tag): void
     {
+        $this->authorize($admin, SupportPermissions::MANAGE_TAGS);
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffRemoveTag($ticket, $admin->id, $tag);
         $this->audit($admin, 'support.ticket.tag_removed', $ticket, ['tag' => TicketDesk::cleanTag($tag)]);
@@ -171,10 +186,58 @@ final class SupportConsole
      */
     public function reopen(PlatformAdmin $admin, PlatformSupportTicket $ticket, ?int $version = null): void
     {
+        $this->authorize($admin, SupportPermissions::REOPEN_TICKETS);
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->status;
         $this->desk->staffReopen($ticket, $admin->id);
         $this->audit($admin, 'support.ticket.reopened', $ticket, ['status' => [$from, TicketStatus::REOPENED]]);
+    }
+
+    /**
+     * Supprime DÉFINITIVEMENT un ticket (messages, notes internes, pièces jointes, événements, étiquettes, liens) : docs/32 §1. Seul le
+     * journal d'audit survit, avec qui, quand, la référence, l'objet, le client, ce qui a été supprimé et le motif (facultatif).
+     * Refusé sans la permission de suppression ou hors de la portée de l'agent.
+     *
+     * @throws AuthorizationException
+     */
+    public function delete(PlatformAdmin $admin, string $ticketId, ?string $reason = null): void
+    {
+        $this->authorize($admin, SupportPermissions::DELETE_TICKETS);
+        $ticket = $this->find($admin, $ticketId);
+        $db = DB::connection(PlatformAudit::CONNECTION);
+
+        /** @var array<string, mixed>|null $gone */
+        $gone = $db->transaction(function () use ($db, $admin, $ticket, $reason): ?array {
+            $json = $db->selectOne('select support_delete_ticket(?) as result', [$ticket->id])->result ?? null;
+            $gone = $json === null ? null : (array) json_decode((string) $json, true, 512, JSON_THROW_ON_ERROR);
+
+            if ($gone === null) {
+                return null;
+            }
+
+            PlatformAudit::record($admin->id, 'support.ticket.deleted', $ticket->org_id, 'support_ticket', $ticket->id, [
+                'reference' => $ticket->reference(), 'subject' => $ticket->subject, 'status' => $gone['status'], 'assigned_to' => $gone['assigned_admin_id'],
+                'messages' => $gone['messages'], 'internal_notes' => $gone['internal_notes'], 'attachments' => $gone['attachments'], 'events' => $gone['events'],
+            ], $reason);
+
+            // Les notifications de la cloche qui pointaient vers ce ticket n'ont plus de cible.
+            $db->table('platform_notifications')->whereRaw('data::text like ?', ['%'.$ticket->id.'%'])->delete();
+
+            return $gone;
+        });
+
+        if ($gone === null) {
+            throw new AuthorizationException;
+        }
+
+        // Les fichiers partent après la validation en base : un échec laisse un fichier orphelin, jamais une pièce jointe sans ticket.
+        foreach ((array) $gone['paths'] as $path) {
+            try {
+                Storage::disk(AttachmentStore::DISK)->delete((string) $path);
+            } catch (Throwable $e) {
+                Log::warning('Suppression de ticket : fichier non supprimé.', ['ticket' => $ticket->id, 'path' => (string) $path, 'error' => $e->getMessage()]);
+            }
+        }
     }
 
     /**
@@ -243,6 +306,14 @@ final class SupportConsole
     public function audited(PlatformAdmin $admin, string $action, int $count, array $filters = []): void
     {
         PlatformAudit::record($admin->id, $action, null, 'support_ticket', null, ['count' => $count, 'filters' => $filters]);
+    }
+
+    /** @throws AuthorizationException */
+    private function authorize(PlatformAdmin $admin, string $permission): void
+    {
+        if (! SupportPermissions::can($admin, $permission)) {
+            throw new AuthorizationException;
+        }
     }
 
     /**

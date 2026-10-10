@@ -52,7 +52,7 @@ class SupportReports extends Page
 
     public static function canAccess(): bool
     {
-        return SupportAccess::admin() !== null;
+        return SupportAccess::canUseTickets();
     }
 
     public function mount(): void

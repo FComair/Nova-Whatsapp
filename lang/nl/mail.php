@@ -111,6 +111,11 @@ return [
             'subject' => 'De verwijdering van uw Nova-account « :name » is geannuleerd',
             'intro' => 'De geplande verwijdering van het Nova-account van « :name » is geannuleerd: uw gegevens blijven bewaard.',
         ],
+        'trial_extended' => [
+            'subject' => 'De proefperiode van uw Nova-account « :name » is verlengd',
+            'intro' => 'Nova heeft de gratis proefperiode van « :name » verlengd: uw account is volledig bruikbaar.',
+        ],
+        'trial_end' => 'Uw proefperiode eindigt nu op :date. Kies vóór die datum een formule om zonder onderbreking verder te gaan.',
         'reason' => 'Reden: :reason',
         'deletion_date' => 'Uw gegevens worden gewist op :date. Tot dan kunt u uw gegevens exporteren.',
         'contact' => 'Neem voor vragen contact op met de Nova-support door op deze e-mail te antwoorden.',

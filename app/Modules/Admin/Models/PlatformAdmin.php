@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use SensitiveParameter;
 
 /**
@@ -28,6 +29,15 @@ use SensitiveParameter;
  * @property list<string>|null $app_authentication_recovery_codes
  * @property string|null $support_role
  * @property array<string, list<string>>|null $support_notifications
+ * @property string|null $name
+ * @property string|null $phone
+ * @property string $status
+ * @property string|null $internal_notes
+ * @property array<string, bool>|null $permissions
+ * @property string|null $invitation_token
+ * @property Carbon|null $invitation_expires_at
+ * @property Carbon|null $invited_at
+ * @property Carbon|null $last_login_at
  */
 #[Fillable(['email', 'password'])]
 #[Hidden(['password', 'remember_token', 'app_authentication_secret', 'app_authentication_recovery_codes'])]
@@ -37,6 +47,18 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
 
     /** Rôle de support limité aux tickets (docs/29 §5). Sans rôle : Super Admin, accès complet. */
     public const SUPPORT_AGENT = 'agent';
+
+    /** Éditeur de contenu : FAQ et catégories d'aide seulement (docs/30 §7). */
+    public const SUPPORT_EDITOR = 'editor';
+
+    /** Statut d'un compte de l'équipe : seul « actif » ouvre le panel ; « retiré » est une suppression douce (l'historique garde l'auteur). */
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_INVITED = 'invited';
+
+    public const STATUS_SUSPENDED = 'suspended';
+
+    public const STATUS_REMOVED = 'removed';
 
     protected $connection = 'pgsql_platform';
 
@@ -53,6 +75,11 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
             'last_login_at' => 'datetime',
             'ip_allowlist' => 'array',
             'support_notifications' => 'array',
+            'permissions' => 'array',
+            'invitation_expires_at' => 'datetime',
+            'invited_at' => 'datetime',
+            'suspended_at' => 'datetime',
+            'removed_at' => 'datetime',
         ];
     }
 
@@ -71,16 +98,28 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
         return $this->support_role === self::SUPPORT_AGENT;
     }
 
-    /** Nom affiché dans le menu du panel : l'adresse e-mail (pas de nom saisi). */
+    public function isContentEditor(): bool
+    {
+        return $this->support_role === self::SUPPORT_EDITOR;
+    }
+
+    /** Nom affiché dans le menu du panel : le nom saisi, à défaut l'adresse e-mail. */
     public function getFilamentName(): string
     {
-        return $this->email;
+        return $this->name !== null && $this->name !== '' ? $this->name : $this->email;
+    }
+
+    public function isActive(): bool
+    {
+        // Une instance fraîchement créée n'a pas relu le défaut de la base : sans statut chargé, le compte est actif.
+        return ($this->status ?? self::STATUS_ACTIVE) === self::STATUS_ACTIVE;
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Toute ligne de platform_admins est un administrateur de la plateforme ; le 2FA est imposé par le panel.
-        return $panel->getId() === 'admin';
+        // Toute ligne active de platform_admins est un administrateur de la plateforme ; le 2FA est imposé par le panel.
+        // Un compte suspendu, retiré ou pas encore activé perd l'accès à la requête suivante, session ouverte comprise.
+        return $panel->getId() === 'admin' && $this->isActive();
     }
 
     /**

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Filament\Resources;
 
 use App\Modules\Admin\Filament\Resources\AuditLogResource\Pages\ListAuditLogs;
-use App\Modules\Admin\Filament\Support\HiddenFromSupportAgents;
+use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformAuditLog;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AuditLogResource extends Resource
 {
-    use HiddenFromSupportAgents;
+    use SuperAdminOnly;
 
     protected static ?string $model = PlatformAuditLog::class;
 

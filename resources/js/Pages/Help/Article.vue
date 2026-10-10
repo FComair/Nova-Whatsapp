@@ -5,6 +5,7 @@ import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import HelpBreadcrumb from '../../Components/HelpBreadcrumb.vue';
 import { formatDate } from '../../composables/dates';
+import { useHelpCategories } from '../../composables/helpCategories';
 import { useT } from '../../composables/useT';
 import HelpTabs from '../../Components/HelpTabs.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
@@ -26,7 +27,8 @@ const props = defineProps<{
 
 const { t } = useT();
 const page = usePage<SharedProps>();
-const categoryName = computed(() => t(`help.categories.${props.article.category}.name`));
+const { categoryName: nameOf } = useHelpCategories();
+const categoryName = computed(() => nameOf(props.article.category));
 
 const sent = ref(props.answered);
 const asking = ref(false);

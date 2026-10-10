@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\AccountStateController;
 use App\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\DevAdminLoginController;
+use App\Modules\Admin\Http\Controllers\SupportInvitationController;
 use App\Modules\Billing\Http\Controllers\BillingController;
 use App\Modules\Booking\Http\Controllers\PlanningController;
 use App\Modules\Calendars\Http\Controllers\CalendarController;
@@ -63,6 +64,12 @@ if (app()->environment('local')) {
 }
 
 Route::post('/langue', [LocaleController::class, 'update'])->name('locale.update');
+
+// Invitation / réinitialisation du mot de passe d'un agent de support (docs/32) : jeton à usage unique, limité en fréquence.
+Route::middleware('throttle:10,1')->group(function (): void {
+    Route::get('/equipe/invitation/{admin}/{token}', [SupportInvitationController::class, 'show'])->name('admin.invitation');
+    Route::post('/equipe/invitation/{admin}/{token}', [SupportInvitationController::class, 'store'])->name('admin.invitation.store');
+});
 
 // Flux ICS sortant d'un praticien : adresse secrète (jeton), sans session.
 Route::get('/ics/{token}.ics', [FeedController::class, 'show'])->where('token', 'nf_[A-Za-z0-9]{40}')->middleware('throttle:60,1')->name('calendar.feed');
@@ -238,7 +245,8 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
 
     // Centre d'aide (docs/22) : tous les rôles ; contenu en fichiers Markdown, avis enregistré par personne.
     Route::prefix('/aide')->group(function (): void {
-        $categories = implode('|', array_keys((array) config('help.categories')));
+        // Les catégories viennent aussi de la base (docs/30) : le format est vérifié ici, l'existence par le contrôleur (404).
+        $categories = '[a-z0-9]+(-[a-z0-9]+)*';
 
         Route::get('/', [HelpController::class, 'index'])->name('help.index');
         Route::get('/recherche', [HelpController::class, 'search'])->name('help.search');

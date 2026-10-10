@@ -2,6 +2,7 @@
 import { router } from '@inertiajs/vue3';
 import { computed, ref, useId } from 'vue';
 import { type HelpEntry, MIN_QUERY, searchHelp } from '../composables/helpSearch';
+import { useHelpCategories } from '../composables/helpCategories';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
 
@@ -21,7 +22,7 @@ const suggestions = computed(() => (open.value ? searchHelp(props.index, query.v
 const showList = computed(() => open.value && query.value.trim().length >= MIN_QUERY);
 const rows = computed(() => suggestions.value.length + 1);
 
-const categoryName = (slug: string): string => t(`help.categories.${slug}.name`);
+const { categoryName } = useHelpCategories();
 const optionId = (position: number): string => `${id}-option-${position}`;
 
 function go(entry: HelpEntry): void {

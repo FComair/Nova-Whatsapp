@@ -111,6 +111,11 @@ return [
             'subject' => 'The deletion of your Nova account « :name » has been cancelled',
             'intro' => 'The scheduled deletion of the Nova account of « :name » has been cancelled: your data is kept.',
         ],
+        'trial_extended' => [
+            'subject' => 'The trial of your Nova account « :name » has been extended',
+            'intro' => 'Nova has extended the free trial of « :name »: your account is fully usable.',
+        ],
+        'trial_end' => 'Your trial now ends on :date. Choose a plan before then to carry on without interruption.',
         'reason' => 'Reason: :reason',
         'deletion_date' => 'Your data will be erased on :date. You can export your data until then.',
         'contact' => 'For any question, contact Nova support by replying to this email.',
