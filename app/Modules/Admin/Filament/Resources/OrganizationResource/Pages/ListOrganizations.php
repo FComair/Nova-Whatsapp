@@ -9,6 +9,7 @@ use App\Modules\Admin\Filament\Support\ClientActions;
 use App\Modules\Admin\Services\ClientDirectory;
 use App\Modules\Admin\Services\ClientExport;
 use App\Modules\Admin\Services\PlatformAudit;
+use App\Modules\Admin\Support\AdminAccess;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Select;
@@ -57,7 +58,7 @@ class ListOrganizations extends ListRecords
     /** Export CSV de la liste telle qu'elle est filtrée : on montre d'abord combien de clients et quelles données, puis on confirme. */
     private function exportAction(): Action
     {
-        return Action::make('export')->label(__('clients.actions.export'))->icon('heroicon-m-arrow-down-tray')->color('gray')
+        return Action::make('export')->visible(fn (): bool => AdminAccess::can('clients.export'))->label(__('clients.actions.export'))->icon('heroicon-m-arrow-down-tray')->color('gray')
             ->modalHeading(__('clients.export.heading'))->modalSubmitActionLabel(__('clients.export.confirm'))
             ->modalDescription(function (): string {
                 $preview = ClientExport::preview($this->getFilteredSortedTableQuery() ?? ClientDirectory::query(), ['identity']);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Admin\Listeners;
 
+use App\Modules\Admin\Http\Middleware\EnforceAdminIdleTimeout;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Services\PlatformAudit;
 use Illuminate\Auth\Events\Failed;
@@ -28,7 +29,9 @@ final class RecordAdminAuthentication
             return;
         }
 
-        DB::connection(PlatformAudit::CONNECTION)->table('platform_admins')->where('id', $event->user->id)->update(['last_login_at' => now()]);
+        DB::connection(PlatformAudit::CONNECTION)->table('platform_admins')->where('id', $event->user->id)->update(['last_login_at' => now(), 'last_login_ip' => request()->ip()]);
+        // Heure d'ouverture de la session : « déconnecter partout » (docs/38) refuse toute session ouverte avant la révocation.
+        session()->put(EnforceAdminIdleTimeout::STARTED_KEY, now()->timestamp);
         PlatformAudit::record($event->user->id, 'platform.login', null, 'platform_admin', $event->user->id);
     }
 

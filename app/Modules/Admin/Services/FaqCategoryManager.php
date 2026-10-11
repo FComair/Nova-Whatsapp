@@ -7,6 +7,7 @@ namespace App\Modules\Admin\Services;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformFaqArticle;
 use App\Modules\Admin\Models\PlatformFaqCategory;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Help\Models\FaqCategory;
 use App\Modules\Help\Support\FaqRefused;
 use App\Modules\Help\Support\HelpCatalog;
@@ -30,6 +31,7 @@ final class FaqCategoryManager
      */
     public function create(PlatformAdmin $admin, array $data): PlatformFaqCategory
     {
+        AdminAccess::authorize($admin, 'faq.create');
         $slug = (string) ($data['slug'] ?? '');
 
         if (preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $slug) !== 1 || mb_strlen($slug) > 40 || in_array($slug, self::RESERVED, true)) {
@@ -71,6 +73,7 @@ final class FaqCategoryManager
      */
     public function update(PlatformAdmin $admin, PlatformFaqCategory $category, array $data): PlatformFaqCategory
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         $before = $this->snapshot($category);
 
         if (array_key_exists('names', $data)) {
@@ -131,6 +134,7 @@ final class FaqCategoryManager
      */
     public function delete(PlatformAdmin $admin, PlatformFaqCategory $category): void
     {
+        AdminAccess::authorize($admin, 'faq.delete');
         if (array_key_exists($category->slug, (array) config('help.categories'))) {
             throw new FaqRefused('builtin_category');
         }
@@ -157,6 +161,7 @@ final class FaqCategoryManager
      */
     public function reassignAndDelete(PlatformAdmin $admin, PlatformFaqCategory $category, PlatformFaqCategory $target): void
     {
+        AdminAccess::authorize($admin, 'faq.delete');
         if ($category->id === $target->id) {
             throw FaqRefused::state('reassign');
         }

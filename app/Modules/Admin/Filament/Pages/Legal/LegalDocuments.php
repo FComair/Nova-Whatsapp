@@ -21,6 +21,9 @@ class LegalDocuments extends Page
 {
     use SuperAdminOnly;
 
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'legal.view';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?int $navigationSort = 6;

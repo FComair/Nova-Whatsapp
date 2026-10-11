@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformOrganization;
+use App\Modules\Admin\Support\AdminAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -86,6 +87,7 @@ final class ClientExport
      */
     public static function download(PlatformAdmin $admin, Builder $query, array $groups, array $filters = [], string $scope = 'filtered'): StreamedResponse
     {
+        AdminAccess::authorize($admin, 'clients.export');
         $groups = self::normalise($groups);
         $columns = array_merge(...array_map(fn (string $group): array => self::columns()[$group], $groups));
         /** @var Collection<int, PlatformOrganization> $rows */

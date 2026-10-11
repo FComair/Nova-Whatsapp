@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Pages;
 
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\TicketMetrics;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Support\Models\SupportTicket;
 use BackedEnum;
@@ -52,7 +53,7 @@ class SupportReports extends Page
 
     public static function canAccess(): bool
     {
-        return SupportAccess::canUseTickets();
+        return SupportAccess::canUseTickets() && AdminAccess::can('reports.view');
     }
 
     public function mount(): void

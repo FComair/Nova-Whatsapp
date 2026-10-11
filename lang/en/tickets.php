@@ -161,6 +161,8 @@ return [
         'note_saved' => 'Internal note saved.',
         'closed_title' => 'This ticket is closed',
         'closed_body' => 'The client can no longer reply. Reopen the ticket to continue the conversation.',
+        'read_only_title' => 'Read-only access',
+        'read_only_body' => 'Your role lets you read this ticket but not reply or add notes.',
     ],
     'stale' => [
         'title' => 'This ticket was updated by someone else',

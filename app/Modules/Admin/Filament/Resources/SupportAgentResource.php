@@ -38,6 +38,9 @@ class SupportAgentResource extends Resource
 
     protected static ?string $model = PlatformAdmin::class;
 
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'support_agents.view';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?int $navigationSort = 3;

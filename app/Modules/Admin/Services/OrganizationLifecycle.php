@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Notifications\AccountStatusNotification;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Organization;
 use App\Modules\Tenancy\Support\StatusRestorer;
 use Carbon\CarbonImmutable;
@@ -32,6 +33,7 @@ final class OrganizationLifecycle
 
     public function suspend(PlatformOrganization $org, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.suspend');
         $this->assertFrom($org, self::SUSPENDABLE);
 
         $this->transition($org, $adminId, 'organization.suspended', $reason, [
@@ -44,6 +46,7 @@ final class OrganizationLifecycle
 
     public function lift(PlatformOrganization $org, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.suspend');
         $this->assertFrom($org, [Organization::STATUS_SUSPENDED]);
 
         $this->transition($org, $adminId, 'organization.suspension_lifted', $reason, [
@@ -56,6 +59,7 @@ final class OrganizationLifecycle
 
     public function scheduleDeletion(PlatformOrganization $org, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.delete');
         $this->assertFrom($org, self::DELETABLE);
 
         $this->transition($org, $adminId, 'organization.deletion_scheduled', $reason, [
@@ -72,6 +76,7 @@ final class OrganizationLifecycle
      */
     public function deleteNow(PlatformOrganization $org, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.delete');
         $this->assertFrom($org, [...self::DELETABLE, Organization::STATUS_PENDING_DELETION]);
 
         $this->transition($org, $adminId, 'organization.deletion_immediate', $reason, [
@@ -84,6 +89,7 @@ final class OrganizationLifecycle
 
     public function cancelDeletion(PlatformOrganization $org, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.delete');
         $this->assertFrom($org, [Organization::STATUS_PENDING_DELETION]);
 
         if ($org->deletion_started_at !== null) {

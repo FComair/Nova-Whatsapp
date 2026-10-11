@@ -161,6 +161,8 @@ return [
         'note_saved' => 'Note interne enregistrée.',
         'closed_title' => 'Ce ticket est fermé',
         'closed_body' => 'Le client ne peut plus répondre. Rouvrez le ticket pour poursuivre la conversation.',
+        'read_only_title' => 'Accès en lecture seule',
+        'read_only_body' => 'Votre rôle vous permet de lire ce ticket, pas d’y répondre ni d’ajouter des notes.',
     ],
     'stale' => [
         'title' => 'Ce ticket a été modifié par quelqu\'un d\'autre',

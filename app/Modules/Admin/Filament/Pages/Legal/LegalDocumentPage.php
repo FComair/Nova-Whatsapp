@@ -18,6 +18,9 @@ abstract class LegalDocumentPage extends Page
 {
     use SuperAdminOnly;
 
+    /** Permission nécessaire pour voir ces écrans (docs/38). */
+    protected static ?string $viewPermission = 'legal.view';
+
     #[Url(as: 'document')]
     public string $document = '';
 

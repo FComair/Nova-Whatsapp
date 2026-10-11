@@ -468,8 +468,8 @@ describe('publication par le Super Admin', function (): void {
         $published = ($this->record)();
 
         ($this->panel)()->assertTableActionHidden('edit', $published)->assertTableActionHidden('publish', $published)->assertTableActionHidden('delete', $published);
-        expect(fn () => app(LegalVersionManager::class)->update($published, ($this->draft)(), 'admin'))->toThrow(InvalidArgumentException::class, 'published')
-            ->and(fn () => app(LegalVersionManager::class)->delete($published, 'admin'))->toThrow(InvalidArgumentException::class, 'published');
+        expect(fn () => app(LegalVersionManager::class)->update($published, ($this->draft)(), $this->admin->id))->toThrow(InvalidArgumentException::class, 'published')
+            ->and(fn () => app(LegalVersionManager::class)->delete($published, $this->admin->id))->toThrow(InvalidArgumentException::class, 'published');
     });
 
     it('supprime un brouillon', function (): void {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformSector;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Support\DefaultSectors;
 use DomainException;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,8 @@ final class SectorManager
      */
     public function create(array $data, string $adminId): PlatformSector
     {
+        AdminAccess::authorize($adminId, 'settings.edit');
+
         return DB::connection(PlatformAudit::CONNECTION)->transaction(function () use ($data, $adminId): PlatformSector {
             $fields = $this->fields($data);
             $sector = PlatformSector::query()->create([
@@ -50,6 +53,7 @@ final class SectorManager
      */
     public function update(PlatformSector $sector, array $data, string $adminId): void
     {
+        AdminAccess::authorize($adminId, 'settings.edit');
         DB::connection(PlatformAudit::CONNECTION)->transaction(function () use ($sector, $data, $adminId): void {
             $sector->fill($this->fields($data));
 
@@ -75,6 +79,7 @@ final class SectorManager
 
     public function setActive(PlatformSector $sector, bool $active, string $adminId): void
     {
+        AdminAccess::authorize($adminId, 'settings.edit');
         if ($sector->is_default && ! $active) {
             throw new DomainException('Le secteur par défaut ne peut pas être désactivé.');
         }
@@ -100,6 +105,7 @@ final class SectorManager
      */
     public function delete(PlatformSector $sector, string $adminId): int
     {
+        AdminAccess::authorize($adminId, 'settings.edit');
         if ($sector->is_default) {
             throw new DomainException('Le secteur par défaut ne peut pas être supprimé.');
         }

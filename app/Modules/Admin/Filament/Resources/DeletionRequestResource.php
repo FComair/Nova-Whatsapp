@@ -8,6 +8,7 @@ use App\Modules\Admin\Filament\Resources\DeletionRequestResource\Pages\ListDelet
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
 use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Services\PlatformAudit;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Privacy\Models\DeletionRequest;
 use App\Modules\Privacy\Services\DeletionPipeline;
 use BackedEnum;
@@ -27,6 +28,9 @@ class DeletionRequestResource extends Resource
     use SuperAdminOnly;
 
     protected static ?string $model = DeletionRequest::class;
+
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'clients.view';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-trash';
 
@@ -109,7 +113,7 @@ class DeletionRequestResource extends Resource
                     ->color('warning')
                     ->modalHeading(__('admin.deletions.retry'))
                     ->modalDescription(__('admin.deletions.retry_description'))
-                    ->visible(fn (DeletionRequest $record): bool => self::stateOf($record) === 'failed')
+                    ->visible(fn (DeletionRequest $record): bool => self::stateOf($record) === 'failed' && AdminAccess::can('clients.delete'))
                     ->schema(SensitiveActionFields::make())
                     ->action(function (array $data, DeletionRequest $record, Action $action): void {
                         [$adminId, $reason] = SensitiveActionFields::authorize($action, $data);

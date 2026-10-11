@@ -19,6 +19,7 @@ use App\Modules\Admin\Services\ClientManager;
 use App\Modules\Admin\Services\ClientProfile;
 use App\Modules\Admin\Services\OrganizationLifecycle;
 use App\Modules\Admin\Services\PlatformAudit;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Organization;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -58,6 +59,9 @@ class OrganizationResource extends Resource
     use SuperAdminOnly;
 
     protected static ?string $model = PlatformOrganization::class;
+
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'clients.view';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
 
@@ -233,7 +237,7 @@ class OrganizationResource extends Resource
                 BulkActionGroup::make([
                     self::bulkExtendTrial(), self::bulkLifecycle('suspend'), self::bulkLifecycle('lift'),
                     self::bulkTag(true), self::bulkTag(false),
-                    BulkAction::make('export')->label(__('clients.actions.export_selected'))->icon('heroicon-m-arrow-down-tray')->deselectRecordsAfterCompletion()
+                    BulkAction::make('export')->visible(fn (): bool => AdminAccess::can('clients.export'))->label(__('clients.actions.export_selected'))->icon('heroicon-m-arrow-down-tray')->deselectRecordsAfterCompletion()
                         ->schema(ClientActions::exportFields())->modalHeading(__('clients.export.heading'))
                         ->modalDescription(fn (Collection $records): string => __('clients.export.description', ['count' => $records->count()]))->modalSubmitActionLabel(__('clients.export.confirm'))
                         ->action(fn (Collection $records, array $data) => ClientActions::download(ClientDirectory::query()->whereIn('organizations.id', $records->pluck('id')->all()), (array) ($data['groups'] ?? []), [], 'selected')),
@@ -267,7 +271,7 @@ class OrganizationResource extends Resource
 
     private static function bulkExtendTrial(): BulkAction
     {
-        return BulkAction::make('extend_trial')->label(__('clients.actions.extend_trial'))->icon('heroicon-m-clock')->deselectRecordsAfterCompletion()
+        return BulkAction::make('extend_trial')->visible(fn (): bool => AdminAccess::can('subscriptions.edit'))->label(__('clients.actions.extend_trial'))->icon('heroicon-m-clock')->deselectRecordsAfterCompletion()
             ->modalHeading(__('clients.trial.bulk_heading'))->modalDescription(__('clients.trial.bulk_description'))
             ->schema(ClientActions::trialFields())
             ->action(fn (Collection $records, array $data) => ClientActions::bulkResult(app(ClientManager::class)->bulk(ClientActions::admin(), $records->pluck('id')->all(), 'extend_trial', fn (PlatformOrganization $org) => app(ClientManager::class)->extendTrial(ClientActions::admin(), $org, (int) $data['days'], ClientActions::reason($data)))));
@@ -276,7 +280,7 @@ class OrganizationResource extends Resource
     /** @param  'suspend'|'lift'  $method */
     private static function bulkLifecycle(string $method): BulkAction
     {
-        return BulkAction::make($method)->label(__("clients.actions.{$method}"))->icon($method === 'suspend' ? 'heroicon-m-no-symbol' : 'heroicon-m-check-badge')->color($method === 'suspend' ? 'danger' : 'success')->deselectRecordsAfterCompletion()
+        return BulkAction::make($method)->visible(fn (): bool => AdminAccess::can('clients.suspend'))->label(__("clients.actions.{$method}"))->icon($method === 'suspend' ? 'heroicon-m-no-symbol' : 'heroicon-m-check-badge')->color($method === 'suspend' ? 'danger' : 'success')->deselectRecordsAfterCompletion()
             ->requiresConfirmation()->modalHeading(__("admin.lifecycle.{$method}.heading"))->modalDescription(__("admin.lifecycle.{$method}.description"))
             ->schema(SensitiveActionFields::make())
             ->action(fn (Collection $records, array $data) => ClientActions::bulkResult(app(ClientManager::class)->bulk(ClientActions::admin(), $records->pluck('id')->all(), $method, fn (PlatformOrganization $org) => app(OrganizationLifecycle::class)->{$method}($org, ClientActions::admin()->id, ClientActions::reason($data)))));
@@ -284,7 +288,7 @@ class OrganizationResource extends Resource
 
     private static function bulkTag(bool $add): BulkAction
     {
-        return BulkAction::make($add ? 'tag_add' : 'tag_remove')->label(__($add ? 'clients.actions.tag_add' : 'clients.actions.tag_remove'))->icon($add ? 'heroicon-m-tag' : 'heroicon-m-minus-circle')->deselectRecordsAfterCompletion()
+        return BulkAction::make($add ? 'tag_add' : 'tag_remove')->visible(fn (): bool => AdminAccess::can('clients.edit'))->label(__($add ? 'clients.actions.tag_add' : 'clients.actions.tag_remove'))->icon($add ? 'heroicon-m-tag' : 'heroicon-m-minus-circle')->deselectRecordsAfterCompletion()
             ->schema([TextInput::make('tag')->label(__('clients.tag'))->required()->maxLength(30)])
             ->action(fn (Collection $records, array $data) => ClientActions::bulkResult(app(ClientManager::class)->bulk(ClientActions::admin(), $records->pluck('id')->all(), $add ? 'tag_add' : 'tag_remove', fn (PlatformOrganization $org) => $add ? app(ClientManager::class)->addTag(ClientActions::admin(), $org, (string) $data['tag']) : app(ClientManager::class)->removeTag(ClientActions::admin(), $org, (string) $data['tag']))));
     }

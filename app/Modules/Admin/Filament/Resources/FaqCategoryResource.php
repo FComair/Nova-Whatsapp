@@ -8,6 +8,7 @@ use App\Modules\Admin\Filament\Resources\FaqCategoryResource\Pages\ManageFaqCate
 use App\Modules\Admin\Filament\Support\FaqActions;
 use App\Modules\Admin\Models\PlatformFaqCategory;
 use App\Modules\Admin\Services\FaqCategoryManager;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Help\Models\FaqCategory;
 use BackedEnum;
@@ -61,22 +62,22 @@ class FaqCategoryResource extends Resource
 
     public static function canAccess(): bool
     {
-        return SupportAccess::canManageFaq() && parent::canAccess();
+        return SupportAccess::canManageFaq() && AdminAccess::can('faq.view') && parent::canAccess();
     }
 
     public static function canCreate(): bool
     {
-        return true;
+        return AdminAccess::can('faq.create');
     }
 
     public static function canEdit(Model $record): bool
     {
-        return true;
+        return AdminAccess::can('faq.edit');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return true;
+        return AdminAccess::can('faq.delete');
     }
 
     /** @return Builder<Model> */

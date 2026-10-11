@@ -32,10 +32,19 @@ final class SupportPermissions
         self::DELETE_TICKETS => false,
     ];
 
+    /** Permission d'agent => permission « tickets » du rôle d'un administrateur. */
+    private const ADMIN_EQUIVALENT = [
+        self::DELETE_TICKETS => 'tickets.delete',
+        self::CHANGE_PRIORITY => 'tickets.reply',
+        self::MANAGE_TAGS => 'tickets.reply',
+        self::REOPEN_TICKETS => 'tickets.resolve',
+        self::ASSIGN_OTHERS => 'tickets.assign',
+    ];
+
     public static function can(PlatformAdmin $admin, string $permission): bool
     {
         if ($admin->support_role === null) {
-            return true;
+            return AdminAccess::can(self::ADMIN_EQUIVALENT[$permission] ?? 'tickets.view', $admin);
         }
 
         if (! $admin->isSupportAgent() || ! array_key_exists($permission, self::DEFAULTS)) {

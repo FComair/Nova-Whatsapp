@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Resources\LegalVersionResource\Pages;
 
 use App\Modules\Admin\Filament\Resources\LegalVersionResource;
 use App\Modules\Admin\Services\LegalVersionManager;
+use App\Modules\Admin\Support\AdminAccess;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 
@@ -24,7 +25,7 @@ class ListLegalVersions extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('create')
+            Action::make('create')->visible(fn (): bool => AdminAccess::can('legal.upload'))
                 ->label(__('admin.legal.add'))
                 ->icon('heroicon-o-plus')
                 ->modalHeading(__('admin.legal.add'))

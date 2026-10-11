@@ -331,6 +331,8 @@ return [
 
     'back' => [
         'aria' => 'Terugnavigatie',
+        'admins' => 'Terug naar beheerders',
+        'admin_profile' => 'Terug naar het beheerdersprofiel',
         'dashboard' => 'Terug naar het dashboard',
         'clients' => 'Terug naar klanten',
         'tickets' => 'Terug naar aanvragen',

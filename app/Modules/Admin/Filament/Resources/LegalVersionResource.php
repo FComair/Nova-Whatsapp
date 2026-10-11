@@ -8,6 +8,7 @@ use App\Modules\Admin\Filament\Resources\LegalVersionResource\Pages\ListLegalVer
 use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformLegalVersion;
 use App\Modules\Admin\Services\LegalVersionManager;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Legal\Models\LegalDocumentVersion;
 use App\Modules\Legal\Support\LegalDocument;
 use BackedEnum;
@@ -40,6 +41,9 @@ class LegalVersionResource extends Resource
     use SuperAdminOnly;
 
     protected static ?string $model = PlatformLegalVersion::class;
+
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'legal.view';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
@@ -155,7 +159,7 @@ class LegalVersionResource extends Resource
                 Action::make('edit')
                     ->label(__('admin.legal.edit'))
                     ->icon('heroicon-o-pencil-square')
-                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished())
+                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished() && AdminAccess::can('legal.upload'))
                     ->fillForm(fn (PlatformLegalVersion $record): array => self::formData($record))
                     ->schema(fn (PlatformLegalVersion $record): array => self::formSchema($record))
                     ->action(function (array $data, PlatformLegalVersion $record): void {
@@ -165,7 +169,7 @@ class LegalVersionResource extends Resource
                     ->label(__('admin.legal.publish'))
                     ->icon('heroicon-o-check-badge')
                     ->color('success')
-                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished())
+                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished() && AdminAccess::can('legal.upload'))
                     ->requiresConfirmation()
                     ->modalHeading(fn (PlatformLegalVersion $record): string => __('admin.legal.confirm.publish_title', ['version' => $record->version]))
                     ->modalDescription(fn (PlatformLegalVersion $record): string => __($record->requires_acceptance ? 'admin.legal.confirm.publish_required' : 'admin.legal.confirm.publish_info'))
@@ -175,7 +179,7 @@ class LegalVersionResource extends Resource
                     ->label(__('admin.legal.delete'))
                     ->icon('heroicon-o-trash')
                     ->color('danger')
-                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished())
+                    ->visible(fn (PlatformLegalVersion $record): bool => ! $record->isPublished() && AdminAccess::can('legal.upload'))
                     ->requiresConfirmation()
                     ->action(fn (PlatformLegalVersion $record) => self::attempt(fn () => app(LegalVersionManager::class)->delete($record, self::adminId()), 'admin.legal.saved.deleted')),
             ]);

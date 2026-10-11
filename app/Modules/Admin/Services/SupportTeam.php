@@ -8,6 +8,7 @@ use App\Modules\Admin\Exceptions\TeamRefused;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Notifications\SupportAgentInvitation;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Support\TicketStatus;
@@ -39,7 +40,7 @@ final class SupportTeam
      */
     public function create(PlatformAdmin $by, array $data): PlatformAdmin
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.create');
 
         $email = mb_strtolower(trim($data['email']));
         $name = $this->clean($data['name'], 120) ?? throw TeamRefused::because('name_required');
@@ -90,7 +91,7 @@ final class SupportTeam
      */
     public function update(PlatformAdmin $by, PlatformAdmin $agent, array $data): array
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.edit');
         $this->mustBeAgent($agent);
 
         $before = ['name' => $agent->name, 'phone' => $agent->phone, 'internal_notes' => $agent->internal_notes, 'permissions' => $agent->permissions, 'scope' => $this->scopeOf($agent)];
@@ -130,7 +131,7 @@ final class SupportTeam
      */
     public function resendInvitation(PlatformAdmin $by, PlatformAdmin $agent): void
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.edit');
         $this->mustBeAgent($agent);
 
         if ($agent->status !== PlatformAdmin::STATUS_INVITED) {
@@ -149,7 +150,7 @@ final class SupportTeam
      */
     public function sendPasswordReset(PlatformAdmin $by, PlatformAdmin $agent): void
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.edit');
         $this->mustBeAgent($agent);
 
         if ($agent->status !== PlatformAdmin::STATUS_ACTIVE) {
@@ -173,7 +174,9 @@ final class SupportTeam
         DB::connection(PlatformAudit::CONNECTION)->transaction(function () use ($agent, $password): void {
             $wasInvited = $agent->status === PlatformAdmin::STATUS_INVITED;
             $agent->forceFill(['password' => $password, 'status' => PlatformAdmin::STATUS_ACTIVE, 'invitation_token' => null, 'invitation_expires_at' => null, 'remember_token' => null])->save();
-            PlatformAudit::record($agent->id, $wasInvited ? 'support.agent.activated' : 'support.agent.password_changed', null, 'platform_admin', $agent->id, ['status' => [$wasInvited ? PlatformAdmin::STATUS_INVITED : PlatformAdmin::STATUS_ACTIVE, PlatformAdmin::STATUS_ACTIVE]]);
+            // Les agents de support et les administrateurs partagent le même lien : le journal nomme le bon type de compte.
+            $prefix = $agent->support_role === null ? 'admin' : 'support.agent';
+            PlatformAudit::record($agent->id, $wasInvited ? "{$prefix}.activated" : "{$prefix}.password_changed", null, 'platform_admin', $agent->id, ['status' => [$wasInvited ? PlatformAdmin::STATUS_INVITED : PlatformAdmin::STATUS_ACTIVE, PlatformAdmin::STATUS_ACTIVE]]);
         });
 
         return $agent;
@@ -202,7 +205,7 @@ final class SupportTeam
      */
     public function suspend(PlatformAdmin $by, PlatformAdmin $agent, ?string $reassignTo, ?string $reason = null): void
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.suspend');
         $this->mustBeAgent($agent);
 
         if ($agent->status !== PlatformAdmin::STATUS_ACTIVE) {
@@ -224,7 +227,7 @@ final class SupportTeam
      */
     public function reactivate(PlatformAdmin $by, PlatformAdmin $agent): void
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.suspend');
         $this->mustBeAgent($agent);
 
         if (! in_array($agent->status, [PlatformAdmin::STATUS_SUSPENDED, PlatformAdmin::STATUS_REMOVED], true)) {
@@ -260,7 +263,7 @@ final class SupportTeam
      */
     public function remove(PlatformAdmin $by, PlatformAdmin $agent, ?string $reassignTo, ?string $reason = null): void
     {
-        $this->superAdmin($by);
+        $this->authorize($by, 'support_agents.delete');
         $this->mustBeAgent($agent);
 
         if ($agent->status === PlatformAdmin::STATUS_REMOVED) {
@@ -325,7 +328,10 @@ final class SupportTeam
         return $tickets->count();
     }
 
-    private function issueInvitation(PlatformAdmin $by, PlatformAdmin $agent, string $token, bool $reset, string $action): void
+    /**
+     * Enregistre le jeton (haché) d'une invitation ou d'une réinitialisation et la trace. Aussi utilisé pour les administrateurs (docs/38).
+     */
+    public function issueInvitation(PlatformAdmin $by, PlatformAdmin $agent, string $token, bool $reset, string $action): void
     {
         $agent->forceFill(['invitation_token' => hash('sha256', $token), 'invitation_expires_at' => now()->addDays(self::INVITATION_DAYS), 'invited_at' => $agent->invited_at ?? now()])->save();
         PlatformAudit::record($by->id, $action, null, 'platform_admin', $agent->id, ['email' => $agent->email, 'expires_at' => $agent->invitation_expires_at?->toIso8601String(), 'reset' => $reset]);
@@ -381,10 +387,14 @@ final class SupportTeam
         return $text === '' ? null : mb_substr($text, 0, $max);
     }
 
-    /** @throws TeamRefused */
-    private function superAdmin(PlatformAdmin $by): void
+    /**
+     * Un compte à rôle restreint n'a jamais accès à l'équipe ; un administrateur doit en plus avoir la permission de l'action (docs/38).
+     *
+     * @throws TeamRefused
+     */
+    private function authorize(PlatformAdmin $by, string $permission): void
     {
-        if ($by->support_role !== null || ! $by->isActive()) {
+        if ($by->support_role !== null || ! AdminAccess::can($permission, $by)) {
             throw TeamRefused::because('forbidden');
         }
     }

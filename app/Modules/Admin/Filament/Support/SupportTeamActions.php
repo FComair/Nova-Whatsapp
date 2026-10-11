@@ -8,6 +8,7 @@ use App\Modules\Admin\Exceptions\TeamRefused;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SupportTeam;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Admin\Support\SupportPermissions;
 use Filament\Actions\Action;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -43,6 +45,10 @@ final class SupportTeamActions
             $operation();
         } catch (TeamRefused $e) {
             Notification::make()->danger()->title(__('team.errors.title'))->body($e->message())->send();
+
+            return false;
+        } catch (AuthorizationException) {
+            Notification::make()->danger()->title(__('admins.errors.title'))->body(__('admins.errors.forbidden'))->send();
 
             return false;
         }
@@ -80,7 +86,7 @@ final class SupportTeamActions
 
     public static function create(): Action
     {
-        return Action::make('create')->label(__('team.actions.create'))->icon('heroicon-m-user-plus')
+        return Action::make('create')->label(__('team.actions.create'))->icon('heroicon-m-user-plus')->visible(fn (): bool => AdminAccess::can('support_agents.create'))
             ->modalHeading(__('team.actions.create'))->modalDescription(__('team.create.description'))->modalSubmitActionLabel(__('team.create.submit'))
             ->fillForm(fn (): array => ['permissions' => array_keys(array_filter(SupportPermissions::DEFAULTS))])
             ->schema(self::profileFields(true))
@@ -95,7 +101,7 @@ final class SupportTeamActions
     public static function edit(): Action
     {
         return Action::make('edit')->label(__('team.actions.edit'))->icon('heroicon-m-pencil-square')->modalHeading(__('team.actions.edit'))
-            ->visible(fn (Model $record): bool => self::agent($record)->status !== PlatformAdmin::STATUS_REMOVED)
+            ->visible(fn (Model $record): bool => AdminAccess::can('support_agents.edit') && self::agent($record)->status !== PlatformAdmin::STATUS_REMOVED)
             ->fillForm(function (Model $record): array {
                 $agent = self::agent($record);
 
@@ -117,7 +123,7 @@ final class SupportTeamActions
     public static function resendInvitation(): Action
     {
         return Action::make('resend_invitation')->label(__('team.actions.resend'))->icon('heroicon-m-paper-airplane')
-            ->visible(fn (Model $record): bool => self::agent($record)->status === PlatformAdmin::STATUS_INVITED)
+            ->visible(fn (Model $record): bool => AdminAccess::can('support_agents.edit') && self::agent($record)->status === PlatformAdmin::STATUS_INVITED)
             ->requiresConfirmation()->modalHeading(__('team.actions.resend'))->modalDescription(__('team.resend.description'))
             ->action(fn (Model $record) => self::perform(fn () => app(SupportTeam::class)->resendInvitation(self::admin(), self::agent($record)), __('team.resend.done')));
     }
@@ -125,7 +131,7 @@ final class SupportTeamActions
     public static function resetPassword(): Action
     {
         return Action::make('reset_password')->label(__('team.actions.reset_password'))->icon('heroicon-m-key')
-            ->visible(fn (Model $record): bool => self::agent($record)->status === PlatformAdmin::STATUS_ACTIVE)
+            ->visible(fn (Model $record): bool => AdminAccess::can('support_agents.edit') && self::agent($record)->status === PlatformAdmin::STATUS_ACTIVE)
             ->requiresConfirmation()->modalHeading(__('team.actions.reset_password'))->modalDescription(__('team.reset.description'))
             ->action(fn (Model $record) => self::perform(fn () => app(SupportTeam::class)->sendPasswordReset(self::admin(), self::agent($record)), __('team.reset.done')));
     }
@@ -143,7 +149,7 @@ final class SupportTeamActions
     public static function reactivate(): Action
     {
         return Action::make('reactivate')->label(__('team.actions.reactivate'))->icon('heroicon-m-play-circle')->color('success')
-            ->visible(fn (Model $record): bool => in_array(self::agent($record)->status, [PlatformAdmin::STATUS_SUSPENDED, PlatformAdmin::STATUS_REMOVED], true))
+            ->visible(fn (Model $record): bool => AdminAccess::can('support_agents.suspend') && in_array(self::agent($record)->status, [PlatformAdmin::STATUS_SUSPENDED, PlatformAdmin::STATUS_REMOVED], true))
             ->requiresConfirmation()->modalHeading(__('team.actions.reactivate'))->modalDescription(__('team.reactivate.description'))
             ->action(fn (Model $record) => self::perform(fn () => app(SupportTeam::class)->reactivate(self::admin(), self::agent($record)), __('team.reactivate.done')));
     }
@@ -157,7 +163,7 @@ final class SupportTeamActions
     private static function offboarding(string $name, string $icon, array $statuses, callable $operation): Action
     {
         return Action::make($name)->label(__("team.actions.{$name}"))->icon($icon)->color('danger')
-            ->visible(fn (Model $record): bool => in_array(self::agent($record)->status, $statuses, true))
+            ->visible(fn (Model $record): bool => AdminAccess::can($name === 'remove' ? 'support_agents.delete' : 'support_agents.suspend') && in_array(self::agent($record)->status, $statuses, true))
             ->modalHeading(__("team.{$name}.heading"))->modalDescription(fn (Model $record): string => __("team.{$name}.description", ['count' => app(SupportTeam::class)->openTicketCount(self::agent($record))]))
             ->modalIcon('heroicon-o-exclamation-triangle')->modalSubmitActionLabel(__("team.actions.{$name}"))
             ->schema(fn (Model $record): array => [

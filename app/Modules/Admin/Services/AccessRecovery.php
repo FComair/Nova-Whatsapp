@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Notifications\AccessRestoredNotification;
+use App\Modules\Admin\Support\AdminAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -37,6 +38,7 @@ final class AccessRecovery
      */
     public function unblock(PlatformOrganization $org, string $userId, bool $resetPassword, string $adminId, ?string $reason): void
     {
+        AdminAccess::authorize($adminId, 'clients.edit');
         $member = collect($this->members($org))->firstWhere('user_id', $userId) ?? throw new InvalidArgumentException('Membre inconnu pour cette organisation.');
 
         // Mot de passe aléatoire inutilisable : invalide toutes les sessions ; la personne choisit le sien via le lien reçu.

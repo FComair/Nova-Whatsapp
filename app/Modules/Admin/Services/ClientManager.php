@@ -7,6 +7,7 @@ namespace App\Modules\Admin\Services;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Notifications\AccountStatusNotification;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Organization;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,7 @@ final class ClientManager
     /** Ouverture d'une fiche : la consultation de données client est tracée. */
     public function viewed(PlatformAdmin $admin, PlatformOrganization $org): void
     {
+        AdminAccess::authorize($admin, 'clients.view');
         PlatformAudit::record($admin->id, 'client.viewed', $org->id, 'organizations', $org->id, ['name' => $org->name]);
     }
 
@@ -54,6 +56,7 @@ final class ClientManager
      */
     public function updateDetails(PlatformAdmin $admin, PlatformOrganization $org, array $data): array
     {
+        AdminAccess::authorize($admin, 'clients.edit');
         $before = $this->snapshot($org);
         $clean = [];
 
@@ -121,6 +124,7 @@ final class ClientManager
      */
     public function extendTrial(PlatformAdmin $admin, PlatformOrganization $org, int $days, ?string $reason): CarbonImmutable
     {
+        AdminAccess::authorize($admin, 'subscriptions.edit');
         if (! self::canExtendTrial($org)) {
             throw new InvalidArgumentException('L\'essai de ce compte ne peut pas être prolongé.');
         }
@@ -161,6 +165,7 @@ final class ClientManager
      */
     public function addTag(PlatformAdmin $admin, PlatformOrganization $org, string $tag): void
     {
+        AdminAccess::authorize($admin, 'clients.edit');
         $clean = self::cleanTag($tag);
 
         if ($clean === '') {
@@ -176,6 +181,7 @@ final class ClientManager
 
     public function removeTag(PlatformAdmin $admin, PlatformOrganization $org, string $tag): void
     {
+        AdminAccess::authorize($admin, 'clients.edit');
         $clean = self::cleanTag($tag);
 
         if (DB::connection(PlatformAudit::CONNECTION)->table('client_tags')->where('org_id', $org->id)->where('tag', $clean)->delete() > 0) {
@@ -190,6 +196,7 @@ final class ClientManager
      */
     public function addNote(PlatformAdmin $admin, PlatformOrganization $org, string $body): void
     {
+        AdminAccess::authorize($admin, 'clients.edit');
         $text = trim($body);
 
         if ($text === '') {

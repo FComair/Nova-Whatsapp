@@ -10,6 +10,7 @@ use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SupportConsole;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Exceptions\TicketChanged;
@@ -201,11 +202,11 @@ class ViewSupportTicket extends Page
         $closed = $ticket->status === TicketStatus::CLOSED;
 
         return [
-            Action::make('assign')->label(__('tickets.actions.assign'))->icon('heroicon-m-user-plus')->color('gray')->hidden($closed)
+            Action::make('assign')->label(__('tickets.actions.assign'))->icon('heroicon-m-user-plus')->color('gray')->hidden($closed || ! AdminAccess::can('tickets.assign'))
                 ->fillForm(fn (): array => ['agent' => $this->ticket()->assigned_admin_id ?? 'none'])
                 ->schema([Select::make('agent')->label(__('tickets.columns.assignee'))->options(fn (): array => ['none' => __('tickets.unassigned'), ...SupportAccess::assignableBy(SupportAccess::admin() ?? new PlatformAdmin, $this->ticket()->org_id)])->required()])
                 ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->assign($admin, $ticket, $data['agent'] === 'none' ? null : (string) $data['agent'], $this->version))),
-            Action::make('status')->label(__('tickets.actions.status'))->icon('heroicon-m-arrow-path')->color('gray')->hidden($closed)
+            Action::make('status')->label(__('tickets.actions.status'))->icon('heroicon-m-arrow-path')->color('gray')->hidden($closed || ! AdminAccess::can('tickets.resolve'))
                 ->fillForm(fn (): array => ['status' => in_array($this->ticket()->status, TicketStatus::STAFF_SETTABLE, true) ? $this->ticket()->status : null])
                 ->schema([Select::make('status')->label(__('tickets.columns.status'))->required()->native(false)
                     ->options(fn (): array => collect(TicketStatus::STAFF_SETTABLE)->mapWithKeys(fn (string $status): array => [$status => __("tickets.statuses.{$status}")])->all())
@@ -217,7 +218,7 @@ class ViewSupportTicket extends Page
                     ->options(fn (): array => collect(SupportTicket::PRIORITIES)->mapWithKeys(fn (string $priority): array => [$priority => __("tickets.priorities.{$priority}")])->all())])
                 ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->setPriority($admin, $ticket, (string) $data['priority'], $this->version))),
             Action::make('resolve')->label(__('tickets.actions.resolve'))->icon('heroicon-m-check-circle')->color('success')
-                ->visible(fn (): bool => TicketStatus::isOpenWork($this->ticket()->status))
+                ->visible(fn (): bool => TicketStatus::isOpenWork($this->ticket()->status) && AdminAccess::can('tickets.resolve'))
                 ->requiresConfirmation()->modalHeading(__('tickets.actions.resolve_heading'))->modalDescription(__('tickets.actions.resolve_description'))
                 ->action(fn () => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->setStatus($admin, $ticket, TicketStatus::RESOLVED, $this->version))),
             Action::make('reopen')->label(__('tickets.actions.reopen'))->icon('heroicon-m-arrow-uturn-left')->color('warning')
@@ -243,7 +244,7 @@ class ViewSupportTicket extends Page
                         Textarea::make('message')->label(__('tickets.help.message'))->required()->rows(4)->maxLength(2000),
                     ])
                     ->action(fn (array $data) => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->requestHelp($admin, $ticket, (string) $data['team'], (string) $data['message'], $this->version))),
-                Action::make('close')->label(__('tickets.actions.close'))->icon('heroicon-m-lock-closed')->color('danger')->hidden($closed)
+                Action::make('close')->label(__('tickets.actions.close'))->icon('heroicon-m-lock-closed')->color('danger')->hidden($closed || ! AdminAccess::can('tickets.resolve'))
                     ->requiresConfirmation()->modalHeading(__('tickets.actions.close_heading'))->modalDescription(__('tickets.actions.close_description'))
                     ->action(fn () => $this->perform(fn (SupportConsole $console, $admin, $ticket) => $console->close($admin, $ticket, $this->version))),
             ])->label(__('tickets.actions.more'))->icon('heroicon-m-ellipsis-horizontal')->button()->color('gray'),
@@ -391,6 +392,7 @@ class ViewSupportTicket extends Page
             'tags' => $ticket->tags()->orderBy('tag')->pluck('tag')->all(),
             'links' => $ticket->links()->orderBy('created_at')->get(),
             'closed' => $ticket->status === TicketStatus::CLOSED,
+            'can_reply' => AdminAccess::can('tickets.reply'),
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Modules\Admin\Filament\Support\ClientActions;
 use App\Modules\Admin\Services\ClientDirectory;
 use App\Modules\Admin\Services\ClientReport;
 use App\Modules\Admin\Services\PlatformAudit;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
@@ -48,7 +49,7 @@ class ClientReports extends Page
 
     public static function canAccess(): bool
     {
-        return SupportAccess::admin() !== null && ! SupportAccess::isRestricted();
+        return SupportAccess::admin() !== null && ! SupportAccess::isRestricted() && AdminAccess::can('reports.view');
     }
 
     public function mount(): void

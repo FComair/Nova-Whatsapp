@@ -27,6 +27,9 @@ class FeedbackResource extends Resource
 
     protected static ?string $model = PlatformFeedback::class;
 
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'ratings.view';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-star';
 
     protected static ?int $navigationSort = 4;

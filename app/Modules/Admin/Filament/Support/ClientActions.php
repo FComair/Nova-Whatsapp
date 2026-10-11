@@ -8,6 +8,7 @@ use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Services\ClientExport;
 use App\Modules\Admin\Services\ClientManager;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
@@ -17,6 +18,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Component;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
@@ -67,6 +69,10 @@ final class ClientActions
             Notification::make()->danger()->title(__('clients.errors.title'))->body(__('clients.errors.refused'))->persistent()->send();
 
             return false;
+        } catch (AuthorizationException) {
+            Notification::make()->danger()->title(__('admins.errors.title'))->body(__('admins.errors.forbidden'))->send();
+
+            return false;
         }
 
         Notification::make()->success()->title($success)->send();
@@ -86,7 +92,7 @@ final class ClientActions
 
     public static function editDetails(): Action
     {
-        return Action::make('edit_details')->label(__('clients.actions.edit'))->icon('heroicon-m-pencil-square')->color('gray')->modalHeading(__('clients.edit.heading'))
+        return Action::make('edit_details')->visible(fn (): bool => AdminAccess::can('clients.edit'))->label(__('clients.actions.edit'))->icon('heroicon-m-pencil-square')->color('gray')->modalHeading(__('clients.edit.heading'))
             ->fillForm(function (Model $record): array {
                 $org = self::organization($record);
 
@@ -123,7 +129,7 @@ final class ClientActions
     public static function extendTrial(): Action
     {
         return Action::make('extend_trial')->label(__('clients.actions.extend_trial'))->icon('heroicon-m-clock')->color('gray')
-            ->visible(fn (Model $record): bool => ClientManager::canExtendTrial(self::organization($record)))
+            ->visible(fn (Model $record): bool => ClientManager::canExtendTrial(self::organization($record)) && AdminAccess::can('subscriptions.edit'))
             ->modalHeading(__('clients.trial.heading'))->modalDescription(__('clients.trial.description'))
             ->schema(self::trialFields())
             ->action(fn (array $data, Model $record) => self::perform(fn (PlatformAdmin $admin) => app(ClientManager::class)->extendTrial($admin, self::organization($record), (int) $data['days'], self::reason($data)), __('clients.trial.done')));
@@ -142,7 +148,7 @@ final class ClientActions
 
     public static function tag(): Action
     {
-        return Action::make('tag')->label(__('clients.actions.tag_add'))->icon('heroicon-m-tag')->color('gray')->modalHeading(__('clients.actions.tag_add'))
+        return Action::make('tag')->visible(fn (): bool => AdminAccess::can('clients.edit'))->label(__('clients.actions.tag_add'))->icon('heroicon-m-tag')->color('gray')->modalHeading(__('clients.actions.tag_add'))
             ->schema([TextInput::make('tag')->label(__('clients.tag'))->required()->maxLength(30)->helperText(__('clients.tag_help'))])
             ->action(fn (array $data, Model $record) => self::perform(fn (PlatformAdmin $admin) => app(ClientManager::class)->addTag($admin, self::organization($record), (string) $data['tag']), __('clients.saved')));
     }

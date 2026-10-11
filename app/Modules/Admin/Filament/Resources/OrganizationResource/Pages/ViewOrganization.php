@@ -13,6 +13,7 @@ use App\Modules\Admin\Services\AccessRecovery;
 use App\Modules\Admin\Services\ClientDirectory;
 use App\Modules\Admin\Services\ClientManager;
 use App\Modules\Admin\Services\OrganizationLifecycle;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Organization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -61,7 +62,7 @@ class ViewOrganization extends ViewRecord
 
     private function noteAction(): Action
     {
-        return Action::make('add_note')->label(__('clients.actions.add_note'))->icon('heroicon-m-pencil-square')->color('gray')->modalHeading(__('clients.actions.add_note'))
+        return Action::make('add_note')->visible(fn (): bool => AdminAccess::can('clients.edit'))->label(__('clients.actions.add_note'))->icon('heroicon-m-pencil-square')->color('gray')->modalHeading(__('clients.actions.add_note'))
             ->schema([Textarea::make('body')->label(__('clients.notes.body'))->required()->rows(5)->maxLength(5000)->helperText(__('clients.notes.help'))])
             ->action(fn (array $data) => ClientActions::perform(fn (PlatformAdmin $admin) => app(ClientManager::class)->addNote($admin, $this->organization(), (string) $data['body']), __('clients.notes.saved')));
     }
@@ -69,7 +70,7 @@ class ViewOrganization extends ViewRecord
     /** Export CSV de la fiche d'un client (mêmes catégories, même avertissement, consigné). */
     private function exportProfileAction(): Action
     {
-        return Action::make('export_profile')->label(__('clients.actions.export_profile'))->icon('heroicon-m-arrow-down-tray')->color('gray')
+        return Action::make('export_profile')->visible(fn (): bool => AdminAccess::can('clients.export'))->label(__('clients.actions.export_profile'))->icon('heroicon-m-arrow-down-tray')->color('gray')
             ->modalHeading(__('clients.export.heading'))->modalDescription(__('clients.export.description', ['count' => 1]))->modalSubmitActionLabel(__('clients.export.confirm'))
             ->schema(ClientActions::exportFields())
             ->action(fn (array $data) => ClientActions::download(ClientDirectory::query()->where('organizations.id', $this->organization()->id), (array) ($data['groups'] ?? []), [], 'profile'));
@@ -86,7 +87,7 @@ class ViewOrganization extends ViewRecord
             ->color('warning')
             ->modalHeading(__('admin.access.heading'))
             ->modalDescription(__('admin.access.description'))
-            ->visible(fn (): bool => ! in_array($this->organization()->status, [Organization::STATUS_DELETED, Organization::STATUS_PENDING_DELETION], true))
+            ->visible(fn (): bool => ! in_array($this->organization()->status, [Organization::STATUS_DELETED, Organization::STATUS_PENDING_DELETION], true) && AdminAccess::can('clients.edit'))
             ->schema(fn (): array => [
                 Select::make('user_id')
                     ->label(__('admin.access.member'))
@@ -123,7 +124,7 @@ class ViewOrganization extends ViewRecord
             ->modalHeading(__("admin.lifecycle.{$name}.heading"))
             ->modalDescription(__("admin.lifecycle.{$name}.description"))
             // Une fois l'effacement commencé, la suppression ne peut plus être annulée ni accélérée.
-            ->visible(fn (): bool => in_array($this->organization()->status, $statuses, true)
+            ->visible(fn (): bool => AdminAccess::can(in_array($name, ['suspend', 'lift'], true) ? 'clients.suspend' : 'clients.delete') && in_array($this->organization()->status, $statuses, true)
                 && (! in_array($name, ['cancel_deletion', 'delete_now'], true) || $this->organization()->deletion_started_at === null))
             ->schema(SensitiveActionFields::make($irreversible))
             ->action(function (array $data, Action $action) use ($method, $name): void {

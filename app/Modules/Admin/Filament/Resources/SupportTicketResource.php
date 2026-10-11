@@ -11,6 +11,7 @@ use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\PlatformSettings;
 use App\Modules\Admin\Services\SupportConsole;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Models\SupportTicket;
@@ -116,12 +117,12 @@ class SupportTicketResource extends Resource
     /** Les tickets sont réservés au Super Admin et aux agents de support (pas aux éditeurs de contenu). */
     public static function canAccess(): bool
     {
-        return SupportAccess::canUseTickets() && parent::canAccess();
+        return SupportAccess::canUseTickets() && AdminAccess::can('tickets.view') && parent::canAccess();
     }
 
     public static function canCreate(): bool
     {
-        return true;
+        return AdminAccess::can('tickets.create');
     }
 
     public static function canEdit(Model $record): bool

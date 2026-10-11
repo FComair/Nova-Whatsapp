@@ -141,6 +141,8 @@
 
         @if ($summary['closed'])
             <x-filament::callout color="gray" icon="heroicon-m-lock-closed" :heading="__('tickets.composer.closed_title')" :description="__('tickets.composer.closed_body')" />
+        @elseif (! $summary['can_reply'])
+            <x-filament::callout color="gray" icon="heroicon-m-eye" :heading="__('tickets.composer.read_only_title')" :description="__('tickets.composer.read_only_body')" />
         @else
             @php($internal = ($data['mode'] ?? 'reply') === 'internal')
             <section class="nt-card nt-composer--{{ $internal ? 'internal' : 'reply' }}" aria-labelledby="nt-composer-title">

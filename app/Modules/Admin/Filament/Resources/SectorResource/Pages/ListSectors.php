@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Resources\SectorResource\Pages;
 
 use App\Modules\Admin\Filament\Resources\SectorResource;
 use App\Modules\Admin\Services\SectorManager;
+use App\Modules\Admin\Support\AdminAccess;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
@@ -26,7 +27,7 @@ class ListSectors extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('create')
+            Action::make('create')->visible(fn (): bool => AdminAccess::can('settings.edit'))
                 ->label(__('admin.sectors.add'))
                 ->icon('heroicon-o-plus')
                 ->modalHeading(__('admin.sectors.add'))

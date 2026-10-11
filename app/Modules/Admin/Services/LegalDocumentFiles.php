@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Exceptions\LegalFileRejected;
 use App\Modules\Admin\Models\PlatformLegalVersion;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Legal\Models\LegalDocumentVersion;
 use App\Modules\Legal\Support\LegalDocument;
 use App\Support\Files\PdfInspector;
@@ -82,6 +83,7 @@ final class LegalDocumentFiles
      */
     public function replace(string $adminId, string $document, UploadedFile $file, bool $requiresAcceptance = false, ?string $changes = null): PlatformLegalVersion
     {
+        AdminAccess::authorize($adminId, 'legal.replace');
         abort_unless(in_array($document, LegalDocument::codes(), true), 404);
 
         try {
@@ -188,10 +190,17 @@ final class LegalDocumentFiles
      */
     public function download(string $adminId, string $document, string $versionId): StreamedResponse
     {
+        AdminAccess::authorize($adminId, 'legal.view');
         $row = PlatformLegalVersion::query()->whereKey($versionId)->where('document', $document)->first() ?? abort(404);
         abort_unless($row->hasFile() && Storage::disk(self::DISK)->exists((string) $row->file_path), 404);
 
         $current = $this->currentOf($this->published($document));
+
+        // Une version remplacée (archivée) ne se télécharge qu'avec la permission dédiée.
+        if ($current?->id !== $row->id) {
+            AdminAccess::authorize($adminId, 'legal.download_archived');
+        }
+
         PlatformAudit::record($adminId, 'legal.file_downloaded', null, 'legal_document_version', $row->id, ['document' => $document, 'version' => $row->version, 'archived' => $current?->id !== $row->id, 'file' => $row->file_name]);
 
         return Storage::disk(self::DISK)->download((string) $row->file_path, $this->downloadName($row), $this->headers());

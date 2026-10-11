@@ -24,6 +24,9 @@ class AuditLogResource extends Resource
 
     protected static ?string $model = PlatformAuditLog::class;
 
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'audit.view';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?int $navigationSort = 7;

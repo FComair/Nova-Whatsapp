@@ -8,6 +8,7 @@ use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformFaqArticle;
 use App\Modules\Admin\Models\PlatformFaqCategory;
 use App\Modules\Admin\Models\PlatformFaqTranslation;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Help\Models\FaqArticle;
 use App\Modules\Help\Models\FaqCategory;
 use App\Modules\Help\Models\FaqVersion;
@@ -37,6 +38,7 @@ final class FaqManager
      */
     public function create(PlatformAdmin $admin, array $data): PlatformFaqArticle
     {
+        AdminAccess::authorize($admin, 'faq.create');
         $translations = $this->cleanTranslations((array) ($data['translations'] ?? []));
         $first = collect($translations)->first(fn (array $fields): bool => $fields['question'] !== '');
 
@@ -87,6 +89,7 @@ final class FaqManager
      */
     public function update(PlatformAdmin $admin, PlatformFaqArticle $article, array $data): PlatformFaqArticle
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         $article->load(['category', 'translations', 'related.category']);
         $before = $this->snapshot($article);
         $translations = array_key_exists('translations', $data) ? $this->cleanTranslations((array) $data['translations']) : [];
@@ -175,6 +178,7 @@ final class FaqManager
      */
     public function publish(PlatformAdmin $admin, PlatformFaqArticle $article): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         $article->load(['category', 'translations']);
 
         if ($article->status === FaqArticle::PUBLISHED) {
@@ -194,6 +198,7 @@ final class FaqManager
     /** @throws FaqRefused */
     public function unpublish(PlatformAdmin $admin, PlatformFaqArticle $article): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         if ($article->status !== FaqArticle::PUBLISHED) {
             throw FaqRefused::state('unpublish');
         }
@@ -206,6 +211,7 @@ final class FaqManager
     /** @throws FaqRefused */
     public function archive(PlatformAdmin $admin, PlatformFaqArticle $article): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         if ($article->status === FaqArticle::ARCHIVED) {
             throw FaqRefused::state('archive');
         }
@@ -219,6 +225,7 @@ final class FaqManager
     /** Sort une FAQ des archives : elle redevient un brouillon. @throws FaqRefused */
     public function restore(PlatformAdmin $admin, PlatformFaqArticle $article): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         if ($article->status !== FaqArticle::ARCHIVED) {
             throw FaqRefused::state('restore');
         }
@@ -236,6 +243,7 @@ final class FaqManager
      */
     public function delete(PlatformAdmin $admin, PlatformFaqArticle $article): void
     {
+        AdminAccess::authorize($admin, 'faq.delete');
         if ($article->status === FaqArticle::PUBLISHED) {
             throw FaqRefused::state('delete');
         }
@@ -252,6 +260,7 @@ final class FaqManager
     /** Copie en brouillon, traductions non prêtes (à relire). */
     public function duplicate(PlatformAdmin $admin, PlatformFaqArticle $article): PlatformFaqArticle
     {
+        AdminAccess::authorize($admin, 'faq.create');
         $article->load(['category', 'translations', 'related']);
 
         $copy = $article->getConnection()->transaction(function () use ($admin, $article): PlatformFaqArticle {
@@ -284,6 +293,7 @@ final class FaqManager
     /** Déplace une FAQ vers une autre catégorie. @throws FaqRefused */
     public function move(PlatformAdmin $admin, PlatformFaqArticle $article, string $categoryId): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         if ($article->category_id === $categoryId) {
             return;
         }
@@ -298,6 +308,7 @@ final class FaqManager
      */
     public function restoreVersion(PlatformAdmin $admin, PlatformFaqArticle $article, string $versionId): void
     {
+        AdminAccess::authorize($admin, 'faq.edit');
         $version = FaqVersion::query()->where('article_id', $article->id)->whereKey($versionId)->firstOrFail();
 
         $this->update($admin, $article, ['translations' => [$version->locale => [

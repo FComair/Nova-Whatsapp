@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformSupportTicket;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Admin\Support\SupportPermissions;
 use App\Modules\Support\Exceptions\TicketChanged;
@@ -47,6 +48,7 @@ final class SupportConsole
     /** Ouvre un ticket à l'écran : la consultation est tracée. */
     public function open(PlatformAdmin $admin, string $ticketId): PlatformSupportTicket
     {
+        AdminAccess::authorize($admin, 'tickets.view');
         $ticket = $this->find($admin, $ticketId);
         $this->audit($admin, 'support.ticket.viewed', $ticket);
 
@@ -60,6 +62,12 @@ final class SupportConsole
      */
     public function reply(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $body, ?string $status = null, array $files = [], ?int $version = null): SupportMessage
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
+        // Répondre en changeant l'état du ticket (résolu, en attente…) demande aussi le droit de traiter le ticket.
+        if ($status !== null) {
+            AdminAccess::authorize($admin, 'tickets.resolve');
+        }
+
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->status;
         $message = $this->desk->staffReply($ticket, $admin->id, $body, $status, $files);
@@ -74,6 +82,7 @@ final class SupportConsole
      */
     public function note(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $body, array $files = []): SupportMessage
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $ticket = $this->find($admin, $ticket->id);
         $message = $this->desk->staffNote($ticket, $admin->id, $body, $files);
         $this->audit($admin, 'support.ticket.note_added', $ticket, ['attachments' => count($files)]);
@@ -86,6 +95,7 @@ final class SupportConsole
      */
     public function setStatus(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $status, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.resolve');
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->status;
         $this->desk->staffSetStatus($ticket, $admin->id, $status);
@@ -97,6 +107,7 @@ final class SupportConsole
      */
     public function setPriority(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $priority, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $this->authorize($admin, SupportPermissions::CHANGE_PRIORITY);
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->priority();
@@ -109,6 +120,7 @@ final class SupportConsole
      */
     public function assign(PlatformAdmin $admin, PlatformSupportTicket $ticket, ?string $assigneeId, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.assign');
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->assigned_admin_id;
 
@@ -128,6 +140,7 @@ final class SupportConsole
 
     public function addTag(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $tag): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $this->authorize($admin, SupportPermissions::MANAGE_TAGS);
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffAddTag($ticket, $admin->id, $tag);
@@ -136,6 +149,7 @@ final class SupportConsole
 
     public function removeTag(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $tag): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $this->authorize($admin, SupportPermissions::MANAGE_TAGS);
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffRemoveTag($ticket, $admin->id, $tag);
@@ -147,6 +161,7 @@ final class SupportConsole
      */
     public function link(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $kind, string $label, ?string $refId = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffLink($ticket, $admin->id, $kind, $label, $refId);
         $this->audit($admin, 'support.ticket.link_added', $ticket, ['kind' => $kind, 'label' => $label]);
@@ -154,6 +169,7 @@ final class SupportConsole
 
     public function unlink(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $linkId): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $ticket = $this->find($admin, $ticket->id);
         $this->desk->staffUnlink($ticket, $admin->id, $linkId);
         $this->audit($admin, 'support.ticket.link_removed', $ticket, ['link' => $linkId]);
@@ -164,6 +180,7 @@ final class SupportConsole
      */
     public function requestHelp(PlatformAdmin $admin, PlatformSupportTicket $ticket, string $team, string $message, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.reply');
         $ticket = $this->fresh($admin, $ticket, $version);
         $this->desk->staffRequestHelp($ticket, $admin->id, $team, $message);
         $this->audit($admin, 'support.ticket.help_requested', $ticket, ['team' => $team]);
@@ -174,6 +191,7 @@ final class SupportConsole
      */
     public function close(PlatformAdmin $admin, PlatformSupportTicket $ticket, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.resolve');
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->status;
         $this->desk->staffClose($ticket, $admin->id);
@@ -185,6 +203,7 @@ final class SupportConsole
      */
     public function reopen(PlatformAdmin $admin, PlatformSupportTicket $ticket, ?int $version = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.resolve');
         $this->authorize($admin, SupportPermissions::REOPEN_TICKETS);
         $ticket = $this->fresh($admin, $ticket, $version);
         $from = $ticket->status;
@@ -201,6 +220,7 @@ final class SupportConsole
      */
     public function delete(PlatformAdmin $admin, string $ticketId, ?string $reason = null): void
     {
+        AdminAccess::authorize($admin, 'tickets.delete');
         $this->authorize($admin, SupportPermissions::DELETE_TICKETS);
         $ticket = $this->find($admin, $ticketId);
         $db = DB::connection(PlatformAudit::CONNECTION);
@@ -249,6 +269,7 @@ final class SupportConsole
      */
     public function create(PlatformAdmin $admin, array $data, array $files = []): PlatformSupportTicket
     {
+        AdminAccess::authorize($admin, 'tickets.create');
         $member = collect($this->members($data['org_id']))->firstWhere('user_id', $data['user_id']);
 
         if ($member === null) {

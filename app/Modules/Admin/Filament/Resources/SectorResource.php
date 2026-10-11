@@ -9,6 +9,7 @@ use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformSector;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SectorManager;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Sector;
 use BackedEnum;
 use Closure;
@@ -38,6 +39,9 @@ class SectorResource extends Resource
     use SuperAdminOnly;
 
     protected static ?string $model = PlatformSector::class;
+
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'settings.view';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
 
@@ -156,7 +160,7 @@ class SectorResource extends Resource
                     ->falseLabel(__('admin.sectors.inactive')),
             ])
             ->recordActions([
-                Action::make('edit')
+                Action::make('edit')->visible(fn (): bool => AdminAccess::can('settings.edit'))
                     ->label(__('admin.sectors.edit'))
                     ->icon('heroicon-o-pencil-square')
                     ->modalHeading(fn (PlatformSector $record): string => __('admin.sectors.edit_title'))
@@ -171,7 +175,7 @@ class SectorResource extends Resource
                     Action::make('activate')
                         ->label(__('admin.sectors.activate'))
                         ->icon('heroicon-o-play-circle')
-                        ->visible(fn (PlatformSector $record): bool => ! $record->is_active)
+                        ->visible(fn (PlatformSector $record): bool => ! $record->is_active && AdminAccess::can('settings.edit'))
                         ->action(function (PlatformSector $record): void {
                             app(SectorManager::class)->setActive($record, true, self::adminId());
 
@@ -180,7 +184,7 @@ class SectorResource extends Resource
                     Action::make('deactivate')
                         ->label(__('admin.sectors.deactivate'))
                         ->icon('heroicon-o-pause-circle')
-                        ->visible(fn (PlatformSector $record): bool => $record->is_active && ! $record->is_default)
+                        ->visible(fn (PlatformSector $record): bool => $record->is_active && ! $record->is_default && AdminAccess::can('settings.edit'))
                         ->requiresConfirmation()
                         ->modalHeading(fn (PlatformSector $record): string => __('admin.sectors.confirm.deactivate_title', ['name' => $record->name]))
                         ->modalDescription(fn (PlatformSector $record): string => self::impact($record, 'deactivate'))
@@ -194,7 +198,7 @@ class SectorResource extends Resource
                         ->label(__('admin.sectors.delete'))
                         ->icon('heroicon-o-trash')
                         ->color('danger')
-                        ->visible(fn (PlatformSector $record): bool => ! $record->is_default)
+                        ->visible(fn (PlatformSector $record): bool => ! $record->is_default && AdminAccess::can('settings.edit'))
                         ->requiresConfirmation()
                         ->modalHeading(fn (PlatformSector $record): string => __('admin.sectors.confirm.delete_title', ['name' => $record->name]))
                         ->modalDescription(fn (PlatformSector $record): string => self::impact($record, 'delete'))

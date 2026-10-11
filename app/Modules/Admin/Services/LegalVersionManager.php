@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Services;
 
 use App\Modules\Admin\Models\PlatformLegalVersion;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Legal\Models\LegalDocumentVersion;
 use App\Modules\Legal\Support\LegalDocument;
 use Carbon\CarbonImmutable;
@@ -29,6 +30,7 @@ final class LegalVersionManager
      */
     public function create(array $data, string $adminId): PlatformLegalVersion
     {
+        AdminAccess::authorize($adminId, 'legal.upload');
         $version = new PlatformLegalVersion($this->attributes($data) + ['status' => LegalDocumentVersion::DRAFT, 'created_by' => $adminId]);
         $version->save();
         PlatformAudit::record($adminId, 'legal.version_created', null, 'legal_document_version', $version->id, ['document' => $version->document, 'version' => $version->version]);
@@ -43,6 +45,7 @@ final class LegalVersionManager
      */
     public function update(PlatformLegalVersion $version, array $data, string $adminId): PlatformLegalVersion
     {
+        AdminAccess::authorize($adminId, 'legal.upload');
         $this->assertDraft($version);
         $version->forceFill($this->attributes($data))->save();
         PlatformAudit::record($adminId, 'legal.version_updated', null, 'legal_document_version', $version->id, ['document' => $version->document, 'version' => $version->version]);
@@ -55,6 +58,7 @@ final class LegalVersionManager
      */
     public function publish(PlatformLegalVersion $version, string $adminId): PlatformLegalVersion
     {
+        AdminAccess::authorize($adminId, 'legal.upload');
         $this->assertDraft($version);
 
         if (! $this->hasText($version)) {
@@ -89,6 +93,7 @@ final class LegalVersionManager
      */
     public function delete(PlatformLegalVersion $version, string $adminId): void
     {
+        AdminAccess::authorize($adminId, 'legal.upload');
         $this->assertDraft($version);
         $version->delete();
         PlatformAudit::record($adminId, 'legal.version_deleted', null, 'legal_document_version', $version->id, ['document' => $version->document, 'version' => $version->version]);

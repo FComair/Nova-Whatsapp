@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Admin\Services;
 
+use App\Modules\Admin\Support\AdminAccess;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -52,6 +53,7 @@ final class PlatformSettings
      */
     public function update(array $new, string $adminId): array
     {
+        AdminAccess::authorize($adminId, 'settings.edit');
         $old = $this->all();
         $changes = [];
 

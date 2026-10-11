@@ -161,6 +161,8 @@ return [
         'note_saved' => 'Interne notitie opgeslagen.',
         'closed_title' => 'Dit ticket is gesloten',
         'closed_body' => 'De klant kan niet meer antwoorden. Heropen het ticket om het gesprek voort te zetten.',
+        'read_only_title' => 'Alleen lezen',
+        'read_only_body' => 'Met uw rol kunt u dit ticket lezen, maar niet antwoorden of notities toevoegen.',
     ],
     'stale' => [
         'title' => 'Dit ticket is door iemand anders gewijzigd',

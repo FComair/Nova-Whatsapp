@@ -331,6 +331,8 @@ return [
 
     'back' => [
         'aria' => 'Navigation de retour',
+        'admins' => 'Retour aux administrateurs',
+        'admin_profile' => 'Retour au profil de l’administrateur',
         'dashboard' => 'Retour au tableau de bord',
         'clients' => 'Retour aux clients',
         'tickets' => 'Retour aux demandes',

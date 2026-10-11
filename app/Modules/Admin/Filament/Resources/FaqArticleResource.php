@@ -14,6 +14,7 @@ use App\Modules\Admin\Models\PlatformFaqArticle;
 use App\Modules\Admin\Models\PlatformFaqCategory;
 use App\Modules\Admin\Services\FaqManager;
 use App\Modules\Admin\Services\PlatformAudit;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Help\Models\FaqArticle;
 use App\Modules\Help\Models\FaqCategory;
@@ -116,12 +117,22 @@ class FaqArticleResource extends Resource
     /** Réservé au Super Admin et aux éditeurs de contenu (pas aux agents de support). */
     public static function canAccess(): bool
     {
-        return SupportAccess::canManageFaq() && parent::canAccess();
+        return SupportAccess::canManageFaq() && AdminAccess::can('faq.view') && parent::canAccess();
+    }
+
+    public static function canCreate(): bool
+    {
+        return AdminAccess::can('faq.create');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return AdminAccess::can('faq.edit');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return $record instanceof FaqArticle && $record->status !== FaqArticle::PUBLISHED;
+        return $record instanceof FaqArticle && $record->status !== FaqArticle::PUBLISHED && AdminAccess::can('faq.delete');
     }
 
     /** La requête joint d'autres tables (qui ont aussi une colonne « id ») : la clé de l'article est qualifiée. */
@@ -236,7 +247,7 @@ class FaqArticleResource extends Resource
     {
         return $table
             ->defaultSort('updated_at', 'desc')
-            ->recordUrl(fn (Model $record): string => static::getUrl('edit', ['record' => $record]))
+            ->recordUrl(fn (Model $record): string => static::getUrl(AdminAccess::can('faq.edit') ? 'edit' : 'preview', ['record' => $record]))
             ->striped()
             ->defaultPaginationPageOption(25)
             ->filtersLayout(FiltersLayout::AboveContentCollapsible)

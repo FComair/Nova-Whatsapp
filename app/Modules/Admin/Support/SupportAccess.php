@@ -102,7 +102,7 @@ final class SupportAccess
 
     public static function canExport(PlatformAdmin $admin): bool
     {
-        return $admin->support_role === null;
+        return $admin->support_role === null && AdminAccess::can('reports.export', $admin);
     }
 
     /**

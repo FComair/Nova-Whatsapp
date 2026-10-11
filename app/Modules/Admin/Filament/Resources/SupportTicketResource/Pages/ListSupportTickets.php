@@ -10,6 +10,7 @@ use App\Modules\Admin\Models\PlatformSupportTicket;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\SupportConsole;
 use App\Modules\Admin\Services\SupportNotifier;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Support\Models\SupportTicket;
 use App\Modules\Support\Support\TicketStatus;
@@ -99,7 +100,7 @@ class ListSupportTickets extends ListRecords
 
     private function createAction(): Action
     {
-        return Action::make('create')->label(__('tickets.create.label'))->icon('heroicon-m-plus')->modalHeading(__('tickets.create.heading'))->modalSubmitActionLabel(__('tickets.create.submit'))
+        return Action::make('create')->label(__('tickets.create.label'))->icon('heroicon-m-plus')->visible(fn (): bool => AdminAccess::can('tickets.create'))->modalHeading(__('tickets.create.heading'))->modalSubmitActionLabel(__('tickets.create.submit'))
             ->schema([
                 Select::make('org_id')->label(__('tickets.columns.client'))->required()->searchable()->live()
                     ->getSearchResultsUsing(fn (string $search): array => DB::connection(PlatformAudit::CONNECTION)->table('organizations')->where('name', 'ilike', '%'.addcslashes($search, '\\%_').'%')->orderBy('name')->limit(30)->pluck('name', 'id')->all())

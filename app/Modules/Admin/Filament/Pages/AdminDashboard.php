@@ -14,6 +14,7 @@ use App\Modules\Admin\Filament\Resources\OrganizationResource;
 use App\Modules\Admin\Filament\Resources\PlatformSettingResource;
 use App\Modules\Admin\Filament\Resources\SupportAgentResource;
 use App\Modules\Admin\Filament\Resources\SupportTicketResource;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -78,7 +79,7 @@ class AdminDashboard extends Dashboard
     /** Les chiffres (comptes, facturation) sont réservés au Super Admin. */
     public function isRestricted(): bool
     {
-        return SupportAccess::admin() === null || SupportAccess::isRestricted();
+        return SupportAccess::admin() === null || SupportAccess::isRestricted() || ! AdminAccess::can('dashboard.view');
     }
 
     public function form(Schema $schema): Schema

@@ -10,6 +10,7 @@ use App\Modules\Admin\Filament\Support\SuperAdminOnly;
 use App\Modules\Admin\Models\PlatformSetting;
 use App\Modules\Admin\Services\PlatformAudit;
 use App\Modules\Admin\Services\PlatformSettings;
+use App\Modules\Admin\Support\AdminAccess;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -28,6 +29,9 @@ class PlatformSettingResource extends Resource
     use SuperAdminOnly;
 
     protected static ?string $model = PlatformSetting::class;
+
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'settings.view';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
@@ -80,7 +84,7 @@ class PlatformSettingResource extends Resource
                 TextColumn::make('updated_at')->label(__('admin.settings.updated_at'))->dateTime()->placeholder('—'),
             ])
             ->recordActions([
-                Action::make('edit')
+                Action::make('edit')->visible(fn (): bool => AdminAccess::can('settings.edit'))
                     ->label(__('admin.settings.edit'))
                     ->modalHeading(fn (PlatformSetting $record): string => __("admin.settings.keys.{$record->key}.label"))
                     ->fillForm(fn (PlatformSetting $record): array => ['value' => (int) json_decode($record->value, true)])

@@ -8,6 +8,7 @@ use App\Modules\Admin\Filament\Resources\SupportTicketResource;
 use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Services\ClientProfile;
 use App\Modules\Admin\Services\SupportConsole;
+use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Support\Models\SupportTicket;
 use App\Modules\Support\Support\TicketStatus;
@@ -37,7 +38,7 @@ class TicketsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return SupportAccess::canUseTickets();
+        return SupportAccess::canUseTickets() && AdminAccess::can('tickets.view');
     }
 
     public function table(Table $table): Table

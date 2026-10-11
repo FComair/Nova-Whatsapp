@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Admin\Models;
 
+use App\Modules\Admin\Support\AdminPermissions;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
@@ -33,7 +34,11 @@ use SensitiveParameter;
  * @property string|null $phone
  * @property string $status
  * @property string|null $internal_notes
- * @property array<string, bool>|null $permissions
+ * @property array<array-key, mixed>|null $permissions agent : clé => booléen ; administrateur à rôle `custom` : liste de `module.action`
+ * @property string|null $admin_role
+ * @property string|null $created_by
+ * @property string|null $last_login_ip
+ * @property Carbon|null $sessions_revoked_at
  * @property string|null $invitation_token
  * @property Carbon|null $invitation_expires_at
  * @property Carbon|null $invited_at
@@ -73,6 +78,7 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
             'password' => 'hashed',
             'app_authentication_recovery_codes' => 'encrypted:array',
             'last_login_at' => 'datetime',
+            'sessions_revoked_at' => 'datetime',
             'ip_allowlist' => 'array',
             'support_notifications' => 'array',
             'permissions' => 'array',
@@ -91,6 +97,19 @@ class PlatformAdmin extends Authenticatable implements FilamentUser, HasAppAuthe
     public function notifications(): MorphMany
     {
         return $this->morphMany(PlatformNotification::class, 'notifiable')->latest();
+    }
+
+    /**
+     * Rôle d'administrateur (docs/38). Un compte historique sans rôle enregistré est Super Admin ; un agent ou un éditeur n'en a pas.
+     */
+    public function adminRole(): string
+    {
+        return $this->support_role !== null ? '' : ($this->admin_role ?? AdminPermissions::SUPER_ADMIN);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->adminRole() === AdminPermissions::SUPER_ADMIN;
     }
 
     public function isSupportAgent(): bool

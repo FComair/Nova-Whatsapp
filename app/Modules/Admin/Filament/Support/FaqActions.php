@@ -8,6 +8,7 @@ use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Support\SupportAccess;
 use App\Modules\Help\Support\FaqRefused;
 use Filament\Notifications\Notification;
+use Illuminate\Auth\Access\AuthorizationException;
 
 /**
  * Exécution commune des actions sur les FAQ et les catégories (docs/30) : droit d'accès, messages de réussite et de refus traduits.
@@ -36,6 +37,10 @@ final class FaqActions
             $operation(self::admin());
         } catch (FaqRefused $refused) {
             Notification::make()->danger()->title(__('faq.errors.title'))->body(__("faq.errors.{$refused->reason}", $refused->params))->persistent()->send();
+
+            return false;
+        } catch (AuthorizationException) {
+            Notification::make()->danger()->title(__('admins.errors.title'))->body(__('admins.errors.forbidden'))->send();
 
             return false;
         }

@@ -24,6 +24,9 @@ class InvoiceResource extends Resource
 
     protected static ?string $model = PlatformInvoice::class;
 
+    /** Permission nécessaire pour voir cet écran (docs/38). */
+    protected static ?string $viewPermission = 'subscriptions.view';
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?int $navigationSort = 2;

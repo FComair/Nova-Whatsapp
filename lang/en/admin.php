@@ -331,6 +331,8 @@ return [
 
     'back' => [
         'aria' => 'Back navigation',
+        'admins' => 'Back to Admins',
+        'admin_profile' => 'Back to Admin profile',
         'dashboard' => 'Back to Dashboard',
         'clients' => 'Back to Clients',
         'tickets' => 'Back to Tickets',
