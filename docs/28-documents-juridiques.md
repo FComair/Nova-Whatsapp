@@ -66,3 +66,16 @@ Cases natives avec libellé lié, liens soulignés avec nouvel onglet annoncé, 
 `legal_document_versions` (globale, lecture seule pour l'application cliente) ; `user_consents` reçoit `user_agent` et `locale` et ses deux garde-fous ; la version des documents n'est plus lue dans `config/nova.php` (supprimée), seulement en base.
 
 > Dépôt de documents au format PDF : voir `docs/35-documents-juridiques-pdf.md`.
+
+## Personnes invitées (correctif de l'acceptation)
+
+Une personne invitée (praticien, assistant) coche les conditions et la confidentialité sur la page d'invitation (le DPA lie l'entreprise, pas l'invité). **Avant le correctif**, le serveur validait les cases mais n'écrivait aucune ligne dans `user_consents` : le tableau de bord affichait donc « Aucune acceptation de nos documents juridiques n'est enregistrée ».
+
+Maintenant :
+- la page affiche les deux documents avec leur version, et la demande renvoie les versions vues (`legal_versions`) : une version publiée entre-temps est refusée comme à l'inscription ;
+- `InvitationService::accept` enregistre l'acceptation (version, date, IP, agent, langue, contexte `invitation`) **dans la même transaction que le compte** ; si l'une manque, tout est annulé (« Nous n'avons pas pu enregistrer votre acceptation. Veuillez réessayer. »), un message sans donnée personnelle est journalisé, et le même lien reste utilisable ;
+- l'avis du tableau de bord nomme les documents manquants.
+
+Réparation des comptes déjà créés : `php artisan legal:repair-invitee-acceptances` (rapport seulement) puis `--apply`. Une acceptation n'est retrouvée que si le journal d'audit (`invitation.accepted`) la prouve et qu'une version publiée existait à cette date ; elle est écrite avec la date, l'IP et l'agent du journal et le contexte `invitation_recovered`. Sans preuve, rien n'est inventé : la personne voit l'avis et accepte les versions en vigueur. La commande est idempotente et travaille avec le rôle propriétaire de la base (comme une migration).
+
+Tests : `tests/Feature/Legal/InviteeAcceptanceTest.php`, `resources/js/Pages/Invitation/Accept.test.ts`.

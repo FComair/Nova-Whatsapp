@@ -15,7 +15,6 @@ use App\Modules\Support\Services\AttachmentStore;
 use App\Modules\Support\Services\TicketDesk;
 use App\Modules\Support\Support\TicketStatus;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -338,14 +337,5 @@ final class SupportConsole
     private function audit(PlatformAdmin $admin, string $action, PlatformSupportTicket $ticket, ?array $diff = null): void
     {
         PlatformAudit::record($admin->id, $action, $ticket->org_id, 'support_ticket', $ticket->id, ['reference' => $ticket->reference(), ...($diff ?? [])]);
-    }
-
-    /**
-     * @param  Builder<PlatformSupportTicket>  $query
-     * @return list<string>
-     */
-    public function idsOf(PlatformAdmin $admin, Builder $query): array
-    {
-        return SupportAccess::scope($query, $admin)->pluck('support_tickets.id')->all();
     }
 }

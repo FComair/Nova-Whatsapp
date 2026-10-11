@@ -31,6 +31,7 @@ use App\Modules\Help\Console\ImportHelpFiles;
 use App\Modules\Help\Support\HelpCatalog;
 use App\Modules\Identity\Contracts\PhoneCodeSender;
 use App\Modules\Identity\Support\LogPhoneCodeSender;
+use App\Modules\Legal\Console\RepairInviteeAcceptances;
 use App\Modules\Loyalty\Console\MaintainLoyalty;
 use App\Modules\Privacy\Console\ProcessDeletions;
 use App\Modules\Tenancy\Console\EndPauses;
@@ -119,7 +120,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class, DevAdminLink::class, WatchSupportSla::class, ImportHelpFiles::class]);
+            $this->commands([CreatePlatformAdmin::class, ReleaseExpiredHolds::class, SendReminders::class, SyncCalendars::class, ProcessDeletions::class, RunBilling::class, CreateApiClient::class, ConnectWhatsappAccount::class, SetAdminIpAllowlist::class, Preflight::class, EndPauses::class, SyncTemplates::class, CheckWhatsappAccount::class, PurgePriceListFiles::class, MaintainLoyalty::class, DevAdminLink::class, WatchSupportSla::class, ImportHelpFiles::class, RepairInviteeAcceptances::class]);
         }
     }
 }

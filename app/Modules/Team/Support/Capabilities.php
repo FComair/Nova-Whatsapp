@@ -168,22 +168,4 @@ final class Capabilities
 
         return $clean;
     }
-
-    /**
-     * Capacité => groupe.
-     *
-     * @return array<string, string>
-     */
-    public static function groupOf(): array
-    {
-        $map = [];
-
-        foreach (self::GROUPS as $group => $capabilities) {
-            foreach ($capabilities as $capability) {
-                $map[$capability] = $group;
-            }
-        }
-
-        return $map;
-    }
 }

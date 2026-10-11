@@ -1326,11 +1326,17 @@ return [
             'blocked' => 'Een nieuwe versie van een juridisch document moet worden aanvaard om Nova WhatsApp te blijven gebruiken. U kunt ze hieronder lezen.',
             'blocked_title' => 'Nieuwe aanvaarding vereist',
             'blocked_body' => 'Er is een juridisch belangrijke nieuwe versie gepubliceerd. Lees ze en aanvaard ze om verder te gaan. Uw gegevens, de beveiliging van uw account, de facturatie en de hulp blijven toegankelijk.',
-            'contexts' => ['signup' => 'registratie', 'reacceptance' => 'nieuwe aanvaarding', 'settings' => 'instellingen'],
+            'contexts' => ['signup' => 'registratie', 'reacceptance' => 'nieuwe aanvaarding', 'settings' => 'instellingen', 'invitation' => 'uitnodiging', 'invitation_recovered' => 'uitnodiging (teruggevonden in het auditlogboek)'],
             'changes' => 'Wat is er veranderd: :text',
+        ],
+        'invitation' => [
+            'failed' => 'We konden uw aanvaarding niet registreren. Probeer het opnieuw.',
+            'unavailable' => 'De juridische documenten zijn momenteel niet beschikbaar: het account kan nog niet worden aangemaakt.',
+            'required' => 'Vereist om het account aan te maken.',
         ],
         'notice' => [
             'missing' => 'Voor uw account is geen aanvaarding van onze juridische documenten geregistreerd.',
+            'missing_named' => 'Uw aanvaarding van de volgende juridische documenten is niet geregistreerd: :documents.',
             'cta' => 'Bekijken en aanvaarden',
             'dismiss' => 'Verbergen',
         ],

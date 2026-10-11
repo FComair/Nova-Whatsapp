@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Modules\Reports\Support;
 
-use Carbon\CarbonImmutable;
-
 /**
  * Découpage d'une période en jours, semaines (lundi) ou mois selon sa durée, pour les courbes « dans le temps ».
  * Les intervalles vides existent quand même : une journée sans rendez-vous est un zéro, pas un trou.
@@ -63,15 +61,5 @@ final class Buckets
         }
 
         return $keys;
-    }
-
-    /** Début d'intervalle de la date locale donnée. */
-    public static function keyOf(CarbonImmutable $date, string $granularity): string
-    {
-        return match ($granularity) {
-            self::WEEK => $date->startOfWeek()->toDateString(),
-            self::MONTH => $date->startOfMonth()->toDateString(),
-            default => $date->toDateString(),
-        };
     }
 }

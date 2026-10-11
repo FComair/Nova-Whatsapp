@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Staff\Http\Controllers;
 
 use App\Modules\Identity\Services\SessionStarter;
+use App\Modules\Legal\Exceptions\LegalAcceptanceFailed;
+use App\Modules\Legal\Services\LegalDocuments;
+use App\Modules\Legal\Support\LegalDocument;
 use App\Modules\Staff\Http\Requests\AcceptInvitationRequest;
 use App\Modules\Staff\Models\Invitation;
 use App\Modules\Staff\Models\Practitioner;
@@ -15,6 +18,7 @@ use App\Modules\Tenancy\Models\OrgMember;
 use App\Modules\Tenancy\Support\TenantContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,7 +27,7 @@ use Inertia\Response;
  */
 final class InvitationController
 {
-    public function __construct(private readonly InvitationService $invitations, private readonly TenantContext $tenant) {}
+    public function __construct(private readonly InvitationService $invitations, private readonly TenantContext $tenant, private readonly LegalDocuments $legal) {}
 
     public function show(string $token): Response
     {
@@ -46,6 +50,8 @@ final class InvitationController
                 'organization' => Organization::query()->find($invitation->org_id)?->name,
                 'name' => $invitation->name ?? Practitioner::query()->find($invitation->practitioner_id)?->name,
                 'email' => $invitation->email,
+                // Documents à accepter, avec la version affichée : c'est cette version que la personne accepte (docs/28).
+                'legal' => ['documents' => $this->legal->displayed(LegalDocument::requiredFor(false), app()->getLocale())],
             ]);
         });
     }
@@ -53,9 +59,19 @@ final class InvitationController
     public function accept(AcceptInvitationRequest $request, string $token, SessionStarter $session): RedirectResponse
     {
         try {
-            $user = $this->invitations->accept($token, ['password' => $request->string('password')->toString()]);
+            $user = $this->invitations->accept($token, [
+                'password' => $request->string('password')->toString(),
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'locale' => app()->getLocale(),
+            ]);
         } catch (InvitationInvalid) {
             return redirect()->route('invitation.show', ['token' => $token]);
+        } catch (LegalAcceptanceFailed $e) {
+            // Le compte n'a pas été créé (transaction annulée) : la personne peut réessayer avec le même lien. Aucune donnée personnelle dans le journal.
+            Log::error('Invitation : acceptation des documents juridiques non enregistrée.', ['missing' => $e->missing, 'cause' => $e->getPrevious() === null ? null : $e->getPrevious()::class]);
+
+            return back()->withErrors(['legal' => __('ui.legal.invitation.failed')]);
         }
 
         // Compte créé et e-mail prouvé par le lien : connexion directe, puis espace du praticien (il renseigne ses services et ses horaires) ou

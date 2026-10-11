@@ -174,7 +174,7 @@ describe('invitation', function (): void {
         $token = (string) inviteMails()[0]['token'];
         auth()->forgetGuards();
 
-        $this->post("/invitation/{$token}", ['password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true])->assertSessionHasNoErrors()->assertRedirect('/tableau-de-bord');
+        $this->post("/invitation/{$token}", ['password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true, 'legal_versions' => ['terms' => '2026-10-01', 'privacy' => '2026-10-01']])->assertSessionHasNoErrors()->assertRedirect('/tableau-de-bord');
 
         $member = ($this->db)()->table('org_members')->join('users', 'users.id', '=', 'org_members.user_id')->where('users.email', 'elodie@example.com')->first();
         expect($member->role)->toBe('receptionist')->and($member->name)->toBe('Élodie Martin')->and($member->status)->toBe('active')
@@ -198,7 +198,7 @@ describe('invitation', function (): void {
         expect(($this->db)()->table('invitations')->whereNull('revoked_at')->count())->toBe(0)->and(($this->audit)('team.invitation_cancelled'))->toHaveCount(1);
         auth()->forgetGuards();
         $this->get("/invitation/{$second}")->assertOk();
-        $this->post("/invitation/{$second}", ['password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true])->assertRedirect("/invitation/{$second}");
+        $this->post("/invitation/{$second}", ['password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true, 'legal_versions' => ['terms' => '2026-10-01', 'privacy' => '2026-10-01']])->assertRedirect("/invitation/{$second}");
     });
 });
 

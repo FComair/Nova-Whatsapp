@@ -43,12 +43,6 @@ final class LoyaltyAccess
         return $this->current->can('loyalty.adjust');
     }
 
-    /** Voit la progression sur la fiche d'un client et dans un rendez-vous (tous les rôles ; le praticien seulement pour ses clients, géré par l'écran appelant). */
-    public function canSeeProgress(): bool
-    {
-        return true;
-    }
-
     /**
      * @return array{view: bool, configure: bool, redeem: bool, adjust: bool}
      */

@@ -313,7 +313,7 @@ describe('acceptation', function (): void {
         ($this->invite)();
         $this->token = ($this->token)();
         $this->accept = fn (array $override = [], ?string $token = null) => $this->post('/invitation/'.($token ?? $this->token), array_merge([
-            'password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true,
+            'password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true, 'legal_versions' => ['terms' => '2026-10-01', 'privacy' => '2026-10-01'],
         ], $override));
     });
 
@@ -428,7 +428,7 @@ describe('tableau de bord du praticien invité', function (): void {
     it('l\'invite à compléter son profil tant qu\'il n\'est pas réservable', function (): void {
         ($this->invite)();
         $this->post('/invitation/'.($this->token)(), [
-            'password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true,
+            'password' => 'Sol1de-Phrase-Pour-Test!', 'password_confirmation' => 'Sol1de-Phrase-Pour-Test!', 'accept_terms' => true, 'accept_privacy' => true, 'legal_versions' => ['terms' => '2026-10-01', 'privacy' => '2026-10-01'],
         ]);
 
         $this->get('/tableau-de-bord')->assertInertia(fn (Assert $page) => $page->where('profile.complete', false)->where('onboarding', null));

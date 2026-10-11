@@ -215,6 +215,21 @@ describe('avis après connexion', () => {
         expect(mount(LegalNotice).find('[data-testid="legal-notice"]').exists()).toBe(false);
     });
 
+    it('nomme exactement les documents qui manquent', () => {
+        shared.legal = {
+            pending: [
+                { code: 'terms', slug: 'terms-of-use', title: 'Conditions d’utilisation', version: '2026-10-01', blocking: false },
+                { code: 'privacy', slug: 'privacy-policy', title: 'Politique de confidentialité', version: '2026-10-01', blocking: false },
+            ],
+        };
+
+        shared.translations = { legal: { notice: { missing_named: 'Acceptation non enregistrée : :documents.' } } } as never;
+        const text = mount(LegalNotice).find('[data-testid="legal-notice-text"]').text();
+        shared.translations = {};
+
+        expect(text).toBe('Acceptation non enregistrée : Conditions d’utilisation, Politique de confidentialité.');
+    });
+
     it('n’affiche pas d’avis pour une version bloquante : la page Juridique prend le relais', () => {
         shared.legal = { pending: [{ code: 'terms', slug: 'terms-of-use', title: 'CGU', version: '2026-12-01', blocking: true }] };
 

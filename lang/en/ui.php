@@ -1326,11 +1326,17 @@ return [
             'blocked' => 'A new version of a legal document must be accepted to keep using Nova WhatsApp. You can read it below.',
             'blocked_title' => 'New acceptance required',
             'blocked_body' => 'A legally significant new version has been published. Read it, then accept it to continue. Your data, your account security, billing and help stay accessible.',
-            'contexts' => ['signup' => 'sign-up', 'reacceptance' => 're-acceptance', 'settings' => 'settings'],
+            'contexts' => ['signup' => 'sign-up', 'reacceptance' => 're-acceptance', 'settings' => 'settings', 'invitation' => 'invitation', 'invitation_recovered' => 'invitation (recovered from the audit log)'],
             'changes' => 'What changed: :text',
+        ],
+        'invitation' => [
+            'failed' => 'We could not record your acceptance. Please try again.',
+            'unavailable' => 'The legal documents are not available right now: the account cannot be created yet.',
+            'required' => 'Required to create the account.',
         ],
         'notice' => [
             'missing' => 'No acceptance of our legal documents is recorded for your account.',
+            'missing_named' => 'Your acceptance of the following legal documents is not recorded: :documents.',
             'cta' => 'View and accept',
             'dismiss' => 'Dismiss',
         ],

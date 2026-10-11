@@ -9,7 +9,6 @@ use App\Modules\Admin\Models\PlatformOrganization;
 use App\Modules\Admin\Services\ClientExport;
 use App\Modules\Admin\Services\ClientManager;
 use App\Modules\Admin\Support\SupportAccess;
-use App\Modules\Tenancy\Models\Organization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Field;
@@ -173,11 +172,5 @@ final class ClientActions
     public static function download(Builder $query, array $groups, array $filters, string $scope): StreamedResponse
     {
         return ClientExport::download(self::admin(), $query, array_map('strval', array_values($groups)), $filters, $scope);
-    }
-
-    /** Statut permettant l'action « suspendre » depuis la fiche (même règle que le cycle de vie). */
-    public static function suspendable(PlatformOrganization $org): bool
-    {
-        return in_array($org->status, [Organization::STATUS_TRIAL, Organization::STATUS_ACTIVE, Organization::STATUS_PAST_DUE, Organization::STATUS_PAUSED], true);
     }
 }

@@ -167,11 +167,6 @@ final readonly class ReportFilters
         return $this->locationId !== null || $this->practitionerId !== null || $this->serviceId !== null || $this->source !== null;
     }
 
-    public function hasAnyFilter(): bool
-    {
-        return $this->hasEntityFilter() || $this->statuses !== [] || $this->paymentStatus !== null;
-    }
-
     /**
      * Paramètres d'adresse qui reproduisent ces filtres (liens entre catégories, exports, impression).
      *

@@ -6,6 +6,9 @@ namespace App\Modules\Staff\Services;
 
 use App\Modules\Audit\Audit;
 use App\Modules\Identity\Models\User;
+use App\Modules\Legal\Exceptions\LegalAcceptanceFailed;
+use App\Modules\Legal\Services\LegalDocuments;
+use App\Modules\Legal\Support\LegalDocument;
 use App\Modules\Staff\Models\Invitation;
 use App\Modules\Staff\Models\Practitioner;
 use App\Modules\Staff\Notifications\PractitionerInvitationNotification;
@@ -18,6 +21,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use stdClass;
+use Throwable;
 
 /**
  * Invitation d'un praticien par lien (flowcharts 1C et 5B/E13).
@@ -28,7 +32,7 @@ use stdClass;
  */
 final class InvitationService
 {
-    public function __construct(private readonly PractitionerManager $manager, private readonly TenantContext $tenant) {}
+    public function __construct(private readonly PractitionerManager $manager, private readonly TenantContext $tenant, private readonly LegalDocuments $legal) {}
 
     /**
      * Crée le praticien (en brouillon si la limite de l'offre est atteinte) et lui envoie son invitation.
@@ -178,11 +182,38 @@ final class InvitationService
                 $practitioner?->forceFill(['user_id' => $user->id])->save();
                 $invitation->forceFill(['used_at' => now()])->save();
 
+                $this->recordLegalAcceptance($user, $organization->id, $data);
+
                 Audit::record('invitation.accepted', 'user', actorId: $user->id, orgId: $organization->id, entityType: $practitioner === null ? 'invitations' : 'practitioner', entityId: $practitioner->id ?? $invitation->id, diff: ['role' => $invitation->role]);
 
                 return $user;
             });
         });
+    }
+
+    /**
+     * Enregistre, avec le compte et dans la même transaction, l'acceptation des documents que la personne vient de cocher (conditions et confidentialité ;
+     * le DPA lie l'entreprise, pas l'invité). Si un seul enregistrement manque, tout est annulé : pas de compte sans preuve d'acceptation.
+     *
+     * @param  array<string, mixed>  $data  ip, user_agent et locale de la demande
+     *
+     * @throws LegalAcceptanceFailed
+     */
+    private function recordLegalAcceptance(User $user, string $orgId, array $data): void
+    {
+        $required = LegalDocument::requiredFor(false);
+
+        try {
+            $recorded = $this->legal->accept($user, $required, LegalDocument::INVITATION, false, $data['ip'] ?? null, $data['user_agent'] ?? null, (string) ($data['locale'] ?? app()->getLocale()), $orgId);
+        } catch (Throwable $e) {
+            throw new LegalAcceptanceFailed($required, $e);
+        }
+
+        $missing = array_values(array_diff($required, $recorded));
+
+        if ($missing !== []) {
+            throw new LegalAcceptanceFailed($missing);
+        }
     }
 
     /**

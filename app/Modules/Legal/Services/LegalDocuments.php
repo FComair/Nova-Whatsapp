@@ -214,6 +214,21 @@ final class LegalDocuments
     }
 
     /**
+     * Documents affichés avant une acceptation : titre, version et adresse stable de chacun.
+     *
+     * @param  list<string>  $codes
+     * @return list<array{code: string, slug: string, title: string, version: string|null, href: string}>
+     */
+    public function displayed(array $codes, string $locale): array
+    {
+        return array_map(function (string $code) use ($locale): array {
+            $current = $this->current($code);
+
+            return ['code' => $code, 'slug' => LegalDocument::slug($code), 'title' => $current === null ? '' : $this->localised($current, $locale)['title'], 'version' => $current?->version, 'href' => LegalDocument::url($code)];
+        }, $codes);
+    }
+
+    /**
      * Versions en vigueur, pour vérifier à l'envoi ce que l'utilisateur a vu (une version publiée entre l'affichage et l'envoi est refusée).
      *
      * @return array<string, string|null>

@@ -96,7 +96,7 @@ export function answerUnsaved(choice: LeaveChoice): void {
 }
 
 /** Enregistre le premier formulaire modifié (choix « Rester et enregistrer »). */
-export function saveFirstUnsaved(): void {
+function saveFirstUnsaved(): void {
     const form = [...dirty].find((candidate) => candidate.isConnected);
 
     form?.requestSubmit();

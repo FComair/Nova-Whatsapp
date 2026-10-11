@@ -26,6 +26,23 @@ final class LegalDocument
 
     public const SETTINGS = 'settings';
 
+    /** Acceptation à la création du compte d'une personne invitée (praticien, assistant), dans la même opération que le compte. */
+    public const INVITATION = 'invitation';
+
+    /** Acceptation retrouvée par la commande de réparation à partir du journal d'audit (jamais saisie par la personne après coup). */
+    public const INVITATION_RECOVERED = 'invitation_recovered';
+
+    /**
+     * Documents que doit accepter une personne selon son rôle : conditions et confidentialité pour tous, le DPA (qui lie l'entreprise à Nova)
+     * seulement pour le propriétaire.
+     *
+     * @return list<string>
+     */
+    public static function requiredFor(bool $owner): array
+    {
+        return $owner ? self::codes() : [self::TERMS, self::PRIVACY];
+    }
+
     /** @return list<string> */
     public static function codes(): array
     {

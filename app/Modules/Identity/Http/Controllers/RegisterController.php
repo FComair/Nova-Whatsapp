@@ -72,20 +72,6 @@ final class RegisterController
      */
     private function legal(LegalDocuments $legal): array
     {
-        $documents = [];
-
-        foreach (LegalDocument::codes() as $code) {
-            $current = $legal->current($code);
-
-            $documents[] = [
-                'code' => $code,
-                'slug' => LegalDocument::slug($code),
-                'title' => $current === null ? '' : $legal->localised($current, app()->getLocale())['title'],
-                'version' => $current?->version,
-                'href' => LegalDocument::url($code),
-            ];
-        }
-
-        return ['documents' => $documents, 'dpa_required' => (bool) config('nova.legal.dpa_required_at_signup')];
+        return ['documents' => $legal->displayed(LegalDocument::codes(), app()->getLocale()), 'dpa_required' => (bool) config('nova.legal.dpa_required_at_signup')];
     }
 }
