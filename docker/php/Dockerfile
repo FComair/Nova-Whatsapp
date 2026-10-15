@@ -1,4 +1,4 @@
-FROM php:8.4-cli
+FROM php:8.5-cli
 
 # Extensions requises : PostgreSQL (RLS, btree_gist), Redis, intl (i18n FR/NL/EN), zip, bcmath, gd, pcntl (Horizon)
 RUN apt-get update && apt-get install -y --no-install-recommends \
