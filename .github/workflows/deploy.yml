@@ -25,7 +25,7 @@ permissions:
 env:
   APP_DIR: /var/www/rendivoo
   KEEP_RELEASES: 5
-  HEALTH_URL: https://app.rendivoo.be/up
+  HEALTH_HOST: app.rendivoo.be
   SSH_CONNECT_TIMEOUT: 2m
 
 jobs:
@@ -130,10 +130,16 @@ jobs:
             cd "${APP_DIR}/releases"
             ls -1dt */ | tail -n +$((KEEP + 1)) | xargs -r rm -rf
 
+      # --resolve : interroge directement le serveur (SSH_HOST = son IP), même avant la création du DNS ;
+      # -L suit la redirection vers HTTPS une fois certbot installé.
       - name: Vérification de santé
+        env:
+          SERVER_IP: ${{ secrets.SSH_HOST }}
         run: |
           for i in 1 2 3 4 5 6; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' "$HEALTH_URL" || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' -L \
+              --resolve "${HEALTH_HOST}:80:${SERVER_IP}" --resolve "${HEALTH_HOST}:443:${SERVER_IP}" \
+              "http://${HEALTH_HOST}/up" || true)
             echo "Tentative $i : HTTP $code"
             [ "$code" = "200" ] && exit 0
             sleep 5
