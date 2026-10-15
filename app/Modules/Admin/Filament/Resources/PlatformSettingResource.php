@@ -14,6 +14,7 @@ use App\Modules\Admin\Support\AdminAccess;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
@@ -79,7 +80,12 @@ class PlatformSettingResource extends Resource
             ->paginated(false)
             ->columns([
                 TextColumn::make('key')->label(__('admin.settings.name'))->formatStateUsing(fn (string $state): string => __("admin.settings.keys.{$state}.label")),
-                TextColumn::make('value')->label(__('admin.settings.value'))->formatStateUsing(fn (string $state, PlatformSetting $record): string => trans_choice('admin.settings.'.self::unit($record->key), (int) json_decode($state, true))),
+                TextColumn::make('value')->label(__('admin.settings.value'))
+                    ->formatStateUsing(fn (string $state, PlatformSetting $record): string => self::isFlag($record->key)
+                        ? __('admin.settings.'.((int) json_decode($state, true) === 1 ? 'on' : 'off'))
+                        : trans_choice('admin.settings.'.self::unit($record->key), (int) json_decode($state, true)))
+                    ->badge(fn (PlatformSetting $record): bool => self::isFlag($record->key))
+                    ->color(fn (PlatformSetting $record, string $state): ?string => self::isFlag($record->key) ? ((int) json_decode($state, true) === 1 ? 'success' : 'danger') : null),
                 TextColumn::make('description')->label(__('admin.settings.description'))->state(fn (PlatformSetting $record): string => __("admin.settings.keys.{$record->key}.help"))->wrap(),
                 TextColumn::make('updated_at')->label(__('admin.settings.updated_at'))->dateTime()->placeholder('—'),
             ])
@@ -87,16 +93,18 @@ class PlatformSettingResource extends Resource
                 Action::make('edit')->visible(fn (): bool => AdminAccess::can('settings.edit'))
                     ->label(__('admin.settings.edit'))
                     ->modalHeading(fn (PlatformSetting $record): string => __("admin.settings.keys.{$record->key}.label"))
-                    ->fillForm(fn (PlatformSetting $record): array => ['value' => (int) json_decode($record->value, true)])
+                    ->fillForm(fn (PlatformSetting $record): array => ['value' => self::isFlag($record->key) ? (int) json_decode($record->value, true) === 1 : (int) json_decode($record->value, true)])
                     ->schema(fn (PlatformSetting $record): array => [
-                        TextInput::make('value')->label(__('admin.settings.value'))->numeric()->integer()->required()
-                            ->minValue(PlatformSettings::INTEGERS[$record->key]['min'])->maxValue(PlatformSettings::INTEGERS[$record->key]['max']),
+                        self::isFlag($record->key)
+                            ? Toggle::make('value')->label(__("admin.settings.keys.{$record->key}.label"))->helperText(__('admin.settings.flag_warning'))
+                            : TextInput::make('value')->label(__('admin.settings.value'))->numeric()->integer()->required()
+                                ->minValue(PlatformSettings::INTEGERS[$record->key]['min'])->maxValue(PlatformSettings::INTEGERS[$record->key]['max']),
                         ...SensitiveActionFields::make(),
                     ])
                     ->action(function (array $data, PlatformSetting $record, Action $action): void {
                         [$adminId, $reason] = SensitiveActionFields::authorize($action, $data);
 
-                        $changes = app(PlatformSettings::class)->update([$record->key => (int) $data['value']], $adminId);
+                        $changes = app(PlatformSettings::class)->update([$record->key => (int) (self::isFlag($record->key) ? (bool) $data['value'] : $data['value'])], $adminId);
 
                         if ($changes !== []) {
                             PlatformAudit::record($adminId, 'platform_settings.updated', null, 'platform_settings', null, $changes, $reason);
@@ -105,6 +113,12 @@ class PlatformSettingResource extends Resource
                         Notification::make()->success()->title(__('admin.settings.saved'))->send();
                     }),
             ]);
+    }
+
+    /** Interrupteur oui/non (vérification de l'e-mail, 2FA) plutôt qu'une durée. */
+    private static function isFlag(string $key): bool
+    {
+        return in_array($key, PlatformSettings::FLAGS, true);
     }
 
     /** Unité d'un réglage, d'après son nom : tentatives, heures, pourcentage ou jours. */

@@ -10,6 +10,7 @@ use App\Modules\Identity\Exceptions\TooManyAttempts;
 use App\Modules\Identity\Http\Requests\LoginRequest;
 use App\Modules\Identity\Services\Authenticator;
 use App\Modules\Identity\Services\SessionStarter;
+use App\Modules\Identity\Services\TwoFactor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ final class LoginController
         }
 
         // Double authentification : le mot de passe ne suffit plus, on demande le code avant d'ouvrir la session.
-        if ($user->hasTwoFactor() && $user->isActivated()) {
+        if ($user->hasTwoFactor() && $user->isActivated() && app(TwoFactor::class)->enabled()) {
             $request->session()->regenerate();
             $request->session()->put(TwoFactorChallengeController::SESSION_KEY, ['id' => $user->id, 'at' => now()->timestamp]);
 
