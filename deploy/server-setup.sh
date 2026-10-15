@@ -58,7 +58,14 @@ systemctl enable --now postgresql
 
 echo "==> 4/11 Utilisateurs et clés SSH"
 make_user () {  # $1=user  $2=pubkey (facultative)
-  id "$1" &>/dev/null || adduser --disabled-password --gecos "" "$1"
+  if ! id "$1" &>/dev/null; then
+    # Certaines images Ubuntu (dont Contabo) ont déjà un groupe système du même nom (ex. « admin ») : on le réutilise.
+    if getent group "$1" >/dev/null; then
+      adduser --disabled-password --gecos "" --ingroup "$1" "$1"
+    else
+      adduser --disabled-password --gecos "" "$1"
+    fi
+  fi
   install -d -m 700 -o "$1" -g "$1" "/home/$1/.ssh"
   [ -n "$2" ] && echo "$2" > "/home/$1/.ssh/authorized_keys"
   touch "/home/$1/.ssh/authorized_keys"
