@@ -44,7 +44,7 @@ final class EmailVerificationController
             Audit::record('auth.email.verified', 'user', actorId: $account->id);
         }
 
-        if ($account->hasVerifiedPhone()) {
+        if ($account->phoneStepDone()) {
             return redirect()->route('login')->with('status', __('ui.verify.already_done'));
         }
 

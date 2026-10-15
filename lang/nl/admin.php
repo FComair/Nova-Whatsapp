@@ -96,6 +96,7 @@ return [
         'off' => 'Uitgeschakeld',
         'flag_warning' => 'Uitschakelen verlaagt de beveiliging van accounts. Doe dit alleen zolang er geen mailserver is en schakel het weer in zodra die er is.',
         'keys' => [
+            'phone_verification_required' => ['label' => 'Telefoonverificatie (klanten)', 'help' => 'Uitgeschakeld hoeven nieuwe klanten hun telefoonnummer niet meer met een code te bevestigen: ze kunnen meteen na de registratie inloggen.'],
             'email_verification_required' => ['label' => 'E-mailverificatie (klanten)', 'help' => 'Uitgeschakeld hoeven nieuwe klanten hun e-mailadres niet meer te bevestigen: er wordt geen verificatiemail verstuurd. De telefoonstap blijft.'],
             'client_two_factor_required' => ['label' => '2FA (klanten)', 'help' => 'Uitgeschakeld zijn eigenaars en vestigingsmanagers niet meer verplicht tweestapsverificatie in te stellen en wordt de code niet meer gevraagd bij het inloggen.'],
             'admin_two_factor_required' => ['label' => '2FA (Super Admin)', 'help' => 'Uitgeschakeld loggen Super Admins in met alleen hun wachtwoord en vragen gevoelige acties geen code meer.'],

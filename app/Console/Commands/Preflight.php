@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Modules\Admin\Models\PlatformAdmin;
+use App\Modules\Admin\Services\PlatformSettings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -68,7 +69,7 @@ final class Preflight extends Command
             ['error', 'Transfert vers n8n en HTTPS', ! $filled('whatsapp.n8n.url') || str_starts_with((string) config('whatsapp.n8n.url'), 'https://'), 'N8N_INBOUND_URL : les messages des clients finaux ne doivent jamais circuler en clair'],
             ['error', 'Assistant IA : fournisseur en HTTPS', ! $filled('conversation.ai.api_key') || str_starts_with((string) config('conversation.ai.base_url'), 'https://'), 'CONVERSATION_AI_BASE_URL doit commencer par https://'],
             ['warning', 'Assistant IA désactivé, ou fournisseur déclaré dans le DPA et la politique de confidentialité', ! $filled('conversation.ai.api_key'), 'Le texte des messages des clients finaux part chez le fournisseur d\'IA : sous-traitant à déclarer, transfert hors UE à encadrer (docs/37)'],
-            ['warning', 'Vérification de l\'e-mail et 2FA (clients, Super Admin) toutes exigées', collect(PlatformSettings::FLAGS)->every(fn (string $key): bool => app(PlatformSettings::class)->enabled($key)), 'Paramètres globaux du Super Admin : réactiver dès qu\'un serveur d\'e-mail est en place'],
+            ['warning', 'Vérifications e-mail, téléphone et 2FA (clients, Super Admin) toutes exigées', collect(PlatformSettings::FLAGS)->every(fn (string $key): bool => app(PlatformSettings::class)->enabled($key)), 'Paramètres globaux du Super Admin : réactiver dès qu\'un serveur d\'e-mail est en place'],
             ['warning', 'Session Super Admin : expiration après inactivité', (int) config('nova.security.admin_idle_minutes') > 0, 'NOVA_ADMIN_IDLE_MINUTES > 0'],
             ['warning', 'Inscription intégrée de Meta (Embedded Signup) configurée', $filled('whatsapp.embedded_signup.app_id') && $filled('whatsapp.embedded_signup.config_id'), 'META_APP_ID / META_EMBEDDED_SIGNUP_CONFIG_ID (docs/17) ; sinon seule la connexion manuelle est proposée'],
             ['warning', 'Transfert vers n8n configuré', $filled('whatsapp.n8n.url') && $filled('whatsapp.n8n.signing_secret') && config('whatsapp.n8n.signing_secret') !== 'dev-n8n-secret', 'N8N_INBOUND_URL / N8N_SIGNING_SECRET'],

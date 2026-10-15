@@ -66,6 +66,15 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->hasVerifiedEmail() || ! app(PlatformSettings::class)->enabled('email_verification_required');
     }
 
+    /**
+     * L'étape « téléphone » est-elle franchie ? Oui si le compte n'a pas de numéro à vérifier (praticien invité), si le numéro est vérifié,
+     * ou si le Super Admin a coupé cette exigence dans les Paramètres globaux.
+     */
+    public function phoneStepDone(): bool
+    {
+        return $this->phone_e164 === null || $this->hasVerifiedPhone() || ! app(PlatformSettings::class)->enabled('phone_verification_required');
+    }
+
     public function hasVerifiedPhone(): bool
     {
         return $this->phone_verified_at !== null;
@@ -77,7 +86,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function isActivated(): bool
     {
         // Le propriétaire (inscription) vérifie son téléphone professionnel ; un praticien invité n'en a pas (lien e-mail).
-        return $this->emailStepDone() && ($this->phone_e164 === null || $this->hasVerifiedPhone());
+        return $this->emailStepDone() && $this->phoneStepDone();
     }
 
     public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void

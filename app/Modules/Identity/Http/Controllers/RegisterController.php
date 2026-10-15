@@ -36,7 +36,7 @@ final class RegisterController
         ]);
     }
 
-    public function store(RegisterRequest $request, RegisterOrganization $register, SendLimiter $limiter, PhoneVerification $phone): RedirectResponse
+    public function store(RegisterRequest $request, RegisterOrganization $register, SendLimiter $limiter, PhoneVerification $phoneCodes): RedirectResponse
     {
         $phone = Phone::toE164($request->string('phone')->toString()) ?? throw new UnexpectedValueException('Numéro non validé.');
 
@@ -58,8 +58,12 @@ final class RegisterController
 
         // Vérification de l'e-mail coupée (Paramètres globaux, pas de serveur d'e-mail) : aucun message n'est envoyé, on passe au téléphone.
         if ($user->emailStepDone()) {
+            if ($user->phoneStepDone()) {
+                return redirect()->route('login')->with('status', __('ui.verify.already_done'));
+            }
+
             try {
-                $phone->issue($user);
+                $phoneCodes->issue($user);
             } catch (TooManyAttempts) {
                 // Un code récent existe peut-être déjà : la page de saisie propose le renvoi.
             }
