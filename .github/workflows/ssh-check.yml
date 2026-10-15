@@ -1,0 +1,35 @@
+# Vérification de la connexion SSH du déploiement, sans rien déployer : mêmes secrets que deploy.yml.
+# À lancer à la main (Actions > Vérification SSH > Run workflow) après un changement de serveur ou de mot de passe.
+name: Vérification SSH
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [deploy/password-ssh-postgres]
+    paths: ['.github/workflows/ssh-check.yml', '.github/workflows/deploy.yml', 'deploy/**']
+
+permissions:
+  contents: read
+
+jobs:
+  ssh-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Connexion et droits de l'utilisateur de déploiement
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          timeout: 2m
+          script: |
+            set -eu
+            echo "Connecté en tant que $(whoami) sur $(hostname)"
+            ls -ld /var/www/rendivoo/releases /var/www/rendivoo/artifacts /var/www/rendivoo/shared
+            # Écriture là où le déploiement dépose l'archive (fichier de test supprimé aussitôt)
+            touch /var/www/rendivoo/artifacts/.ssh-check && rm /var/www/rendivoo/artifacts/.ssh-check && echo "Écriture OK dans artifacts"
+            # Les commandes root autorisées au déploiement fonctionnent sans mot de passe
+            sudo -n /usr/bin/supervisorctl status || true
+            php -v | head -1
