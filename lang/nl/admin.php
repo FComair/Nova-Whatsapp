@@ -92,7 +92,13 @@ return [
         'days' => '{1} :count dag|[2,*] :count dagen',
         'hours' => ':count uur',
         'percent' => ':count %',
+        'on' => 'Vereist',
+        'off' => 'Uitgeschakeld',
+        'flag_warning' => 'Uitschakelen verlaagt de beveiliging van accounts. Doe dit alleen zolang er geen mailserver is en schakel het weer in zodra die er is.',
         'keys' => [
+            'email_verification_required' => ['label' => 'E-mailverificatie (klanten)', 'help' => 'Uitgeschakeld hoeven nieuwe klanten hun e-mailadres niet meer te bevestigen: er wordt geen verificatiemail verstuurd. De telefoonstap blijft.'],
+            'client_two_factor_required' => ['label' => '2FA (klanten)', 'help' => 'Uitgeschakeld zijn eigenaars en vestigingsmanagers niet meer verplicht tweestapsverificatie in te stellen en wordt de code niet meer gevraagd bij het inloggen.'],
+            'admin_two_factor_required' => ['label' => '2FA (Super Admin)', 'help' => 'Uitgeschakeld loggen Super Admins in met alleen hun wachtwoord en vragen gevoelige acties geen code meer.'],
             'deletion_delay_days' => ['label' => 'Termijn vóór verwijdering', 'help' => 'Termijn tussen het verwijderingsverzoek en het wissen van de gegevens.'],
             'pause_max_days' => ['label' => 'Maximale duur van een pauze', 'help' => 'Gratis pauze van een account. Regel voor het einde van de periode nog te bevestigen.'],
             'trial_days' => ['label' => 'Duur van de proefperiode', 'help' => 'Duur van de gratis proefperiode bij inschrijving. Nog te bevestigen.'],

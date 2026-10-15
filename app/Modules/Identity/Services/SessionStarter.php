@@ -27,7 +27,7 @@ final class SessionStarter
 
     public function start(Request $request, User $user): RedirectResponse
     {
-        if (! $user->hasVerifiedEmail()) {
+        if (! $user->emailStepDone()) {
             PendingVerification::remember($request, $user);
 
             return redirect()->route('verification.notice');

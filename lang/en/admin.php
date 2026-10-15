@@ -92,7 +92,13 @@ return [
         'days' => '{1} :count day|[2,*] :count days',
         'hours' => '{1} :count hour|[2,*] :count hours',
         'percent' => ':count %',
+        'on' => 'Required',
+        'off' => 'Disabled',
+        'flag_warning' => 'Turning this off lowers account security. Only do it while no mail server is available, and turn it back on as soon as one is.',
         'keys' => [
+            'email_verification_required' => ['label' => 'E-mail verification (clients)', 'help' => 'When disabled, new clients no longer need to confirm their e-mail address: no verification e-mail is sent. The phone step stays.'],
+            'client_two_factor_required' => ['label' => '2FA (clients)', 'help' => 'When disabled, owners and site managers are no longer forced to set up two-factor authentication, and the code is no longer asked at login.'],
+            'admin_two_factor_required' => ['label' => '2FA (Super Admin)', 'help' => 'When disabled, Super Admins sign in with their password only, and sensitive actions no longer ask for a code.'],
             'deletion_delay_days' => ['label' => 'Delay before deletion', 'help' => 'Delay between the deletion request and the erasure of data.'],
             'pause_max_days' => ['label' => 'Maximum length of a pause', 'help' => 'Free pause of an account. End-of-period rule still to be confirmed.'],
             'trial_days' => ['label' => 'Trial length', 'help' => 'Length of the free trial at sign-up. Assumption to confirm.'],

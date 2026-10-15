@@ -8,6 +8,7 @@ use App\Modules\Billing\Services\SignupPlans;
 use App\Modules\Identity\Exceptions\TooManyAttempts;
 use App\Modules\Identity\Http\Requests\RegisterRequest;
 use App\Modules\Identity\Notifications\VerifyEmailNotification;
+use App\Modules\Identity\Services\PhoneVerification;
 use App\Modules\Identity\Services\RegisterOrganization;
 use App\Modules\Identity\Services\SendLimiter;
 use App\Modules\Identity\Support\PendingVerification;
@@ -35,7 +36,7 @@ final class RegisterController
         ]);
     }
 
-    public function store(RegisterRequest $request, RegisterOrganization $register, SendLimiter $limiter): RedirectResponse
+    public function store(RegisterRequest $request, RegisterOrganization $register, SendLimiter $limiter, PhoneVerification $phone): RedirectResponse
     {
         $phone = Phone::toE164($request->string('phone')->toString()) ?? throw new UnexpectedValueException('Numéro non validé.');
 
@@ -54,6 +55,17 @@ final class RegisterController
         }
 
         PendingVerification::remember($request, $user);
+
+        // Vérification de l'e-mail coupée (Paramètres globaux, pas de serveur d'e-mail) : aucun message n'est envoyé, on passe au téléphone.
+        if ($user->emailStepDone()) {
+            try {
+                $phone->issue($user);
+            } catch (TooManyAttempts) {
+                // Un code récent existe peut-être déjà : la page de saisie propose le renvoi.
+            }
+
+            return redirect()->route('phone.show');
+        }
 
         try {
             $limiter->hit('email', $user->id);

@@ -28,13 +28,34 @@ final class PlatformSettings
         'support_sla_medium_hours' => ['min' => 1, 'max' => 720],
         'support_sla_low_hours' => ['min' => 1, 'max' => 720],
         'support_at_risk_percent' => ['min' => 10, 'max' => 99],
+        // Interrupteurs (1 = exigé, 0 = désactivé) ; voir FLAGS.
+        'email_verification_required' => ['min' => 0, 'max' => 1],
+        'client_two_factor_required' => ['min' => 0, 'max' => 1],
+        'admin_two_factor_required' => ['min' => 0, 'max' => 1],
     ];
+
+    /** Réglages oui/non (stockés 1 ou 0) : sécurité exigée par défaut, désactivable par le Super Admin. */
+    public const FLAGS = ['email_verification_required', 'client_two_factor_required', 'admin_two_factor_required'];
 
     public function integer(string $key): int
     {
         $value = DB::table('platform_settings')->where('key', $key)->value('value');
 
         return $value === null ? throw new \RuntimeException("Paramètre manquant : {$key}") : (int) json_decode((string) $value, true);
+    }
+
+    /**
+     * Un interrupteur de sécurité est-il actif ? En cas de doute (ligne absente, base illisible), la sécurité reste EXIGÉE.
+     */
+    public function enabled(string $key): bool
+    {
+        try {
+            $value = DB::table('platform_settings')->where('key', $key)->value('value');
+        } catch (\Throwable) {
+            return true;
+        }
+
+        return $value === null || (int) json_decode((string) $value, true) !== 0;
     }
 
     /**

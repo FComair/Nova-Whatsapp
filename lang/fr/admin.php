@@ -92,7 +92,13 @@ return [
         'days' => '{1} :count jour|[2,*] :count jours',
         'hours' => '{1} :count heure|[2,*] :count heures',
         'percent' => ':count %',
+        'on' => 'Exigée',
+        'off' => 'Désactivée',
+        'flag_warning' => 'Désactiver réduit la sécurité des comptes. À ne faire que tant qu\'aucun serveur d\'e-mail n\'est disponible, puis à réactiver dès qu\'il l\'est.',
         'keys' => [
+            'email_verification_required' => ['label' => 'Vérification de l\'e-mail (clients)', 'help' => 'Désactivée, les nouveaux clients n\'ont plus à confirmer leur adresse e-mail : aucun e-mail de vérification n\'est envoyé. L\'étape du téléphone reste en place.'],
+            'client_two_factor_required' => ['label' => '2FA (clients)', 'help' => 'Désactivée, le propriétaire et les responsables de site ne sont plus obligés d\'activer la double authentification, et le code n\'est plus demandé à la connexion.'],
+            'admin_two_factor_required' => ['label' => '2FA (Super Admin)', 'help' => 'Désactivée, les Super Admins se connectent avec leur mot de passe seul, et les actions sensibles ne demandent plus de code.'],
             'deletion_delay_days' => ['label' => 'Délai avant suppression', 'help' => 'Délai entre la demande de suppression et l\'effacement des données.'],
             'pause_max_days' => ['label' => 'Durée maximale d\'une pause', 'help' => 'Pause gratuite d\'un compte. Règle de fin de période à confirmer.'],
             'trial_days' => ['label' => 'Durée de l\'essai', 'help' => 'Durée de l\'essai gratuit à l\'inscription. Hypothèse à valider.'],

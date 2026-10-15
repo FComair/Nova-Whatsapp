@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Services;
 
+use App\Modules\Admin\Services\PlatformSettings;
 use App\Modules\Audit\Audit;
 use App\Modules\Identity\Models\User;
 use App\Modules\Tenancy\Models\OrgMember;
@@ -34,7 +35,20 @@ final class TwoFactor
 
     public function isRequiredFor(?string $role): bool
     {
-        return (bool) config('nova.security.two_factor_required') && in_array($role, self::REQUIRED_ROLES, true);
+        return (bool) config('nova.security.two_factor_required')
+            && in_array($role, self::REQUIRED_ROLES, true)
+            && $this->settings()->enabled('client_two_factor_required');
+    }
+
+    /** Interrupteur « 2FA des clients » des Paramètres globaux : coupé, plus personne n'est contraint ni défié à la connexion. */
+    public function enabled(): bool
+    {
+        return $this->settings()->enabled('client_two_factor_required');
+    }
+
+    private function settings(): PlatformSettings
+    {
+        return app(PlatformSettings::class);
     }
 
     /** Début de l'activation : génère un secret, non actif tant qu'un code n'a pas été saisi. */

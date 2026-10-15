@@ -27,7 +27,7 @@ final class PhoneVerificationController
             return redirect()->route('login');
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if (! $user->emailStepDone()) {
             return redirect()->route('verification.notice');
         }
 
@@ -41,7 +41,7 @@ final class PhoneVerificationController
     {
         $user = PendingVerification::user($request);
 
-        if ($user === null || ! $user->hasVerifiedEmail()) {
+        if ($user === null || ! $user->emailStepDone()) {
             return redirect()->route('login');
         }
 
@@ -68,7 +68,7 @@ final class PhoneVerificationController
     {
         $user = PendingVerification::user($request);
 
-        if ($user === null || ! $user->hasVerifiedEmail()) {
+        if ($user === null || ! $user->emailStepDone()) {
             return redirect()->route('login');
         }
 

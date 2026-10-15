@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Models;
 
+use App\Modules\Admin\Services\PlatformSettings;
 use App\Modules\Identity\Notifications\ResetPasswordNotification;
 use App\Modules\Tenancy\Models\OrgMember;
 use Database\Factories\UserFactory;
@@ -56,6 +57,15 @@ class User extends Authenticatable implements HasLocalePreference
         return $this->email_verified_at !== null;
     }
 
+    /**
+     * L'étape « e-mail » du parcours d'activation est-elle franchie ? Oui si l'e-mail est vérifié, ou si le Super Admin a coupé cette
+     * exigence dans les Paramètres globaux (pas de serveur d'e-mail).
+     */
+    public function emailStepDone(): bool
+    {
+        return $this->hasVerifiedEmail() || ! app(PlatformSettings::class)->enabled('email_verification_required');
+    }
+
     public function hasVerifiedPhone(): bool
     {
         return $this->phone_verified_at !== null;
@@ -67,7 +77,7 @@ class User extends Authenticatable implements HasLocalePreference
     public function isActivated(): bool
     {
         // Le propriétaire (inscription) vérifie son téléphone professionnel ; un praticien invité n'en a pas (lien e-mail).
-        return $this->hasVerifiedEmail() && ($this->phone_e164 === null || $this->hasVerifiedPhone());
+        return $this->emailStepDone() && ($this->phone_e164 === null || $this->hasVerifiedPhone());
     }
 
     public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
