@@ -33,7 +33,7 @@ it('exige tout par défaut', function (): void {
     }
 });
 
-it('reste exigé quand le réglage est absent', function () use ($set): void {
+it('reste exigé quand le réglage est absent', function (): void {
     DB::connection('pgsql_owner')->table('platform_settings')->where('key', 'client_two_factor_required')->delete();
 
     expect(app(PlatformSettings::class)->enabled('client_two_factor_required'))->toBeTrue();
@@ -42,6 +42,7 @@ it('reste exigé quand le réglage est absent', function () use ($set): void {
 });
 
 it('ne contraint plus les clients à activer la 2FA quand l\'interrupteur est coupé', function () use ($set): void {
+    config(['nova.security.two_factor_required' => true]);
     expect(app(TwoFactor::class)->isRequiredFor(OrgMember::ROLE_OWNER))->toBeTrue();
 
     $set('client_two_factor_required', 0);
@@ -57,6 +58,19 @@ it('coupe la 2FA du Super Admin partout, y compris hors développement local', f
     $set('admin_two_factor_required', 0);
 
     expect(AdminMfa::required())->toBeFalse();
+});
+
+it('laisse un compte dont le téléphone n\'est pas vérifié se connecter quand la vérification est coupée', function () use ($set): void {
+    ['user' => $user] = $this->activatedAccount();
+    $this->asOwner(fn () => $user->forceFill(['phone_verified_at' => null])->save());
+
+    $this->post('/connexion', ['email' => 'proprio@example.com', 'password' => SWITCH_PASSWORD])->assertRedirect('/verification-telephone');
+    $this->assertGuest();
+
+    $set('phone_verification_required', 0);
+
+    $this->post('/connexion', ['email' => 'proprio@example.com', 'password' => SWITCH_PASSWORD])->assertRedirect();
+    $this->assertAuthenticated();
 });
 
 it('laisse un compte dont l\'e-mail n\'est pas vérifié se connecter quand la vérification est coupée', function () use ($set): void {

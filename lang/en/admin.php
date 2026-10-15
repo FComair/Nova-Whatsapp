@@ -96,6 +96,7 @@ return [
         'off' => 'Disabled',
         'flag_warning' => 'Turning this off lowers account security. Only do it while no mail server is available, and turn it back on as soon as one is.',
         'keys' => [
+            'phone_verification_required' => ['label' => 'Phone verification (clients)', 'help' => 'When disabled, new clients are not asked to confirm their phone number with a code: they can sign in right after sign-up.'],
             'email_verification_required' => ['label' => 'E-mail verification (clients)', 'help' => 'When disabled, new clients no longer need to confirm their e-mail address: no verification e-mail is sent. The phone step stays.'],
             'client_two_factor_required' => ['label' => '2FA (clients)', 'help' => 'When disabled, owners and site managers are no longer forced to set up two-factor authentication, and the code is no longer asked at login.'],
             'admin_two_factor_required' => ['label' => '2FA (Super Admin)', 'help' => 'When disabled, Super Admins sign in with their password only, and sensitive actions no longer ask for a code.'],

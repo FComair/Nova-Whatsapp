@@ -32,10 +32,11 @@ final class PlatformSettings
         'email_verification_required' => ['min' => 0, 'max' => 1],
         'client_two_factor_required' => ['min' => 0, 'max' => 1],
         'admin_two_factor_required' => ['min' => 0, 'max' => 1],
+        'phone_verification_required' => ['min' => 0, 'max' => 1],
     ];
 
     /** Réglages oui/non (stockés 1 ou 0) : sécurité exigée par défaut, désactivable par le Super Admin. */
-    public const FLAGS = ['email_verification_required', 'client_two_factor_required', 'admin_two_factor_required'];
+    public const FLAGS = ['email_verification_required', 'client_two_factor_required', 'admin_two_factor_required', 'phone_verification_required'];
 
     public function integer(string $key): int
     {

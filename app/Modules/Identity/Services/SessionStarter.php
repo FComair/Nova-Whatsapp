@@ -33,7 +33,7 @@ final class SessionStarter
             return redirect()->route('verification.notice');
         }
 
-        if ($user->phone_e164 !== null && ! $user->hasVerifiedPhone()) {
+        if (! $user->phoneStepDone()) {
             PendingVerification::remember($request, $user);
 
             return redirect()->route('phone.show');

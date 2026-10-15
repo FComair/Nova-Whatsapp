@@ -31,6 +31,11 @@ final class PhoneVerificationController
             return redirect()->route('verification.notice');
         }
 
+        // Vérification du téléphone coupée (Paramètres globaux) : rien à saisir, le compte peut se connecter.
+        if ($user->phoneStepDone()) {
+            return redirect()->route('login')->with('status', __('ui.verify.already_done'));
+        }
+
         return Inertia::render('Auth/VerifyPhone', [
             'phoneMasked' => $this->mask((string) $user->phone_e164),
             'codeLength' => (int) config('nova.security.phone_code_length'),
