@@ -58,9 +58,11 @@ jobs:
           node-version: 24
           cache: npm
 
+      # --legacy-peer-deps : la mise à jour Dependabot vers TypeScript 7 (PR #6) contredit typescript-eslint (< 6.1).
+      # Sans effet sur le build : Vite ne passe pas par tsc. À retirer quand les versions seront de nouveau compatibles.
       - name: Build des assets (Vite)
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
       # Archive écrite hors du dossier archivé, puis rapatriée : scp-action envoie un chemin relatif au dépôt.
