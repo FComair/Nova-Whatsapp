@@ -1,11 +1,13 @@
 # Déploiement automatique de Rendivoo sur le VPS Contabo à chaque push sur main.
-# Build (Composer + Vite) dans GitHub, envoi par rsync, bascule atomique par lien symbolique.
+# Build (Composer + Vite) dans GitHub, archive envoyée par SCP, bascule atomique par lien symbolique.
+# Même mécanisme de connexion que le déploiement Rushforless : SSH par mot de passe (appleboy/scp-action, appleboy/ssh-action),
+# sans vérification de l'empreinte du serveur (pas de known_hosts).
 #
 # Secrets requis (Settings > Secrets and variables > Actions) :
-#   DEPLOY_HOST         IP ou nom du serveur (ex. app.rendivoo.be)
-#   DEPLOY_USER         "deploy"
-#   DEPLOY_SSH_KEY      clé PRIVÉE dédiée au déploiement (la publique est sur le serveur)
-#   DEPLOY_KNOWN_HOSTS  sortie de : ssh-keyscan -t ed25519 <DEPLOY_HOST>
+#   SSH_HOST      IP du serveur
+#   SSH_PORT      port SSH (22 par défaut)
+#   SSH_USERNAME  "deploy" (créé par deploy/server-setup.sh ; la connexion root est désactivée)
+#   SSH_PASSWORD  mot de passe de l'utilisateur deploy (DEPLOY_PASSWORD du script d'installation)
 name: Déploiement
 
 on:
@@ -23,6 +25,8 @@ permissions:
 env:
   APP_DIR: /var/www/rendivoo
   KEEP_RELEASES: 5
+  HEALTH_HOST: app.rendivoo.be
+  SSH_CONNECT_TIMEOUT: 2m
 
 jobs:
   deploy:
@@ -54,65 +58,88 @@ jobs:
           npm ci
           npm run build
 
-      - name: Clé SSH
+      # Archive écrite hors du dossier archivé, puis rapatriée : scp-action envoie un chemin relatif au dépôt.
+      - name: Archive de la release
         run: |
-          install -m 700 -d ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          tar -czf "$RUNNER_TEMP/release-${GITHUB_SHA}.tar.gz" \
+            --exclude=./.git --exclude=./.github --exclude=./.devcontainer --exclude=./.env \
+            --exclude=./node_modules --exclude=./tests --exclude=./docker --exclude=./docs \
+            --exclude=./storage --exclude='*.local.txt' \
+            .
+          mv "$RUNNER_TEMP/release-${GITHUB_SHA}.tar.gz" .
 
-      - name: Envoi de la release (rsync)
-        run: |
-          RELEASE="${APP_DIR}/releases/${GITHUB_SHA}"
-          SSH="ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes"
-          $SSH "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "mkdir -p ${RELEASE}"
-          rsync -az --delete -e "$SSH" \
-            --exclude='.git' --exclude='.github' --exclude='.devcontainer' --exclude='.env' \
-            --exclude='node_modules' --exclude='tests' --exclude='docker' --exclude='docs' \
-            --exclude='storage' --exclude='*.local.txt' \
-            ./ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${RELEASE}/"
+      - name: Envoi de la release (SCP)
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          timeout: ${{ env.SSH_CONNECT_TIMEOUT }}
+          source: release-${{ github.sha }}.tar.gz
+          target: ${{ env.APP_DIR }}/artifacts
+          overwrite: true
 
       - name: Activation de la release
-        run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" \
-            "APP_DIR=${APP_DIR} RELEASE=${GITHUB_SHA} KEEP=${KEEP_RELEASES} bash -s" <<'REMOTE'
-          set -euo pipefail
-          R="${APP_DIR}/releases/${RELEASE}"
-          cd "$R"
+        uses: appleboy/ssh-action@master
+        env:
+          APP_DIR: ${{ env.APP_DIR }}
+          RELEASE: ${{ github.sha }}
+          KEEP: ${{ env.KEEP_RELEASES }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          timeout: ${{ env.SSH_CONNECT_TIMEOUT }}
+          envs: APP_DIR,RELEASE,KEEP
+          script: |
+            set -euo pipefail
+            R="${APP_DIR}/releases/${RELEASE}"
+            ARCHIVE="${APP_DIR}/artifacts/release-${RELEASE}.tar.gz"
+            mkdir -p "$R"
+            tar -xzf "$ARCHIVE" -C "$R"
+            rm -f "$ARCHIVE"
+            cd "$R"
 
-          # Éléments partagés entre releases : .env et storage
-          ln -sfn "${APP_DIR}/shared/.env" "$R/.env"
-          rm -rf "$R/storage"
-          ln -sfn "${APP_DIR}/shared/storage" "$R/storage"
-          mkdir -p "$R/bootstrap/cache"
+            # Éléments partagés entre releases : .env et storage
+            ln -sfn "${APP_DIR}/shared/.env" "$R/.env"
+            rm -rf "$R/storage"
+            ln -sfn "${APP_DIR}/shared/storage" "$R/storage"
+            mkdir -p "$R/bootstrap/cache"
 
-          # Migrations AVANT la bascule (la release n'est pas encore en ligne)
-          php artisan migrate --force
-          php artisan storage:link --force
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          php artisan event:cache
+            # Migrations AVANT la bascule (la release n'est pas encore en ligne), avec le rôle PROPRIÉTAIRE :
+            # le rôle applicatif (nova_app) ne peut pas créer de tables (règle du projet : --database=pgsql_owner).
+            php artisan migrate --database=pgsql_owner --force
+            php artisan storage:link --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
 
-          # Bascule atomique
-          ln -sfn "$R" "${APP_DIR}/current_tmp"
-          mv -Tf "${APP_DIR}/current_tmp" "${APP_DIR}/current"
+            # Bascule atomique
+            ln -sfn "$R" "${APP_DIR}/current_tmp"
+            mv -Tf "${APP_DIR}/current_tmp" "${APP_DIR}/current"
 
-          # Recharge PHP (vide OPcache) et redémarre Horizon proprement
-          sudo systemctl reload php8.3-fpm
-          php artisan horizon:terminate || true
-          sudo supervisorctl start rendivoo-horizon || true
+            # Recharge PHP (vide OPcache) et redémarre Horizon proprement
+            sudo systemctl reload php8.3-fpm
+            php artisan horizon:terminate || true
+            sudo supervisorctl start rendivoo-horizon || true
 
-          # Ne garde que les N dernières releases
-          cd "${APP_DIR}/releases"
-          ls -1dt */ | tail -n +$((KEEP + 1)) | xargs -r rm -rf
-          REMOTE
+            # Ne garde que les N dernières releases
+            cd "${APP_DIR}/releases"
+            ls -1dt */ | tail -n +$((KEEP + 1)) | xargs -r rm -rf
 
+      # --resolve : interroge directement le serveur (SSH_HOST = son IP), même avant la création du DNS ;
+      # -L suit la redirection vers HTTPS une fois certbot installé.
       - name: Vérification de santé
+        env:
+          SERVER_IP: ${{ secrets.SSH_HOST }}
         run: |
           for i in 1 2 3 4 5 6; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' "https://app.rendivoo.be/up" || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' -L \
+              --resolve "${HEALTH_HOST}:80:${SERVER_IP}" --resolve "${HEALTH_HOST}:443:${SERVER_IP}" \
+              "http://${HEALTH_HOST}/up" || true)
             echo "Tentative $i : HTTP $code"
             [ "$code" = "200" ] && exit 0
             sleep 5
