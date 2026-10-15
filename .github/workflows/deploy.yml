@@ -44,6 +44,11 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      # Le dépôt n'inclut pas storage/framework/{cache,sessions,views} (.gitignore) : Laravel en a besoin pour démarrer
+      # (package:discover lancé par Composer). Ces dossiers ne partent pas sur le serveur (storage est partagé là-bas).
+      - name: Dossiers de cache de Laravel
+        run: mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+
       - name: Dépendances PHP (production)
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
