@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import BackLink from '../Components/BackLink.vue';
 import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
 import ThemeSwitcher from '../Components/ThemeSwitcher.vue';
+import TimezoneControl from '../Components/TimezoneControl.vue';
 import LegalNotice from '../Components/LegalNotice.vue';
 import ShopAvatar from '../Components/ShopAvatar.vue';
 import UnsavedChangesDialog from '../Components/UnsavedChangesDialog.vue';
@@ -154,6 +155,7 @@ function logout(): void {
                             }}<span class="sr-only"> {{ t('support.cta.attention', { count: page.props.support?.attention ?? 0 }) }}</span></span
                         >
                     </Link>
+                    <TimezoneControl />
                     <ThemeSwitcher />
                     <LanguageSwitcher />
                     <!-- La déconnexion reste dans la barre principale, hors du menu Réglages : toujours à un clic, sur toutes les pages. -->

@@ -23,6 +23,17 @@ return [
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
     ],
 
+    'timezone' => [
+        'label' => 'Tijdzone',
+        'prompt_title' => 'Kies uw tijdzone',
+        'prompt_body' => 'We konden uw tijdzone niet detecteren. Geef uw stad of regio op: tijden worden getoond in uw lokale tijd, met de tijdzone (bijvoorbeeld 14:00 CET). Tot dan blijven ze in de tijd van de vestiging.',
+        'search' => 'Zoek een stad of regio',
+        'search_placeholder' => 'bv. Brussels, Paris, Tokyo',
+        'change' => 'Tijdzone wijzigen',
+        'later' => 'Later',
+        'grid_note' => 'Het raster toont de tijd van de vestiging (:zone, :label). Omgerekende tijden in uw tijdzone staan in de details van de afspraak.',
+    ],
+
     'onboarding' => [
         'default_location' => 'Hoofdvestiging',
         'title' => 'Configuratie van uw bedrijf',

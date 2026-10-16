@@ -80,7 +80,7 @@ final class ReminderService
                 $organization->name,
                 (string) Service::query()->whereKey($booking->service_id)->value('name'),
                 $local->locale($language)->isoFormat('dddd DD/MM/YYYY'),
-                $local->format('H:i'),
+                $local->format('H:i').' '.$local->format('T'),
             ]);
         } catch (SendRefused|TransportFailed $e) {
             $this->core->releaseReminder($booking, $e instanceof TransportFailed ? $e->errorCode : $e->reason);

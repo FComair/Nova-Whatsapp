@@ -46,7 +46,7 @@ describe('envoi', function (): void {
             'to' => '+32470123456',
             'template' => 'appointment_reminder',
             'language' => $language,
-            'parameters' => [$this->org->name, 'Coupe', $date, '10:00'],
+            'parameters' => [$this->org->name, 'Coupe', $date, '10:00 CEST'],
         ]]);
     })->with([
         ['fr', 'mercredi 03/06/2026'],

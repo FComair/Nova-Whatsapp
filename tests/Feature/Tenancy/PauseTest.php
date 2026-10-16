@@ -139,7 +139,7 @@ describe('mise en pause', function (): void {
             ->and(DB::connection('pgsql_owner')->table('bookings')->where('status', 'confirmed')->count())->toBe(1)
             ->and($this->transport->templates)->toHaveCount(1)
             ->and($this->transport->templates[0])->toMatchArray(['to' => '+32470123456', 'template' => 'appointment_cancelled', 'language' => 'nl'])
-            ->and($this->transport->templates[0]['parameters'])->toBe([$this->org->name, 'Coupe', 'woensdag 10/06/2026', '10:00']);
+            ->and($this->transport->templates[0]['parameters'])->toBe([$this->org->name, 'Coupe', 'woensdag 10/06/2026', '10:00 CEST']);
 
         $audit = $this->asOwner(fn () => DB::table('audit_logs')->where('action', 'organization.paused')->sole());
         expect(json_decode($audit->diff, true))->toMatchArray(['bookings_cancelled' => 1]);

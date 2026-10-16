@@ -4,6 +4,7 @@ import AlertBox from '../Components/AlertBox.vue';
 import Badge from '../Components/Badge.vue';
 import { useT } from '../composables/useT';
 import { formatWeekdayDate } from '../composables/dates';
+import { formatRangeWithZone, formatTimeWithZone } from '../composables/timezone';
 import PractitionerAvatar from '../Components/PractitionerAvatar.vue';
 import AppLayout from '../Layouts/AppLayout.vue';
 import { onboardingStep, routes } from '../routes';
@@ -27,6 +28,7 @@ interface Appointment {
 
 interface Summary {
     date: string;
+    timezone: string;
     counts: { today: number; remaining: number; completed: number; cancelled: number; tomorrow: number; week: number; new_customers: number | null };
     next: Appointment | null;
     appointments: Appointment[];
@@ -109,7 +111,7 @@ function formatDate(iso: string): string {
         <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="next">
             <h2 id="next" class="text-lg font-semibold text-nova-900">{{ t('dashboard.next') }}</h2>
             <p v-if="summary.next" class="mt-2 text-neutral-800" data-testid="next">
-                <strong>{{ summary.next.starts }}</strong>
+                <strong>{{ formatTimeWithZone(summary.date, summary.next.starts, summary.timezone) }}</strong>
                 {{ summary.next.customer }} · {{ summary.next.service }}
                 <span v-if="summary.next.practitioner" class="inline-flex items-center gap-1.5 align-middle text-neutral-600">
                     <PractitionerAvatar
@@ -139,7 +141,9 @@ function formatDate(iso: string): string {
                     class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-3"
                     :class="{ 'opacity-60': appointment.is_past }"
                 >
-                    <span class="w-24 shrink-0 font-semibold text-nova-900">{{ appointment.starts }}–{{ appointment.ends }}</span>
+                    <span class="w-40 shrink-0 font-semibold text-nova-900">{{
+                        formatRangeWithZone(summary.date, appointment.starts, appointment.ends, summary.timezone)
+                    }}</span>
                     <span class="min-w-0 flex-1 text-neutral-800">
                         {{ appointment.customer }} · {{ appointment.service }}
                         <span v-if="appointment.practitioner" class="inline-flex items-center gap-1.5 align-middle text-neutral-600">
