@@ -47,6 +47,8 @@ final class AdminBack
             'resources.faq.create' => ['faq', 'resources.faq.index', []],
             'resources.faq.edit' => ['faq', 'resources.faq.index', []],
             'resources.faq.preview' => ['faq_editor', 'resources.faq.edit', ['record' => $route->parameter('record')]],
+            'resources.plans.create' => ['plans', 'resources.plans.index', []],
+            'resources.plans.edit' => ['plans', 'resources.plans.index', []],
             'resources.admins.view' => ['admins', 'resources.admins.index', []],
             'resources.admins.create' => ['admins', 'resources.admins.index', []],
             'resources.admins.edit' => ['admin_profile', 'resources.admins.view', ['record' => $route->parameter('record')]],

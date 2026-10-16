@@ -61,6 +61,9 @@ class MessageTemplateResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    /** Adresse stable : /admin/whatsapp-messages. */
+    protected static ?string $slug = 'whatsapp-messages';
+
     public static function getModelLabel(): string
     {
         return __('message_templates.singular');

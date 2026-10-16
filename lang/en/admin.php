@@ -339,6 +339,7 @@ return [
     'back' => [
         'aria' => 'Back navigation',
         'admins' => 'Back to Admins',
+        'plans' => 'Back to Plans',
         'admin_profile' => 'Back to Admin profile',
         'dashboard' => 'Back to Dashboard',
         'clients' => 'Back to Clients',

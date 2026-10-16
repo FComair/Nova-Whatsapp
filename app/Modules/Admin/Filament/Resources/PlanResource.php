@@ -65,6 +65,9 @@ class PlanResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    /** Adresse stable : /admin/plans (sans ce réglage, Filament la tirerait du nom du modèle : platform-plans). */
+    protected static ?string $slug = 'plans';
+
     public static function getModelLabel(): string
     {
         return __('plans.singular');

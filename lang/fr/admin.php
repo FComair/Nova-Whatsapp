@@ -339,6 +339,7 @@ return [
     'back' => [
         'aria' => 'Navigation de retour',
         'admins' => 'Retour aux administrateurs',
+        'plans' => 'Retour aux formules',
         'admin_profile' => 'Retour au profil de l’administrateur',
         'dashboard' => 'Retour au tableau de bord',
         'clients' => 'Retour aux clients',
