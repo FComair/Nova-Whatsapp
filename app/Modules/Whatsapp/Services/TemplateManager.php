@@ -6,6 +6,7 @@ namespace App\Modules\Whatsapp\Services;
 
 use App\Modules\Audit\Audit;
 use App\Modules\Tenancy\Models\Organization;
+use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Whatsapp\Contracts\WhatsappTransport;
 use App\Modules\Whatsapp\Models\WhatsappAccount;
 use App\Modules\Whatsapp\Models\WhatsappTemplate;
@@ -21,12 +22,13 @@ use App\Modules\Whatsapp\Support\TransportFailed;
  */
 final class TemplateManager
 {
-    public function __construct(private readonly WhatsappTransport $transport) {}
+    public function __construct(private readonly WhatsappTransport $transport, private readonly CurrentTenant $tenant) {}
 
     /**
-     * Les 12 modèles attendus (4 messages × 3 langues) avec leur statut : `missing` s'ils n'ont jamais été soumis.
+     * Les modèles attendus pour le secteur de l'établissement (au moins 4 messages × 3 langues) avec leur statut : `missing` s'ils n'ont
+     * jamais été soumis. Le modèle approuvé du secteur remplace le modèle global (docs/39).
      *
-     * @return list<array{key: string, name: string, language: string, status: string, reason: string|null}>
+     * @return list<array{key: string, name: string, language: string, status: string, reason: string|null, required: bool}>
      */
     public function overview(): array
     {
@@ -35,14 +37,17 @@ final class TemplateManager
         return array_map(function (array $entry) use ($known): array {
             $row = $known->get($entry['name'].'|'.$entry['language']);
 
-            return $entry + ['status' => $row instanceof WhatsappTemplate ? $row->status : 'missing', 'reason' => $row instanceof WhatsappTemplate ? $row->rejection_reason : null];
-        }, TemplateCatalog::entries());
+            return [
+                'key' => $entry['key'], 'name' => $entry['name'], 'language' => $entry['language'], 'required' => $entry['required'],
+                'status' => $row instanceof WhatsappTemplate ? $row->status : 'missing', 'reason' => $row instanceof WhatsappTemplate ? $row->rejection_reason : null,
+            ];
+        }, $this->entries());
     }
 
-    /** Vrai quand les quatre messages sont approuvés dans toutes les langues. */
+    /** Vrai quand les quatre messages automatiques sont approuvés par Meta dans toutes les langues. */
     public function allApproved(): bool
     {
-        return collect($this->overview())->every(fn (array $row): bool => $row['status'] === 'approved');
+        return collect($this->overview())->filter(fn (array $row): bool => $row['required'])->every(fn (array $row): bool => $row['status'] === 'approved');
     }
 
     /**
@@ -55,13 +60,17 @@ final class TemplateManager
         $submitted = 0;
         $failed = 0;
 
+        $entries = collect($this->entries())->keyBy(fn (array $entry): string => $entry['name'].'|'.$entry['language']);
+
         foreach ($this->overview() as $row) {
             if ($row['status'] !== 'missing') {
                 continue;
             }
 
+            $entry = $entries->get($row['name'].'|'.$row['language']);
+
             try {
-                $info = $this->transport->createTemplate($account, $row['name'], $row['language'], TemplateCatalog::body($row['key'], $row['language']), TemplateCatalog::examples($row['language']));
+                $info = $this->transport->createTemplate($account, $row['name'], $row['language'], $entry['body'], $entry['examples']);
             } catch (TransportFailed) {
                 $failed++;
 
@@ -86,7 +95,7 @@ final class TemplateManager
      */
     public function sync(Organization $organization, WhatsappAccount $account): int
     {
-        $expected = collect(TemplateCatalog::entries())->map(fn (array $entry): string => $entry['name'].'|'.$entry['language'])->all();
+        $expected = collect($this->entries())->map(fn (array $entry): string => $entry['name'].'|'.$entry['language'])->all();
         $changed = 0;
 
         foreach ($this->transport->listTemplates($account) as $info) {
@@ -101,6 +110,14 @@ final class TemplateManager
         }
 
         return $changed;
+    }
+
+    /**
+     * @return list<array{key: string, name: string, language: string, body: string, examples: list<string>, required: bool}>
+     */
+    private function entries(): array
+    {
+        return TemplateCatalog::entries($this->tenant->organization()?->sector);
     }
 
     private function store(string $orgId, TemplateInfo $info, bool $submitted): void

@@ -2329,7 +2329,7 @@ return [
         'templates_title' => 'Berichtsjablonen',
         'templates_intro' => 'Om een klant buiten het venster van 24 uur te schrijven (herinneringen, bevestigingen, annuleringen) eist WhatsApp door Meta goedgekeurde sjablonen, in elke taal.',
         'templates_need_connection' => 'Koppel eerst uw nummer om de sjablonen in te dienen.',
-        'message' => ['reminder' => 'Afspraakherinnering', 'confirmation' => 'Afspraakbevestiging', 'rescheduled' => 'Afspraak verplaatst', 'cancellation' => 'Afspraak geannuleerd'],
+        'message' => ['reminder' => 'Afspraakherinnering', 'confirmation' => 'Afspraakbevestiging', 'rescheduled' => 'Afspraak verplaatst', 'cancellation' => 'Afspraak geannuleerd', 'welcome' => 'Welkom', 'payment_reminder' => 'Betalingsherinnering', 'payment_confirmation' => 'Betaling ontvangen', 'follow_up' => 'Opvolging na de dienst', 'review_request' => 'Vraag om beoordeling', 're_engagement' => 'Heractivering', 'promotional' => 'Promotie-aanbieding', 'informational' => 'Informatie', 'custom' => 'Aangepast bericht'],
         'status' => ['missing' => 'Niet ingediend', 'pending' => 'Wacht op Meta', 'approved' => 'Goedgekeurd', 'rejected' => 'Afgewezen', 'paused' => 'Door Meta gepauzeerd'],
         'submit_templates' => 'Ontbrekende sjablonen indienen',
         'sync_templates' => 'Statussen vernieuwen',

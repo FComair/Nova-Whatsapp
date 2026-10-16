@@ -40,6 +40,12 @@ return [
         'cancellation' => env('WHATSAPP_TEMPLATE_CANCELLATION', 'appointment_cancelled'),
     ],
 
+    // Bibliothèque de messages par secteur (docs/39). Tant qu'aucun modèle du secteur n'est approuvé pour un déclencheur, les quatre modèles
+    // globaux ci-dessus restent utilisés (transition). Mettre à false pour n'envoyer QUE des modèles approuvés dans la bibliothèque.
+    'catalog' => [
+        'legacy_fallback' => env('WHATSAPP_LEGACY_FALLBACK', true),
+    ],
+
     // Modèles du programme de fidélité (docs/27), catégorie marketing chez Meta : variables {{1}} établissement, {{2}} prénom, {{3}} progression (ex. 6/8), {{4}} récompense, {{5}} date d'expiration.
     // À créer et faire approuver séparément (non soumis automatiquement : ils ne concernent que les établissements qui activent leurs messages).
     'loyalty_templates' => [

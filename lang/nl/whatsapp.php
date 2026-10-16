@@ -4,6 +4,8 @@
  * Automatische WhatsApp-berichten van Nova aan eindklanten (taal van de klant, standaard Frans).
  */
 return [
+    // Valeur de {{customer_name}} quand le client n'a pas de nom enregistré.
+    'customer_fallback' => 'beste klant',
     'opt_out_confirmed' => 'U ontvangt geen berichten meer van ons. Antwoord START om ze opnieuw te ontvangen.',
     'opt_in_confirmed' => 'Bedankt! U ontvangt onze berichten opnieuw. Antwoord STOP om ze te stoppen.',
 

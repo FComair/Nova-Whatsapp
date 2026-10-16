@@ -4,6 +4,8 @@
  * Automatic WhatsApp messages sent by Nova to end customers (customer's language, French by default).
  */
 return [
+    // Valeur de {{customer_name}} quand le client n'a pas de nom enregistré.
+    'customer_fallback' => 'there',
     'opt_out_confirmed' => 'You will no longer receive messages from us. Reply START to receive them again.',
     'opt_in_confirmed' => 'Thank you! You will receive our messages again. Reply STOP to stop them.',
 
