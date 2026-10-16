@@ -14,13 +14,22 @@ return [
         'logout' => 'Sign out',
         'language' => 'Language',
         'theme' => 'Theme',
-        'themes' => ['light' => 'Light', 'dark' => 'Dark', 'system' => 'System'],
+        'themes' => ['light' => 'Light', 'dark' => 'Dark', 'system' => 'System default'],
         'show_password' => 'Show password',
         'hide_password' => 'Hide password',
         'show' => 'Show',
         'hide' => 'Hide',
         'skip_to_content' => 'Skip to content',
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
+    ],
+
+    'appearance' => [
+        'nav' => 'Appearance',
+        'title' => 'Appearance',
+        'intro' => 'Choose how the app looks on this device.',
+        'theme_title' => 'Theme',
+        'theme_hint' => 'Light, dark, or your device’s own: “System default” follows its settings automatically.',
+        'saved_here' => 'Your choice is saved on this device and kept after closing the app and signing in again.',
     ],
 
     'onboarding' => [
@@ -804,6 +813,7 @@ return [
             'data-export' => 'download backup copy gdpr json',
             'data-pause' => 'break holiday suspend vacation out of office',
             'data-delete' => 'erase remove close account gdpr',
+            'appearance' => 'appearance theme light dark night mode display colors system',
             'legal' => 'legal terms of use privacy policy gdpr dpa data processing agreement acceptance contract',
             'security' => 'password login protection',
             'security-two-factor' => '2fa authenticator code login mfa',

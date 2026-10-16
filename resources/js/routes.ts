@@ -26,6 +26,7 @@ export const routes = {
     team: '/reglages/equipe',
     billing: '/facturation',
     profile: '/reglages/profil',
+    appearance: '/reglages/apparence',
     profileCompany: '/reglages/profil/entreprise',
     profileLogo: '/reglages/profil/logo',
     settingsSearch: '/reglages/recherche',

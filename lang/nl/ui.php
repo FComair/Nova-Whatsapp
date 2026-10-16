@@ -14,13 +14,22 @@ return [
         'logout' => 'Afmelden',
         'language' => 'Taal',
         'theme' => 'Thema',
-        'themes' => ['light' => 'Licht', 'dark' => 'Donker', 'system' => 'Systeem'],
+        'themes' => ['light' => 'Licht', 'dark' => 'Donker', 'system' => 'Systeemstandaard'],
         'show_password' => 'Wachtwoord tonen',
         'hide_password' => 'Wachtwoord verbergen',
         'show' => 'Tonen',
         'hide' => 'Verbergen',
         'skip_to_content' => 'Ga naar de inhoud',
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
+    ],
+
+    'appearance' => [
+        'nav' => 'Weergave',
+        'title' => 'Weergave',
+        'intro' => 'Kies hoe de app er op dit apparaat uitziet.',
+        'theme_title' => 'Thema',
+        'theme_hint' => 'Licht, donker of dat van uw apparaat: « Systeemstandaard » volgt automatisch de instellingen van het apparaat.',
+        'saved_here' => 'Uw keuze wordt op dit apparaat bewaard, ook na het sluiten van de app en na opnieuw aanmelden.',
     ],
 
     'onboarding' => [
@@ -804,6 +813,7 @@ return [
             'data-export' => 'downloaden back-up kopie avg gdpr json',
             'data-pause' => 'pauze verlof opschorten vakantie afwezig',
             'data-delete' => 'verwijderen wissen sluiten account avg gdpr',
+            'appearance' => 'weergave thema licht donker nachtmodus kleuren systeem',
             'legal' => 'juridisch voorwaarden gebruiksvoorwaarden privacybeleid avg verwerkersovereenkomst dpa aanvaarding contract',
             'security' => 'wachtwoord aanmelden beveiliging',
             'security-two-factor' => '2fa authenticator code aanmelden tweestapsverificatie',

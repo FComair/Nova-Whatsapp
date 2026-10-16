@@ -57,7 +57,7 @@ final class SettingsSearchIndex
         }
 
         return match ($entry['page']) {
-            'profile', 'security', 'legal' => true,
+            'profile', 'appearance', 'security', 'legal' => true,
             'calendars' => array_intersect(['calendars.own', 'settings.integrations'], $permissions) !== [],
             'whatsapp' => array_intersect(['whatsapp.connect', 'whatsapp.templates'], $permissions) !== [],
             'whatsapp-qr' => in_array('whatsapp.connect', $permissions, true),
@@ -121,6 +121,8 @@ final class SettingsSearchIndex
         $entries[] = $data + ['id' => 'data-export', 'anchor' => 'export', 'title' => 'account_data.export_title', 'description' => 'account_data.export_body'];
         $entries[] = ['id' => 'data-pause', 'group' => 'privacy', 'page' => 'data', 'href' => '/compte/pause', 'title' => 'pause.title', 'description' => 'pause.intro'];
         $entries[] = $data + ['id' => 'data-delete', 'anchor' => 'delete', 'title' => 'account_data.delete_title'];
+
+        $entries[] = ['id' => 'appearance', 'group' => 'account', 'page' => 'appearance', 'href' => '/reglages/apparence', 'title' => 'appearance.title', 'description' => 'appearance.intro'];
 
         $entries[] = ['id' => 'legal', 'group' => 'privacy', 'page' => 'legal', 'href' => '/reglages/juridique', 'title' => 'legal.settings.title', 'description' => 'legal.settings.intro'];
 

@@ -8,6 +8,7 @@ export type SettingsKey =
     | 'setup-messages'
     | 'setup-launch'
     | 'profile'
+    | 'appearance'
     | 'team'
     | 'calendars'
     | 'whatsapp'
@@ -46,6 +47,7 @@ function visible(key: SettingsKey, role: string | null, permissions: string[]): 
 
     return {
         profile: true,
+        appearance: true,
         team: has('settings.team'),
         calendars: has('calendars.own', 'settings.integrations'),
         whatsapp: has('whatsapp.connect', 'whatsapp.templates'),
@@ -53,7 +55,7 @@ function visible(key: SettingsKey, role: string | null, permissions: string[]): 
         data: role === 'owner',
         legal: true,
         security: true,
-    }[key as 'profile' | 'team' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security'];
+    }[key as 'profile' | 'appearance' | 'team' | 'calendars' | 'whatsapp' | 'whatsapp-qr' | 'data' | 'legal' | 'security'];
 }
 
 function setupItem(category: SetupCategory): SettingsItem {
@@ -67,6 +69,7 @@ const all: Record<SettingsGroup['key'], SettingsItem[]> = {
     account: [
         { key: 'profile', href: routes.profile, label: 'account_profile.nav', prefixes: [routes.profile] },
         { key: 'team', href: routes.team, label: 'team.nav', prefixes: [routes.team] },
+        { key: 'appearance', href: routes.appearance, label: 'appearance.nav', prefixes: [routes.appearance] },
     ],
     integrations: [
         { key: 'calendars', href: routes.calendars, label: 'calendars.nav', prefixes: [routes.calendars] },
