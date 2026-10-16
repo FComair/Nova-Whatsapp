@@ -14,13 +14,22 @@ return [
         'logout' => 'Se déconnecter',
         'language' => 'Langue',
         'theme' => 'Thème',
-        'themes' => ['light' => 'Clair', 'dark' => 'Sombre', 'system' => 'Système'],
+        'themes' => ['light' => 'Clair', 'dark' => 'Sombre', 'system' => 'Défaut du système'],
         'show_password' => 'Afficher le mot de passe',
         'hide_password' => 'Masquer le mot de passe',
         'show' => 'Afficher',
         'hide' => 'Masquer',
         'skip_to_content' => 'Aller au contenu',
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
+    ],
+
+    'appearance' => [
+        'nav' => 'Apparence',
+        'title' => 'Apparence',
+        'intro' => 'Choisissez l\'apparence de l\'application sur cet appareil.',
+        'theme_title' => 'Thème',
+        'theme_hint' => 'Clair, sombre, ou celui de votre appareil : « Défaut du système » suit automatiquement ses réglages.',
+        'saved_here' => 'Votre choix est enregistré sur cet appareil et conservé à la fermeture de l\'application et à la reconnexion.',
     ],
 
     'onboarding' => [
@@ -804,6 +813,7 @@ return [
             'data-export' => 'télécharger sauvegarde copie rgpd json',
             'data-pause' => 'pause congé suspendre vacances absence',
             'data-delete' => 'supprimer effacer fermer compte rgpd',
+            'appearance' => 'apparence thème clair sombre mode nuit affichage couleurs système',
             'legal' => 'juridique conditions utilisation cgu confidentialité rgpd dpa sous-traitance acceptation contrat',
             'security' => 'mot de passe connexion protection',
             'security-two-factor' => '2fa authentificateur code connexion double authentification',

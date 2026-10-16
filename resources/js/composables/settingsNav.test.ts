@@ -22,6 +22,7 @@ describe('menu des réglages', () => {
             'setup-launch',
             'profile',
             'team',
+            'appearance',
             'calendars',
             'whatsapp',
             'whatsapp-qr',
@@ -32,9 +33,9 @@ describe('menu des réglages', () => {
     });
 
     it("réserve la mise en route au propriétaire, comme l'assistant, et suit les droits des routes pour le reste", () => {
-        expect(keys('site_manager')).toEqual(['profile', 'calendars', 'legal', 'security']);
-        expect(keys('practitioner')).toEqual(['profile', 'calendars', 'legal', 'security']);
-        expect(keys('receptionist')).toEqual(['profile', 'legal', 'security']);
+        expect(keys('site_manager')).toEqual(['profile', 'appearance', 'calendars', 'legal', 'security']);
+        expect(keys('practitioner')).toEqual(['profile', 'appearance', 'calendars', 'legal', 'security']);
+        expect(keys('receptionist')).toEqual(['profile', 'appearance', 'legal', 'security']);
     });
 
     it('refuse un rôle inconnu et ne garde que les groupes qui ont une page accessible', () => {
@@ -44,7 +45,7 @@ describe('menu des réglages', () => {
 
     it("ouvre « Équipe et accès » à qui peut gérer l'équipe, quel que soit son rôle", () => {
         expect(keys('practitioner', ['calendars.own', 'settings.team'])).toContain('team');
-        expect(keys('receptionist', ['settings.team'])).toEqual(['profile', 'team', 'legal', 'security']);
+        expect(keys('receptionist', ['settings.team'])).toEqual(['profile', 'team', 'appearance', 'legal', 'security']);
         expect(keys('site_manager')).not.toContain('team');
     });
 

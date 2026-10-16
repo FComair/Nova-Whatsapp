@@ -41,6 +41,7 @@ use App\Modules\Staff\Http\Controllers\StaffController;
 use App\Modules\Support\Http\Controllers\SupportController;
 use App\Modules\Team\Http\Controllers\TeamController;
 use App\Modules\Tenancy\Http\Controllers\AccountProfileController;
+use App\Modules\Tenancy\Http\Controllers\AppearanceController;
 use App\Modules\Tenancy\Http\Controllers\PauseController;
 use App\Modules\Tenancy\Http\Controllers\SettingsSearchController;
 use App\Modules\Tenancy\Http\Middleware\EnsureOrganizationUsable;
@@ -139,6 +140,9 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
     // Réglages › Juridique (docs/28) : tous les rôles ; visiter la page n'oblige à rien, l'acceptation est un acte explicite.
     Route::get('/reglages/juridique', [LegalSettingsController::class, 'show'])->name('legal.settings');
     Route::post('/reglages/juridique/accepter', [LegalSettingsController::class, 'accept'])->middleware('throttle:20,1')->name('legal.settings.accept');
+
+    // Réglages › Apparence : thème clair, sombre ou du système (tous les rôles ; le choix reste dans le navigateur).
+    Route::get('/reglages/apparence', [AppearanceController::class, 'show'])->name('settings.appearance');
 
     // Recherche dans les Réglages : index multilingue, filtré selon le rôle (lecture seule).
     Route::get('/reglages/recherche', SettingsSearchController::class)->name('settings.search');
