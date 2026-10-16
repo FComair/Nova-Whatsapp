@@ -13,6 +13,8 @@ return [
         'loading' => 'Laden…',
         'logout' => 'Afmelden',
         'language' => 'Taal',
+        'theme' => 'Thema',
+        'themes' => ['light' => 'Licht', 'dark' => 'Donker', 'system' => 'Systeem'],
         'show_password' => 'Wachtwoord tonen',
         'hide_password' => 'Wachtwoord verbergen',
         'show' => 'Tonen',

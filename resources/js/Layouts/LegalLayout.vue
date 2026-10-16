@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import LanguageSwitcher from '../Components/LanguageSwitcher.vue';
+import ThemeSwitcher from '../Components/ThemeSwitcher.vue';
 import { useT } from '../composables/useT';
 
 /** Mise en page des documents juridiques : publique (sans connexion), lisible, imprimable, avec le choix de langue. */
@@ -16,7 +17,10 @@ const { t } = useT();
     <div class="min-h-screen bg-canvas px-4 py-6 sm:px-6">
         <header class="mx-auto flex max-w-5xl items-center justify-between gap-3 print:hidden">
             <Link href="/" class="text-2xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</Link>
-            <LanguageSwitcher />
+            <div class="flex items-center gap-2">
+                <ThemeSwitcher />
+                <LanguageSwitcher />
+            </div>
         </header>
         <main class="mx-auto mt-6 max-w-5xl"><slot /></main>
     </div>

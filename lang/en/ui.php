@@ -13,6 +13,8 @@ return [
         'loading' => 'Loading…',
         'logout' => 'Sign out',
         'language' => 'Language',
+        'theme' => 'Theme',
+        'themes' => ['light' => 'Light', 'dark' => 'Dark', 'system' => 'System'],
         'show_password' => 'Show password',
         'hide_password' => 'Hide password',
         'show' => 'Show',

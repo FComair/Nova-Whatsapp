@@ -13,6 +13,8 @@ return [
         'loading' => 'Chargement…',
         'logout' => 'Se déconnecter',
         'language' => 'Langue',
+        'theme' => 'Thème',
+        'themes' => ['light' => 'Clair', 'dark' => 'Sombre', 'system' => 'Système'],
         'show_password' => 'Afficher le mot de passe',
         'hide_password' => 'Masquer le mot de passe',
         'show' => 'Afficher',
