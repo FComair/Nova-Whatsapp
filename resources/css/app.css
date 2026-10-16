@@ -75,15 +75,16 @@
     --color-neutral-fg: #3f5150;
     --color-neutral-bg: #e8f0ec;
 
-    --radius-control: 0.75rem;
-    --radius-card: 1rem;
-    --radius-modal: 1.25rem;
+    /* Formes alignées sur le Super Admin (Filament) : 8 px les contrôles, 12 px les cartes et fenêtres. */
+    --radius-control: 0.5rem;
+    --radius-card: 0.75rem;
+    --radius-modal: 0.75rem;
 
     --shadow-xs: 0 1px 2px rgb(16 32 31 / 0.05);
-    --shadow-sm: 0 1px 3px rgb(16 32 31 / 0.08), 0 1px 2px rgb(16 32 31 / 0.04);
-    --shadow-md: 0 8px 20px -4px rgb(16 32 31 / 0.1);
-    --shadow-lg: 0 18px 40px rgb(16 32 31 / 0.08);
-    --shadow-xl: 0 20px 44px rgb(16 32 31 / 0.12);
+    --shadow-sm: 0 1px 3px rgb(16 32 31 / 0.1), 0 1px 2px -1px rgb(16 32 31 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(16 32 31 / 0.1), 0 2px 4px -2px rgb(16 32 31 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(16 32 31 / 0.1), 0 4px 6px -4px rgb(16 32 31 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(16 32 31 / 0.1), 0 8px 10px -6px rgb(16 32 31 / 0.1);
     --shadow-teal: 0 10px 24px rgb(14 107 107 / 0.28);
 
     --ease-nova: cubic-bezier(0.2, 0.8, 0.2, 1);

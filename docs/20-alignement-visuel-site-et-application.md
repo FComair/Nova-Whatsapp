@@ -7,6 +7,10 @@ This spec **supersedes the palette, type and shape choices of `docs/19`** (navy 
 
 ---
 
+> **Mise à jour (2026-10-16, demande du fondateur) :** les formes et interactions du thème clair suivent désormais le Super Admin (Filament) : boutons et champs à coins de 8 px, cartes et fenêtres de 12 px, ombres légères, aucun soulèvement au survol, badges rectangulaires arrondis, focus en anneau de 2 px. Les couleurs (teal) et les polices du site restent inchangées : l'ambre reste propre au Super Admin (docs/03 §A.1). Les tableaux et le menu du haut gardent leur structure.
+
+---
+
 ## 0. What changes compared with what is built today
 
 Steps 0 and 1 of docs/19 are in the app (commit `0a26940`) with a navy-and-blue identity. The website uses a different one, so the app currently looks like a sibling product, not the same brand.

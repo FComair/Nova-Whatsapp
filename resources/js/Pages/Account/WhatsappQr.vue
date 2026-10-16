@@ -106,8 +106,8 @@ async function copy(): Promise<void> {
 // Liens de téléchargement : même gabarit (pilule de 56 px, icône + libellé + précision), survol, focus clavier, appui et état désactivé
 // comme les boutons Nova ; l'adresse de chaque lien ne change pas.
 const downloadBase =
-    'group flex min-h-14 items-center gap-3 rounded-full border-[1.5px] px-3.5 py-2 text-sm font-semibold transition duration-[180ms] ease-nova focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/30 active:translate-y-0 aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-neutral-300 aria-disabled:text-neutral-500 aria-disabled:shadow-none';
-const downloadPrimary = 'border-transparent bg-primary-600 text-white hover:-translate-y-px hover:bg-primary-700 hover:shadow-teal active:bg-primary-700';
+    'group flex min-h-14 items-center gap-3 rounded-lg border-[1.5px] px-3.5 py-2 text-sm font-semibold transition duration-[180ms] ease-nova focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:translate-y-0 aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-neutral-300 aria-disabled:text-neutral-500 aria-disabled:shadow-none';
+const downloadPrimary = 'border-transparent bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-700';
 const downloadSecondary =
     'border-line-strong bg-surface text-neutral-900 hover:border-primary-600 hover:bg-primary-50 hover:text-primary-700 active:bg-primary-100';
 const iconPrimary = 'inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-white';

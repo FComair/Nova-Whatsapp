@@ -82,7 +82,7 @@ function onBlur(): void {
     <div class="relative" role="search">
         <label :for="`${id}-input`" class="sr-only">{{ t('help.search_label') }}</label>
         <div
-            class="flex items-center gap-3 rounded-full border-[1.5px] border-line-strong bg-surface px-5 focus-within:border-primary-600 focus-within:ring-4 focus-within:ring-primary-600/20"
+            class="flex items-center gap-3 rounded-lg border-[1.5px] border-line-strong bg-surface px-5 focus-within:border-primary-600 focus-within:ring-2 focus-within:ring-primary-600/20"
         >
             <svg
                 class="size-5 shrink-0 text-neutral-600"

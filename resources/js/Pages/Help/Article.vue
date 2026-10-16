@@ -104,7 +104,7 @@ function onProseClick(event: MouseEvent): void {
                             v-model="comment"
                             rows="3"
                             maxlength="500"
-                            class="block w-full rounded-control border-[1.5px] border-line-strong bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/20"
+                            class="block w-full rounded-control border-[1.5px] border-line-strong bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600/20"
                         />
                         <div class="flex gap-3">
                             <BaseButton type="submit" size="sm" :loading="busy">{{ t('help.feedback.send') }}</BaseButton>

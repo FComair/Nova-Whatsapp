@@ -179,7 +179,7 @@ onMounted(() => void nextTick(scrollToEnd));
                         maxlength="5000"
                         :placeholder="t('support.reply.placeholder')"
                         :aria-invalid="form.errors.body ? 'true' : undefined"
-                        class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:outline-none focus:ring-4"
+                        class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:outline-none focus:ring-2"
                         :class="
                             form.errors.body
                                 ? 'border-danger-fg focus:ring-danger-fg/20'

@@ -73,7 +73,7 @@ function sortBy(key: string): void {
                         <button
                             v-if="column.sortable"
                             type="button"
-                            class="inline-flex items-center gap-1 font-semibold hover:text-primary-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/20 print:pointer-events-none"
+                            class="inline-flex items-center gap-1 font-semibold hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 print:pointer-events-none"
                             :title="t('reports.practitioner.sort', { column: column.label })"
                             @click="sortBy(column.key)"
                         >
