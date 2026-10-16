@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Services;
 
 use App\Modules\Booking\Models\Booking;
-use App\Modules\Catalog\Models\Service;
 use App\Modules\Customers\Models\Customer;
-use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Models\Organization;
-use App\Modules\Whatsapp\Services\MessageSender;
+use App\Modules\Whatsapp\Support\MessageTemplateType;
 use App\Modules\Whatsapp\Support\SendRefused;
 use App\Modules\Whatsapp\Support\TransportFailed;
 use Carbon\CarbonImmutable;
@@ -31,7 +29,7 @@ final class ReminderService
     public function __construct(
         private readonly PolicyService $policies,
         private readonly BookingCore $core,
-        private readonly MessageSender $sender,
+        private readonly BookingMessageSender $sender,
     ) {}
 
     /**
@@ -72,16 +70,8 @@ final class ReminderService
         }
 
         $language = in_array($customer->language, (array) config('nova.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
-        $timezone = (string) Location::query()->whereKey($booking->location_id)->value('timezone');
-        $local = $booking->starts_at->setTimezone($timezone ?: 'UTC');
-
         try {
-            $this->sender->sendTemplate($organization, $customer, (string) config('whatsapp.templates.reminder'), $language, [
-                $organization->name,
-                (string) Service::query()->whereKey($booking->service_id)->value('name'),
-                $local->locale($language)->isoFormat('dddd DD/MM/YYYY'),
-                $local->format('H:i'),
-            ]);
+            $this->sender->send($organization, $booking, $customer, MessageTemplateType::REMINDER, $language);
         } catch (SendRefused|TransportFailed $e) {
             $this->core->releaseReminder($booking, $e instanceof TransportFailed ? $e->errorCode : $e->reason);
 

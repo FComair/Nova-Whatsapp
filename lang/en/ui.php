@@ -2329,7 +2329,7 @@ return [
         'templates_title' => 'Template messages',
         'templates_intro' => 'To write to a customer outside the 24-hour window (reminders, confirmations, cancellations), WhatsApp requires template messages approved by Meta, in each language.',
         'templates_need_connection' => 'Connect your number first to submit the template messages.',
-        'message' => ['reminder' => 'Appointment reminder', 'confirmation' => 'Appointment confirmation', 'rescheduled' => 'Appointment moved', 'cancellation' => 'Appointment cancelled'],
+        'message' => ['reminder' => 'Appointment reminder', 'confirmation' => 'Appointment confirmation', 'rescheduled' => 'Appointment moved', 'cancellation' => 'Appointment cancelled', 'welcome' => 'Welcome', 'payment_reminder' => 'Payment reminder', 'payment_confirmation' => 'Payment received', 'follow_up' => 'Post-service follow-up', 'review_request' => 'Review request', 're_engagement' => 'Re-engagement', 'promotional' => 'Promotional offer', 'informational' => 'Information', 'custom' => 'Custom message'],
         'status' => ['missing' => 'Not submitted', 'pending' => 'Waiting for Meta', 'approved' => 'Approved', 'rejected' => 'Rejected', 'paused' => 'Paused by Meta'],
         'submit_templates' => 'Submit the missing messages',
         'sync_templates' => 'Refresh statuses',

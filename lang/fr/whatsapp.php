@@ -4,6 +4,8 @@
  * Messages WhatsApp envoyés automatiquement par Nova aux clients finaux (langue du client, français par défaut).
  */
 return [
+    // Valeur de {{customer_name}} quand le client n'a pas de nom enregistré.
+    'customer_fallback' => 'cher client',
     'opt_out_confirmed' => 'Vous ne recevrez plus de messages de notre part. Répondez START pour les reprendre.',
     'opt_in_confirmed' => 'Merci ! Vous recevrez à nouveau nos messages. Répondez STOP pour les arrêter.',
 

@@ -2329,7 +2329,7 @@ return [
         'templates_title' => 'Messages types',
         'templates_intro' => 'Pour écrire à un client hors de la fenêtre de 24 h (rappels, confirmations, annulations), WhatsApp impose des messages types approuvés par Meta, dans chaque langue.',
         'templates_need_connection' => 'Connectez d\'abord votre numéro pour soumettre les messages types.',
-        'message' => ['reminder' => 'Rappel de rendez-vous', 'confirmation' => 'Confirmation de rendez-vous', 'rescheduled' => 'Rendez-vous déplacé', 'cancellation' => 'Rendez-vous annulé'],
+        'message' => ['reminder' => 'Rappel de rendez-vous', 'confirmation' => 'Confirmation de rendez-vous', 'rescheduled' => 'Rendez-vous déplacé', 'cancellation' => 'Rendez-vous annulé', 'welcome' => 'Bienvenue', 'payment_reminder' => 'Rappel de paiement', 'payment_confirmation' => 'Paiement reçu', 'follow_up' => 'Suivi après la prestation', 'review_request' => 'Demande d’avis', 're_engagement' => 'Relance', 'promotional' => 'Offre promotionnelle', 'informational' => 'Information', 'custom' => 'Message personnalisé'],
         'status' => ['missing' => 'Non soumis', 'pending' => 'En attente de Meta', 'approved' => 'Approuvé', 'rejected' => 'Refusé', 'paused' => 'Suspendu par Meta'],
         'submit_templates' => 'Soumettre les messages manquants',
         'sync_templates' => 'Actualiser les statuts',
