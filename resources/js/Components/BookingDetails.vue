@@ -4,6 +4,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { centsToInput, formatPrice } from '../composables/money';
 import { usePastTimeGuard } from '../composables/pastTime';
 import { extraError } from '../composables/planning';
+import { formatRangeWithZone } from '../composables/timezone';
 import { parseAmountCents, shareBalance, sharesToPayload, totalPaid } from '../composables/tips';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
@@ -158,7 +159,7 @@ function pick(suggestion: Suggestion): void {
 
         <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
             <dt class="font-medium text-neutral-600">{{ t('planning.form.time') }}</dt>
-            <dd>{{ booking.starts }} – {{ booking.ends }} · {{ t(`planning.status.${booking.status}`) }}</dd>
+            <dd>{{ formatRangeWithZone(date, booking.starts, booking.ends, timezone) }} · {{ t(`planning.status.${booking.status}`) }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.service') }}</dt>
             <dd>{{ booking.service }}</dd>
             <dt class="font-medium text-neutral-600">{{ t('planning.form.practitioner') }}</dt>

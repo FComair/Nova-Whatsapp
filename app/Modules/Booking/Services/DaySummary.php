@@ -79,6 +79,7 @@ final class DaySummary
 
         return [
             'date' => $dayStart->toDateString(),
+            'timezone' => $timezone,
             'counts' => [
                 'today' => $today->count(),
                 'remaining' => $today->filter($upcoming)->count(),

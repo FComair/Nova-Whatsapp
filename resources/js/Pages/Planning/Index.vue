@@ -13,6 +13,7 @@ import PractitionerSelect from '../../Components/PractitionerSelect.vue';
 import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
 import { formatDate, formatWeekdayDate } from '../../composables/dates';
+import { differsFrom, zoneLabel } from '../../composables/timezone';
 import { blockStyle, hourMarks, isoWeekday, layoutLanes, minutesToTime, PIXELS_PER_MINUTE, shiftDate, visibleDays } from '../../composables/planning';
 import { columnMode, gridMinWidth, hidesClosedDays, PLANNING_VIEWS, parseView, stepDays, stepKey } from '../../composables/planningViews';
 import { useT } from '../../composables/useT';
@@ -393,6 +394,10 @@ function describe(booking: PlanningBooking): string {
                         {{ t('planning.legend.outside') }}
                     </li>
                 </ul>
+
+                <p v-if="location && differsFrom(location.timezone)" class="mt-3 text-sm text-neutral-700" data-testid="grid-timezone">
+                    {{ t('timezone.grid_note', { zone: location.timezone, label: zoneLabel(location.timezone) }) }}
+                </p>
 
                 <div ref="scroller" class="mt-3 max-h-[75vh] overflow-auto rounded-card border border-line bg-surface shadow-xs">
                     <div class="flex" :style="{ minWidth: `${gridMinWidth(columns.length, view)}px` }">
