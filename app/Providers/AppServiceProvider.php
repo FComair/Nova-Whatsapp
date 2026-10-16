@@ -86,7 +86,10 @@ class AppServiceProvider extends ServiceProvider
         // Canal WhatsApp : 'meta' en production, 'fake' (aucun appel réseau) en développement et en test.
         $this->app->singleton(WhatsappTransport::class, fn (): WhatsappTransport => match (config('whatsapp.driver')) {
             'meta' => new MetaTransport,
-            'fake' => new FakeTransport,
+            // Le pilote factice accepte n'importe quels identifiants et renvoie un numéro d'exemple : jamais en production.
+            'fake' => $this->app->isProduction()
+                ? throw new InvalidArgumentException('Le pilote WhatsApp « fake » est interdit en production : WHATSAPP_DRIVER=meta.')
+                : new FakeTransport,
             default => throw new InvalidArgumentException('Pilote WhatsApp inconnu : '.config('whatsapp.driver')),
         });
 

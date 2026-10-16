@@ -10,7 +10,8 @@ declare(strict_types=1);
 return [
 
     // `meta` en production ; `fake` (aucun appel réseau, envois consignés en mémoire) en développement et en test.
-    'driver' => env('WHATSAPP_DRIVER', 'fake'),
+    // Sans valeur explicite : `meta` en production (le pilote factice y est refusé), `fake` ailleurs.
+    'driver' => env('WHATSAPP_DRIVER', env('APP_ENV') === 'production' ? 'meta' : 'fake'),
 
     'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
     'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
