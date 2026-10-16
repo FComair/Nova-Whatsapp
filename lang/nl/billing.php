@@ -6,6 +6,7 @@
 return [
     'invoice' => [
         'subscription' => 'Nova-abonnement :plan (:from – :to)',
+        'setup_fee' => 'Opstartkosten Nova :plan',
         'upgrade' => 'Wijziging van formule: :from naar :to (aanvulling naar rato)',
     ],
 ];

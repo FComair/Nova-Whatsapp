@@ -25,6 +25,7 @@ export const routes = {
     calendars: '/calendriers',
     team: '/reglages/equipe',
     billing: '/facturation',
+    pricing: '/tarifs',
     profile: '/reglages/profil',
     appearance: '/reglages/apparence',
     profileCompany: '/reglages/profil/entreprise',

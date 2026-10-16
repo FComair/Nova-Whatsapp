@@ -23,9 +23,12 @@ final class PlanLimits
             return Plan::query()->findOrFail($organization->plan_id);
         }
 
-        $code = in_array($organization->signup_plan, ['basic', 'business'], true) ? $organization->signup_plan : self::TRIAL_FALLBACK_PLAN;
+        // Formule choisie à l'inscription : sa version en cours, quel que soit son code ; à défaut (essai libre, formule retirée), celle de repli.
+        $chosen = filled($organization->signup_plan) && $organization->signup_plan !== 'trial'
+            ? Plan::query()->where('code', $organization->signup_plan)->whereNull('superseded_by')->first()
+            : null;
 
-        return Plan::query()->where('code', $code)->firstOrFail();
+        return $chosen ?? Plan::query()->where('code', self::TRIAL_FALLBACK_PLAN)->firstOrFail();
     }
 
     /**

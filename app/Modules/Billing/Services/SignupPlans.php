@@ -23,16 +23,18 @@ final class SignupPlans
     /** Code du choix « essai gratuit » (aucune formule payante retenue). */
     public const TRIAL = 'trial';
 
-    public function __construct(private readonly PlatformSettings $settings) {}
+    public function __construct(private readonly PlatformSettings $settings, private readonly PlanCatalog $catalog) {}
 
     /**
-     * Codes acceptés : l'essai, et chaque formule payante active.
+     * Codes acceptés : l'essai, et chaque formule payante que la personne peut voir (publique, ou ouverte par son lien, son code d'invitation
+     * ou son secteur).
      *
      * @return list<string>
      */
-    public function codes(): array
+    public function codes(?string $invite = null, ?string $sector = null, ?string $direct = null): array
     {
-        return [self::TRIAL, ...$this->plans()->pluck('code')->map(fn ($code): string => (string) $code)->all()];
+        // Un lien direct vers une formule privée (?plan=code) l'ouvre, même si elle n'est pas listée.
+        return [self::TRIAL, ...$this->plans($invite, $sector, $direct)->pluck('code')->map(fn ($code): string => (string) $code)->all()];
     }
 
     /**
@@ -40,9 +42,9 @@ final class SignupPlans
      *
      * @return array<string, mixed>
      */
-    public function options(): array
+    public function options(?string $invite = null, ?string $sector = null, ?string $direct = null): array
     {
-        $plans = $this->plans();
+        $plans = $this->plans($invite, $sector, $direct);
         $fallback = Plan::query()->where('code', PlanLimits::TRIAL_FALLBACK_PLAN)->first();
 
         return [
@@ -54,12 +56,8 @@ final class SignupPlans
                 'payment_method_required' => false,
             ],
             'plans' => $plans->map(fn (Plan $plan): array => [
-                'code' => $plan->code,
-                'name' => $plan->name,
-                'price_cents' => $plan->price_monthly_cents,
-                'currency' => trim($plan->currency),
+                ...$this->catalog->present($plan, app()->getLocale()),
                 'limits' => $this->limits($plan),
-                'recommended' => $plan->is_recommended,
             ])->values()->all(),
             'vat' => ['rate' => (int) config('nova.billing.vat.home_rate'), 'country' => (string) config('nova.billing.vat.home_country')],
         ];
@@ -83,8 +81,9 @@ final class SignupPlans
     /**
      * @return Collection<int, Plan>
      */
-    private function plans(): Collection
+    private function plans(?string $invite = null, ?string $sector = null, ?string $direct = null): Collection
     {
-        return Plan::query()->where('is_active', true)->orderBy('position')->get();
+        // Seules les formules qu'on peut souscrire en ligne se choisissent à l'inscription (les autres : voir la page tarifs).
+        return $this->catalog->visibleTo($sector, null, $invite, $direct)->filter(fn (Plan $plan): bool => $plan->purchasable())->values();
     }
 }

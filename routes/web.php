@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Modules\Admin\Http\Controllers\DevAdminLoginController;
 use App\Modules\Admin\Http\Controllers\SupportInvitationController;
 use App\Modules\Billing\Http\Controllers\BillingController;
+use App\Modules\Billing\Http\Controllers\PricingController;
 use App\Modules\Booking\Http\Controllers\PlanningController;
 use App\Modules\Calendars\Http\Controllers\CalendarController;
 use App\Modules\Calendars\Http\Controllers\FeedController;
@@ -83,6 +84,10 @@ Route::prefix('/legal')->name('legal.')->whereIn('slug', ['terms-of-use', 'priva
     Route::get('/{slug}/download', [LegalPageController::class, 'download'])->name('download');
     Route::get('/{slug}/versions/{version}', [LegalPageController::class, 'version'])->where('version', '[0-9A-Za-z._-]{1,30}')->name('version');
 });
+
+// Page tarifs publique (docs/40) : les formules publiées par le Super Admin, sans connexion ; mêmes données en JSON pour le site vitrine.
+Route::get('/tarifs', [PricingController::class, 'show'])->name('pricing');
+Route::get('/tarifs.json', [PricingController::class, 'json'])->middleware('throttle:60,1')->name('pricing.json');
 
 // --- Visiteurs (flowcharts 1A, 2A, 5A) ---
 Route::middleware('guest')->group(function (): void {

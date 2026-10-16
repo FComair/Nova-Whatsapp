@@ -22,6 +22,14 @@ use Illuminate\Validation\Validator;
  */
 final class RegisterRequest extends FormRequest
 {
+    /** Valeur texte d'un champ, ou null s'il est absent ou vide. */
+    private function nullableString(string $key): ?string
+    {
+        $value = $this->input($key);
+
+        return is_string($value) && $value !== '' ? $value : null;
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -42,7 +50,9 @@ final class RegisterRequest extends FormRequest
             'password' => ['required', 'string', new StrongPassword, 'max:200'],
             'phone' => ['required', 'string', new ValidPhone],
             'sector' => ['required', 'string', Rule::in(app(SectorCatalog::class)->codes())],
-            'plan' => ['required', 'string', Rule::in(app(SignupPlans::class)->codes())],
+            // Formules visibles pour cette personne : publiques, plus celle ouverte par son code d'invitation, son secteur ou son lien direct.
+            'invite' => ['nullable', 'string', 'max:40'],
+            'plan' => ['required', 'string', Rule::in(app(SignupPlans::class)->codes($this->nullableString('invite'), $this->nullableString('sector'), $this->nullableString('plan')))],
             // Conditions et confidentialité : acceptations distinctes et obligatoires, jamais précochées. Le DPA l'est aussi tant que la plateforme l'exige (docs/28).
             'accept_terms' => ['accepted'],
             'accept_privacy' => ['accepted'],

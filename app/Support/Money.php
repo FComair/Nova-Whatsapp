@@ -23,4 +23,14 @@ final class Money
 
         return ((int) $matches[1]) * 100 + (int) str_pad($matches[2] ?? '0', 2, '0');
     }
+
+    /** Affiche des centimes comme l'écran : « 29,99 € » en français et néerlandais, « €29.99 » en anglais. */
+    public static function format(int $cents, string $currency = 'EUR', string $locale = 'fr'): string
+    {
+        $symbol = ['EUR' => '€', 'USD' => '$', 'GBP' => '£', 'CHF' => 'CHF'][$currency] ?? $currency;
+
+        return $locale === 'en'
+            ? $symbol.number_format($cents / 100, 2, '.', ',')
+            : number_format($cents / 100, 2, ',', "\u{00A0}")."\u{00A0}".$symbol;
+    }
 }
