@@ -120,7 +120,9 @@ jobs:
             php artisan migrate --database=pgsql_owner --force
             php artisan storage:link --force
             php artisan config:cache
-            php artisan route:cache
+            # Pas de route:cache : les routes du panel Super Admin dépendent des Paramètres globaux (2FA, lu en base à chaque requête).
+            # Un cache figé au déploiement contredit le réglage dès qu'il change (renvoi vers /connexion à chaque clic, 2026-10-16).
+            php artisan route:clear
             php artisan view:cache
             php artisan event:cache
 
