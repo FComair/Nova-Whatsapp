@@ -146,10 +146,13 @@ ENV_FILE="${APP_DIR}/shared/.env"
 # Base et rôles : mêmes rôles que docker/postgres/init/01-roles-and-extensions.sql (RLS, docs/01 §0), mais mots de passe
 # aléatoires et propriétaire NON superutilisateur. Les extensions sont créées ici par le superutilisateur « postgres » :
 # les migrations (CREATE EXTENSION IF NOT EXISTS) n'ont alors plus rien à faire. Exécuté une seule fois (.env vide).
+# BYPASSRLS pour le propriétaire : les tables sont en FORCE ROW LEVEL SECURITY, et les fonctions SECURITY DEFINER qu'il possède
+# (auth_memberships, whatsapp_account_lookup…) doivent lire sans contexte d'organisation. En développement, il est superutilisateur.
+# Sans ce droit, ces fonctions ne renvoient rien : connexion impossible (« Identifiants incorrects »), constaté le 2026-10-16.
 if ! grep -q '^DB_OWNER_PASSWORD=' "$ENV_FILE"; then
   OWNER_PW="$(openssl rand -hex 24)"; APP_PW="$(openssl rand -hex 24)"; PLATFORM_PW="$(openssl rand -hex 24)"
   sudo -u postgres psql -v ON_ERROR_STOP=1 <<SQL
-CREATE ROLE nova_owner    LOGIN PASSWORD '${OWNER_PW}'    NOSUPERUSER NOCREATEDB NOCREATEROLE;
+CREATE ROLE nova_owner    LOGIN PASSWORD '${OWNER_PW}'    NOSUPERUSER NOCREATEDB NOCREATEROLE BYPASSRLS;
 CREATE ROLE nova_app      LOGIN PASSWORD '${APP_PW}'      NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;
 CREATE ROLE nova_platform LOGIN PASSWORD '${PLATFORM_PW}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;
 CREATE DATABASE ${DB_NAME} OWNER nova_owner;
