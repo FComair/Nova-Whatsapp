@@ -12,7 +12,7 @@ use App\Modules\Tenancy\Services\CompanyUpdater;
 use App\Modules\Tenancy\Services\OrganizationLogo;
 use App\Modules\Tenancy\Services\SectorCatalog;
 use App\Modules\Tenancy\Support\CurrentTenant;
-use DateTimeZone;
+use App\Modules\Tenancy\Support\TimezoneCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +68,7 @@ final class AccountProfileController
             ] : null,
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
             'countries' => config('nova.countries'),
-            'timezones' => DateTimeZone::listIdentifiers(DateTimeZone::EUROPE),
+            'timezones' => app(TimezoneCatalog::class)->byCountry(config('nova.countries')),
         ]);
     }
 

@@ -74,6 +74,9 @@ return [
     // Pays proposés pour l'entreprise et ses sites (marché belge et pays limitrophes).
     'countries' => ['BE', 'FR', 'NL', 'LU', 'DE'],
 
+    // Fuseau principal de chaque pays, proposé par défaut (un pays peut en avoir plusieurs : voir TimezoneCatalog).
+    'default_timezones' => ['BE' => 'Europe/Brussels', 'FR' => 'Europe/Paris', 'NL' => 'Europe/Amsterdam', 'LU' => 'Europe/Luxembourg', 'DE' => 'Europe/Berlin'],
+
     // Calendriers externes en lecture seule : synchronisation toutes les 15 min (une heure pour ceux en erreur). À valider.
     'calendars' => [
         'sync_minutes' => 15,

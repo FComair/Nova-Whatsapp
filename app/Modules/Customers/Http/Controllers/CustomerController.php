@@ -157,7 +157,7 @@ final class CustomerController
             ->orderByDesc('starts_at')->limit(50)->get();
 
         $services = DB::table('services')->whereIn('id', $bookings->pluck('service_id'))->pluck('name', 'id');
-        $timezone = (string) DB::table('locations')->orderBy('created_at')->value('timezone');
+        $timezone = (string) ($this->current->organization()?->timezone ?: 'UTC');
         $seesNotes = $this->access->seesNotes();
 
         // Fidélité (docs/27) : progression, récompenses et historique, lisibles par tous les rôles qui voient ce client ; les actions suivent les droits.

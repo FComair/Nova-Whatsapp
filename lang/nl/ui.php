@@ -1981,6 +1981,7 @@ return [
             'slot_outside_hours' => 'Dit tijdstip valt buiten de openingsuren of de beschikbaarheid van de behandelaar.',
             'slot_policy' => 'Dit tijdstip voldoet niet aan de reserveringsregels.',
             'past_time' => 'Dit tijdstip is al voorbij. Kies een tijdstip in de toekomst.',
+            'nonexistent_time' => 'Dit tijdstip bestaat niet op die dag (overgang naar zomertijd). Kies een ander tijdstip.',
             'invalid_transition' => 'Deze actie is niet mogelijk in de huidige status van de afspraak.',
             'cancellation_too_late' => 'De annuleringstermijn is verstreken.',
             'hold_expired' => 'De blokkering van dit tijdstip is verlopen.',

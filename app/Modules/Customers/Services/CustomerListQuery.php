@@ -6,6 +6,7 @@ namespace App\Modules\Customers\Services;
 
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Support\PlanningAccess;
+use App\Modules\Tenancy\Support\CurrentTenant;
 use App\Modules\Customers\Models\Customer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -107,7 +108,7 @@ final class CustomerListQuery
      */
     public function appointmentsFor(array $customerIds): array
     {
-        $timezone = (string) (DB::table('locations')->orderBy('created_at')->value('timezone') ?: 'UTC');
+        $timezone = (string) (app(CurrentTenant::class)->organization()?->timezone ?: 'UTC');
 
         $base = fn () => DB::table('bookings as b')
             ->leftJoin('services as s', 's.id', '=', 'b.service_id')

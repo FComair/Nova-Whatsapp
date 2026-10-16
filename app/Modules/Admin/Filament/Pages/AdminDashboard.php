@@ -184,6 +184,6 @@ class AdminDashboard extends Dashboard
 
     public function formatDate(string $iso): string
     {
-        return Carbon::parse($iso)->timezone((string) config('app.timezone'))->format('d/m/Y H:i');
+        return Carbon::parse($iso)->timezone((string) config('app.timezone'))->format('d/m/Y H:i T');
     }
 }

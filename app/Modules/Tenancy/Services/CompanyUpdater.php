@@ -20,17 +20,13 @@ final class CompanyUpdater
      */
     public function update(Organization $organization, array $data, ?string $actorId): void
     {
-        $previousTimezone = $organization->timezone;
-
-        DB::transaction(function () use ($organization, $data, $previousTimezone, $actorId): void {
+        DB::transaction(function () use ($organization, $data, $actorId): void {
             $organization->fill($data);
             $diff = collect($organization->getDirty())->map(fn ($new, string $key): array => [$organization->getOriginal($key), $new])->all();
             $organization->save();
 
-            // Les sites qui suivaient le fuseau de l'entreprise le suivent encore.
-            if ($organization->timezone !== $previousTimezone) {
-                Location::query()->where('timezone', $previousTimezone)->update(['timezone' => $organization->timezone]);
-            }
+            // Fuseau unique : tous les sites du compte suivent celui de l'entreprise (les rendez-vous, en UTC, ne bougent pas).
+            Location::query()->where('timezone', '<>', $organization->timezone)->update(['timezone' => $organization->timezone]);
 
             if ($diff !== []) {
                 Audit::record('org.company.updated', 'user', actorId: $actorId, orgId: $organization->id, entityType: 'organization', entityId: $organization->id, diff: $diff);

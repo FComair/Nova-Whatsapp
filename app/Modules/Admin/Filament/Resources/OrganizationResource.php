@@ -327,7 +327,7 @@ class OrganizationResource extends Resource
                 TextEntry::make('owner_email')->label(__('clients.columns.contact'))->placeholder('—'),
                 TextEntry::make('id')->label(__('clients.columns.id'))->copyable(),
                 TextEntry::make('suspension_reason')->label(__('admin.organizations.suspension_reason'))->placeholder('—'),
-                TextEntry::make('suspended_at')->label(__('admin.organizations.suspended_at'))->dateTime('d/m/Y H:i')->placeholder('—'),
+                TextEntry::make('suspended_at')->label(__('admin.organizations.suspended_at'))->dateTime('d/m/Y H:i T', fn (?Model $record): string => (string) ($record?->getAttribute('timezone') ?: 'UTC'))->placeholder('—'),
                 TextEntry::make('deletion_scheduled_for')->label(__('admin.organizations.deletion_scheduled_for'))->dateTime('d/m/Y')->placeholder('—'),
             ]),
             Tabs::make('client')->columnSpanFull()->tabs([

@@ -76,17 +76,25 @@ it('n\'écrit pas d\'entrée d\'audit quand rien ne change', function (): void {
     expect($this->asOwner(fn () => DB::table('audit_logs')->where('action', 'org.company.updated')->count()))->toBe(0);
 });
 
-it('répercute le nouveau fuseau sur les sites qui suivaient celui de l\'entreprise', function (): void {
+it('répercute le nouveau fuseau sur tous les sites : celui de l\'entreprise est la référence unique', function (): void {
     $this->asOwner(function (): void {
         Location::factory()->create(['org_id' => $this->org->id, 'name' => 'Suit l\'entreprise', 'timezone' => 'Europe/Brussels']);
         Location::factory()->create(['org_id' => $this->org->id, 'name' => 'Fuseau propre', 'timezone' => 'Europe/London']);
     });
 
-    $this->signedIn($this->owner, $this->org)->post('/configuration/assistant/entreprise', ($this->valid)(['timezone' => 'Europe/Paris']));
+    $this->signedIn($this->owner, $this->org)->post('/configuration/assistant/entreprise', ($this->valid)(['country' => 'FR', 'timezone' => 'Europe/Paris']));
 
     $zones = $this->asOwner(fn () => DB::table('locations')->where('org_id', $this->org->id)->pluck('timezone', 'name')->all());
     expect($zones["Suit l'entreprise"])->toBe('Europe/Paris')
-        ->and($zones['Fuseau propre'])->toBe('Europe/London');
+        ->and($zones['Fuseau propre'])->toBe('Europe/Paris');
+});
+
+it('accepte un fuseau d\'outre-mer quand le pays en compte plusieurs, et tous les sites le suivent', function (): void {
+    $this->asOwner(fn () => Location::factory()->create(['org_id' => $this->org->id, 'name' => 'Île', 'timezone' => 'Europe/Brussels']));
+
+    $this->signedIn($this->owner, $this->org)->post('/configuration/assistant/entreprise', ($this->valid)(['country' => 'FR', 'timezone' => 'Indian/Reunion']))->assertSessionHasNoErrors();
+
+    expect($this->asOwner(fn () => DB::table('locations')->where('org_id', $this->org->id)->pluck('timezone')->unique()->values()->all()))->toBe(['Indian/Reunion']);
 });
 
 it('refuse les données invalides', function (array $override, string $field): void {
@@ -101,6 +109,7 @@ it('refuse les données invalides', function (array $override, string $field): v
     'pays inconnu' => [['country' => 'US'], 'country'],
     'fuseau inexistant' => [['timezone' => 'Mars/Phobos'], 'timezone'],
     'fuseau hors Europe' => [['timezone' => 'America/New_York'], 'timezone'],
+    'fuseau d\'un autre pays' => [['country' => 'BE', 'timezone' => 'Europe/Paris'], 'timezone'],
     'langue inconnue' => [['locale' => 'de'], 'locale'],
 ]);
 
