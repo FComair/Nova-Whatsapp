@@ -184,7 +184,6 @@ final class CustomerController
                 'id' => $booking->id,
                 'date' => $booking->starts_at->setTimezone($timezone ?: 'UTC')->format('Y-m-d'),
                 'time' => $booking->starts_at->setTimezone($timezone ?: 'UTC')->format('H:i'),
-                'timezone' => $timezone ?: 'UTC',
                 'service' => $services[$booking->service_id] ?? null,
                 'status' => $booking->status,
                 'notes' => $seesNotes ? $booking->notes_enc : null,

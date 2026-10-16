@@ -23,17 +23,6 @@ return [
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
     ],
 
-    'timezone' => [
-        'label' => 'Fuseau horaire',
-        'prompt_title' => 'Choisissez votre fuseau horaire',
-        'prompt_body' => 'Nous n\'avons pas pu détecter votre fuseau horaire. Indiquez votre ville ou votre région : les heures s\'afficheront dans votre heure locale, avec le fuseau (par exemple 14:00 CET). En attendant, elles restent à l\'heure de l\'établissement.',
-        'search' => 'Rechercher une ville ou une région',
-        'search_placeholder' => 'ex. Brussels, Paris, Tokyo',
-        'change' => 'Changer de fuseau horaire',
-        'later' => 'Plus tard',
-        'grid_note' => 'La grille est à l\'heure de l\'établissement (:zone, :label). Les heures converties dans votre fuseau apparaissent dans le détail des rendez-vous.',
-    ],
-
     'onboarding' => [
         'default_location' => 'Site principal',
         'title' => 'Configuration de votre établissement',

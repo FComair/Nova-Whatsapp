@@ -46,7 +46,7 @@ describe('création', function (): void {
 
         expect($this->transport->templates)->toHaveCount(1)
             ->and($this->transport->templates[0])->toMatchArray(['to' => '+32470123456', 'template' => 'appointment_confirmation', 'language' => 'nl'])
-            ->and($this->transport->templates[0]['parameters'])->toBe(($this->params)('dinsdag 02/06/2026', '10:00 CEST'));
+            ->and($this->transport->templates[0]['parameters'])->toBe(($this->params)('dinsdag 02/06/2026', '10:00'));
     });
 
     it('n\'envoie rien sans la case, ou si elle est décochée', function (array $override): void {
@@ -71,7 +71,7 @@ describe('déplacement', function (): void {
 
         expect($this->transport->templates)->toHaveCount(1)
             ->and($this->transport->templates[0])->toMatchArray(['template' => 'appointment_rescheduled', 'language' => 'fr'])
-            ->and($this->transport->templates[0]['parameters'])->toBe(($this->params)('mercredi 03/06/2026', '14:30 CEST'));
+            ->and($this->transport->templates[0]['parameters'])->toBe(($this->params)('mercredi 03/06/2026', '14:30'));
     });
 
     it('n\'envoie rien sans la case', function (): void {

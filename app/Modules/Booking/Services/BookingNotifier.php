@@ -61,7 +61,7 @@ final class BookingNotifier
                 $organization->name,
                 (string) Service::query()->whereKey($booking->service_id)->value('name'),
                 $local->locale($language)->isoFormat('dddd DD/MM/YYYY'),
-                $local->format('H:i').' '.$local->format('T'),
+                $local->format('H:i'),
             ]);
         } catch (SendRefused|TransportFailed) {
             return false;
