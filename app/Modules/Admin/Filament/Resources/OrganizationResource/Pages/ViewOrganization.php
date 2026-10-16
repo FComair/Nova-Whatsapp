@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Resources\OrganizationResource\Pages;
 
 use App\Modules\Admin\Filament\Resources\OrganizationResource;
 use App\Modules\Admin\Filament\Support\ClientActions;
+use App\Modules\Admin\Filament\Support\ResolvesRecordByKey;
 use App\Modules\Admin\Filament\Support\SensitiveActionFields;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformOrganization;
@@ -31,6 +32,8 @@ use InvalidArgumentException;
  */
 class ViewOrganization extends ViewRecord
 {
+    use ResolvesRecordByKey;
+
     protected static string $resource = OrganizationResource::class;
 
     public function mount(int|string $record): void
