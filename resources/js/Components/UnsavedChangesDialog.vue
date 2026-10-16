@@ -28,7 +28,7 @@ watch(
         ref="dialog"
         :aria-labelledby="titleId"
         data-testid="unsaved-dialog"
-        class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-nova-900/55"
+        class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-deep/55"
         @cancel.prevent="answerUnsaved('cancel')"
     >
         <h2 :id="titleId" class="text-lg font-semibold text-nova-900">{{ t('unsaved.message') }}</h2>

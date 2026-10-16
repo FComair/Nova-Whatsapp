@@ -179,7 +179,7 @@ watch(
     <dialog
         ref="dialog"
         :aria-labelledby="titleId"
-        class="m-auto max-h-[92vh] w-[calc(100%-1.5rem)] max-w-2xl overflow-y-auto rounded-modal border border-line bg-surface p-5 shadow-xl backdrop:bg-nova-900/55 sm:p-6"
+        class="m-auto max-h-[92vh] w-[calc(100%-1.5rem)] max-w-2xl overflow-y-auto rounded-modal border border-line bg-surface p-5 shadow-xl backdrop:bg-deep/55 sm:p-6"
         @cancel.prevent="close"
     >
         <div class="flex items-start justify-between gap-4">

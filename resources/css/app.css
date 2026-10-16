@@ -187,6 +187,76 @@
     }
 }
 
+/*
+ * Thème sombre : on redéfinit les mêmes jetons, aucune classe de composant ne change.
+ * Appliqué par <html data-theme="dark"> (voir composables/theme.ts) ; « Système » suit prefers-color-scheme.
+ * Les échelles neutral et nova sont inversées (texte clair, fonds sombres). --color-deep reste sombre : fonds à texte blanc.
+ */
+:root[data-theme='dark'] {
+    color-scheme: dark;
+
+    --color-nova-900: #e6f1ee;
+    --color-nova-700: #a9c4c0;
+
+    --color-primary-50: #15302f;
+    --color-primary-100: #17403f;
+    --color-primary-200: #1f5655;
+    --color-primary-300: #2f7f7a;
+    --color-primary-600: #138080;
+    --color-primary-700: #86d6c8;
+
+    --color-sand: #3a2d12;
+    --color-mint: #17403f;
+
+    --color-success-50: #123222;
+    --color-success-600: #5ec98a;
+    --color-warning-50: #3a2d12;
+    --color-warning-600: #f0b45a;
+    --color-danger-50: #3b1916;
+    --color-danger-600: #ff8a80;
+    --color-danger-700: #d9453b;
+    --color-danger-800: #ffb4ab;
+
+    --color-neutral-50: #0e1918;
+    --color-neutral-100: #1a2927;
+    --color-neutral-200: #243533;
+    --color-neutral-300: #34504d;
+    --color-neutral-400: #5b7a76;
+    --color-neutral-500: #9db8b4;
+    --color-neutral-600: #b4c9c5;
+    --color-neutral-700: #c7d8d4;
+    --color-neutral-800: #dbe7e4;
+    --color-neutral-900: #eef5f3;
+
+    --color-canvas: #0e1918;
+    --color-surface: #162423;
+    --color-surface-2: #1f302e;
+    --color-line: #2a3d3a;
+    --color-line-strong: #6f8d88;
+    --color-muted: #9db8b4;
+
+    --color-success-fg: #7fdba2;
+    --color-success-bg: #123222;
+    --color-warning-fg: #f0b45a;
+    --color-warning-bg: #3a2d12;
+    --color-danger-fg: #ff9d94;
+    --color-danger-bg: #3b1916;
+    --color-info-fg: #86d6c8;
+    --color-info-bg: #17403f;
+    --color-neutral-fg: #c7d8d4;
+    --color-neutral-bg: #1f302e;
+
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.5), 0 1px 2px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 8px 20px -4px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 18px 40px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 44px rgb(0 0 0 / 0.6);
+}
+
+:root[data-theme='dark'] .nova-offhours {
+    background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgb(255 255 255 / 0.05) 6px 7px);
+}
+
 /* Planning : heures hors ouverture (avant l'ouverture, après la fermeture, jours sans horaires) : fond teinté et fines hachures. */
 .nova-offhours {
   background-color: var(--color-neutral-100);

@@ -2,6 +2,7 @@ import '../css/app.css';
 import { createInertiaApp, router } from '@inertiajs/vue3';
 import type { DefineComponent } from 'vue';
 import { trackNavigation } from './composables/backNav';
+import { initTheme } from './composables/theme';
 import { installUnsavedGuard } from './composables/unsaved';
 
 const pages = import.meta.glob<DefineComponent>('./Pages/**/*.vue');
@@ -10,6 +11,7 @@ const pages = import.meta.glob<DefineComponent>('./Pages/**/*.vue');
 trackNavigation(`${window.location.pathname}${window.location.search}`);
 router.on('navigate', (event) => trackNavigation(event.detail.page.url));
 installUnsavedGuard();
+initTheme();
 
 createInertiaApp({
     title: (title) => (title ? `${title} · Nova` : 'Nova'),

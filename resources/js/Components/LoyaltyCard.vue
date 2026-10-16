@@ -37,7 +37,7 @@ const progressText = computed(() => fillTemplate(props.texts.of, { stamps: props
 
 <template>
     <article class="overflow-hidden rounded-card border border-line bg-surface shadow-sm" :lang="language" data-testid="loyalty-card">
-        <header class="bg-nova-900 px-5 py-4 text-white">
+        <header class="bg-deep px-5 py-4 text-white">
             <p class="text-xs font-semibold uppercase tracking-wide text-white/70">{{ texts.title }}</p>
             <h3 class="mt-0.5 text-lg font-semibold">{{ program.name }}</h3>
         </header>
