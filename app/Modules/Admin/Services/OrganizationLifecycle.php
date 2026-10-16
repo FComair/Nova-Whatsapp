@@ -138,12 +138,18 @@ final class OrganizationLifecycle
             return;
         }
 
-        Notification::route('mail', (string) $owner->email)->notify(new AccountStatusNotification(
-            $action,
-            $org->name,
-            $action === 'organization.suspended' ? $reason : null,
-            $org->deletion_scheduled_for,
-            (string) $owner->locale,
-        ));
+        // Au mieux : l'action est déjà enregistrée et auditée ; un serveur d'e-mail absent ou en panne ne doit pas la faire échouer
+        // (le Super Admin verrait « Erreur lors du chargement de la page » alors que l'état a bien changé). L'erreur est journalisée.
+        try {
+            Notification::route('mail', (string) $owner->email)->notify(new AccountStatusNotification(
+                $action,
+                $org->name,
+                $action === 'organization.suspended' ? $reason : null,
+                $org->deletion_scheduled_for,
+                (string) $owner->locale,
+            ));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }

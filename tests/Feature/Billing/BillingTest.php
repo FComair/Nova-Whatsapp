@@ -545,6 +545,15 @@ describe('isolation et sécurité', function (): void {
 });
 
 describe('RGPD', function (): void {
+    it('programme la suppression même si le serveur d\'e-mail est injoignable', function (): void {
+        config(['mail.default' => 'smtp', 'mail.mailers.smtp.host' => '127.0.0.1', 'mail.mailers.smtp.port' => 1]);
+        $admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+
+        app(OrganizationLifecycle::class)->scheduleDeletion(PlatformOrganization::query()->findOrFail($this->org->id), $admin->id, null);
+
+        expect(DB::connection('pgsql_owner')->table('organizations')->where('id', $this->org->id)->value('status'))->toBe('pending_deletion');
+    });
+
     it('pseudonymise les factures, supprime les moyens de paiement, garde les montants et les paiements', function (): void {
         ($this->subscribe)();
         $this->asOwner(fn () => $this->org->forceFill(['billing_name' => 'Aurore SRL'])->save());
