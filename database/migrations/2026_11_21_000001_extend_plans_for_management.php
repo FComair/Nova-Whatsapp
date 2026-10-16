@@ -106,7 +106,7 @@ return new class extends Migration
         DB::statement(<<<'SQL'
             CREATE OR REPLACE FUNCTION plan_schedule_migration(p_from uuid, p_to uuid) RETURNS integer
             LANGUAGE plpgsql SECURITY DEFINER SET search_path = public
-            AS $
+            AS $$
             DECLARE
                 v_count integer;
             BEGIN
@@ -120,7 +120,7 @@ return new class extends Migration
 
                 RETURN v_count;
             END;
-            $
+            $$
         SQL);
         DB::statement('REVOKE ALL ON FUNCTION plan_schedule_migration(uuid, uuid) FROM PUBLIC');
         DB::statement('GRANT EXECUTE ON FUNCTION plan_schedule_migration(uuid, uuid) TO nova_platform');
