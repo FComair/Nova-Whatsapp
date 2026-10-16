@@ -23,17 +23,6 @@ return [
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
     ],
 
-    'timezone' => [
-        'label' => 'Fuseau horaire',
-        'prompt_title' => 'Choisissez votre fuseau horaire',
-        'prompt_body' => 'Nous n\'avons pas pu détecter votre fuseau horaire. Indiquez votre ville ou votre région : les heures s\'afficheront dans votre heure locale, avec le fuseau (par exemple 14:00 CET). En attendant, elles restent à l\'heure de l\'établissement.',
-        'search' => 'Rechercher une ville ou une région',
-        'search_placeholder' => 'ex. Brussels, Paris, Tokyo',
-        'change' => 'Changer de fuseau horaire',
-        'later' => 'Plus tard',
-        'grid_note' => 'La grille est à l\'heure de l\'établissement (:zone, :label). Les heures converties dans votre fuseau apparaissent dans le détail des rendez-vous.',
-    ],
-
     'onboarding' => [
         'default_location' => 'Site principal',
         'title' => 'Configuration de votre établissement',
@@ -1992,6 +1981,7 @@ return [
             'slot_outside_hours' => 'Ce créneau est en dehors des horaires d\'ouverture ou de disponibilité du praticien.',
             'slot_policy' => 'Ce créneau ne respecte pas les règles de réservation.',
             'past_time' => 'Cette heure est déjà passée. Choisissez une heure à venir.',
+            'nonexistent_time' => 'Cette heure n\'existe pas ce jour-là (passage à l\'heure d\'été). Choisissez une autre heure.',
             'invalid_transition' => 'Cette action n\'est pas possible dans l\'état actuel du rendez-vous.',
             'cancellation_too_late' => 'Le délai d\'annulation est dépassé.',
             'hold_expired' => 'Le blocage de ce créneau a expiré.',

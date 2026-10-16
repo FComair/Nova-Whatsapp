@@ -9,7 +9,6 @@ import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
 import { useT } from '../../composables/useT';
 import { formatDate } from '../../composables/dates';
-import { formatTimeWithZone } from '../../composables/timezone';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 import type { Locale, SharedProps } from '../../types';
@@ -17,7 +16,7 @@ import type { CustomerPanelData, LoyaltyAbilities } from '../../types/loyalty';
 
 const props = defineProps<{
     customer: { id: string; name: string | null; email: string | null; phone: string; language: Locale | null; is_blocked: boolean };
-    history: { id: string; date: string; time: string; timezone: string; service: string | null; status: string; notes: string | null }[];
+    history: { id: string; date: string; time: string; service: string | null; status: string; notes: string | null }[];
     loyalty: { can: LoyaltyAbilities; panel: CustomerPanelData; bookings: unknown[]; configured: boolean } | null;
 }>();
 
@@ -91,9 +90,7 @@ function toggleBlock(): void {
                 <ul v-else class="mt-4 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="item in history" :key="item.id" class="px-4 py-3 text-sm">
                         <div class="flex flex-wrap justify-between gap-2">
-                            <span class="font-medium text-neutral-900"
-                                >{{ formatDate(item.date) }} · {{ formatTimeWithZone(item.date, item.time, item.timezone) }}</span
-                            >
+                            <span class="font-medium text-neutral-900">{{ formatDate(item.date) }} · {{ item.time }}</span>
                             <span class="text-neutral-600">{{ t(`customers.status.${item.status}`) }}</span>
                         </div>
                         <p class="text-neutral-700">{{ item.service }}</p>

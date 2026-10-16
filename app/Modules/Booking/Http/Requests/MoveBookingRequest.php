@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Http\Requests;
 
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Support\LocalTime;
 use App\Modules\Booking\Support\PastStart;
 use App\Modules\Tenancy\Models\Location;
 use Carbon\CarbonImmutable;
@@ -52,6 +53,12 @@ final class MoveBookingRequest extends FormRequest
             $location = Location::query()->find($booking->location_id);
 
             if ($location === null) {
+                return;
+            }
+
+            if (! LocalTime::exists($this->string('date')->toString(), $this->string('time')->toString(), $location->timezone)) {
+                $validator->errors()->add('time', __('ui.planning.errors.nonexistent_time'));
+
                 return;
             }
 

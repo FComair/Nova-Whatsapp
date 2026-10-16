@@ -14,6 +14,7 @@ use App\Modules\Catalog\Models\ServiceCategory;
 use App\Modules\Catalog\Services\BusinessHoursService;
 use App\Modules\Catalog\Support\SectorTemplates;
 use App\Modules\Onboarding\Http\Requests\CompanyRequest;
+use App\Modules\Tenancy\Support\TimezoneCatalog;
 use App\Modules\Onboarding\Http\Requests\HoursRequest;
 use App\Modules\Onboarding\Http\Requests\SiteRequest;
 use App\Modules\Onboarding\Services\OnboardingProgressService;
@@ -216,7 +217,7 @@ final class OnboardingController
             'company' => $organization->only(['name', 'sector', 'country', 'timezone', 'locale']),
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
             'countries' => config('nova.countries'),
-            'timezones' => \DateTimeZone::listIdentifiers(\DateTimeZone::EUROPE),
+            'timezones' => app(TimezoneCatalog::class)->byCountry(config('nova.countries')),
         ]);
     }
 

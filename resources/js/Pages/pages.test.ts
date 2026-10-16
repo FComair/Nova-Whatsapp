@@ -150,7 +150,7 @@ describe('pages récentes', () => {
                     { value: 'beauty', label: 'Beauté et esthétique' },
                 ],
                 countries: ['BE', 'FR'],
-                timezones: ['Europe/Brussels', 'Europe/Paris'],
+                timezones: { BE: ['Europe/Brussels'], FR: ['Europe/Paris'] },
             },
         ],
         [
@@ -165,7 +165,7 @@ describe('pages récentes', () => {
                     { value: 'beauty', label: 'Beauté et esthétique' },
                 ],
                 countries: ['BE', 'FR'],
-                timezones: ['Europe/Brussels', 'Europe/Paris'],
+                timezones: { BE: ['Europe/Brussels'], FR: ['Europe/Paris'] },
             },
         ],
         [

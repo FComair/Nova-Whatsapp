@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import SelectField from '../../Components/SelectField.vue';
 import TextField from '../../Components/TextField.vue';
@@ -14,7 +14,8 @@ const props = defineProps<{
     company: { name: string; sector: string; country: string; timezone: string; locale: string };
     sectors: { value: string; label: string }[];
     countries: string[];
-    timezones: string[];
+    /** Fuseaux IANA proposés pour chaque pays (le fuseau principal en premier). */
+    timezones: Record<string, string[]>;
 }>();
 
 const { t } = useT();
@@ -22,7 +23,18 @@ const form = useForm({ ...props.company });
 
 const sectorOptions = computed(() => props.sectors);
 const countryOptions = computed(() => props.countries.map((value) => ({ value, label: t(`onboarding.company.countries.${value}`) })));
-const timezoneOptions = computed(() => props.timezones.map((value) => ({ value, label: value.replaceAll('_', ' ') })));
+const timezoneOptions = computed(() => (props.timezones[form.country] ?? []).map((value) => ({ value, label: value.replaceAll('_', ' ') })));
+// Changer de pays propose les fuseaux de ce pays ; l'ancien choix est remplacé s'il n'en fait pas partie.
+watch(
+    () => form.country,
+    (country) => {
+        const zones = props.timezones[country] ?? [];
+
+        if (!zones.includes(form.timezone)) {
+            form.timezone = zones[0] ?? '';
+        }
+    },
+);
 const localeOptions = computed(() => (['fr', 'nl', 'en'] as const).map((value) => ({ value, label: t(`common.languages.${value}`) })));
 </script>
 

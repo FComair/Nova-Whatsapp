@@ -292,3 +292,11 @@ Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le s
 - **E-mail dans l'URL de réinitialisation** : le lien de réinitialisation contient l'adresse e-mail en paramètre (usage standard de Laravel). Alternative possible : jeton seul, e-mail ressaisi.
 - **Validation juridique** : textes des CGU, de la confidentialité et du DPA ; durées de rétention ; rôle sous-traitant / responsable de traitement.
 - **Assistant de conversation natif (proposition, docs/18)** : reprend le flux n8n « MASTER ROUTER V2 » dans Nova (`CONVERSATION_DRIVER=native`). Il **déplace la décision n° 1** (le moteur WhatsApp reste dans n8n) : n8n reste le pilote par défaut tant que le fondateur n'a pas validé. Textes nl/en, modèle de langage (RGPD) et comportements inventés listés dans docs/18.
+
+## 5. Fuseau horaire unique du prestataire (décision du fondateur, 2026-10-16)
+
+- **Référence unique** : `organizations.timezone`, choisi à l'inscription parmi les fuseaux du **pays** sélectionné (`TimezoneCatalog`, base IANA ; un pays à plusieurs fuseaux, comme la France et l'outre-mer, laisse choisir). Tous les sites (`locations.timezone`) le suivent : `CompanyUpdater` les aligne à chaque enregistrement, la migration `2026_11_19_000001` a aligné l'existant.
+- **Stockage** : toutes les heures en UTC (`bookings.starts_at`, `ends_at`, etc.). Aucun rendez-vous n'est modifié par la migration : seul l'affichage local des sites qui s'écartaient de leur entreprise change.
+- **Lecture / affichage** : agenda, créneaux, messages WhatsApp, calendriers et interface Super Admin (pages d'un client) utilisent ce fuseau. Le client final ne choisit pas de fuseau : l'heure est celle du prestataire (annule le dispositif « fuseau du visiteur » de `feat/timezone-display`).
+- **Changement d'heure** : une heure locale inexistante (saut du printemps) est refusée (`LocalTime::exists`) ; une heure ambiguë (retour d'hiver) retient la première occurrence.
+- **À savoir** : changer le fuseau d'un compte qui a déjà des rendez-vous décale leur heure locale affichée (les instants UTC ne bougent pas). Les horaires d'ouverture, enregistrés en heure locale, sont relus dans le nouveau fuseau.

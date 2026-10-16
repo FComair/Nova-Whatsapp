@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import AlertBox from '../../Components/AlertBox.vue';
 import BaseButton from '../../Components/BaseButton.vue';
 import LogoUploader from '../../Components/LogoUploader.vue';
@@ -19,7 +19,8 @@ const props = defineProps<{
     billing: { billing_name: string; vat_number: string; line1: string; postal_code: string; city: string } | null;
     sectors: { value: string; label: string }[];
     countries: string[];
-    timezones: string[];
+    /** Fuseaux IANA proposés pour chaque pays (le fuseau principal en premier). */
+    timezones: Record<string, string[]>;
 }>();
 
 const { t } = useT();
@@ -35,7 +36,18 @@ const identity = useForm({ ...(props.billing ?? { billing_name: '', vat_number: 
 const languageOptions = computed(() => (['fr', 'nl', 'en'] as const).map((value) => ({ value, label: t(`common.languages.${value}`) })));
 const sectorOptions = computed(() => props.sectors);
 const countryOptions = computed(() => props.countries.map((value) => ({ value, label: t(`onboarding.company.countries.${value}`) })));
-const timezoneOptions = computed(() => props.timezones.map((value) => ({ value, label: value.replaceAll('_', ' ') })));
+const timezoneOptions = computed(() => (props.timezones[company.country] ?? []).map((value) => ({ value, label: value.replaceAll('_', ' ') })));
+// Changer de pays propose les fuseaux de ce pays ; l'ancien choix est remplacé s'il n'en fait pas partie.
+watch(
+    () => company.country,
+    (country) => {
+        const zones = props.timezones[country] ?? [];
+
+        if (!zones.includes(company.timezone)) {
+            company.timezone = zones[0] ?? '';
+        }
+    },
+);
 
 function label(options: { value: string; label: string }[], value: string): string {
     return options.find((option) => option.value === value)?.label ?? value;

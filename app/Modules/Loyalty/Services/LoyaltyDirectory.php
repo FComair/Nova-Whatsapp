@@ -9,6 +9,7 @@ use App\Modules\Customers\Models\Customer;
 use App\Modules\Loyalty\Models\LoyaltyMember;
 use App\Modules\Loyalty\Models\LoyaltyProgram;
 use App\Modules\Loyalty\Models\LoyaltyReward;
+use App\Modules\Tenancy\Support\CurrentTenant;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -235,7 +236,7 @@ final class LoyaltyDirectory
      */
     public function redeemableBookings(Customer $customer): array
     {
-        $timezone = (string) (DB::table('locations')->orderBy('created_at')->value('timezone') ?: 'UTC');
+        $timezone = (string) (app(CurrentTenant::class)->organization()?->timezone ?: 'UTC');
         $bookings = Booking::query()->where('customer_id', $customer->id)->whereIn('status', [Booking::CONFIRMED, Booking::COMPLETED])
             ->where('starts_at', '>', CarbonImmutable::now()->subDays(45))->orderByDesc('starts_at')->limit(15)->get();
         $services = DB::table('services')->whereIn('id', $bookings->pluck('service_id'))->pluck('name', 'id');

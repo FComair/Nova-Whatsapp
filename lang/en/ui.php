@@ -23,17 +23,6 @@ return [
         'languages' => ['fr' => 'Français', 'nl' => 'Nederlands', 'en' => 'English'],
     ],
 
-    'timezone' => [
-        'label' => 'Time zone',
-        'prompt_title' => 'Choose your time zone',
-        'prompt_body' => 'We couldn\'t detect your time zone. Enter your city or region: times will then be shown in your local time with the zone (for example 14:00 CET). Until then they stay in the location\'s time.',
-        'search' => 'Search for a city or region',
-        'search_placeholder' => 'e.g. Brussels, Paris, Tokyo',
-        'change' => 'Change time zone',
-        'later' => 'Later',
-        'grid_note' => 'The grid is in the location\'s time (:zone, :label). Times converted to your time zone appear in the booking details.',
-    ],
-
     'onboarding' => [
         'default_location' => 'Main location',
         'title' => 'Set up your business',
@@ -1992,6 +1981,7 @@ return [
             'slot_outside_hours' => 'This slot is outside opening hours or the practitioner\'s availability.',
             'slot_policy' => 'This slot does not comply with the booking rules.',
             'past_time' => 'This time has already passed. Choose a future time.',
+            'nonexistent_time' => 'This time does not exist on that day (daylight saving change). Choose another time.',
             'invalid_transition' => 'This action is not possible in the appointment\'s current state.',
             'cancellation_too_late' => 'The cancellation deadline has passed.',
             'hold_expired' => 'The hold on this slot has expired.',

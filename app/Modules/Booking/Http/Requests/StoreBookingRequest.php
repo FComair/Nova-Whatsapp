@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Http\Requests;
 
+use App\Modules\Booking\Support\LocalTime;
 use App\Modules\Booking\Support\PastStart;
 use App\Modules\Tenancy\Models\Location;
 use App\Modules\Tenancy\Support\CurrentTenant;
@@ -56,6 +57,12 @@ final class StoreBookingRequest extends FormRequest
             }
 
             $location = Location::query()->find($this->string('location_id')->toString());
+
+            if ($location !== null && ! LocalTime::exists($this->string('date')->toString(), $this->string('time')->toString(), $location->timezone)) {
+                $validator->errors()->add('time', __('ui.planning.errors.nonexistent_time'));
+
+                return;
+            }
 
             if ($location !== null && PastStart::isPast($this->startsAt($location->timezone))) {
                 $validator->errors()->add('time', __('ui.planning.errors.past_time'));

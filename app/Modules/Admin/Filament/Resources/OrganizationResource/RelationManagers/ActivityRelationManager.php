@@ -44,7 +44,7 @@ class ActivityRelationManager extends RelationManager
             ->heading(__('clients.activity.title'))
             ->emptyStateHeading(__('clients.activity.empty'))
             ->columns([
-                TextColumn::make('created_at')->label(__('clients.activity.when'))->dateTime('d/m/Y H:i')->sortable(),
+                TextColumn::make('created_at')->label(__('clients.activity.when'))->dateTime('d/m/Y H:i T', (string) ($owner->getAttribute('timezone') ?: 'UTC'))->sortable(),
                 TextColumn::make('action')->label(__('clients.activity.event'))->searchable()
                     ->formatStateUsing(fn (string $state): string => self::label($state))->description(fn (Model $record): string => (string) $record->getAttribute('action')),
                 TextColumn::make('actor_type')->label(__('clients.activity.actor'))
