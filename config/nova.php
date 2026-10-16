@@ -22,6 +22,9 @@ return [
     // Sous-domaine du Super Admin (cookies de session distincts du client). Vide en développement local (chemin /admin).
     'admin_domain' => env('NOVA_ADMIN_DOMAIN'),
 
+    // Domaine de l'espace client (ex. app.rendivoo.be) : ses pages ne répondent que là. Vide en développement local (toutes adresses).
+    'app_domain' => env('NOVA_APP_DOMAIN'),
+
     'security' => [
         // Vérification de l'e-mail (flowchart 1A) : lien signé valable 24 h. À valider.
         'email_link_ttl_hours' => 24,

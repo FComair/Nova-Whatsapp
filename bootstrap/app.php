@@ -13,13 +13,25 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         apiPrefix: 'api/v1',
         commands: __DIR__.'/../routes/console.php',
+        // Espace client : limité à son domaine quand NOVA_APP_DOMAIN est défini (production), pour que le sous-domaine du
+        // Super Admin ne serve que le panel. Vide en développement : toutes les adresses, comme avant.
+        then: function (): void {
+            $web = Route::middleware('web');
+            $domain = config('nova.app_domain');
+
+            if (is_string($domain) && $domain !== '') {
+                $web->domain($domain);
+            }
+
+            $web->group(base_path('routes/web.php'));
+        },
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {

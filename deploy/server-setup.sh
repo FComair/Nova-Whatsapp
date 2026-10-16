@@ -17,7 +17,7 @@
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-rendivoo.be}"
-APP_HOSTS="app.${DOMAIN} api.${DOMAIN}"
+APP_HOSTS="app.${DOMAIN} api.${DOMAIN} admin.${DOMAIN}"
 ADMIN_USER="${ADMIN_USER:-admin}"
 DEPLOY_USER="${DEPLOY_USER:-deploy}"
 APP_DIR="/var/www/rendivoo"
@@ -178,6 +178,8 @@ APP_ENV=production
 APP_DEBUG=false
 APP_KEY=base64:$(openssl rand -base64 32)
 APP_URL=https://app.${DOMAIN}
+NOVA_APP_DOMAIN=app.${DOMAIN}
+NOVA_ADMIN_DOMAIN=admin.${DOMAIN}
 APP_LOCALE=fr
 APP_FALLBACK_LOCALE=fr
 LOG_CHANNEL=stack
@@ -227,6 +229,11 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
+    # Super Admin sur son sous-domaine : la racine ouvre le panel (/admin).
+    if ($host = __ADMINHOST__) {
+        rewrite ^/$ /admin redirect;
+    }
+
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
@@ -248,7 +255,7 @@ server {
     location ~ /\.(?!well-known).* { deny all; }
 }
 NGINX
-sed -i "s|__HOSTS__|${APP_HOSTS}|; s|__APP__|${APP_DIR}|; s|__PHPV__|${PHP_V}|" /etc/nginx/sites-available/rendivoo
+sed -i "s|__HOSTS__|${APP_HOSTS}|; s|__ADMINHOST__|admin.${DOMAIN}|; s|__APP__|${APP_DIR}|; s|__PHPV__|${PHP_V}|" /etc/nginx/sites-available/rendivoo
 ln -sf /etc/nginx/sites-available/rendivoo /etc/nginx/sites-enabled/rendivoo
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
@@ -299,8 +306,9 @@ cat <<DONE
  1. DNS (chez votre registrar) : enregistrements A
       app.${DOMAIN}  ->  <IP du VPS>
       api.${DOMAIN}  ->  <IP du VPS>
+      admin.${DOMAIN}  ->  <IP du VPS>   (Super Admin : https://admin.${DOMAIN})
  2. Une fois le DNS propagé, HTTPS :
-      sudo certbot --nginx -d app.${DOMAIN} -d api.${DOMAIN} --redirect \\
+      sudo certbot --nginx -d app.${DOMAIN} -d api.${DOMAIN} -d admin.${DOMAIN} --redirect \\
            -m VOTRE@EMAIL --agree-tos --no-eff-email
  3. Complétez le fichier d'environnement de production (base, clé et Redis déjà remplis) :
       sudo -u ${DEPLOY_USER} nano ${APP_DIR}/shared/.env
