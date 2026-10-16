@@ -36,7 +36,7 @@ const id = useId();
                     v-for="mode in ['chart', 'table'] as const"
                     :key="mode"
                     type="button"
-                    class="rounded-full px-3 py-1 transition focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/20"
+                    class="rounded-lg px-3 py-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
                     :class="view === mode ? 'bg-primary-600 text-white' : 'text-neutral-800 hover:bg-primary-50'"
                     :aria-pressed="view === mode"
                     :data-testid="`view-${mode}`"

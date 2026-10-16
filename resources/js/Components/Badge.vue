@@ -8,7 +8,7 @@ withDefaults(defineProps<{ variant?: 'success' | 'warning' | 'danger' | 'info' |
 
 <template>
     <span
-        class="inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 text-[0.78rem] font-semibold leading-none"
+        class="inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-md px-2 text-xs font-medium ring-1 ring-inset ring-current/15 leading-none"
         :class="{
             'bg-success-bg text-success-fg': variant === 'success' && !solid,
             'bg-warning-bg text-warning-fg': variant === 'warning' && !solid,

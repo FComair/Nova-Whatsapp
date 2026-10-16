@@ -124,7 +124,7 @@ function toggleStatus(status: string, on: boolean): void {
                     v-for="preset in options.presets"
                     :key="preset"
                     type="button"
-                    class="rounded-full px-3.5 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/20"
+                    class="rounded-lg px-3.5 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
                     :class="
                         filters.preset === preset || (preset === 'custom' && customOpen) ? 'bg-primary-600 text-white' : 'text-neutral-800 hover:bg-primary-50'
                     "

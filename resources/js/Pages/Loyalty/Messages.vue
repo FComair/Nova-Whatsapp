@@ -138,7 +138,7 @@ function save(): void {
                             :maxlength="max_length"
                             :placeholder="defaults[kind]?.[language]"
                             :aria-describedby="`hint-${kind}`"
-                            class="block w-full rounded-control border-[1.5px] border-line-strong bg-surface px-3.5 py-2.5 text-sm text-neutral-900 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/20"
+                            class="block w-full rounded-control border-[1.5px] border-line-strong bg-surface px-3.5 py-2.5 text-sm text-neutral-900 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600/20"
                         />
                         <div :id="`hint-${kind}`" class="mt-1 flex justify-between gap-3 text-xs text-neutral-700">
                             <span>{{ t('loyalty.messages.text_hint') }}</span>

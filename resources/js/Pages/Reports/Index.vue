@@ -124,7 +124,7 @@ function saveManagers(value: boolean): void {
                         <Link
                             :href="href(view)"
                             preserve-scroll
-                            class="block whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/20"
+                            class="block whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
                             :class="
                                 category === view
                                     ? 'border-primary-600 text-primary-700'

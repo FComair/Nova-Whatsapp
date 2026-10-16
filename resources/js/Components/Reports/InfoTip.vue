@@ -17,7 +17,7 @@ const id = useId();
     <span class="relative inline-flex print:hidden">
         <button
             type="button"
-            class="inline-flex size-5 items-center justify-center rounded-full border border-line-strong text-[0.65rem] font-bold leading-none text-neutral-700 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/20"
+            class="inline-flex size-5 items-center justify-center rounded-full border border-line-strong text-[0.65rem] font-bold leading-none text-neutral-700 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
             :aria-label="t('reports.chart.legend')"
             :aria-describedby="open ? id : undefined"
             :aria-expanded="open"

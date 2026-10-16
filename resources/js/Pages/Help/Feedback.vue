@@ -80,7 +80,7 @@ function submit(): void {
                         :maxlength="limits.comment"
                         aria-describedby="feedback-comment-hint"
                         :aria-invalid="form.errors.comment ? 'true' : undefined"
-                        class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:outline-none focus:ring-4"
+                        class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 focus:outline-none focus:ring-2"
                         :class="
                             form.errors.comment
                                 ? 'border-danger-fg focus:ring-danger-fg/20'

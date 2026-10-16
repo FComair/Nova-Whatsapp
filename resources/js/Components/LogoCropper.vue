@@ -212,7 +212,7 @@ const previewStyle = (size: number) => {
                 role="group"
                 :aria-label="t('logo.crop.viewport')"
                 :aria-describedby="`${id}-keys`"
-                class="relative aspect-square w-full max-w-72 shrink-0 cursor-grab touch-none select-none overflow-hidden rounded-xl bg-white ring-1 ring-line-strong focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/30 active:cursor-grabbing"
+                class="relative aspect-square w-full max-w-72 shrink-0 cursor-grab touch-none select-none overflow-hidden rounded-xl bg-white ring-1 ring-line-strong focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:cursor-grabbing"
                 data-testid="crop-viewport"
                 @pointerdown="down"
                 @pointermove="move"
@@ -248,7 +248,7 @@ const previewStyle = (size: number) => {
                     <div class="flex items-center gap-2">
                         <button
                             type="button"
-                            class="inline-flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] border-line-strong bg-surface text-lg font-semibold text-neutral-900 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/30 active:bg-primary-100 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500"
+                            class="inline-flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] border-line-strong bg-surface text-lg font-semibold text-neutral-900 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:bg-primary-100 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500"
                             :aria-label="t('logo.crop.zoom_out')"
                             :disabled="atFloor || processing"
                             data-testid="zoom-out"
@@ -271,7 +271,7 @@ const previewStyle = (size: number) => {
                         />
                         <button
                             type="button"
-                            class="inline-flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] border-line-strong bg-surface text-lg font-semibold text-neutral-900 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/30 active:bg-primary-100 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500"
+                            class="inline-flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] border-line-strong bg-surface text-lg font-semibold text-neutral-900 transition hover:border-primary-600 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:bg-primary-100 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500"
                             :aria-label="t('logo.crop.zoom_in')"
                             :disabled="atCeiling || processing"
                             data-testid="zoom-in"
