@@ -6,6 +6,7 @@ namespace App\Modules\Admin\Filament\Resources\FaqArticleResource\Pages;
 
 use App\Modules\Admin\Filament\Resources\FaqArticleResource;
 use App\Modules\Admin\Filament\Support\FaqActions;
+use App\Modules\Admin\Filament\Support\ResolvesRecordByKey;
 use App\Modules\Admin\Models\PlatformFaqArticle;
 use App\Modules\Admin\Services\FaqManager;
 use App\Modules\Admin\Services\PlatformAudit;
@@ -30,6 +31,8 @@ use Illuminate\Support\Facades\DB;
  */
 class EditFaqArticle extends EditRecord
 {
+    use ResolvesRecordByKey;
+
     protected static string $resource = FaqArticleResource::class;
 
     public function getTitle(): string|Htmlable
