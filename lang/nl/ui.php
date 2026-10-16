@@ -32,6 +32,22 @@ return [
         'saved_here' => 'Uw keuze wordt op dit apparaat bewaard, ook na het sluiten van de app en na opnieuw aanmelden.',
     ],
 
+    'pricing' => [
+        'title' => 'Tarieven',
+        'subtitle' => 'Kies de formule die bij uw activiteit past. :days dagen gratis proefperiode, zonder betaalmiddel.',
+        'empty' => 'De formules komen binnenkort.',
+        'vat_note' => 'Prijzen excl. btw worden op de factuur verhoogd met btw (:rate %); prijzen “incl. btw” zijn het totaal dat u betaalt.',
+        'recommended' => 'Aanbevolen',
+        'free' => 'Gratis',
+        'on_quote' => 'Op offerte',
+        'tax_excluded' => 'excl. btw',
+        'tax_included' => 'incl. btw',
+        'setup_fee' => '+ :price opstartkosten',
+        'trial_days' => ':days dagen gratis proefperiode',
+        'state' => ['included' => 'Inbegrepen', 'limited' => 'Beperkt', 'unavailable' => 'Niet beschikbaar'],
+        'cta' => ['choose_plan' => 'Deze formule kiezen', 'start_trial' => 'Gratis proefperiode starten', 'contact_sales' => 'Contact opnemen met sales'],
+    ],
+
     'onboarding' => [
         'default_location' => 'Hoofdvestiging',
         'title' => 'Configuratie van uw bedrijf',
@@ -2352,6 +2368,9 @@ return [
         ],
     ],
     'billing' => [
+        'price_per' => ':price / :period',
+        'period' => ['1' => 'maand', '3' => 'kwartaal', '12' => 'jaar', 'custom' => ':count maanden'],
+        'kept_plan' => 'Uw huidige formule “:plan” (:price) wordt niet meer aan nieuwe abonnees aangeboden: u behoudt ze aan dezelfde prijs en met dezelfde limieten zolang u geabonneerd blijft.',
         'title' => 'Facturatie',
         'nav' => 'Facturatie',
         'intro' => 'Uw formule, uw betaalmiddel en uw facturen.',

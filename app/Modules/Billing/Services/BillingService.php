@@ -75,8 +75,8 @@ final class BillingService
 
         $method = $this->gateway->completeSetup($setupRef) ?? throw new BillingFailure('setup_incomplete');
         $start = CarbonImmutable::now();
-        $end = $start->addMonth();
-        $totals = $this->vat->compute($organization, $plan->price_monthly_cents);
+        $end = $start->addMonths($plan->interval());
+        $totals = $this->vat->compute($organization, $plan->netCents($this->homeRate()) + $plan->netSetupFeeCents($this->homeRate()));
         $charge = $this->gateway->charge($method->ref, $totals['total'], $plan->currency, 'subscribe:'.$organization->id.':'.$setupRef, $plan->name);
 
         if (! $charge->succeeded) {
@@ -100,7 +100,7 @@ final class BillingService
                 $subscription = $existing;
             }
 
-            $invoice = $this->invoiceFor($organization, $subscription, $plan, $start, $end);
+            $invoice = $this->invoiceFor($organization, $subscription, $plan, $start, $end, withSetupFee: true);
             $this->markPaid($organization, $invoice, $charge);
             $this->activate($organization, $plan);
 
@@ -171,7 +171,10 @@ final class BillingService
             return 'unchanged';
         }
 
-        if ($new->price_monthly_cents < $current->price_monthly_cents) {
+        $newPerMonth = $new->netCents($this->homeRate()) / $new->interval();
+        $currentPerMonth = $current->netCents($this->homeRate()) / $current->interval();
+
+        if ($newPerMonth < $currentPerMonth) {
             $this->assertFits($new);
             $subscription->forceFill(['pending_plan_id' => $new->id])->save();
             Audit::record('billing.downgrade_scheduled', $actorId === null ? 'system' : 'user', $actorId, $organization->id, 'subscriptions', $subscription->id, ['plan' => $new->code]);
@@ -181,7 +184,7 @@ final class BillingService
 
         $total = max(1, $subscription->current_period_end->getTimestamp() - $subscription->current_period_start->getTimestamp());
         $remaining = max(0, min($total, $subscription->current_period_end->getTimestamp() - CarbonImmutable::now()->getTimestamp()));
-        $subtotal = (int) round(($new->price_monthly_cents - $current->price_monthly_cents) * $remaining / $total);
+        $subtotal = (int) round(($newPerMonth - $currentPerMonth) * $current->interval() * $remaining / $total);
 
         DB::transaction(function () use ($organization, $subscription, $new, $current, $subtotal): void {
             if ($subtotal > 0) {
@@ -291,7 +294,7 @@ final class BillingService
         if ($invoice === null) {
             $plan = Plan::query()->findOrFail($subscription->pending_plan_id ?? $subscription->plan_id);
             $start = CarbonImmutable::instance($subscription->current_period_end);
-            $invoice = $this->invoiceFor($organization, $subscription, $plan, $start, $start->addMonth());
+            $invoice = $this->invoiceFor($organization, $subscription, $plan, $start, $start->addMonths($plan->interval()));
         }
 
         return $this->attempt($organization, $subscription, $invoice, notify: true) ? 'renewed' : ($subscription->refresh()->next_attempt_at === null ? 'suspended' : 'retry_scheduled');
@@ -377,14 +380,25 @@ final class BillingService
         }
     }
 
-    private function invoiceFor(Organization $organization, Subscription $subscription, Plan $plan, CarbonInterface $start, CarbonInterface $end): Invoice
+    private function invoiceFor(Organization $organization, Subscription $subscription, Plan $plan, CarbonInterface $start, CarbonInterface $end, bool $withSetupFee = false): Invoice
     {
         $locale = $this->invoiceLocale($organization);
-
-        return $this->invoices->issue($organization, $subscription, [[
+        $lines = [[
             'description' => __('billing.invoice.subscription', ['plan' => $plan->name, 'from' => $start->locale($locale)->isoFormat('DD/MM/YYYY'), 'to' => $end->locale($locale)->isoFormat('DD/MM/YYYY')], $locale),
-            'unit_cents' => $plan->price_monthly_cents,
-        ]], $start, $end, $plan);
+            'unit_cents' => $plan->netCents($this->homeRate()),
+        ]];
+
+        if ($withSetupFee && $plan->setup_fee_cents > 0) {
+            $lines[] = ['description' => __('billing.invoice.setup_fee', ['plan' => $plan->name], $locale), 'unit_cents' => $plan->netSetupFeeCents($this->homeRate())];
+        }
+
+        return $this->invoices->issue($organization, $subscription, $lines, $start, $end, $plan);
+    }
+
+    /** Taux de TVA du pays d'établissement de Nova : celui des prix affichés « TVA comprise ». */
+    private function homeRate(): int
+    {
+        return (int) config('nova.billing.vat.home_rate');
     }
 
     /** Le compte devient actif avec la formule payée ; une suspension décidée par la plateforme n'est JAMAIS levée par un paiement. */

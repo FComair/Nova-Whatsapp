@@ -16,6 +16,11 @@ interface PlanItem {
     code: string;
     name: string;
     price_cents: number;
+    /** Durée d'une période de facturation, en mois (1 = mensuel). */
+    interval_months?: number;
+    /** Faux pour la formule actuelle d'un abonné quand elle n'est plus proposée (version remplacée, archivée). */
+    listed?: boolean;
+    description?: string | null;
     limits: Record<string, number | null>;
 }
 
@@ -47,6 +52,15 @@ const identity = useForm({ ...props.identity });
 
 const date = (iso: string): string => formatDate(iso);
 const price = (cents: number): string => formatPrice(cents, locale.value);
+const offered = computed(() => props.plans.filter((plan) => plan.listed !== false));
+const kept = computed(() => props.plans.find((plan) => plan.listed === false && plan.code === props.subscription?.plan) ?? null);
+/** « 29,99 € / mois », « 79,99 € / trimestre », « 299,00 € / an », « 149,00 € / 6 mois » : jamais un prix sans sa période. */
+function priceLabel(plan: PlanItem): string {
+    const months = plan.interval_months ?? 1;
+    const period = [1, 3, 12].includes(months) ? t(`billing.period.${months}`) : t('billing.period.custom', { count: months });
+
+    return t('billing.price_per', { price: price(plan.price_cents), period });
+}
 const systemReason = computed(() => (props.suspensionReason?.startsWith('system.') ? props.suspensionReason.slice(7) : null));
 const banner = computed(() => {
     if (props.status !== 'suspended' || systemReason.value === null) {
@@ -109,15 +123,19 @@ function post(path: string): void {
 
         <section class="mt-8 max-w-3xl" aria-labelledby="plans">
             <h2 id="plans" class="text-lg font-semibold text-nova-900">{{ t('billing.plans_title') }}</h2>
+            <p v-if="kept" class="mt-2 max-w-3xl text-sm text-neutral-700" data-testid="kept-plan">
+                {{ t('billing.kept_plan', { plan: kept.name, price: priceLabel(kept) }) }}
+            </p>
             <div class="mt-3 grid gap-4 sm:grid-cols-2">
                 <article
-                    v-for="plan in plans"
+                    v-for="plan in offered"
                     :key="plan.id"
                     class="flex flex-col rounded-card border bg-surface p-5"
                     :class="subscription?.plan === plan.code && hasActiveSubscription ? 'border-primary-600' : 'border-line'"
                 >
                     <h3 class="text-lg font-semibold text-nova-900">{{ plan.name }}</h3>
-                    <p class="mt-1 text-sm text-neutral-700">{{ t('billing.per_month', { price: price(plan.price_cents) }) }}</p>
+                    <p class="mt-1 text-sm text-neutral-700">{{ priceLabel(plan) }}</p>
+                    <p v-if="plan.description" class="mt-1 text-sm text-neutral-600">{{ plan.description }}</p>
                     <ul class="mt-3 flex-1 space-y-1 text-sm text-neutral-700">
                         <li v-if="plan.limits.practitioners">{{ t('billing.limit_practitioners', { count: plan.limits.practitioners }) }}</li>
                         <li v-if="plan.limits.conversations">{{ t('billing.limit_conversations', { count: plan.limits.conversations }) }}</li>

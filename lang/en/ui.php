@@ -32,6 +32,22 @@ return [
         'saved_here' => 'Your choice is saved on this device and kept after closing the app and signing in again.',
     ],
 
+    'pricing' => [
+        'title' => 'Pricing',
+        'subtitle' => 'Pick the plan that fits your business. Free :days-day trial, no payment method needed.',
+        'empty' => 'Plans are coming soon.',
+        'vat_note' => 'Prices excluding VAT have VAT (:rate%) added on the invoice; prices shown “incl. VAT” are the total you pay.',
+        'recommended' => 'Recommended',
+        'free' => 'Free',
+        'on_quote' => 'On quote',
+        'tax_excluded' => 'excl. VAT',
+        'tax_included' => 'incl. VAT',
+        'setup_fee' => '+ :price setup fee',
+        'trial_days' => ':days-day free trial',
+        'state' => ['included' => 'Included', 'limited' => 'Limited', 'unavailable' => 'Not available'],
+        'cta' => ['choose_plan' => 'Choose plan', 'start_trial' => 'Start free trial', 'contact_sales' => 'Contact sales'],
+    ],
+
     'onboarding' => [
         'default_location' => 'Main location',
         'title' => 'Set up your business',
@@ -2352,6 +2368,9 @@ return [
         ],
     ],
     'billing' => [
+        'price_per' => ':price / :period',
+        'period' => ['1' => 'month', '3' => 'quarter', '12' => 'year', 'custom' => ':count months'],
+        'kept_plan' => 'Your current plan, “:plan” (:price), is no longer offered to new subscribers: you keep it at the same price and with the same limits for as long as you stay subscribed.',
         'title' => 'Billing',
         'nav' => 'Billing',
         'intro' => 'Your plan, your payment method and your invoices.',

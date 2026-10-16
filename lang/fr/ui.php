@@ -32,6 +32,22 @@ return [
         'saved_here' => 'Votre choix est enregistré sur cet appareil et conservé à la fermeture de l\'application et à la reconnexion.',
     ],
 
+    'pricing' => [
+        'title' => 'Tarifs',
+        'subtitle' => 'Choisissez la formule qui correspond à votre activité. Essai gratuit de :days jours, sans moyen de paiement.',
+        'empty' => 'Les formules arrivent bientôt.',
+        'vat_note' => 'Les prix hors TVA sont majorés de la TVA (:rate %) sur la facture ; ceux affichés « TVA comprise » sont le total payé.',
+        'recommended' => 'Recommandée',
+        'free' => 'Gratuit',
+        'on_quote' => 'Sur devis',
+        'tax_excluded' => 'hors TVA',
+        'tax_included' => 'TVA comprise',
+        'setup_fee' => '+ :price de frais de mise en service',
+        'trial_days' => ':days jours d’essai gratuit',
+        'state' => ['included' => 'Inclus', 'limited' => 'Limité', 'unavailable' => 'Non disponible'],
+        'cta' => ['choose_plan' => 'Choisir cette formule', 'start_trial' => 'Commencer l’essai gratuit', 'contact_sales' => 'Contacter l’équipe commerciale'],
+    ],
+
     'onboarding' => [
         'default_location' => 'Site principal',
         'title' => 'Configuration de votre établissement',
@@ -2352,6 +2368,9 @@ return [
         ],
     ],
     'billing' => [
+        'price_per' => ':price / :period',
+        'period' => ['1' => 'mois', '3' => 'trimestre', '12' => 'an', 'custom' => ':count mois'],
+        'kept_plan' => 'Votre formule actuelle, « :plan » (:price), n’est plus proposée aux nouveaux abonnés : vous la gardez au même prix et avec les mêmes limites tant que vous restez abonné.',
         'title' => 'Facturation',
         'nav' => 'Facturation',
         'intro' => 'Votre formule, votre moyen de paiement et vos factures.',

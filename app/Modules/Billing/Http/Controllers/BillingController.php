@@ -10,6 +10,7 @@ use App\Modules\Billing\Models\Invoice;
 use App\Modules\Billing\Models\PaymentMethod;
 use App\Modules\Billing\Models\Plan;
 use App\Modules\Billing\Services\BillingService;
+use App\Modules\Billing\Services\PlanCatalog;
 use App\Modules\Billing\Services\VatCalculator;
 use App\Modules\Billing\Support\BillingFailure;
 use App\Modules\Billing\Support\FakeGateway;
@@ -39,7 +40,11 @@ final class BillingController
         $organization = $this->organization();
         $subscription = $this->billing->subscription();
         $method = PaymentMethod::query()->first();
-        $plans = Plan::query()->where('is_active', true)->orderBy('position')->get();
+        $catalog = app(PlanCatalog::class);
+        $offered = $catalog->forOrganization($organization)->filter(fn (Plan $plan): bool => $plan->purchasable())->values();
+        // La formule actuelle (ou programmée) reste affichable même si elle n'est plus proposée : version remplacée, archivée, retirée.
+        $held = $subscription === null ? collect() : Plan::query()->whereIn('id', array_filter([$subscription->plan_id, $subscription->pending_plan_id]))->get();
+        $plans = $offered->concat($held->reject(fn (Plan $plan): bool => $offered->contains('id', $plan->id)))->values();
         $active = $subscription !== null && $subscription->status !== 'canceled';
 
         return Inertia::render('Billing/Index', [
@@ -47,7 +52,8 @@ final class BillingController
             'trialEndsAt' => $organization->trial_ends_at?->toIso8601String(),
             'suspensionReason' => $organization->suspension_reason,
             'plans' => $plans->map(fn (Plan $plan): array => [
-                'id' => $plan->id, 'code' => $plan->code, 'name' => $plan->name, 'price_cents' => $plan->price_monthly_cents, 'limits' => $plan->limits,
+                'id' => $plan->id, 'code' => $plan->code, 'name' => $plan->name, 'price_cents' => $plan->price_cents, 'interval_months' => $plan->interval(), 'limits' => $plan->limits,
+                'listed' => $offered->contains('id', $plan->id), 'description' => $plan->publicDescription(app()->getLocale()),
             ])->all(),
             'subscription' => $subscription === null ? null : [
                 'status' => $subscription->status,
@@ -78,8 +84,8 @@ final class BillingController
     public function choosePlan(Request $request): mixed
     {
         $data = $request->validate(['plan' => ['required', 'string']]);
-        $plan = Plan::query()->where('code', $data['plan'])->where('is_active', true)->firstOrFail();
         $organization = $this->organization();
+        $plan = $this->subscribable((string) $data['plan'], $organization);
         $subscription = $this->billing->subscription();
 
         try {
@@ -93,6 +99,18 @@ final class BillingController
         } catch (BillingFailure $e) {
             return $this->fail($e);
         }
+    }
+
+    /**
+     * Formule qu'on peut souscrire maintenant : active, dans ses dates, achetable en ligne et ouverte à cet établissement.
+     */
+    private function subscribable(string $code, Organization $organization): Plan
+    {
+        $plan = Plan::query()->available()->where('code', $code)->firstOrFail();
+
+        abort_unless($plan->purchasable() && app(PlanCatalog::class)->allows($plan, $organization->sector, $organization->country, null, $plan->code), 404);
+
+        return $plan;
     }
 
     /** Remplacement du moyen de paiement : ouvre la page du prestataire. */
@@ -115,7 +133,7 @@ final class BillingController
 
         try {
             if ($subscription === null || $subscription->status === 'canceled') {
-                $plan = Plan::query()->where('code', (string) ($data['plan'] ?? ''))->where('is_active', true)->firstOrFail();
+                $plan = $this->subscribable((string) ($data['plan'] ?? ''), $organization);
                 $this->billing->subscribe($organization, $plan, $data['setup_ref'], $actor);
 
                 return to_route('billing.index')->with('status', __('ui.billing.subscribed'));

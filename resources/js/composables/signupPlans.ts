@@ -14,6 +14,9 @@ export interface PaidOffer {
     currency: string;
     limits: Limits;
     recommended: boolean;
+    /** Durée d'une période de facturation, en mois (absent = mensuel). */
+    interval_months?: number;
+    description?: string | null;
 }
 
 export interface Offers {

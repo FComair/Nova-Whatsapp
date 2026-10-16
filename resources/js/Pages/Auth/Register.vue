@@ -28,6 +28,8 @@ interface LegalDoc {
 const props = defineProps<{
     sectors: { value: string; label: string }[];
     plan: string;
+    /** Code d'invitation du lien (?invite=…) : ouvre les formules sur invitation. */
+    invite?: string | null;
     offers: Offers;
     legal: { documents: LegalDoc[]; dpa_required: boolean };
 }>();
@@ -39,6 +41,7 @@ const form = useForm({
     phone: '',
     sector: '',
     plan: props.plan,
+    invite: props.invite ?? '',
     accept_terms: false,
     accept_privacy: false,
     accept_dpa: false,

@@ -27,11 +27,16 @@ final class RegisterController
 {
     public function create(Request $request, SignupPlans $plans, LegalDocuments $legal): Response
     {
+        $invite = is_string($request->query('invite')) ? $request->query('invite') : null;
+        $sector = is_string($request->query('sector')) ? $request->query('sector') : null;
+        $direct = is_string($request->query('plan')) ? $request->query('plan') : null;
+
         return Inertia::render('Auth/Register', [
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale()),
             // Formule préchoisie par un lien (?plan=…) seulement si elle existe encore ; sinon l'essai.
-            'plan' => in_array($request->query('plan'), $plans->codes(), true) ? $request->query('plan') : SignupPlans::TRIAL,
-            'offers' => $plans->options(),
+            'plan' => in_array($direct, $plans->codes($invite, $sector, $direct), true) ? $direct : SignupPlans::TRIAL,
+            'invite' => $invite,
+            'offers' => $plans->options($invite, $sector, $direct),
             'legal' => $this->legal($legal),
         ]);
     }

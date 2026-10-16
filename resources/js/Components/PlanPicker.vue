@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue';
 import { formatPrice } from '../composables/money';
+import { periodLabel } from '../composables/pricing';
 import { type Offers, TRIAL, limitLines } from '../composables/signupPlans';
 import { useT } from '../composables/useT';
 
@@ -26,7 +27,7 @@ const cards = computed(() => [
     ...props.offers.plans.map((plan) => ({
         code: plan.code,
         title: plan.name,
-        price: t('register.price_month', { price: formatPrice(plan.price_cents, locale.value, plan.currency) }),
+        price: t('billing.price_per', { price: formatPrice(plan.price_cents, locale.value, plan.currency), period: periodLabel(plan.interval_months ?? 1, t) }),
         note: [] as string[],
         limits: limitLines(plan.limits, t),
         recommended: plan.recommended,
