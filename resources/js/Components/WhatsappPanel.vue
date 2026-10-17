@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
-import { startMetaSignup } from '../composables/metaSignup';
+import { prepareMetaSignup, startMetaSignup } from '../composables/metaSignup';
 import type { MetaSignupConfig } from '../composables/metaSignup';
 import { useT } from '../composables/useT';
 import { routes } from '../routes';
@@ -56,27 +56,73 @@ function submitDisconnect(): void {
 
 const post = (url: string): void => router.post(url, {}, { preserveScroll: true });
 
-// Inscription intégrée de Meta : le module de Meta n'est chargé qu'au clic (c'est alors seulement que Meta reçoit l'adresse IP).
+// Inscription intégrée de Meta, en deux clics : le premier charge le module de Meta (c'est alors seulement que Meta reçoit l'adresse IP),
+// le second ouvre la fenêtre. Un seul clic ne suffit pas : la fenêtre, ouverte après le téléchargement, serait bloquée par le navigateur.
+const preparing = ref(false);
+const sdkReady = ref(false);
 const signingUp = ref(false);
+const popupBlocked = ref(false);
 const signupError = ref<string | null>(null);
 
-async function signUpWithMeta(): Promise<void> {
+async function prepareSignup(): Promise<void> {
     if (props.embedded === null) {
         return;
     }
 
-    signingUp.value = true;
+    preparing.value = true;
     signupError.value = null;
 
     try {
-        const result = await startMetaSignup(props.embedded);
-        router.post(routes.whatsappEmbedded, { ...result }, { preserveScroll: true });
-    } catch (error) {
-        const reason = error instanceof Error ? error.message : 'error';
-        signupError.value = reason === 'cancel' ? t('whatsapp.embedded_cancelled') : t('whatsapp.embedded_failed');
+        await prepareMetaSignup(props.embedded);
+        sdkReady.value = true;
+    } catch {
+        signupError.value = t('whatsapp.embedded_failed');
     } finally {
-        signingUp.value = false;
+        preparing.value = false;
     }
+}
+
+// Pas d'attente avant startMetaSignup : la fenêtre doit s'ouvrir pendant le clic. Si elle a été bloquée, le bouton redevient cliquable ;
+// le résultat tardif d'une tentative remplacée par un nouveau clic est ignoré.
+let attempt = 0;
+
+function signUpWithMeta(): void {
+    if (props.embedded === null) {
+        return;
+    }
+
+    const current = ++attempt;
+    signingUp.value = true;
+    popupBlocked.value = false;
+    signupError.value = null;
+
+    const onPopupBlocked = (): void => {
+        if (current === attempt) {
+            popupBlocked.value = true;
+            signingUp.value = false;
+        }
+    };
+
+    startMetaSignup(props.embedded, { onPopupBlocked })
+        .then((result) => {
+            if (current === attempt) {
+                router.post(routes.whatsappEmbedded, { ...result }, { preserveScroll: true });
+            }
+        })
+        .catch((error: unknown) => {
+            if (current !== attempt) {
+                return;
+            }
+
+            const reason = error instanceof Error ? error.message : 'error';
+            signupError.value = reason === 'cancel' ? t('whatsapp.embedded_cancelled') : t('whatsapp.embedded_failed');
+        })
+        .finally(() => {
+            if (current === attempt) {
+                signingUp.value = false;
+                popupBlocked.value = false;
+            }
+        });
 }
 </script>
 
@@ -96,7 +142,16 @@ async function signUpWithMeta(): Promise<void> {
                 <h3 class="font-semibold text-rendivoo-900">{{ t('whatsapp.embedded_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('whatsapp.embedded_notice') }}</p>
                 <AlertBox v-if="signupError" variant="warning" class="mt-3">{{ signupError }}</AlertBox>
-                <BaseButton class="mt-3" :loading="signingUp" @click="signUpWithMeta">{{ t('whatsapp.embedded_button') }}</BaseButton>
+                <AlertBox v-if="popupBlocked" variant="warning" class="mt-3" data-testid="popup-blocked">{{ t('whatsapp.embedded_popup_blocked') }}</AlertBox>
+                <BaseButton v-if="!sdkReady" class="mt-3" :loading="preparing" data-testid="embedded-prepare" @click="prepareSignup">
+                    {{ t('whatsapp.embedded_prepare') }}
+                </BaseButton>
+                <template v-else>
+                    <p class="mt-3 text-sm text-neutral-700">{{ t('whatsapp.embedded_ready') }}</p>
+                    <BaseButton class="mt-2" :loading="signingUp" data-testid="embedded-start" @click="signUpWithMeta">{{
+                        t('whatsapp.embedded_button')
+                    }}</BaseButton>
+                </template>
             </div>
 
             <h3 v-if="embedded" class="mt-6 font-semibold text-rendivoo-900">{{ t('whatsapp.manual_title') }}</h3>

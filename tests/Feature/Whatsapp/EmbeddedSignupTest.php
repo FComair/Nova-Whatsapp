@@ -172,6 +172,13 @@ describe('politique de contenu', function (): void {
         expect($elsewhere)->not->toContain('facebook')->toContain('frame-src \'self\'');
     });
 
+    it('laisse la fenêtre de Meta répondre à la page de connexion WhatsApp, et seulement à elle', function (): void {
+        ($this->configure)();
+
+        expect(($this->as)()->get('/whatsapp')->headers->get('Cross-Origin-Opener-Policy'))->toBe('same-origin-allow-popups')
+            ->and(($this->as)()->get('/tableau-de-bord')->headers->get('Cross-Origin-Opener-Policy'))->toBe('same-origin');
+    });
+
     it('n\'ouvre rien à Meta tant que l\'application n\'est pas configurée', function (): void {
         expect(($this->as)()->get('/whatsapp')->headers->get('Content-Security-Policy-Report-Only'))->not->toContain('facebook');
     });

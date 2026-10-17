@@ -28,7 +28,8 @@ final class SecurityHeaders
         $response->headers->set('X-Frame-Options', $request->is('legal/*/file') ? 'SAMEORIGIN' : 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
-        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        // Sur les pages de connexion WhatsApp, la fenêtre de Meta doit pouvoir renvoyer son résultat à la page qui l'a ouverte.
+        $response->headers->set('Cross-Origin-Opener-Policy', $this->allowsMetaSignup($request) ? 'same-origin-allow-popups' : 'same-origin');
 
         if ($request->isSecure() && app()->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
