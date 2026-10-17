@@ -261,7 +261,7 @@ return [
             'notes' => 'Interne notities',
             'notes_help' => 'Alleen beheerders zien dit.',
         ],
-        'errors' => ['name_taken' => 'Er bestaat al een sector met deze naam.'],
+        'errors' => ['name_taken' => 'Er bestaat al een sector met deze naam.', 'last_active' => 'Minstens één sector moet actief blijven, anders zou bij de registratie geen enkele sector meer worden aangeboden. Activeer eerst een andere sector.'],
         'confirm' => [
             'deactivate_title' => '“:name” deactiveren?',
             'deactivate_used' => '{1} Deze sector wordt door 1 bedrijf gebruikt. Door hem te deactiveren kunnen nieuwe bedrijven hem niet meer kiezen, maar bestaande bedrijven houden hun huidige sector.|[2,*] Deze sector wordt door :count bedrijven gebruikt. Door hem te deactiveren kunnen nieuwe bedrijven hem niet meer kiezen, maar bestaande bedrijven houden hun huidige sector.',

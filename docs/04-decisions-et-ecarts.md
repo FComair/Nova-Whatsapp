@@ -300,3 +300,9 @@ Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le s
 - **Lecture / affichage** : agenda, créneaux, messages WhatsApp, calendriers et interface Super Admin (pages d'un client) utilisent ce fuseau. Le client final ne choisit pas de fuseau : l'heure est celle du prestataire (annule le dispositif « fuseau du visiteur » de `feat/timezone-display`).
 - **Changement d'heure** : une heure locale inexistante (saut du printemps) est refusée (`LocalTime::exists`) ; une heure ambiguë (retour d'hiver) retient la première occurrence.
 - **À savoir** : changer le fuseau d'un compte qui a déjà des rendez-vous décale leur heure locale affichée (les instants UTC ne bougent pas). Les horaires d'ouverture, enregistrés en heure locale, sont relus dans le nouveau fuseau.
+
+## 6. Secteur « Autre » activable et désactivable (décision du fondateur, 2026-10-17)
+
+- « Autre » (`other`) se désactive et se réactive comme tout autre secteur (liste et formulaire du Super Admin), avec le même audit (`sector.activated` / `sector.deactivated`). Désactivé, il n'est plus proposé à l'inscription ni dans le profil des nouveaux établissements ; ceux qui l'utilisent déjà le gardent (le secteur actuel d'un établissement reste toujours proposé).
+- **Garde-fou général** : au moins un secteur doit rester actif (sinon l'inscription n'aurait plus aucun choix). Il vaut pour tous les secteurs.
+- « Autre » **reste non supprimable** : il reçoit les établissements d'un secteur supprimé, même s'il est désactivé.
