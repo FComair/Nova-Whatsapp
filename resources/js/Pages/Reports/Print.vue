@@ -85,12 +85,12 @@ onMounted(() => {
             <Link :href="back" class="text-sm font-semibold text-primary-700 underline">{{ t('reports.print.back') }}</Link>
         </div>
 
-        <header class="mb-6 border-b-2 border-nova-900 pb-4" data-testid="print-header">
+        <header class="mb-6 border-b-2 border-rendivoo-900 pb-4" data-testid="print-header">
             <div class="flex items-center gap-4">
                 <ShopAvatar v-if="business.id" :id="business.id" :name="business.name ?? ''" :version="business.logo_version" size="xl" />
                 <div class="min-w-0">
                     <p class="text-sm font-semibold text-neutral-700">{{ business.name }}</p>
-                    <h1 class="font-display text-2xl font-bold text-nova-900">{{ t('reports.title') }}</h1>
+                    <h1 class="font-display text-2xl font-bold text-rendivoo-900">{{ t('reports.title') }}</h1>
                     <p class="text-sm font-semibold text-neutral-900">{{ categories.map((category) => t(`reports.category.${category}`)).join(' · ') }}</p>
                 </div>
             </div>
@@ -116,7 +116,7 @@ onMounted(() => {
 
         <main class="space-y-10">
             <section v-for="category in categories" :key="category" class="print:break-before-auto" :aria-labelledby="`print-${category}`">
-                <h2 :id="`print-${category}`" class="mb-3 border-b border-neutral-400 pb-1 text-xl font-semibold text-nova-900">
+                <h2 :id="`print-${category}`" class="mb-3 border-b border-neutral-400 pb-1 text-xl font-semibold text-rendivoo-900">
                     {{ t(`reports.category.${category}`) }}
                 </h2>
                 <ReportBody

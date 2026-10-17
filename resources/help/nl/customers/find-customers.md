@@ -21,4 +21,4 @@ De knop **Filters** biedt status, afspraken (komende, nooit geweest, geen recent
 
 Kant-en-klare weergaven (komende afspraak, geen bezoek sinds 90 dagen, nieuw, met een no-show, berichten geweigerd) staan klaar. **Deze weergave opslaan** bewaart uw filters en kolommen; de eigenaar en vestigingsverantwoordelijken kunnen ze met het team delen. De knop **Kolommen** kiest wat getoond wordt.
 
-> **Waarde** wordt berekend op basis van de ontvangen bedragen (of prijzen) van afgeronde afspraken. Nova verwerkt geen betalingen.
+> **Waarde** wordt berekend op basis van de ontvangen bedragen (of prijzen) van afgeronde afspraken. Rendivoo verwerkt geen betalingen.

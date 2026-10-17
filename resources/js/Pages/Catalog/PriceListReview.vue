@@ -210,7 +210,7 @@ function cancel(): void {
             <span class="font-semibold text-neutral-900" aria-current="page">{{ t('price_import.review_title') }}</span>
         </nav>
 
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('price_import.review_title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('price_import.review_title') }}</h1>
         <p class="mt-2 max-w-3xl text-sm text-neutral-700">
             {{ t('price_import.review_intro', { lines: lines.length, pages: importRecord.file_names.length }) }}
         </p>

@@ -109,7 +109,7 @@ onMounted(() => void nextTick(scrollToEnd));
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div class="min-w-0">
                     <p class="font-display text-lg font-bold text-primary-700">#{{ ticket.reference }}</p>
-                    <h1 class="text-xl font-semibold text-nova-900">{{ ticket.subject }}</h1>
+                    <h1 class="text-xl font-semibold text-rendivoo-900">{{ ticket.subject }}</h1>
                 </div>
                 <TicketStatusBadge :status="ticket.status" />
             </div>

@@ -1,4 +1,4 @@
-# Nova — Rôles, permissions et règles d'accès (proposition v1, à valider)
+# Rendivoo — Rôles, permissions et règles d'accès (proposition v1, à valider)
 
 Légende : ✅ autorisé · 👁 lecture seule · 🔸 limité (voir note) · ❌ interdit.
 Sources : spec §4.1, §9, §10 ; flowcharts 2B, 3A–3C, 4A–4D ; décisions du fondateur.
@@ -33,7 +33,7 @@ Rôles de la spec : **propriétaire**, **responsable de site**, **praticien**, *
 | Export CSV / PDF des rapports | ✅ | ✅ | ❌ | ❌ |
 | Équipe : rôles, invitations | ✅ | ❌ | ❌ | ❌ |
 | Abonnement, factures, moyen de paiement | ✅ | ❌ | ❌ | ❌ |
-| Notifications, consentements de Nova (son compte) | ✅ | ✅ | ✅ | ✅ |
+| Notifications, consentements de Rendivoo (son compte) | ✅ | ✅ | ✅ | ✅ |
 | Consentements des clients finaux (opt-in, STOP) | ✅ | 👁 | ❌ | 👁 |
 | Mode « données sensibles » | ✅ | ❌ | ❌ | ❌ |
 | Mettre en pause le compte | ✅ | ❌ | ❌ | ❌ |

@@ -1,4 +1,4 @@
-# Nova Chatbot
+# Rendivoo
 
 Plateforme SaaS multi-tenant (Laravel 13, PostgreSQL 16, Redis) : espace client et Super Admin, en français, néerlandais et anglais.
 
@@ -10,7 +10,7 @@ The repository ships a complete dev container (`.devcontainer/`): PHP 8.4, Node 
 
 ### 1. Create a Codespace
 
-1. Open <https://github.com/r4ladmin/Nova-Whatsapp>.
+1. Open <https://github.com/r4ladmin/Rendivoo>.
 2. **Code** › **Codespaces** › **Create codespace on main** (pick a machine with at least 2 cores / 4 GB).
 3. Wait for the setup to finish (a few minutes the first time; the terminal shows each step). It installs the dependencies (`composer.lock`, `package-lock.json`), builds the assets, creates the databases, runs the migrations and loads the demo data, then starts the application.
 
@@ -27,7 +27,7 @@ The repository ships a complete dev container (`.devcontainer/`): PHP 8.4, Node 
 
 ### 3. Open the application
 
-Port **8000** opens in your browser automatically (also in the **Ports** tab: *Nova (application)*). All ports are **private** (only you can open them).
+Port **8000** opens in your browser automatically (also in the **Ports** tab: *Rendivoo (application)*). All ports are **private** (only you can open them).
 
 | Port | What |
 |---|---|
@@ -35,7 +35,7 @@ Port **8000** opens in your browser automatically (also in the **Ports** tab: *N
 | 5173 | Vite dev server (assets, hot reload), used by the page automatically |
 | 8025 | Mailpit: every e-mail the app sends (verification, password reset, invoices) |
 
-Demo account (development only, created by `DevelopmentSeeder`): `owner@nova.test` / `nova-dev-only`, owner of "Salon Démo". Two-factor authentication is not enforced in the Codespace (turn it on in Settings › Security if you want to test it).
+Demo account (development only, created by `DevelopmentSeeder`): `owner@rendivoo.test` / `nova-dev-only`, owner of "Salon Démo". Two-factor authentication is not enforced in the Codespace (turn it on in Settings › Security if you want to test it).
 Sign-up works too: the e-mail arrives in Mailpit, the phone verification code is written to `storage/logs/laravel.log` (`NOVA_PHONE_CODE_DRIVER=log`).
 
 ### 4. Everyday commands

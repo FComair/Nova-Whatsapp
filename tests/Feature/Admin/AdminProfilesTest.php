@@ -52,7 +52,7 @@ beforeEach(function (): void {
 
         return $admin->refresh();
     };
-    $this->boss = ($this->make)('super_admin', 'boss@nova.test');
+    $this->boss = ($this->make)('super_admin', 'boss@rendivoo.test');
     $this->audit = fn (string $action) => DB::connection('pgsql_platform')->table('audit_logs')->where('action', $action)->get();
     $this->team = fn (): AdminTeam => app(AdminTeam::class);
     $this->as = fn (PlatformAdmin $admin) => $this->flushSession()->actingAs($admin, 'platform');
@@ -62,7 +62,7 @@ beforeEach(function (): void {
 
         return ['to' => $sent->getOriginalMessage()->getTo()[0]->getAddress(), 'subject' => (string) $sent->getOriginalMessage()->getSubject(), 'admin' => $match[1] ?? null, 'token' => $match[2] ?? null];
     })->all();
-    $this->invite = fn (array $override = []) => ($this->team)()->create($this->boss, [...['name' => 'Camille Dupont', 'email' => 'camille@nova.test', 'role' => 'operations'], ...$override]);
+    $this->invite = fn (array $override = []) => ($this->team)()->create($this->boss, [...['name' => 'Camille Dupont', 'email' => 'camille@rendivoo.test', 'role' => 'operations'], ...$override]);
 });
 
 describe('catalogue des rôles et permissions', function (): void {
@@ -86,27 +86,27 @@ describe('catalogue des rôles et permissions', function (): void {
     });
 
     it('applique les droits d\'un compte : inactif = rien, agent = tickets, éditeur = FAQ', function (): void {
-        $agent = ($this->make)('super_admin', 'agent@nova.test', ['admin_role' => null, 'support_role' => 'agent']);
-        $editor = ($this->make)('super_admin', 'editor@nova.test', ['admin_role' => null, 'support_role' => 'editor']);
-        $suspended = ($this->make)('super_admin', 'suspended@nova.test', ['status' => 'suspended']);
+        $agent = ($this->make)('super_admin', 'agent@rendivoo.test', ['admin_role' => null, 'support_role' => 'agent']);
+        $editor = ($this->make)('super_admin', 'editor@rendivoo.test', ['admin_role' => null, 'support_role' => 'editor']);
+        $suspended = ($this->make)('super_admin', 'suspended@rendivoo.test', ['status' => 'suspended']);
 
         expect(AdminAccess::can('clients.edit', $this->boss))->toBeTrue()
             ->and(AdminAccess::can('clients.edit', $suspended))->toBeFalse()
             ->and(AdminAccess::can('tickets.reply', $agent))->toBeTrue()->and(AdminAccess::can('clients.view', $agent))->toBeFalse()->and(AdminAccess::can('faq.edit', $agent))->toBeFalse()
             ->and(AdminAccess::can('faq.edit', $editor))->toBeTrue()->and(AdminAccess::can('tickets.view', $editor))->toBeFalse()
-            ->and(fn () => AdminAccess::authorize(($this->make)('read_only', 'ro@nova.test'), 'clients.edit'))->toThrow(AuthorizationException::class);
+            ->and(fn () => AdminAccess::authorize(($this->make)('read_only', 'ro@rendivoo.test'), 'clients.edit'))->toThrow(AuthorizationException::class);
     });
 
     it('traite un compte historique sans rôle comme Super Admin', function (): void {
-        $legacy = PlatformAdmin::query()->create(['email' => 'legacy@nova.test', 'password' => 'mot-de-passe-pour-les-tests-2026!']);
+        $legacy = PlatformAdmin::query()->create(['email' => 'legacy@rendivoo.test', 'password' => 'mot-de-passe-pour-les-tests-2026!']);
 
         expect($legacy->isSuperAdmin())->toBeTrue()->and(AdminAccess::can('admins.view', $legacy))->toBeTrue();
     });
 
     it('garde les droits fins des tickets : agent selon ses réglages, administrateur selon son rôle', function (): void {
-        $agent = ($this->make)('super_admin', 'agent@nova.test', ['admin_role' => null, 'support_role' => 'agent']);
-        $support = ($this->make)('support', 'support@nova.test');
-        $custom = ($this->make)('custom', 'custom@nova.test', ['permissions' => ['tickets.view', 'tickets.delete']]);
+        $agent = ($this->make)('super_admin', 'agent@rendivoo.test', ['admin_role' => null, 'support_role' => 'agent']);
+        $support = ($this->make)('support', 'support@rendivoo.test');
+        $custom = ($this->make)('custom', 'custom@rendivoo.test', ['permissions' => ['tickets.view', 'tickets.delete']]);
 
         expect(SupportPermissions::can($agent, SupportPermissions::DELETE_TICKETS))->toBeFalse()
             ->and(SupportPermissions::can($this->boss, SupportPermissions::DELETE_TICKETS))->toBeTrue()
@@ -122,10 +122,10 @@ describe('création et invitation', function (): void {
         expect($admin)->status->toBe('invited')->admin_role->toBe('operations')->created_by->toBe($this->boss->id)->name->toBe('Camille Dupont')->permissions->toBeNull()
             ->and($admin->invitation_expires_at->isFuture())->toBeTrue();
         $mail = ($this->mails)()[0];
-        expect($mail['to'])->toBe('camille@nova.test')->and($mail['token'])->toHaveLength(48)
+        expect($mail['to'])->toBe('camille@rendivoo.test')->and($mail['token'])->toHaveLength(48)
             ->and(hash('sha256', $mail['token']))->toBe($admin->invitation_token);
         $created = ($this->audit)('admin.created')->sole();
-        expect($created->actor_id)->toBe($this->boss->id)->and(json_decode($created->diff, true))->toMatchArray(['email' => 'camille@nova.test', 'role' => 'operations', 'status' => 'invited'])
+        expect($created->actor_id)->toBe($this->boss->id)->and(json_decode($created->diff, true))->toMatchArray(['email' => 'camille@rendivoo.test', 'role' => 'operations', 'status' => 'invited'])
             ->and(($this->audit)('admin.invited'))->toHaveCount(1);
     });
 
@@ -137,7 +137,7 @@ describe('création et invitation', function (): void {
 
     it('refuse les données invalides', function (array $override, string $reason): void {
         expect(fn () => ($this->invite)($override))->toThrow(AdminRefused::class, $reason);
-        expect(PlatformAdmin::query()->where('email', 'camille@nova.test')->exists())->toBeFalse();
+        expect(PlatformAdmin::query()->where('email', 'camille@rendivoo.test')->exists())->toBeFalse();
     })->with([
         'nom vide' => [['name' => '  '], 'name_required'],
         'e-mail invalide' => [['email' => 'pas-un-email'], 'email_invalid'],
@@ -149,7 +149,7 @@ describe('création et invitation', function (): void {
     it('refuse un e-mail déjà utilisé, sans tenir compte de la casse', function (): void {
         ($this->invite)();
 
-        expect(fn () => ($this->invite)(['email' => 'CAMILLE@nova.test']))->toThrow(AdminRefused::class, 'email_taken');
+        expect(fn () => ($this->invite)(['email' => 'CAMILLE@rendivoo.test']))->toThrow(AdminRefused::class, 'email_taken');
     });
 
     it('permet à l\'invité de choisir son mot de passe une seule fois, puis de devenir actif', function (): void {
@@ -169,7 +169,7 @@ describe('création et invitation', function (): void {
         ($this->invite)();
         $first = ($this->mails)()[0];
 
-        ($this->team)()->resendInvitation($this->boss, PlatformAdmin::query()->where('email', 'camille@nova.test')->firstOrFail());
+        ($this->team)()->resendInvitation($this->boss, PlatformAdmin::query()->where('email', 'camille@rendivoo.test')->firstOrFail());
         $second = ($this->mails)()[1];
 
         expect($second['token'])->not->toBe($first['token'])->and(($this->audit)('admin.invitation_resent'))->toHaveCount(1);
@@ -178,9 +178,9 @@ describe('création et invitation', function (): void {
     });
 
     it('n\'est possible que pour un Super Admin : un autre rôle est refusé', function (string $role): void {
-        $other = ($this->make)($role, "{$role}@nova.test", ['permissions' => $role === 'custom' ? ['clients.view', 'clients.edit'] : null]);
+        $other = ($this->make)($role, "{$role}@rendivoo.test", ['permissions' => $role === 'custom' ? ['clients.view', 'clients.edit'] : null]);
 
-        expect(fn () => ($this->team)()->create($other, ['name' => 'X Y', 'email' => 'x@nova.test', 'role' => 'read_only']))->toThrow(AdminRefused::class, 'forbidden')
+        expect(fn () => ($this->team)()->create($other, ['name' => 'X Y', 'email' => 'x@rendivoo.test', 'role' => 'read_only']))->toThrow(AdminRefused::class, 'forbidden')
             ->and(fn () => ($this->team)()->suspend($other, $this->boss))->toThrow(AdminRefused::class, 'forbidden')
             ->and(fn () => ($this->team)()->update($other, $this->boss, ['name' => 'Piraté']))->toThrow(AdminRefused::class, 'forbidden');
         expect($this->boss->refresh()->name)->not->toBe('Piraté');
@@ -189,7 +189,7 @@ describe('création et invitation', function (): void {
 
 describe('modification, rôles et sécurité', function (): void {
     it('modifie le profil, change le rôle et trace l\'ancien et le nouveau, avec un événement dédié aux accès', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
 
         $changes = ($this->team)()->update($this->boss, $admin, ['name' => 'Nouveau Nom', 'role' => 'custom', 'permissions' => ['faq.view']]);
 
@@ -200,13 +200,13 @@ describe('modification, rôles et sécurité', function (): void {
     });
 
     it('ne fait rien et ne trace rien quand rien ne change', function (): void {
-        $admin = ($this->make)('read_only', 'ro@nova.test');
+        $admin = ($this->make)('read_only', 'ro@rendivoo.test');
 
         expect(($this->team)()->update($this->boss, $admin, ['name' => $admin->name, 'role' => 'read_only']))->toBe([])->and(($this->audit)('admin.updated'))->toHaveCount(0);
     });
 
     it('ne laisse pas un Super Admin se retirer son propre accès ni se suspendre, se supprimer ou se déconnecter', function (): void {
-        $second = ($this->make)('super_admin', 'second@nova.test');
+        $second = ($this->make)('super_admin', 'second@rendivoo.test');
         $team = ($this->team)();
 
         expect(fn () => $team->update($this->boss, $this->boss, ['role' => 'read_only']))->toThrow(AdminRefused::class, 'self_access')
@@ -221,13 +221,13 @@ describe('modification, rôles et sécurité', function (): void {
     });
 
     it('ne retire jamais le dernier Super Admin actif, mais le permet quand un autre reste', function (): void {
-        $second = ($this->make)('super_admin', 'second@nova.test');
+        $second = ($this->make)('super_admin', 'second@rendivoo.test');
         $team = ($this->team)();
 
         $team->update($this->boss, $second, ['role' => 'read_only']);
         expect($second->refresh()->adminRole())->toBe('read_only');
 
-        $other = ($this->make)('super_admin', 'other@nova.test');
+        $other = ($this->make)('super_admin', 'other@rendivoo.test');
         // Le seul autre Super Admin est suspendu : plus personne ne pourrait gérer la plateforme sans « other ».
         $team->suspend($this->boss, $other);
         expect(fn () => $team->update($other, $this->boss, ['role' => 'read_only']))->toThrow(AdminRefused::class);
@@ -236,11 +236,11 @@ describe('modification, rôles et sécurité', function (): void {
     });
 
     it('refuse de suspendre ou retirer le dernier Super Admin actif depuis un autre compte', function (): void {
-        $last = ($this->make)('super_admin', 'last@nova.test');
+        $last = ($this->make)('super_admin', 'last@rendivoo.test');
         $this->boss->forceFill(['status' => 'suspended'])->save();
-        $helper = ($this->make)('super_admin', 'helper@nova.test');
+        $helper = ($this->make)('super_admin', 'helper@rendivoo.test');
         $helper->forceFill(['status' => 'suspended'])->save();
-        $actor = ($this->make)('super_admin', 'actor@nova.test');
+        $actor = ($this->make)('super_admin', 'actor@rendivoo.test');
 
         // « last » et « actor » sont actifs : suspendre l'un laisse l'autre.
         ($this->team)()->suspend($actor, $last);
@@ -249,14 +249,14 @@ describe('modification, rôles et sécurité', function (): void {
     });
 
     it('ne touche jamais un agent de support ni un éditeur de contenu', function (): void {
-        $agent = ($this->make)('super_admin', 'agent@nova.test', ['admin_role' => null, 'support_role' => 'agent']);
+        $agent = ($this->make)('super_admin', 'agent@rendivoo.test', ['admin_role' => null, 'support_role' => 'agent']);
 
         expect(fn () => ($this->team)()->update($this->boss, $agent, ['name' => 'X']))->toThrow(AdminRefused::class, 'not_admin')
             ->and(fn () => ($this->team)()->suspend($this->boss, $agent))->toThrow(AdminRefused::class, 'not_admin');
     });
 
     it('refuse de modifier un compte supprimé', function (): void {
-        $admin = ($this->make)('read_only', 'gone@nova.test');
+        $admin = ($this->make)('read_only', 'gone@rendivoo.test');
         ($this->team)()->remove($this->boss, $admin);
 
         expect(fn () => ($this->team)()->update($this->boss, $admin->refresh(), ['name' => 'X']))->toThrow(AdminRefused::class, 'removed');
@@ -265,7 +265,7 @@ describe('modification, rôles et sécurité', function (): void {
 
 describe('suspension, réactivation, retrait et sessions', function (): void {
     it('suspend : plus d\'accès, sessions révoquées, motif et ancien statut tracés', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
 
         ($this->team)()->suspend($this->boss, $admin, 'Départ en congé');
 
@@ -276,13 +276,13 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
     });
 
     it('refuse de suspendre un compte qui n\'est pas actif', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test', ['status' => 'invited']);
+        $admin = ($this->make)('operations', 'ops@rendivoo.test', ['status' => 'invited']);
 
         expect(fn () => ($this->team)()->suspend($this->boss, $admin))->toThrow(AdminRefused::class, 'not_active');
     });
 
     it('réactive un compte suspendu : il retrouve son rôle', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test', ['last_login_at' => now()->subDay()]);
+        $admin = ($this->make)('operations', 'ops@rendivoo.test', ['last_login_at' => now()->subDay()]);
         ($this->team)()->suspend($this->boss, $admin);
 
         ($this->team)()->reactivate($this->boss, $admin->refresh());
@@ -302,7 +302,7 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
     });
 
     it('supprime en douceur : désactivé, masqué de la liste, sessions révoquées, historique gardé', function (): void {
-        $admin = ($this->make)('support', 'sup@nova.test');
+        $admin = ($this->make)('support', 'sup@rendivoo.test');
         DB::connection('pgsql_platform')->table('audit_logs')->insert(['id' => (string) Str::uuid(), 'actor_type' => 'platform_admin', 'actor_id' => $admin->id, 'action' => 'client.viewed', 'created_at' => now()]);
 
         ($this->team)()->remove($this->boss, $admin, 'Quitte l\'équipe');
@@ -311,11 +311,11 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
             ->and(PlatformAdmin::query()->whereKey($admin->id)->exists())->toBeTrue()
             ->and(DB::connection('pgsql_platform')->table('audit_logs')->where('actor_id', $admin->id)->count())->toBe(1);
         ($this->as)($admin)->get('/admin/organizations')->assertForbidden();
-        Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)->assertDontSee('sup@nova.test');
+        Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)->assertDontSee('sup@rendivoo.test');
     });
 
     it('déconnecte partout : une session ouverte avant est refusée, une session ouverte après est acceptée', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
         $before = now()->subMinutes(10)->timestamp;
 
         ($this->team)()->forceLogout($this->boss, $admin);
@@ -328,15 +328,15 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
     });
 
     it('ferme aussi une session ouverte avant la mise en service de la fonction (sans heure d\'ouverture)', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
         ($this->team)()->forceLogout($this->boss, $admin);
 
         $this->actingAs($admin->refresh(), 'platform')->get('/admin/organizations')->assertRedirect(route('filament.admin.auth.login'));
     });
 
     it('envoie un lien de réinitialisation à un compte actif seulement, et le nouveau mot de passe est enregistré', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
-        $invited = ($this->make)('operations', 'invited@nova.test', ['status' => 'invited']);
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
+        $invited = ($this->make)('operations', 'invited@rendivoo.test', ['status' => 'invited']);
 
         expect(fn () => ($this->team)()->sendPasswordReset($this->boss, $invited))->toThrow(AdminRefused::class, 'not_active');
         ($this->team)()->sendPasswordReset($this->boss, $admin);
@@ -348,7 +348,7 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
     });
 
     it('enregistre la dernière connexion et son adresse', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
 
         event(new Login('platform', $admin, false));
 
@@ -358,7 +358,7 @@ describe('suspension, réactivation, retrait et sessions', function (): void {
 
 describe('les permissions commandent les écrans', function (): void {
     it('montre à chaque rôle ses modules et refuse les autres', function (string $role, array $allowed, array $denied): void {
-        $admin = ($this->make)($role, "{$role}@nova.test", $role === 'custom' ? ['permissions' => ['audit.view', 'settings.view']] : []);
+        $admin = ($this->make)($role, "{$role}@rendivoo.test", $role === 'custom' ? ['permissions' => ['audit.view', 'settings.view']] : []);
 
         foreach ($allowed as $path) {
             ($this->as)($admin)->get("/admin/{$path}")->assertOk();
@@ -379,7 +379,7 @@ describe('les permissions commandent les écrans', function (): void {
         ($this->as)($this->boss)->get('/admin/admins/create')->assertOk();
 
         foreach (['operations', 'support', 'read_only', 'custom'] as $role) {
-            $admin = ($this->make)($role, "{$role}@nova.test", ['permissions' => ['clients.view']]);
+            $admin = ($this->make)($role, "{$role}@rendivoo.test", ['permissions' => ['clients.view']]);
             ($this->as)($admin)->get('/admin/admins')->assertForbidden();
             ($this->as)($admin)->get('/admin/admins/create')->assertForbidden();
             ($this->as)($admin)->get("/admin/admins/{$this->boss->id}")->assertForbidden();
@@ -388,7 +388,7 @@ describe('les permissions commandent les écrans', function (): void {
     });
 
     it('refuse aux agents de support les écrans des administrateurs', function (): void {
-        $agent = ($this->make)('super_admin', 'agent@nova.test', ['admin_role' => null, 'support_role' => 'agent']);
+        $agent = ($this->make)('super_admin', 'agent@rendivoo.test', ['admin_role' => null, 'support_role' => 'agent']);
 
         ($this->as)($agent)->get('/admin/admins')->assertForbidden();
         ($this->as)($agent)->get('/admin/support-tickets')->assertOk();
@@ -403,7 +403,7 @@ describe('les permissions commandent les écrans', function (): void {
 
 describe('les permissions commandent aussi les services', function (): void {
     it('refuse une écriture à un administrateur en lecture seule, même sans passer par l\'écran', function (): void {
-        $readOnly = ($this->make)('read_only', 'ro@nova.test');
+        $readOnly = ($this->make)('read_only', 'ro@rendivoo.test');
         $org = DB::connection('pgsql_platform')->table('organizations')->first();
         $organization = PlatformOrganization::query()->findOrFail($org->id);
 
@@ -413,12 +413,12 @@ describe('les permissions commandent aussi les services', function (): void {
             ->and(fn () => app(OrganizationLifecycle::class)->suspend($organization, $readOnly->id, null))->toThrow(AuthorizationException::class)
             ->and(fn () => app(PlatformSettings::class)->update(['trial_days' => 20], $readOnly->id))->toThrow(AuthorizationException::class)
             ->and(fn () => app(SectorManager::class)->create(['name' => 'X', 'code' => 'x'], $readOnly->id))->toThrow(AuthorizationException::class)
-            ->and(fn () => app(SupportTeam::class)->create($readOnly, ['name' => 'A B', 'email' => 'a@nova.test']))->toThrow(TeamRefused::class);
+            ->and(fn () => app(SupportTeam::class)->create($readOnly, ['name' => 'A B', 'email' => 'a@rendivoo.test']))->toThrow(TeamRefused::class);
         expect(($this->audit)('client.tag_added'))->toHaveCount(0);
     });
 
     it('autorise exactement ce que le rôle accorde', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test');
+        $ops = ($this->make)('operations', 'ops@rendivoo.test');
         $organization = PlatformOrganization::query()->firstOrFail();
 
         app(ClientManager::class)->addTag($ops, $organization, 'vip');
@@ -428,8 +428,8 @@ describe('les permissions commandent aussi les services', function (): void {
 
     it('gère le téléchargement d\'un PDF juridique archivé par sa propre permission', function (): void {
         $files = app(LegalDocumentFiles::class);
-        $custom = ($this->make)('custom', 'legal@nova.test', ['permissions' => ['legal.view']]);
-        $withArchive = ($this->make)('custom', 'archive@nova.test', ['permissions' => ['legal.view', 'legal.download_archived']]);
+        $custom = ($this->make)('custom', 'legal@rendivoo.test', ['permissions' => ['legal.view']]);
+        $withArchive = ($this->make)('custom', 'archive@rendivoo.test', ['permissions' => ['legal.view', 'legal.download_archived']]);
         Storage::fake('local');
         $old = $files->replace($this->boss->id, 'terms', UploadedFile::fake()->createWithContent('cgu.pdf', "%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF"));
         $new = $files->replace($this->boss->id, 'terms', UploadedFile::fake()->createWithContent('cgu2.pdf', "%PDF-1.4\n2 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF"));
@@ -446,8 +446,8 @@ describe('les permissions commandent aussi les services', function (): void {
 
 describe('écrans de gestion', function (): void {
     it('affiche la liste avec le rôle, le statut, la dernière connexion, qui l\'a ajouté et le nombre de permissions', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test', ['created_by' => $this->boss->id, 'last_login_at' => now()->subDays(2)]);
-        ($this->make)('custom', 'cust@nova.test', ['permissions' => ['faq.view', 'faq.edit', 'audit.view'], 'status' => 'invited']);
+        $ops = ($this->make)('operations', 'ops@rendivoo.test', ['created_by' => $this->boss->id, 'last_login_at' => now()->subDays(2)]);
+        ($this->make)('custom', 'cust@rendivoo.test', ['permissions' => ['faq.view', 'faq.edit', 'audit.view'], 'status' => 'invited']);
 
         Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)->assertSuccessful()
             ->assertCanSeeTableRecords([$ops])->assertSee(__('admins.roles.operations.name'))->assertSee(__('admins.statuses.invited'))
@@ -456,9 +456,9 @@ describe('écrans de gestion', function (): void {
     });
 
     it('cherche par nom ou e-mail et filtre par rôle et par statut, en masquant les comptes supprimés par défaut', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test');
-        $gone = ($this->make)('support', 'gone@nova.test', ['status' => 'removed']);
-        $sup = ($this->make)('support', 'sup@nova.test', ['status' => 'suspended']);
+        $ops = ($this->make)('operations', 'ops@rendivoo.test');
+        $gone = ($this->make)('support', 'gone@rendivoo.test', ['status' => 'removed']);
+        $sup = ($this->make)('support', 'sup@rendivoo.test', ['status' => 'suspended']);
 
         Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)
             ->assertCanSeeTableRecords([$this->boss, $ops, $sup])->assertCanNotSeeTableRecords([$gone])
@@ -470,8 +470,8 @@ describe('écrans de gestion', function (): void {
     });
 
     it('filtre par date d\'ajout et par dernière connexion et trie', function (): void {
-        $old = ($this->make)('operations', 'old@nova.test', ['last_login_at' => now()->subMonths(3), 'created_at' => now()->subMonths(6)]);
-        $recent = ($this->make)('operations', 'recent@nova.test', ['last_login_at' => now()->subDay(), 'created_at' => now()->subDay()]);
+        $old = ($this->make)('operations', 'old@rendivoo.test', ['last_login_at' => now()->subMonths(3), 'created_at' => now()->subMonths(6)]);
+        $recent = ($this->make)('operations', 'recent@rendivoo.test', ['last_login_at' => now()->subDay(), 'created_at' => now()->subDay()]);
 
         Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)
             ->filterTable('login', ['login_from' => now()->subWeek()->toDateString(), 'login_until' => null])->assertCanSeeTableRecords([$recent])->assertCanNotSeeTableRecords([$old])
@@ -485,24 +485,24 @@ describe('écrans de gestion', function (): void {
 
     it('crée un administrateur depuis le formulaire et l\'invite', function (): void {
         Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)
-            ->fillForm(['name' => 'Léa Martin', 'email' => 'lea@nova.test', 'role' => 'custom', 'perm_clients' => ['view', 'export'], 'perm_audit' => ['view']])
+            ->fillForm(['name' => 'Léa Martin', 'email' => 'lea@rendivoo.test', 'role' => 'custom', 'perm_clients' => ['view', 'export'], 'perm_audit' => ['view']])
             ->call('create')->assertHasNoFormErrors()->assertNotified(__('admins.create.done'));
 
-        $created = PlatformAdmin::query()->where('email', 'lea@nova.test')->firstOrFail();
+        $created = PlatformAdmin::query()->where('email', 'lea@rendivoo.test')->firstOrFail();
         expect($created->status)->toBe('invited')->and($created->permissions)->toBe(['clients.view', 'clients.export', 'audit.view'])->and(($this->mails)())->toHaveCount(1);
     });
 
     it('valide le formulaire de création : e-mail, rôle, doublon, personnalisé sans permission', function (): void {
-        ($this->make)('operations', 'taken@nova.test');
+        ($this->make)('operations', 'taken@rendivoo.test');
 
         Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)->fillForm(['name' => '', 'email' => 'pas-un-email', 'role' => null])->call('create')->assertHasFormErrors(['name', 'email', 'role']);
-        Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)->fillForm(['name' => 'Doublon', 'email' => 'TAKEN@nova.test', 'role' => 'read_only'])->call('create')->assertNotified(__('admins.errors.title'));
-        Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)->fillForm(['name' => 'Vide', 'email' => 'vide@nova.test', 'role' => 'custom'])->call('create')->assertNotified(__('admins.errors.title'));
-        expect(PlatformAdmin::query()->whereIn('email', ['vide@nova.test', 'pas-un-email'])->count())->toBe(0);
+        Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)->fillForm(['name' => 'Doublon', 'email' => 'TAKEN@rendivoo.test', 'role' => 'read_only'])->call('create')->assertNotified(__('admins.errors.title'));
+        Livewire::actingAs($this->boss, 'platform')->test(CreateAdminProfile::class)->fillForm(['name' => 'Vide', 'email' => 'vide@rendivoo.test', 'role' => 'custom'])->call('create')->assertNotified(__('admins.errors.title'));
+        expect(PlatformAdmin::query()->whereIn('email', ['vide@rendivoo.test', 'pas-un-email'])->count())->toBe(0);
     });
 
     it('modifie un administrateur depuis le formulaire et refuse de retirer son propre accès', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test');
+        $ops = ($this->make)('operations', 'ops@rendivoo.test');
 
         Livewire::actingAs($this->boss, 'platform')->test(EditAdminProfile::class, ['record' => $ops->id])
             ->assertFormSet(['role' => 'operations', 'perm_clients' => ['view', 'edit', 'suspend', 'export']])
@@ -515,20 +515,20 @@ describe('écrans de gestion', function (): void {
     });
 
     it('affiche le profil : informations, permissions, activité et connexions récentes', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test', ['created_by' => $this->boss->id, 'last_login_at' => now(), 'last_login_ip' => '203.0.113.9']);
+        $ops = ($this->make)('operations', 'ops@rendivoo.test', ['created_by' => $this->boss->id, 'last_login_at' => now(), 'last_login_ip' => '203.0.113.9']);
         DB::connection('pgsql_platform')->table('audit_logs')->insert([
             ['id' => (string) Str::uuid(), 'actor_type' => 'platform_admin', 'actor_id' => $ops->id, 'action' => 'client.viewed', 'org_id' => $this->org->id, 'ip' => null, 'created_at' => now()],
             ['id' => (string) Str::uuid(), 'actor_type' => 'platform_admin', 'actor_id' => $ops->id, 'action' => 'platform.login', 'org_id' => null, 'ip' => '203.0.113.9', 'created_at' => now()],
         ]);
 
         Livewire::actingAs($this->boss, 'platform')->test(ViewAdminProfile::class, ['record' => $ops->id])->assertSuccessful()
-            ->assertSee('ops@nova.test')->assertSee('203.0.113.9')->assertSee(__('admins.modules.clients'))->assertSee('client.viewed')->assertSee(__('admins.login_events.ok'));
+            ->assertSee('ops@rendivoo.test')->assertSee('203.0.113.9')->assertSee(__('admins.modules.clients'))->assertSee('client.viewed')->assertSee(__('admins.login_events.ok'));
     });
 
     it('propose les actions selon l\'état du compte, avec leur effet expliqué', function (): void {
-        $active = ($this->make)('operations', 'a@nova.test');
-        $invited = ($this->make)('operations', 'i@nova.test', ['status' => 'invited']);
-        $suspended = ($this->make)('operations', 's@nova.test', ['status' => 'suspended']);
+        $active = ($this->make)('operations', 'a@rendivoo.test');
+        $invited = ($this->make)('operations', 'i@rendivoo.test', ['status' => 'invited']);
+        $suspended = ($this->make)('operations', 's@rendivoo.test', ['status' => 'suspended']);
 
         Livewire::actingAs($this->boss, 'platform')->test(ViewAdminProfile::class, ['record' => $active->id])
             ->assertActionVisible('suspend')->assertActionVisible('force_logout')->assertActionVisible('reset_password')->assertActionHidden('reactivate')->assertActionHidden('resend_invitation');
@@ -538,7 +538,7 @@ describe('écrans de gestion', function (): void {
     });
 
     it('suspend et réactive depuis la fiche, avec confirmation et message de réussite', function (): void {
-        $admin = ($this->make)('operations', 'ops@nova.test');
+        $admin = ($this->make)('operations', 'ops@rendivoo.test');
 
         Livewire::actingAs($this->boss, 'platform')->test(ViewAdminProfile::class, ['record' => $admin->id])
             ->callAction('suspend', ['reason' => 'Test'])->assertNotified(__('admins.suspend.done'));
@@ -549,7 +549,7 @@ describe('écrans de gestion', function (): void {
     });
 
     it('supprime depuis la fiche et déconnecte partout', function (): void {
-        $admin = ($this->make)('support', 'sup@nova.test');
+        $admin = ($this->make)('support', 'sup@rendivoo.test');
 
         Livewire::actingAs($this->boss, 'platform')->test(ViewAdminProfile::class, ['record' => $admin->id])->callAction('force_logout')->assertNotified(__('admins.logout.done'));
         expect($admin->refresh()->sessions_revoked_at)->not->toBeNull();
@@ -561,7 +561,7 @@ describe('écrans de gestion', function (): void {
 
 describe('export et traductions', function (): void {
     it('exporte la liste filtrée en CSV, sans secret, et le trace', function (): void {
-        ($this->make)('operations', 'ops@nova.test', ['name' => '=cmd|calc', 'created_by' => $this->boss->id]);
+        ($this->make)('operations', 'ops@rendivoo.test', ['name' => '=cmd|calc', 'created_by' => $this->boss->id]);
 
         $component = Livewire::actingAs($this->boss, 'platform')->test(ListAdminProfiles::class)->callAction('export');
         $component->assertFileDownloaded();
@@ -571,7 +571,7 @@ describe('export et traductions', function (): void {
     });
 
     it('n\'exporte que pour qui peut voir la liste', function (): void {
-        $ops = ($this->make)('operations', 'ops@nova.test');
+        $ops = ($this->make)('operations', 'ops@rendivoo.test');
 
         expect(fn () => ($this->team)()->export($ops, PlatformAdmin::query()))->toThrow(AdminRefused::class, 'forbidden');
     });

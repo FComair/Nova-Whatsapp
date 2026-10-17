@@ -16,7 +16,7 @@ final class SetLocale
     public function handle(Request $request, Closure $next): Response
     {
         /** @var list<string> $supported */
-        $supported = config('nova.locales');
+        $supported = config('rendivoo.locales');
 
         $candidates = [
             $request->user()?->locale,

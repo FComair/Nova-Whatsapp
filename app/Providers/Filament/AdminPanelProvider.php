@@ -49,10 +49,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             // Sous-domaine dédié en production (cookies de session distincts) ; sans valeur en développement local.
-            ->domain(config('nova.admin_domain'))
+            ->domain(config('rendivoo.admin_domain'))
             ->authGuard('platform')
             ->login(Login::class)
-            ->brandName('Nova Admin')
+            ->brandName('Rendivoo Admin')
             // Couleur ambre : distingue immédiatement l'espace Super Admin de l'espace client (docs/03 §A.1).
             ->colors(['primary' => Color::Amber])
             ->discoverResources(in: app_path('Modules/Admin/Filament/Resources'), for: 'App\\Modules\\Admin\\Filament\\Resources')

@@ -46,7 +46,7 @@ uses(AuthScenarios::class, BookingScenarios::class);
  */
 beforeEach(function (): void {
     Notification::fake();
-    config(['nova.founder_email' => 'fondateur@nova.test']);
+    config(['rendivoo.founder_email' => 'fondateur@rendivoo.test']);
 
     ['user' => $this->owner, 'org' => $org] = $this->activatedAccount(['name' => 'Salon Aurore']);
     $this->bookingWorld(existing: $org);
@@ -81,7 +81,7 @@ beforeEach(function (): void {
         });
     };
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->schedule = function (bool $due = true): PlatformOrganization {
         $platform = PlatformOrganization::query()->findOrFail($this->org->id);
         app(OrganizationLifecycle::class)->scheduleDeletion($platform, $this->admin->id, 'Demande écrite du propriétaire');
@@ -262,7 +262,7 @@ describe('incident et reprise (E12)', function (): void {
 
         expect($job)->status->toBe('failed')->attempts->toBe(3)->and($job->last_error)->toStartWith('sql_');
         Notification::assertSentOnDemandTimes(DeletionFailedNotification::class, 1);
-        Notification::assertSentOnDemand(DeletionFailedNotification::class, fn ($n, $channels, $notifiable): bool => $notifiable->routes['mail'] === 'fondateur@nova.test');
+        Notification::assertSentOnDemand(DeletionFailedNotification::class, fn ($n, $channels, $notifiable): bool => $notifiable->routes['mail'] === 'fondateur@rendivoo.test');
         Log::shouldHaveReceived('error')->withArgs(fn (string $message, array $context): bool => $message === 'Effacement RGPD en échec' && $context['step'] === 'customers' && $context['org'] === $this->org->id)->times(3);
 
         // Les étapes précédentes sont faites (réservations, conversations…), les suivantes attendent.

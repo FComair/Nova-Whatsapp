@@ -178,7 +178,7 @@ const actionLabel = (type: ActionType): string => t(`team.actions.${type}`);
     <SettingsLayout :title="t('team.title')">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-semibold text-nova-900">{{ t('team.title') }}</h1>
+                <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('team.title') }}</h1>
                 <p class="mt-2 max-w-3xl text-sm text-neutral-700">{{ t('team.intro') }}</p>
             </div>
             <BaseButton @click="openAdd">{{ t('team.add') }}</BaseButton>

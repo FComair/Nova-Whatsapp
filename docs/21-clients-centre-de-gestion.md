@@ -1,6 +1,6 @@
-# Nova — Customers hub (spec)
+# Rendivoo — Customers hub (spec)
 
-Status: phases 1 (foundation) and 2 (list) built; phases 3 to 6 to come. Visual reference: the canvas "Nova Customers hub" (https://claude.ai/artifact/J7JQpkYgrcd2CehUjfazGY), light and dark, using the website identity (docs/20). No change to navigation or unrelated features.
+Status: phases 1 (foundation) and 2 (list) built; phases 3 to 6 to come. Visual reference: the canvas "Rendivoo Customers hub" (https://claude.ai/artifact/J7JQpkYgrcd2CehUjfazGY), light and dark, using the website identity (docs/20). No change to navigation or unrelated features.
 
 ## 1. Starting point (what exists)
 

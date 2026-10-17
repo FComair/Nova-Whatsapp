@@ -16,11 +16,11 @@ const ICONS: Record<ThemePreference, string> = {
 
 <template>
     <SettingsLayout :title="t('appearance.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('appearance.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('appearance.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-700">{{ t('appearance.intro') }}</p>
 
         <fieldset id="theme" class="mt-6 rounded-card border border-line bg-surface p-5 shadow-xs">
-            <legend class="px-1 text-lg font-semibold text-nova-900">{{ t('appearance.theme_title') }}</legend>
+            <legend class="px-1 text-lg font-semibold text-rendivoo-900">{{ t('appearance.theme_title') }}</legend>
             <p class="text-sm text-neutral-700">{{ t('appearance.theme_hint') }}</p>
 
             <div class="mt-4 grid gap-3 sm:grid-cols-3">

@@ -154,7 +154,7 @@ function summary(item: HistoryItem): string {
             <span class="font-semibold text-neutral-900" aria-current="page">{{ t('price_import.title') }}</span>
         </nav>
 
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('price_import.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('price_import.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('price_import.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-3xl">{{ page.props.flash.status }}</AlertBox>
@@ -165,7 +165,7 @@ function summary(item: HistoryItem): string {
         <AlertBox v-if="errors.import" variant="error" class="mt-4 max-w-3xl">{{ errors.import }}</AlertBox>
 
         <section v-if="!available" class="mt-6 max-w-3xl rounded-card border border-dashed border-line-strong bg-surface p-8">
-            <h2 class="text-lg font-semibold text-nova-900">{{ t('price_import.unavailable_title') }}</h2>
+            <h2 class="text-lg font-semibold text-rendivoo-900">{{ t('price_import.unavailable_title') }}</h2>
             <p class="mt-2 text-sm text-neutral-700">{{ t('price_import.unavailable_body') }}</p>
         </section>
 
@@ -186,7 +186,7 @@ function summary(item: HistoryItem): string {
                     <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".2" stroke-width="3" />
                     <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
                 </svg>
-                <h2 class="mt-4 text-lg font-semibold text-nova-900">{{ t('price_import.processing_title') }}</h2>
+                <h2 class="mt-4 text-lg font-semibold text-rendivoo-900">{{ t('price_import.processing_title') }}</h2>
                 <p class="mx-auto mt-2 max-w-md text-sm text-neutral-700">{{ t('price_import.processing_body') }}</p>
                 <div
                     v-if="form.progress"
@@ -202,7 +202,7 @@ function summary(item: HistoryItem): string {
 
             <div v-else class="mt-6 grid max-w-5xl gap-6 lg:grid-cols-[1fr_20rem]">
                 <section class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="upload">
-                    <h2 id="upload" class="text-lg font-semibold text-nova-900">{{ t('price_import.your_list') }}</h2>
+                    <h2 id="upload" class="text-lg font-semibold text-rendivoo-900">{{ t('price_import.your_list') }}</h2>
 
                     <!-- Erreurs de lecture, avec des conseils -->
                     <div v-if="failure" class="mt-4 rounded-control border border-danger-600/30 bg-danger-50 p-4 text-sm text-danger-700" role="alert">
@@ -308,7 +308,7 @@ function summary(item: HistoryItem): string {
                 </section>
 
                 <aside class="rounded-card border border-line bg-surface shadow-xs p-5 text-sm">
-                    <h2 class="text-base font-semibold text-nova-900">{{ t('price_import.tips_title') }}</h2>
+                    <h2 class="text-base font-semibold text-rendivoo-900">{{ t('price_import.tips_title') }}</h2>
                     <ul class="mt-2 list-disc space-y-2 pl-5 text-neutral-800">
                         <li>{{ t('price_import.tips.frame') }}</li>
                         <li>{{ t('price_import.tips.light') }}</li>
@@ -320,7 +320,7 @@ function summary(item: HistoryItem): string {
 
             <!-- Historique -->
             <section v-if="history.length > 0 && !form.processing" class="mt-8 max-w-5xl" aria-labelledby="history">
-                <h2 id="history" class="text-lg font-semibold text-nova-900">{{ t('price_import.history') }}</h2>
+                <h2 id="history" class="text-lg font-semibold text-rendivoo-900">{{ t('price_import.history') }}</h2>
                 <ul class="mt-3 divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="item in history" :key="item.id" class="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 text-sm">
                         <div class="min-w-0 flex-1 basis-64">

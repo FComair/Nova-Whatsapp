@@ -19,7 +19,7 @@ use SensitiveParameter;
 /**
  * Authentification à deux facteurs des clients (décision 18) : application d'authentification (TOTP) et codes de secours.
  *
- * - Obligatoire, sans délai de grâce, pour le propriétaire et les responsables de site (`config nova.security.two_factor_required`).
+ * - Obligatoire, sans délai de grâce, pour le propriétaire et les responsables de site (`config rendivoo.security.two_factor_required`).
  * - Le secret est chiffré en base ; les codes de secours ne sont conservés que sous forme d'empreintes et s'utilisent une seule fois.
  * - Un code TOTP déjà accepté ne l'est pas une seconde fois (rejeu).
  * - Non fait : clés matérielles FIDO2/WebAuthn, code par SMS.
@@ -35,7 +35,7 @@ final class TwoFactor
 
     public function isRequiredFor(?string $role): bool
     {
-        return (bool) config('nova.security.two_factor_required')
+        return (bool) config('rendivoo.security.two_factor_required')
             && in_array($role, self::REQUIRED_ROLES, true)
             && $this->settings()->enabled('client_two_factor_required');
     }
@@ -67,7 +67,7 @@ final class TwoFactor
 
     public function provisioningUri(User $user): string
     {
-        return $this->totp->getQRCodeUrl((string) config('nova.security.two_factor_issuer'), $user->email, (string) $user->two_factor_secret);
+        return $this->totp->getQRCodeUrl((string) config('rendivoo.security.two_factor_issuer'), $user->email, (string) $user->two_factor_secret);
     }
 
     /** Image du code à scanner, en SVG (données intégrées : le secret ne passe par aucun service tiers). */

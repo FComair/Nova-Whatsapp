@@ -98,7 +98,7 @@ class LegalDocumentUpload extends LegalDocumentPage
         }
 
         // La page est quittée volontairement : plus d'avertissement « fichier non déposé ».
-        $this->js('window.novaLegalLeft = true');
+        $this->js('window.rendivooLegalLeft = true');
         Notification::make()->success()->title(__('admin.legal_files.success', ['name' => $this->documentName()]))->send();
         $this->redirect(LegalDocumentDetail::getUrl(self::params($this->document)));
     }

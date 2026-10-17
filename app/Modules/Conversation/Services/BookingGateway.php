@@ -18,11 +18,11 @@ use App\Modules\Staff\Models\Practitioner;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Le seul point de contact de l'assistant avec le moteur de réservation de Nova.
+ * Le seul point de contact de l'assistant avec le moteur de réservation de Rendivoo.
  *
  * Il LIT les services, praticiens, créneaux et rendez-vous, et ÉCRIT uniquement par le cœur de réservation (BookingCore) :
  * mêmes règles que le dashboard et l'API (pas de double réservation, délai minimum, fenêtre d'annulation, journal des événements).
- * Le calendrier de référence est celui de Nova : aucune synchronisation Google ou Outlook.
+ * Le calendrier de référence est celui de Rendivoo : aucune synchronisation Google ou Outlook.
  */
 final class BookingGateway
 {

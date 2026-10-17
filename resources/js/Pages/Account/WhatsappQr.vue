@@ -104,9 +104,9 @@ async function copy(): Promise<void> {
     }
 }
 // Liens de téléchargement : même gabarit (pilule de 56 px, icône + libellé + précision), survol, focus clavier, appui et état désactivé
-// comme les boutons Nova ; l'adresse de chaque lien ne change pas.
+// comme les boutons Rendivoo ; l'adresse de chaque lien ne change pas.
 const downloadBase =
-    'group flex min-h-14 items-center gap-3 rounded-lg border-[1.5px] px-3.5 py-2 text-sm font-semibold transition duration-[180ms] ease-nova focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:translate-y-0 aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-neutral-300 aria-disabled:text-neutral-500 aria-disabled:shadow-none';
+    'group flex min-h-14 items-center gap-3 rounded-lg border-[1.5px] px-3.5 py-2 text-sm font-semibold transition duration-[180ms] ease-rendivoo focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 active:translate-y-0 aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:border-transparent aria-disabled:bg-neutral-300 aria-disabled:text-neutral-500 aria-disabled:shadow-none';
 const downloadPrimary = 'border-transparent bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-700';
 const downloadSecondary =
     'border-line-strong bg-surface text-neutral-900 hover:border-primary-600 hover:bg-primary-50 hover:text-primary-700 active:bg-primary-100';
@@ -117,7 +117,7 @@ const iconSecondary =
 
 <template>
     <SettingsLayout :title="t('whatsapp_qr.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('whatsapp_qr.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('whatsapp_qr.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('whatsapp_qr.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-3xl">{{ page.props.flash.status }}</AlertBox>
@@ -128,7 +128,7 @@ const iconSecondary =
             class="mt-6 max-w-3xl rounded-card border border-dashed border-line-strong bg-surface p-8"
             :class="state === 'not_connected' ? '' : 'bg-warning-50'"
         >
-            <h2 class="text-lg font-semibold text-nova-900">{{ t(`whatsapp_qr.states.${state}.title`) }}</h2>
+            <h2 class="text-lg font-semibold text-rendivoo-900">{{ t(`whatsapp_qr.states.${state}.title`) }}</h2>
             <p class="mt-2 max-w-xl text-sm text-neutral-700">{{ t(`whatsapp_qr.states.${state}.body`) }}</p>
             <Link
                 :href="routes.whatsapp"
@@ -143,7 +143,7 @@ const iconSecondary =
             <section class="mt-6 max-w-3xl" aria-labelledby="codes">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <div>
-                        <h2 id="codes" class="text-lg font-semibold text-nova-900">{{ t('whatsapp_qr.codes_title') }}</h2>
+                        <h2 id="codes" class="text-lg font-semibold text-rendivoo-900">{{ t('whatsapp_qr.codes_title') }}</h2>
                         <p class="mt-1 text-sm text-neutral-600">{{ t('whatsapp_qr.codes_intro') }}</p>
                     </div>
                     <BaseButton v-if="codes.length < maxCodes" variant="secondary" @click="creating = true">+ {{ t('whatsapp_qr.new') }}</BaseButton>
@@ -175,7 +175,7 @@ const iconSecondary =
             <div class="mt-6 grid max-w-5xl gap-6 lg:grid-cols-[22rem_1fr]">
                 <!-- Aperçu et téléchargements -->
                 <section id="download" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="preview">
-                    <h2 id="preview" class="text-lg font-semibold text-nova-900">{{ t('whatsapp_qr.your_code') }}</h2>
+                    <h2 id="preview" class="text-lg font-semibold text-rendivoo-900">{{ t('whatsapp_qr.your_code') }}</h2>
                     <p v-if="phone" class="mt-1 text-sm text-neutral-600">{{ phone }}</p>
                     <div class="mx-auto mt-4 aspect-square w-full max-w-72 rounded-xl border border-line bg-white p-1.5">
                         <img :src="image(current, 'svg')" :alt="t('whatsapp_qr.preview_alt')" class="size-full" />
@@ -303,7 +303,7 @@ const iconSecondary =
                 <div class="space-y-6">
                     <!-- Lien -->
                     <section id="link" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="link-title">
-                        <h2 id="link-title" class="text-lg font-semibold text-nova-900">{{ t('whatsapp_qr.link_title') }}</h2>
+                        <h2 id="link-title" class="text-lg font-semibold text-rendivoo-900">{{ t('whatsapp_qr.link_title') }}</h2>
                         <p class="mt-1 text-sm text-neutral-600">{{ t('whatsapp_qr.link_help') }}</p>
                         <div class="mt-3 flex flex-wrap gap-2.5">
                             <input

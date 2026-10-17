@@ -22,10 +22,10 @@ final class TicketStatus
 
     public const IN_PROGRESS = 'in_progress';
 
-    /** Nova attend une information ou une action du client (code historique : « waiting_on_you »). */
+    /** Rendivoo attend une information ou une action du client (code historique : « waiting_on_you »). */
     public const WAITING_ON_YOU = 'waiting_on_you';
 
-    /** Nova attend une autre équipe interne (facturation, technique…). Invisible pour le client. */
+    /** Rendivoo attend une autre équipe interne (facturation, technique…). Invisible pour le client. */
     public const WAITING_INTERNAL = 'waiting_internal';
 
     /** L'équipe considère le problème résolu ; le ticket n'est pas encore fermé et peut être rouvert. */

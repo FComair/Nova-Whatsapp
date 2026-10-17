@@ -46,10 +46,10 @@ beforeEach(function (): void {
     Storage::fake('local');
     Notification::fake();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
-    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
-    $this->other = PlatformAdmin::query()->create(['email' => 'agent2@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->other = PlatformAdmin::query()->create(['email' => 'agent2@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->other->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
 
     $this->console = fn (): SupportConsole => app(SupportConsole::class);

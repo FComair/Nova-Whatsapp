@@ -10,7 +10,7 @@ import { useT } from '../../composables/useT';
 import AppLayout from '../../Layouts/AppLayout.vue';
 import { routes } from '../../routes';
 
-/** Avis privé à l'équipe Nova WhatsApp (docs/26) : étoiles, commentaire facultatif, rattaché à un ticket si on vient de l'un d'eux. */
+/** Avis privé à l'équipe Rendivoo (docs/26) : étoiles, commentaire facultatif, rattaché à un ticket si on vient de l'un d'eux. */
 const props = defineProps<{
     ticket: { reference: string; subject: string } | null;
     already_sent: boolean;
@@ -43,7 +43,7 @@ function submit(): void {
 
         <div class="mx-auto max-w-2xl space-y-6">
             <header>
-                <h1 class="text-xl font-semibold text-nova-900">{{ t('feedback.title') }}</h1>
+                <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('feedback.title') }}</h1>
                 <p class="mt-1 text-neutral-700">{{ t('feedback.intro') }}</p>
                 <p v-if="ticket" class="mt-2 text-sm font-semibold text-primary-700">
                     {{ t('feedback.context', { reference: ticket.reference, subject: ticket.subject }) }}

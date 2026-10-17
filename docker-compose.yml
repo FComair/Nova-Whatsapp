@@ -1,3 +1,5 @@
+# Le nom public du produit est Rendivoo (anciennement Nova). Le nom de projet, l'image (nova-php) et les identifiants de base restent historiques : les renommer
+# recréerait les volumes de développement (docs/42).
 name: nova
 
 # Environnement de développement local. Aucun secret réel ici : les valeurs sont des valeurs de dev jetables.

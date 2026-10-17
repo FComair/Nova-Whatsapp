@@ -5,7 +5,7 @@ import { routes } from '../routes';
 
 /**
  * Avis publics facultatifs (Google, Trustpilot). Toujours les mêmes options, dans le même ordre, pour tout le monde : jamais selon la
- * note, jamais présentées comme une publication automatique. Nouvel onglet, avec la mention qu'on quitte Nova WhatsApp.
+ * note, jamais présentées comme une publication automatique. Nouvel onglet, avec la mention qu'on quitte Rendivoo.
  */
 const props = withDefaults(defineProps<{ links: string[]; feedbackId?: string | null }>(), { feedbackId: null });
 const { t } = useT();

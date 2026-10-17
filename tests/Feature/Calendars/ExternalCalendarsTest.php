@@ -191,7 +191,7 @@ describe('synchronisation ICS', function (): void {
         expect($dump)->not->toContain('médical')->not->toContain('patient@')->not->toContain('Clinique');
     });
 
-    it('ignore les événements issus du flux sortant de Nova', function (): void {
+    it('ignore les événements issus du flux sortant de Rendivoo', function (): void {
         Http::fake(['calendar.example.com/*' => Http::response(eventIcs(busyEvent('20260602T080000Z', '20260602T090000Z', 'abc'.CalendarSync::FEED_UID_SUFFIX)))]);
         ($this->sync)(($this->calendar)());
 

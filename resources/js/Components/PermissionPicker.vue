@@ -71,7 +71,7 @@ function reset(): void {
         </div>
 
         <fieldset v-for="(keys, group) in catalog.groups" :key="group" class="rounded-card border border-line bg-surface p-4">
-            <legend class="px-1 text-sm font-semibold text-nova-900">
+            <legend class="px-1 text-sm font-semibold text-rendivoo-900">
                 {{ t(`team.groups.${group}`) }}
                 <span class="font-normal text-neutral-600"
                     >· {{ t('team.picker.group_count', { on: groupCount(keys, model).on, total: groupCount(keys, model).total }) }}</span
@@ -90,7 +90,7 @@ function reset(): void {
                     <input
                         :id="`${baseId}-${key}`"
                         type="checkbox"
-                        class="nova-check mt-0.5"
+                        class="rendivoo-check mt-0.5"
                         :checked="granted(key)"
                         :disabled="locked(key) !== null"
                         :aria-describedby="`${baseId}-${key}-hint`"

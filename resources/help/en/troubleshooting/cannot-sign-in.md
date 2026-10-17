@@ -9,7 +9,7 @@ updated: 2026-10-09
 ---
 ## Forgotten password
 
-On the sign-in page, use **Forgot password**: Nova sends a reset link to your email address. Choose a password of at least 12 characters.
+On the sign-in page, use **Forgot password**: Rendivoo sends a reset link to your email address. Choose a password of at least 12 characters.
 
 ## The two-step code is rejected
 

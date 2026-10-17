@@ -29,7 +29,7 @@ final class PractitionerInvitationNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $days = (int) config('nova.security.invitation_ttl_days');
+        $days = (int) config('rendivoo.security.invitation_ttl_days');
 
         return (new MailMessage)
             ->subject(__('mail.invitation.subject', ['organization' => $this->organizationName]))

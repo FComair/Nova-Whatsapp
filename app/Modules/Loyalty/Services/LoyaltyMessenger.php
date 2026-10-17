@@ -91,7 +91,7 @@ final class LoyaltyMessenger
                 return false;
             }
 
-            $language = in_array($customer->language, (array) config('nova.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
+            $language = in_array($customer->language, (array) config('rendivoo.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
             $values = $this->variables($program, $customer, $member, $reward, $language, $organization->name);
 
             try {

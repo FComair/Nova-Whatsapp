@@ -12,7 +12,7 @@ De QR-code is voorbehouden aan de **eigenaar**: **Instellingen > WhatsApp-QR-cod
 ## Hoe het werkt
 
 1. Maak een QR-code. Een klant scant hem met zijn telefoon: WhatsApp opent een gesprek met uw nummer.
-2. Hij schrijft en de assistent van Nova helpt hem boeken.
+2. Hij schrijft en de assistent van Rendivoo helpt hem boeken.
 3. Download de QR-code om af te drukken op een affiche, een balie, een visitekaartje of een etalage.
 
 ## Zien wat het oplevert

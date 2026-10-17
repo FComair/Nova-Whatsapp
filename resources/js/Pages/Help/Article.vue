@@ -67,7 +67,7 @@ function onProseClick(event: MouseEvent): void {
         <div class="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
             <article class="min-w-0">
                 <header>
-                    <h1 class="font-display text-3xl font-bold leading-tight text-nova-900">{{ article.title }}</h1>
+                    <h1 class="font-display text-3xl font-bold leading-tight text-rendivoo-900">{{ article.title }}</h1>
                     <p class="mt-2 max-w-[72ch] text-lg text-neutral-700">{{ article.summary }}</p>
                     <p v-if="article.updated" class="mt-2 text-sm text-neutral-600">{{ t('help.updated', { date: formatDate(article.updated) }) }}</p>
                 </header>
@@ -83,7 +83,7 @@ function onProseClick(event: MouseEvent): void {
 
                 <!-- Contenu rendu côté serveur à partir de nos fichiers Markdown : le HTML brut en est retiré. -->
                 <!-- eslint-disable-next-line vue/no-v-html -->
-                <div class="nova-prose mt-6" @click="onProseClick" v-html="article.html" />
+                <div class="rendivoo-prose mt-6" @click="onProseClick" v-html="article.html" />
 
                 <section class="mt-10 rounded-card border border-line bg-surface p-5" aria-labelledby="help-feedback">
                     <h2 id="help-feedback" class="font-semibold text-neutral-900">{{ t('help.feedback.question') }}</h2>
@@ -122,7 +122,7 @@ function onProseClick(event: MouseEvent): void {
                 </p>
 
                 <section v-if="related.length" class="mt-10" aria-labelledby="help-related">
-                    <h2 id="help-related" class="text-lg font-semibold text-nova-900">{{ t('help.related') }}</h2>
+                    <h2 id="help-related" class="text-lg font-semibold text-rendivoo-900">{{ t('help.related') }}</h2>
                     <ul class="mt-3 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                         <li v-for="item in related" :key="`${item.category}/${item.slug}`">
                             <Link

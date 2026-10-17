@@ -37,14 +37,14 @@ function cancel(): void {
 
 <template>
     <SettingsLayout :title="t('account_data.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('account_data.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('account_data.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('account_data.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-2xl">{{ page.props.flash.status }}</AlertBox>
         <AlertBox v-if="errors.deletion" variant="error" class="mt-4 max-w-2xl">{{ errors.deletion }}</AlertBox>
 
         <section class="mt-8 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="export">
-            <h2 id="export" class="text-lg font-semibold text-nova-900">{{ t('account_data.export_title') }}</h2>
+            <h2 id="export" class="text-lg font-semibold text-rendivoo-900">{{ t('account_data.export_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_data.export_body') }}</p>
             <!-- Formulaire natif : la réponse est un fichier à télécharger, pas une page Inertia. -->
             <form method="post" :action="routes.accountExport" class="mt-4 space-y-3">
@@ -79,7 +79,7 @@ function cancel(): void {
         </section>
 
         <section v-else-if="canRequestDeletion" class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="delete">
-            <h2 id="delete" class="text-lg font-semibold text-nova-900">{{ t('account_data.delete_title') }}</h2>
+            <h2 id="delete" class="text-lg font-semibold text-rendivoo-900">{{ t('account_data.delete_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('account_data.delete_body', { days: deletionDelayDays }) }}</p>
             <p v-if="status !== 'paused'" class="mt-2 text-sm text-neutral-700">
                 {{ t('account_data.pause_hint') }}

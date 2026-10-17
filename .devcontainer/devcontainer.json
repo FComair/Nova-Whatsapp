@@ -1,5 +1,5 @@
 {
-    "name": "Nova WhatsApp (Laravel 13 + Vue 3, PostgreSQL 16, Redis, Mailpit)",
+    "name": "Rendivoo (Laravel 13 + Vue 3, PostgreSQL 16, Redis, Mailpit)",
 
     // Le conteneur de développement est le service « app » de .devcontainer/docker-compose.yml : PHP 8.4 + Node 24 dans le même
     // conteneur, avec PostgreSQL, Redis et Mailpit à côté (mêmes noms d'hôte que le docker-compose.yml du dépôt : postgres, redis, mailpit).
@@ -37,7 +37,7 @@
     // Ports : tous PRIVÉS (visibles du seul propriétaire du Codespace). Pour recevoir de vrais webhooks Meta, rendre temporairement le port 8000 public (voir README).
     "forwardPorts": [8000, 5173, 8025],
     "portsAttributes": {
-        "8000": { "label": "Nova (application)", "onAutoForward": "openBrowserOnce", "visibility": "private" },
+        "8000": { "label": "Rendivoo (application)", "onAutoForward": "openBrowserOnce", "visibility": "private" },
         "5173": { "label": "Vite (assets, rechargement à chaud)", "onAutoForward": "silent", "visibility": "private" },
         "8025": { "label": "Mailpit (e-mails de développement)", "onAutoForward": "notify", "visibility": "private" },
         "9003": { "label": "Xdebug (débogueur PHP)", "onAutoForward": "silent", "visibility": "private" }

@@ -55,7 +55,7 @@ function print(): void {
         <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
             <aside class="space-y-5 print:hidden lg:sticky lg:top-4 lg:self-start" aria-label="toc">
                 <nav v-if="document.toc.length > 0" :aria-label="t('legal.page.toc')" class="rounded-card border border-line bg-surface p-4 text-sm shadow-xs">
-                    <h2 class="font-semibold text-nova-900">{{ t('legal.page.toc') }}</h2>
+                    <h2 class="font-semibold text-rendivoo-900">{{ t('legal.page.toc') }}</h2>
                     <ol class="mt-2 space-y-1.5">
                         <li v-for="item in document.toc" :key="item.id">
                             <a
@@ -68,7 +68,7 @@ function print(): void {
                 </nav>
 
                 <section v-if="versions.length > 1" class="rounded-card border border-line bg-surface p-4 text-sm shadow-xs" aria-labelledby="legal-history">
-                    <h2 id="legal-history" class="font-semibold text-nova-900">{{ t('legal.page.history') }}</h2>
+                    <h2 id="legal-history" class="font-semibold text-rendivoo-900">{{ t('legal.page.history') }}</h2>
                     <ul class="mt-2 space-y-1.5">
                         <li v-for="row in versions" :key="row.version">
                             <Link :href="row.href" class="text-primary-700 underline-offset-2 hover:underline" :aria-current="row.viewing ? 'page' : undefined">
@@ -90,7 +90,7 @@ function print(): void {
                 data-testid="legal-document"
             >
                 <header class="border-b border-line pb-5">
-                    <h1 class="text-3xl font-semibold leading-tight text-nova-900">{{ document.title }}</h1>
+                    <h1 class="text-3xl font-semibold leading-tight text-rendivoo-900">{{ document.title }}</h1>
                     <p class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-700">
                         <span data-testid="legal-version">{{ t('legal.page.version', { version: document.version }) }}</span>
                         <span data-testid="legal-effective">{{ t('legal.page.effective', { date: formatDate(document.effective_on) }) }}</span>
@@ -159,7 +159,7 @@ function print(): void {
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.35;
-    color: var(--color-nova-900);
+    color: var(--color-rendivoo-900);
     scroll-margin-top: 1.5rem;
 }
 

@@ -23,6 +23,7 @@ DEPLOY_USER="${DEPLOY_USER:-deploy}"
 APP_DIR="/var/www/rendivoo"
 PHP_V="8.3"
 PG_V="16"
+# Le nom public du produit est Rendivoo (anciennement Nova). Base, rôles et variables NOVA_* gardent leur nom historique (docs/42).
 DB_NAME="nova"
 BACKUP_DIR="/var/backups/rendivoo"
 

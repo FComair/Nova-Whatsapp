@@ -38,7 +38,7 @@ const form = useForm({
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('policies.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('policies.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('policies.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('policies.body') }}</p>
 
         <form class="mt-6 space-y-5" novalidate @submit.prevent="form.post(`${routes.onboarding}/politiques`)">

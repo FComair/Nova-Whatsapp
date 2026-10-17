@@ -125,7 +125,7 @@ final class ConversationEngine
 
     private function locale(Organization $organization, Customer $customer): string
     {
-        $locales = (array) config('nova.locales');
+        $locales = (array) config('rendivoo.locales');
 
         return match (true) {
             in_array($customer->language, $locales, true) => (string) $customer->language,

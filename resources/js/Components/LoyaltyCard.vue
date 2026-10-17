@@ -6,7 +6,7 @@ import StampRow from './StampRow.vue';
 /**
  * La carte de fidélité telle que la voit le client : nom du programme, progression en tampons, visites restantes, récompense, conditions,
  * expiration et usage des données. Les textes fixes arrivent dans la langue du client (`texts`), les textes du programme aussi (`program`).
- * Même carte pour l'aperçu de la configuration : le client n'a pas d'écran à lui dans Nova, il la reçoit par WhatsApp.
+ * Même carte pour l'aperçu de la configuration : le client n'a pas d'écran à lui dans Rendivoo, il la reçoit par WhatsApp.
  */
 export interface CardTexts {
     of: string;
@@ -49,7 +49,7 @@ const progressText = computed(() => fillTemplate(props.texts.of, { stamps: props
             </div>
             <div class="rounded-xl bg-mint px-4 py-3">
                 <p class="text-xs font-semibold text-neutral-800">{{ texts.reward_label }}</p>
-                <p class="font-semibold text-nova-900">{{ program.reward }}</p>
+                <p class="font-semibold text-rendivoo-900">{{ program.reward }}</p>
                 <p v-if="expiry" class="mt-1 text-xs text-neutral-800">{{ fillTemplate(texts.expires, { date: expiry }, language) }}</p>
             </div>
             <section v-if="program.terms">

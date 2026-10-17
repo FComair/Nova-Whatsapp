@@ -7,7 +7,7 @@ popular: false
 order: 1
 updated: 2026-10-09
 ---
-Quand Nova ne peut pas prévenir un client, l’action (création, déplacement, annulation) est faite quand même et un message vous invite à le contacter directement. Voici ce qu’il faut vérifier.
+Quand Rendivoo ne peut pas prévenir un client, l’action (création, déplacement, annulation) est faite quand même et un message vous invite à le contacter directement. Voici ce qu’il faut vérifier.
 
 ## Les causes possibles
 

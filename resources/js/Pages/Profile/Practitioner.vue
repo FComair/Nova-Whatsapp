@@ -51,7 +51,7 @@ function saveSchedule(): void {
 <template>
     <AppLayout :title="t('profile.title')">
         <div class="mx-auto max-w-3xl">
-            <h1 class="flex items-center gap-2 text-2xl font-semibold text-nova-900">
+            <h1 class="flex items-center gap-2 text-2xl font-semibold text-rendivoo-900">
                 <span class="size-4 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                 {{ t('profile.title') }}
             </h1>
@@ -71,7 +71,7 @@ function saveSchedule(): void {
             </section>
 
             <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
-                <h2 class="text-lg font-semibold text-nova-900">{{ t('profile.services') }}</h2>
+                <h2 class="text-lg font-semibold text-rendivoo-900">{{ t('profile.services') }}</h2>
                 <form class="mt-4" novalidate @submit.prevent="servicesForm.put('/mon-profil/services', { preserveScroll: true })">
                     <p v-if="services.length === 0" class="text-sm text-warning-600">{{ t('practitioners.fields.no_services') }}</p>
                     <ul class="space-y-2">
@@ -91,7 +91,7 @@ function saveSchedule(): void {
             </section>
 
             <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5 shadow-sm sm:p-8">
-                <h2 class="text-lg font-semibold text-nova-900">{{ t('profile.hours') }}</h2>
+                <h2 class="text-lg font-semibold text-rendivoo-900">{{ t('profile.hours') }}</h2>
 
                 <ul v-if="locations.length > 1" class="mt-3 flex flex-wrap gap-2">
                     <li v-for="site in locations" :key="site.id">
@@ -100,7 +100,7 @@ function saveSchedule(): void {
                             class="rounded-control border px-3 py-1.5 text-sm font-medium"
                             :class="
                                 site.id === locationId
-                                    ? 'border-primary-600 bg-primary-50 text-nova-900'
+                                    ? 'border-primary-600 bg-primary-50 text-rendivoo-900'
                                     : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                             "
                             :aria-pressed="site.id === locationId"

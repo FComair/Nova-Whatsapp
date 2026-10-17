@@ -1,4 +1,4 @@
-# Nova Chatbot : règles du projet
+# Rendivoo : règles du projet
 
 Documents de référence : `docs/01-schema-base-de-donnees.md`, `docs/02-roles-et-permissions.md`, `docs/03-identite-visuelle-et-structure-projet.md`. Sources fonctionnelles : spec backend FR et flowcharts « Parcours utilisateur PDF » (dossier parent).
 

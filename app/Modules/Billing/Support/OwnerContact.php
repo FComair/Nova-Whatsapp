@@ -36,6 +36,6 @@ final class OwnerContact
     {
         $locale = self::user()?->locale;
 
-        return in_array($locale, (array) config('nova.locales'), true) ? (string) $locale : (string) config('app.fallback_locale');
+        return in_array($locale, (array) config('rendivoo.locales'), true) ? (string) $locale : (string) config('app.fallback_locale');
     }
 }

@@ -70,7 +70,7 @@ describe('envoi de l\'invitation', function (): void {
             ->and($invitation->used_at)->toBeNull()
             ->and($invitation->revoked_at)->toBeNull()
             ->and($invitation->expires_at->between(now()->addDays(3)->subMinute(), now()->addDays(3)->addMinute()))->toBeTrue()
-            ->and(config('nova.security.invitation_ttl_days'))->toBe(3);
+            ->and(config('rendivoo.security.invitation_ttl_days'))->toBe(3);
 
         $practitioner = $this->asOwner(fn () => Practitioner::query()->firstOrFail());
         expect($practitioner->name)->toBe('Léa Bernard')
@@ -92,9 +92,9 @@ describe('envoi de l\'invitation', function (): void {
             ->and($mails[0]['token'])->toMatch('/^[A-Za-z0-9]{48}$/')
             ->and($mails[0]['body'])->toContain('Léa Bernard')->toContain('3');
     })->with([
-        ['fr', 'Salon Aurore vous invite sur Nova'],
-        ['nl', 'Salon Aurore nodigt u uit op Nova'],
-        ['en', 'Salon Aurore invites you to Nova'],
+        ['fr', 'Salon Aurore vous invite sur Rendivoo'],
+        ['nl', 'Salon Aurore nodigt u uit op Rendivoo'],
+        ['en', 'Salon Aurore invites you to Rendivoo'],
     ]);
 
     it('ne stocke jamais le jeton en clair (empreinte SHA-256 uniquement)', function (): void {
@@ -144,7 +144,7 @@ describe('envoi de l\'invitation', function (): void {
     it('refuse une adresse déjà associée à un compte', function (): void {
         $this->asOwner(fn () => User::factory()->create(['email' => 'lea@example.com']));
 
-        ($this->invite)()->assertSessionHasErrors(['email' => 'Cette adresse est déjà associée à un compte Nova, ou une invitation est déjà en attente.']);
+        ($this->invite)()->assertSessionHasErrors(['email' => 'Cette adresse est déjà associée à un compte Rendivoo, ou une invitation est déjà en attente.']);
     });
 
     it('refuse une seconde invitation en attente pour la même adresse', function (): void {

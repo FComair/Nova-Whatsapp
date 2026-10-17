@@ -282,9 +282,9 @@ final class LegalDocuments
 
     private function company(): string
     {
-        $name = trim((string) config('nova.billing.seller.name'));
+        $name = trim((string) config('rendivoo.billing.seller.name'));
 
         // Raison sociale non renseignée (BILLING_SELLER_NAME vide) : le nom du service, jamais une phrase qui se termine dans le vide.
-        return $name !== '' ? $name : (string) config('app.name', 'Nova WhatsApp');
+        return $name !== '' ? $name : (string) config('app.name', 'Rendivoo');
     }
 }

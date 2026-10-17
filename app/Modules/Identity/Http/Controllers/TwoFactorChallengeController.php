@@ -39,14 +39,14 @@ final class TwoFactorChallengeController
 
         $request->validate(['code' => ['required', 'string', 'max:20']]);
         $key = 'two-factor:'.$user->id;
-        $max = (int) config('nova.security.login_max_attempts');
+        $max = (int) config('rendivoo.security.login_max_attempts');
 
         if (RateLimiter::tooManyAttempts($key, $max)) {
             return $this->abandon($request, RateLimiter::availableIn($key));
         }
 
         if (! $twoFactor->verify($user, $request->string('code')->toString())) {
-            $attempts = RateLimiter::hit($key, (int) config('nova.security.login_lock_minutes') * 60);
+            $attempts = RateLimiter::hit($key, (int) config('rendivoo.security.login_lock_minutes') * 60);
             Audit::record('auth.two_factor.failed', 'user', actorId: $user->id);
 
             if ($attempts >= $max) {

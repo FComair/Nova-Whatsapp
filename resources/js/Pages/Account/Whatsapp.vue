@@ -21,7 +21,7 @@ const page = usePage<SharedProps>();
 
 <template>
     <SettingsLayout :title="t('whatsapp.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('whatsapp.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('whatsapp.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('whatsapp.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-2xl">{{ page.props.flash.status }}</AlertBox>

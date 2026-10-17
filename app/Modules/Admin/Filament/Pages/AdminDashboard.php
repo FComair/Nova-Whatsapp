@@ -117,7 +117,7 @@ class AdminDashboard extends Dashboard
         $key = 'admin-dashboard:'.$admin->id.':'.$period->preset.':'.$period->from->toDateString().':'.$period->until->toDateString();
 
         try {
-            return Cache::remember($key, (int) config('nova.dashboard_cache_seconds', 120), fn (): array => app(DashboardMetrics::class)->compute($admin, $period));
+            return Cache::remember($key, (int) config('rendivoo.dashboard_cache_seconds', 120), fn (): array => app(DashboardMetrics::class)->compute($admin, $period));
         } catch (Throwable $e) {
             report($e);
 

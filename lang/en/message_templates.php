@@ -85,7 +85,7 @@ return [
         'sector_help' => 'The template belongs to this sector only: it does not appear in, and cannot be used by, any other sector.',
         'sector_locked' => 'The sector cannot change after creation. For another sector, duplicate the template.',
         'type' => 'Message type',
-        'type_help' => 'Confirmation, reminder, modification and cancellation are sent automatically by Nova; the others are ready to use.',
+        'type_help' => 'Confirmation, reminder, modification and cancellation are sent automatically by Rendivoo; the others are ready to use.',
         'name' => 'Internal name',
         'category' => 'Meta category',
         'category_help' => 'Leave empty for the type’s usual category. “Marketing” is for offers and re-engagement.',

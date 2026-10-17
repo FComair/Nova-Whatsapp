@@ -28,7 +28,7 @@ beforeEach(function (): void {
     Notification::fake();
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->manager = fn (): PlanManager => app(PlanManager::class);
     $this->plan = fn (string $code): PlatformPlan => PlatformPlan::query()->where('code', $code)->firstOrFail();
     $this->make = fn (array $data = []): PlatformPlan => ($this->manager)()->create([
@@ -95,7 +95,7 @@ describe('création et publication', function (): void {
     it('refuse de publier un paiement unique, une formule achetable sans prix, un bouton incohérent', function (array $override, string $message): void {
         expect(fn () => ($this->make)(['status' => 'active', ...$override]))->toThrow(DomainException::class, __($message));
     })->with([
-        'paiement unique' => [['plan_type' => 'one_time', 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:ventes@nova.test'], 'plans.errors.one_time_unsupported'],
+        'paiement unique' => [['plan_type' => 'one_time', 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:ventes@rendivoo.test'], 'plans.errors.one_time_unsupported'],
         'sans prix' => [['price_cents' => 0], 'plans.errors.price_required'],
         'achat en ligne pour une formule sur mesure' => [['plan_type' => 'custom', 'cta_type' => 'choose_plan'], 'plans.errors.cta_not_purchasable'],
         'contact sans adresse' => [['plan_type' => 'custom', 'cta_type' => 'contact_sales'], 'plans.errors.cta_url_required'],
@@ -235,7 +235,7 @@ describe('protection des abonnés', function (): void {
     it('refuse une migration vers soi-même, un brouillon ou une formule non achetable', function (): void {
         $basic = ($this->plan)('basic');
         $draft = ($this->make)();
-        $custom = ($this->make)(['name' => 'Sur mesure', 'plan_type' => 'custom', 'price_cents' => 0, 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:v@nova.test', 'status' => 'active']);
+        $custom = ($this->make)(['name' => 'Sur mesure', 'plan_type' => 'custom', 'price_cents' => 0, 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:v@rendivoo.test', 'status' => 'active']);
 
         expect(fn () => ($this->manager)()->migrateSubscribers($basic, $basic, $this->admin->id))->toThrow(InvalidArgumentException::class)
             ->and(fn () => ($this->manager)()->migrateSubscribers($basic, $draft, $this->admin->id))->toThrow(DomainException::class)

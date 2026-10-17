@@ -28,7 +28,7 @@ function next(): void {
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('whatsapp.templates_title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('whatsapp.templates_title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('whatsapp.templates_title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('whatsapp.step8_body') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4">{{ page.props.flash.status }}</AlertBox>

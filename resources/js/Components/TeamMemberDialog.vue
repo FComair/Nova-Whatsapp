@@ -184,7 +184,7 @@ watch(
     >
         <div class="flex items-start justify-between gap-4">
             <div>
-                <h2 :id="titleId" class="text-lg font-semibold text-nova-900">
+                <h2 :id="titleId" class="text-lg font-semibold text-rendivoo-900">
                     {{ mode === 'add' ? t('team.dialog.add_title') : t('team.dialog.edit_title', { name: member?.name ?? '' }) }}
                 </h2>
                 <p class="mt-0.5 text-sm text-neutral-600" aria-live="polite">

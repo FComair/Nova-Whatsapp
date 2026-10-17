@@ -34,13 +34,13 @@ final class PhoneVerification
         $this->assertNotBlocked($user);
         $this->limiter->hit('phone', $user->id);
 
-        $length = (int) config('nova.security.phone_code_length');
+        $length = (int) config('rendivoo.security.phone_code_length');
         $code = str_pad((string) random_int(0, (10 ** $length) - 1), $length, '0', STR_PAD_LEFT);
 
         Cache::put(
             $this->codeKey($user),
             $this->fingerprint($user, $code),
-            now()->addMinutes((int) config('nova.security.phone_code_ttl_minutes')),
+            now()->addMinutes((int) config('rendivoo.security.phone_code_ttl_minutes')),
         );
 
         $this->sender->send((string) $user->phone_e164, $code, $user->locale);
@@ -65,7 +65,7 @@ final class PhoneVerification
             $failKey = $this->failKey($user);
             RateLimiter::hit($failKey, $this->blockSeconds());
 
-            if (RateLimiter::tooManyAttempts($failKey, (int) config('nova.security.phone_code_max_attempts'))) {
+            if (RateLimiter::tooManyAttempts($failKey, (int) config('rendivoo.security.phone_code_max_attempts'))) {
                 Cache::forget($this->codeKey($user));
                 Audit::record('auth.phone_verification.blocked', 'user', actorId: $user->id);
 
@@ -86,7 +86,7 @@ final class PhoneVerification
     {
         $failKey = $this->failKey($user);
 
-        if (RateLimiter::tooManyAttempts($failKey, (int) config('nova.security.phone_code_max_attempts'))) {
+        if (RateLimiter::tooManyAttempts($failKey, (int) config('rendivoo.security.phone_code_max_attempts'))) {
             throw new TooManyAttempts('E2', RateLimiter::availableIn($failKey));
         }
     }
@@ -109,6 +109,6 @@ final class PhoneVerification
 
     private function blockSeconds(): int
     {
-        return (int) config('nova.security.verification_block_minutes') * 60;
+        return (int) config('rendivoo.security.verification_block_minutes') * 60;
     }
 }

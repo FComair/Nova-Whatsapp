@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Automatic WhatsApp messages sent by Nova to end customers (customer's language, French by default).
+ * Automatic WhatsApp messages sent by Rendivoo to end customers (customer's language, French by default).
  */
 return [
     // Valeur de {{customer_name}} quand le client n'a pas de nom enregistré.

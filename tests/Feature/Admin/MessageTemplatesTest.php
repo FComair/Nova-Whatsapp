@@ -21,7 +21,7 @@ uses(AuthScenarios::class);
 beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->manager = fn (): MessageTemplateManager => app(MessageTemplateManager::class);
     $this->make = fn (array $data = []): PlatformMessageTemplate => ($this->manager)()->create([
         'sector_code' => 'hairdressing',

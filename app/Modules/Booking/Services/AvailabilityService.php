@@ -190,7 +190,7 @@ final class AvailabilityService
         CarbonImmutable $now,
     ): array {
         [$duration, $before, $after] = $this->durations($service, $practitioner);
-        $step = (int) config('nova.booking.slot_step_minutes', 15) * 60;
+        $step = (int) config('rendivoo.booking.slot_step_minutes', 15) * 60;
         $context = $this->load($location, $practitioner, $fromDate, $toDate, $ignoreBookingId, $now);
         $slots = [];
 

@@ -48,7 +48,7 @@ final class SecurityController
         // L'e-mail et le téléphone se modifient dans Réglages > Profil (mêmes routes ci-dessous, même mot de passe actuel).
         return Inertia::render('Account/Security', [
             'passwordChangedAt' => $changedAt?->toIso8601String(),
-            'passwordOld' => $changedAt !== null && $changedAt->lt(now()->subMonths((int) config('nova.security.password_max_age_months'))),
+            'passwordOld' => $changedAt !== null && $changedAt->lt(now()->subMonths((int) config('rendivoo.security.password_max_age_months'))),
             'twoFactor' => [
                 'enabled' => $user->hasTwoFactor(),
                 'required' => $this->twoFactor->isRequiredFor($this->tenant->role()),
@@ -105,7 +105,7 @@ final class SecurityController
         $request->validate(['email' => ['required', 'string', 'email:rfc', 'max:255', Rule::unique('users', 'email'), Rule::notIn([mb_strtolower($user->email)])]], ['email.unique' => __('ui.errors.E1')]);
 
         $token = Str::random(64);
-        DB::table('email_changes')->updateOrInsert(['user_id' => $user->id], ['new_email' => $email, 'token_hash' => hash('sha256', $token), 'expires_at' => now()->addHours((int) config('nova.security.email_link_ttl_hours')), 'created_at' => now()]);
+        DB::table('email_changes')->updateOrInsert(['user_id' => $user->id], ['new_email' => $email, 'token_hash' => hash('sha256', $token), 'expires_at' => now()->addHours((int) config('rendivoo.security.email_link_ttl_hours')), 'created_at' => now()]);
 
         // Lien vers la NOUVELLE adresse ; avis à l'ANCIENNE (flowchart 3C). L'adresse ne change qu'à la confirmation.
         Notification::route('mail', $email)->notify(new ConfirmNewEmailNotification($token, $user->locale));

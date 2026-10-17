@@ -12,8 +12,8 @@ Le numéro identifie le client dans WhatsApp, et son indicatif de pays compte : 
 ## La règle
 
 - **Avec indicatif** (+32 470 12 34 56, +31 6 12345678 ou 0032…) : le numéro est enregistré tel quel, quel que soit le pays de votre établissement.
-- **Sans indicatif** (0470 12 34 56) : Nova le lit dans le **pays de votre établissement**. Un numéro qui n’existe pas dans ce pays est refusé plutôt que rattaché à un autre pays.
-- Si votre pays n’est pas connu et que le numéro peut appartenir à plusieurs pays, Nova demande d’ajouter l’indicatif.
+- **Sans indicatif** (0470 12 34 56) : Rendivoo le lit dans le **pays de votre établissement**. Un numéro qui n’existe pas dans ce pays est refusé plutôt que rattaché à un autre pays.
+- Si votre pays n’est pas connu et que le numéro peut appartenir à plusieurs pays, Rendivoo demande d’ajouter l’indicatif.
 
 ## Conseil
 

@@ -93,6 +93,6 @@ final class RegisterController
      */
     private function legal(LegalDocuments $legal): array
     {
-        return ['documents' => $legal->displayed(LegalDocument::codes(), app()->getLocale()), 'dpa_required' => (bool) config('nova.legal.dpa_required_at_signup')];
+        return ['documents' => $legal->displayed(LegalDocument::codes(), app()->getLocale()), 'dpa_required' => (bool) config('rendivoo.legal.dpa_required_at_signup')];
     }
 }

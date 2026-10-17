@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         $this->withoutVite();
-        // Le client de test de Symfony envoie « Accept-Language: en-us » : on fixe le français, langue par défaut de Nova.
+        // Le client de test de Symfony envoie « Accept-Language: en-us » : on fixe le français, langue par défaut de Rendivoo.
         $this->withHeader('Accept-Language', 'fr');
 
         if (! self::$schemaReady) {

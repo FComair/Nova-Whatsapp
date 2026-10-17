@@ -2,7 +2,7 @@
 
 Conditions d'utilisation, politique de confidentialité et accord de sous-traitance (DPA) : pages publiques stables, acceptation à l'inscription, version et historique d'acceptation, section **Réglages › Juridique**, nouvelle acceptation quand une version significative est publiée, publication par le Super Admin. Module `app/Modules/Legal`.
 
-> **Les textes fournis sont des modèles à faire valider par un juriste avant la mise en production** (`resources/legal/{document}/{fr,en}.md`, version 2026-10-01). Ils n'inventent aucune identité : `{{company}}` est remplacé par la raison sociale du vendeur (`BILLING_SELLER_NAME`, à renseigner : tant qu'elle ne l'est pas, les pages affichent « Nova (raison sociale à renseigner) »). Le néerlandais n'est pas encore rédigé : la page s'affiche en français avec un avis (puis en anglais si le français manquait).
+> **Les textes fournis sont des modèles à faire valider par un juriste avant la mise en production** (`resources/legal/{document}/{fr,en}.md`, version 2026-10-01). Ils n'inventent aucune identité : `{{company}}` est remplacé par la raison sociale du vendeur (`BILLING_SELLER_NAME`, à renseigner : tant qu'elle ne l'est pas, les pages affichent « Rendivoo (raison sociale à renseigner) »). Le néerlandais n'est pas encore rédigé : la page s'affiche en français avec un avis (puis en anglais si le français manquait).
 
 ## 1. Adresses stables (publiques, sans connexion)
 
@@ -20,7 +20,7 @@ Ces adresses ne changent jamais : elles peuvent figurer dans des e-mails, des fa
 
 - Trois cases **distinctes et jamais précochées**, avec le titre de chaque document en **lien vers sa page, dans un nouvel onglet** (`noopener`, annoncé aux lecteurs d'écran) et la version qu'elle accepte :
   « J'accepte les [Conditions d'utilisation]. » · « Je reconnais avoir lu la [Politique de confidentialité]. » · « J'accepte l'[Accord de sous-traitance des données (DPA)]. »
-- **Décision : le DPA est exigé à l'inscription** (`nova.legal.dpa_required_at_signup = true`). L'établissement est responsable du traitement des données de ses propres clients et Nova est son sous-traitant ; l'article 28 du RGPD impose un accord écrit, et le flux d'inscription (flowchart 1A) le prévoyait déjà. Mettre la valeur à `false` rend la case facultative : elle n'enregistre rien tant qu'elle n'est pas cochée.
+- **Décision : le DPA est exigé à l'inscription** (`rendivoo.legal.dpa_required_at_signup = true`). L'établissement est responsable du traitement des données de ses propres clients et Rendivoo est son sous-traitant ; l'article 28 du RGPD impose un accord écrit, et le flux d'inscription (flowchart 1A) le prévoyait déjà. Mettre la valeur à `false` rend la case facultative : elle n'enregistre rien tant qu'elle n'est pas cochée.
 - Le compte n'est pas créé tant qu'une case obligatoire manque (serveur et écran) ; les coordonnées saisies sont conservées (le mot de passe est à ressaisir). Message clair sous chaque case.
 - **Version vue = version acceptée** : le formulaire envoie les versions affichées ; si un document a été publié entre l'affichage et l'envoi, l'envoi est refusé, la nouvelle version s'affiche et les cases sont décochées (jamais l'ancienne version acceptée en silence).
 - **Preuve enregistrée** (`user_consents` + `audit_logs` `legal.accepted`) : utilisateur, document, version, horodatage, contexte (`signup`), adresse IP, agent utilisateur, langue affichée, établissement.
@@ -63,7 +63,7 @@ Cases natives avec libellé lié, liens soulignés avec nouvel onglet annoncé, 
 
 ## 8. Données
 
-`legal_document_versions` (globale, lecture seule pour l'application cliente) ; `user_consents` reçoit `user_agent` et `locale` et ses deux garde-fous ; la version des documents n'est plus lue dans `config/nova.php` (supprimée), seulement en base.
+`legal_document_versions` (globale, lecture seule pour l'application cliente) ; `user_consents` reçoit `user_agent` et `locale` et ses deux garde-fous ; la version des documents n'est plus lue dans `config/rendivoo.php` (supprimée), seulement en base.
 
 > Dépôt de documents au format PDF : voir `docs/35-documents-juridiques-pdf.md`.
 

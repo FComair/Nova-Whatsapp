@@ -119,7 +119,7 @@ return [
         'valid' => 'Deze link werkt één keer en verloopt over :days dagen.',
         'mfa' => 'Na het kiezen van uw wachtwoord stelt u bij uw eerste aanmelding tweestapsverificatie in.',
         'ignore' => 'Verwachtte u deze e-mail niet? Negeer hem: er verandert niets.',
-        'invitation' => ['subject' => 'Uw Nova-beheerdersaccount', 'intro' => 'U bent aan Nova toegevoegd als :role. Kies uw wachtwoord om uw account te activeren.', 'action' => 'Mijn wachtwoord kiezen'],
-        'reset' => ['subject' => 'Reset uw Nova-beheerderswachtwoord', 'intro' => 'Er is een wachtwoordreset aangevraagd voor uw Nova-beheerdersaccount (:role).', 'action' => 'Nieuw wachtwoord kiezen'],
+        'invitation' => ['subject' => 'Uw Rendivoo-beheerdersaccount', 'intro' => 'U bent aan Rendivoo toegevoegd als :role. Kies uw wachtwoord om uw account te activeren.', 'action' => 'Mijn wachtwoord kiezen'],
+        'reset' => ['subject' => 'Reset uw Rendivoo-beheerderswachtwoord', 'intro' => 'Er is een wachtwoordreset aangevraagd voor uw Rendivoo-beheerdersaccount (:role).', 'action' => 'Nieuw wachtwoord kiezen'],
     ],
 ];

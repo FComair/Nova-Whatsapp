@@ -178,7 +178,7 @@ watch(
             <!-- Étape 2 : formule, récapitulatif de facturation, acceptations -->
             <div v-show="step === 2" class="space-y-5">
                 <div>
-                    <h2 ref="heading" tabindex="-1" class="text-lg font-semibold text-nova-900 focus:outline-none">{{ t('register.plan_title') }}</h2>
+                    <h2 ref="heading" tabindex="-1" class="text-lg font-semibold text-rendivoo-900 focus:outline-none">{{ t('register.plan_title') }}</h2>
                     <p class="mt-1 text-sm text-neutral-700">{{ t('register.plan_intro') }}</p>
                 </div>
 
@@ -187,7 +187,7 @@ watch(
                 <PlanPicker v-model="form.plan" :offers="offers" :error="errors.plan" />
 
                 <section class="rounded-card border border-line bg-surface p-4" aria-labelledby="signup-summary" data-testid="summary">
-                    <h3 id="signup-summary" class="font-semibold text-nova-900">{{ t('register.summary_title') }}</h3>
+                    <h3 id="signup-summary" class="font-semibold text-rendivoo-900">{{ t('register.summary_title') }}</h3>
                     <dl class="mt-3 grid gap-x-4 gap-y-2 text-sm sm:grid-cols-[8rem_1fr]">
                         <dt class="font-medium text-neutral-700">{{ t('register.summary_plan') }}</dt>
                         <dd class="font-semibold" data-testid="summary-plan">{{ summary.plan }}</dd>
@@ -205,7 +205,7 @@ watch(
                 </section>
 
                 <fieldset class="space-y-3 rounded-card border border-line bg-surface p-4" data-testid="legal-acceptance">
-                    <legend class="px-1 text-sm font-semibold text-nova-900">{{ t('legal.signup.title') }}</legend>
+                    <legend class="px-1 text-sm font-semibold text-rendivoo-900">{{ t('legal.signup.title') }}</legend>
                     <AlertBox v-if="!legalReady" variant="error">{{ t('legal.signup.unavailable') }}</AlertBox>
                     <AlertBox v-if="errors.legal" variant="error" data-testid="legal-changed">{{ errors.legal }}</AlertBox>
                     <CheckboxField

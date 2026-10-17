@@ -37,9 +37,9 @@ final class LoyaltyProgramController
             'impact' => $request->session()->get('loyalty_impact'),
             'services' => DB::table('services')->whereNull('deleted_at')->where('is_active', true)->orderBy('name')->get(['id', 'name', 'price_cents'])
                 ->map(fn (object $row): array => ['id' => (string) $row->id, 'name' => (string) $row->name, 'price_cents' => (int) $row->price_cents])->all(),
-            'locales' => (array) config('nova.locales'),
+            'locales' => (array) config('rendivoo.locales'),
             // Textes fixes de la carte client dans chaque langue : l'aperçu montre ce que verra un client qui parle cette langue.
-            'preview_i18n' => collect((array) config('nova.locales'))->mapWithKeys(fn (string $locale): array => [$locale => [
+            'preview_i18n' => collect((array) config('rendivoo.locales'))->mapWithKeys(fn (string $locale): array => [$locale => [
                 'of' => __('ui.loyalty.progress.of', [], $locale),
                 'remaining' => __('ui.loyalty.progress.remaining', [], $locale),
                 'ready' => __('ui.loyalty.progress.ready', [], $locale),
@@ -83,7 +83,7 @@ final class LoyaltyProgramController
     public function messages(): Response
     {
         $program = LoyaltyProgram::current() ?? $this->directory->program();
-        $locales = (array) config('nova.locales');
+        $locales = (array) config('rendivoo.locales');
         $saved = $program === null ? [] : (array) $program->messages;
         $settings = [];
 

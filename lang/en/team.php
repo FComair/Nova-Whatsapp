@@ -98,14 +98,14 @@ return [
     ],
     'mail' => [
         'greeting' => 'Hello :name,',
-        'invitation' => ['subject' => 'Your Nova support access', 'intro' => 'You have been invited to join the Nova support team. Choose your password to activate your account.', 'action' => 'Choose my password'],
-        'reset' => ['subject' => 'Reset your Nova support password', 'intro' => 'A Nova administrator sent you a link to choose a new password.', 'action' => 'Choose a new password'],
+        'invitation' => ['subject' => 'Your Rendivoo support access', 'intro' => 'You have been invited to join the Rendivoo support team. Choose your password to activate your account.', 'action' => 'Choose my password'],
+        'reset' => ['subject' => 'Reset your Rendivoo support password', 'intro' => 'A Rendivoo administrator sent you a link to choose a new password.', 'action' => 'Choose a new password'],
         'valid' => 'This link works once and expires in :days days.',
         'mfa' => 'At your first sign-in you will be asked to set up two-factor authentication.',
         'ignore' => 'If you were not expecting this email, ignore it.',
     ],
     'invitation' => [
-        'title' => 'Nova support access',
+        'title' => 'Rendivoo support access',
         'invalid_title' => 'Link not valid',
         'invalid' => 'This link is invalid, expired or already used. Ask a Super Admin to send you a new one.',
         'heading' => 'Welcome, :name',

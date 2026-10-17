@@ -34,10 +34,10 @@ beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
-    $this->editor = PlatformAdmin::query()->create(['email' => 'editeur@nova.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->editor = PlatformAdmin::query()->create(['email' => 'editeur@rendivoo.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
     $this->editor->forceFill(['support_role' => PlatformAdmin::SUPPORT_EDITOR])->save();
-    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
     foreach (['boss', 'editor', 'agent'] as $name) {
         $this->{$name}->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
@@ -88,14 +88,14 @@ describe('accès', function (): void {
     });
 
     it('crée un éditeur de contenu avec --content-editor et refuse deux rôles à la fois', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'nouvel.editeur@nova.test', '--content-editor' => true])
+        $this->artisan('rendivoo:create-admin', ['email' => 'nouvel.editeur@rendivoo.test', '--content-editor' => true])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'Un-Mot-De-Passe-Solide-2026!')
             ->expectsQuestion('Confirmez le mot de passe', 'Un-Mot-De-Passe-Solide-2026!')
             ->assertSuccessful();
 
-        expect(PlatformAdmin::query()->where('email', 'nouvel.editeur@nova.test')->first())->support_role->toBe('editor');
-        $this->artisan('nova:create-admin', ['email' => 'double@nova.test', '--content-editor' => true, '--support-agent' => true])->assertFailed();
-        expect(PlatformAdmin::query()->where('email', 'double@nova.test')->exists())->toBeFalse();
+        expect(PlatformAdmin::query()->where('email', 'nouvel.editeur@rendivoo.test')->first())->support_role->toBe('editor');
+        $this->artisan('rendivoo:create-admin', ['email' => 'double@rendivoo.test', '--content-editor' => true, '--support-agent' => true])->assertFailed();
+        expect(PlatformAdmin::query()->where('email', 'double@rendivoo.test')->exists())->toBeFalse();
     });
 });
 
@@ -110,7 +110,7 @@ describe('liste', function (): void {
             ->assertTableColumnStateSet('lang_fr', 'ready', $article->id)
             ->assertTableColumnStateSet('lang_nl', 'missing', $article->id)
             ->assertTableColumnStateSet('lang_en', 'ready', $article->id)
-            ->assertTableColumnStateSet('editor_email', 'fondateur@nova.test', $article->id)
+            ->assertTableColumnStateSet('editor_email', 'fondateur@rendivoo.test', $article->id)
             ->assertTableColumnStateSet('position', 7, $article->id);
     });
 
@@ -351,11 +351,11 @@ describe('aperçu', function (): void {
     });
 
     it('retire le HTML brut et les liens dangereux, comme le centre d\'aide', function (): void {
-        $article = ($this->faq)('Sécurité', ['translations' => ['fr' => faqReady('Sécurité', "<script>alert(1)</script>\n\n[piège](javascript:alert(1)) et [ok](https://nova.example)")]]);
+        $article = ($this->faq)('Sécurité', ['translations' => ['fr' => faqReady('Sécurité', "<script>alert(1)</script>\n\n[piège](javascript:alert(1)) et [ok](https://rendivoo.example)")]]);
 
         $html = Livewire::actingAs($this->boss, 'platform')->test(PreviewFaqArticle::class, ['record' => $article->id])->html();
 
-        expect($html)->not->toContain('<script>alert(1)')->not->toContain('href="javascript:')->toContain('https://nova.example');
+        expect($html)->not->toContain('<script>alert(1)')->not->toContain('href="javascript:')->toContain('https://rendivoo.example');
     });
 });
 

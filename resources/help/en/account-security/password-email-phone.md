@@ -7,7 +7,7 @@ popular: false
 order: 2
 updated: 2026-10-09
 ---
-Everything is in **Settings > Security**. For each change, Nova asks for your **current password**.
+Everything is in **Settings > Security**. For each change, Rendivoo asks for your **current password**.
 
 ## Password
 
@@ -15,7 +15,7 @@ At least 12 characters, with an upper-case letter, a lower-case letter, a digit 
 
 ## Email address
 
-Enter the new address: Nova sends a confirmation link to it and informs the old one. The change only happens after confirmation.
+Enter the new address: Rendivoo sends a confirmation link to it and informs the old one. The change only happens after confirmation.
 
 ## Business phone
 

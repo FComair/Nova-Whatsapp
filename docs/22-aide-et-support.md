@@ -1,4 +1,4 @@
-# Nova — Help centre, contact form and support tickets (spec)
+# Rendivoo — Help centre, contact form and support tickets (spec)
 
 Status: phases 1 (Help centre), 2 (tickets for clients) and 3 (support console in the Super Admin, see docs/29) built; articles can now also be managed from the Super Admin (docs/30); phases 4 and 5 to come. Statuses are now eight on the team side (new, waiting on internal team and reopened were added; the client still sees five): see docs/29 §2. Same visual language as the app (docs/20: teal tokens, Bricolage Grotesque and Instrument Sans, pill buttons, status badge pairs). No change to existing screens except one new top-level menu entry. UI text in fr / nl / en, dates DD/MM/YYYY (CLAUDE.md).
 
@@ -7,7 +7,7 @@ Status: phases 1 (Help centre), 2 (tickets for clients) and 3 (support console i
 - **New top-level menu item "Help"** (question-mark icon, after Settings) with a small badge: the number of tickets that need the client's attention (a support reply not yet read, or status "Waiting on you"). Inside the area, three tabs: *Help centre*, *Contact support*, *Your tickets*.
 - **Help centre content lives in the repository**, not in the database: Markdown files in `resources/help/{fr,nl,en}/{category}/{slug}.md` with front matter (`title`, `summary`, `tags`, `related`, `popular`, `updated`). Screenshots are static images under `public/help/`. A test fails if a slug exists in one language and not in the other two, or if a `related` link points nowhere. Rendering uses the Markdown library already shipped with Laravel; no raw HTML.
 - **Search** is built like Settings search: a per-language index (title, summary, tags, plain text of the body), accent- and case-insensitive, matched in the browser, with suggestions after 2 characters.
-- **Tickets are tenant data**: tables carry `org_id`, go through `Rls::enableTenantTable()` and the GDPR erasure steps (CLAUDE.md rule 1). Nova's support staff work in the **Super Admin console** (Filament, separate guard, 2FA, no impersonation) through read/write policies for the `nova_platform` role limited to these tables, with `Audit::record()` on every staff action.
+- **Tickets are tenant data**: tables carry `org_id`, go through `Rls::enableTenantTable()` and the GDPR erasure steps (CLAUDE.md rule 1). Rendivoo's support staff work in the **Super Admin console** (Filament, separate guard, 2FA, no impersonation) through read/write policies for the `nova_platform` role limited to these tables, with `Audit::record()` on every staff action.
 - **Access**: signed-in users only in version 1 (Help centre included). Only the ticket's author and the business owner can see a ticket; everybody else in the same business cannot.
 
 ## 2. Help centre landing (`/aide`)
@@ -22,7 +22,7 @@ Status: phases 1 (Help centre), 2 (tickets for clients) and 3 (support console i
 
 - **Breadcrumb**: Help › Category › Article (last item not a link, `aria-current="page"`).
 - **Layout**: single readable column (max 72 characters per line), article title (Bricolage), summary, "Updated on DD/MM/YYYY", then the body: H2 sections, numbered steps, callouts (tip, warning) with icon and text, screenshots with alt text and a caption. On desktop a sticky "In this article" list (H2 links) sits on the right; on phone it collapses above the body.
-- **Feedback widget** at the end: "Was this article helpful?" with *Yes* / *No*. After *No*: optional short field "What was missing?" (500 characters) and Send; after any answer: "Thank you for your feedback." One answer per user and article per day. Feedback is stored without the text being shown to anyone but Nova staff.
+- **Feedback widget** at the end: "Was this article helpful?" with *Yes* / *No*. After *No*: optional short field "What was missing?" (500 characters) and Send; after any answer: "Thank you for your feedback." One answer per user and article per day. Feedback is stored without the text being shown to anyone but Rendivoo staff.
 - **Related articles** (up to 3, from front matter) and, whatever the answer, a quiet line: "Still stuck? Contact support" with the article title pre-filled as the ticket's subject context.
 
 ## 4. Contact support (`/aide/contact`)
@@ -46,7 +46,7 @@ One column, same card style as the customer form (docs/21).
 
 ## 5. Your tickets (`/aide/tickets`)
 
-- **Header**: "Your tickets", subtitle "Track and follow up on your requests to Nova support.", primary button "New ticket", the response-time sentence beneath.
+- **Header**: "Your tickets", subtitle "Track and follow up on your requests to Rendivoo support.", primary button "New ticket", the response-time sentence beneath.
 - **Toolbar**: search (reference, subject, words in messages), filters in one row: Status (Open · In progress · Waiting on you · Resolved or closed), Category, Urgency; a "Needs your attention" shortcut chip (replies not read + Waiting on you). Active filters are listed with "Clear filters".
 - **Table** (60 px rows, same pattern as Customers): Reference (link, monospace-free, Bricolage numerals) · Subject (bold if unread support reply, with a small dot and sr-only "new reply") · Status badge · Category · Urgency · Created (DD/MM/YYYY) · Last update (DD/MM/YYYY HH:MM). Sortable by Created and Last update (default: Last update, newest first). 25 per page. On phone each row becomes a card: reference + status on top, subject, last update.
 - **Empty state**: "You have no support tickets yet." + "Create your first ticket". **No result state** with "Clear filters". **Error state** with "Try again".
@@ -55,7 +55,7 @@ One column, same card style as the customer form (docs/21).
 ## 6. Ticket detail (`/aide/tickets/{reference}`)
 
 - **Header card**: reference and subject, status badge with an info tooltip (definitions in 7), category, urgency, "Created on …", "Last update …", and for the owner "Opened by Name". Actions: **Reply** (focuses the reply box), **This solved it** (visible when Resolved: closes the ticket), **Reopen** (visible when Resolved and within 14 days), **Close ticket** (visible while Open, In progress or Waiting on you, with a confirmation dialog "Close this ticket? You can still open a new one later."). There is no separate "Mark as resolved" for clients: "Resolved" is set by support; the client closes with *This solved it* or *Close ticket*.
-- **Thread** (chronological, oldest first, scrolled to the latest on open): each message is a bubble block with sender ("You" / "Nova support" with the agent's first name when present), time (DD/MM/YYYY HH:MM), body (plain text with line breaks and clickable links, never HTML), and attachments as file chips (name, size, download). Client messages: mint background on the right-aligned side; support messages: white with teal left border. System events ("Status changed to Waiting on you", "Ticket closed by you") are centred small grey lines. **Internal notes written by staff never reach the client** (they are rows the tenant role cannot read; see 9).
+- **Thread** (chronological, oldest first, scrolled to the latest on open): each message is a bubble block with sender ("You" / "Rendivoo support" with the agent's first name when present), time (DD/MM/YYYY HH:MM), body (plain text with line breaks and clickable links, never HTML), and attachments as file chips (name, size, download). Client messages: mint background on the right-aligned side; support messages: white with teal left border. System events ("Status changed to Waiting on you", "Ticket closed by you") are centred small grey lines. **Internal notes written by staff never reach the client** (they are rows the tenant role cannot read; see 9).
 - **Reply box** (sticky at the bottom on phone): label "Write your reply…", textarea (up to 5000 characters), attachments (same limits as the form), buttons *Send reply* and *Cancel* (clears after confirming if text was typed). Disabled with a reason on a Closed ticket: "This ticket is closed. Open a new ticket to continue." (link, with the old reference pre-filled in the description).
 - **After sending**: the message appears at once, "Last update" changes, a toast "Your reply has been sent." and the status moves according to 8.
 
@@ -91,7 +91,7 @@ One column, same card style as the customer form (docs/21).
 - `support_ticket_events` (append-only): status changes, assignment, reopen, close, reason, actor.
 - `help_article_feedback` (append-only): org_id, user_id, locale, slug, helpful, comment, created_at.
 - All five tables are added to `ErasureSteps` and `gdpr_purge_org`, and to the organisation data export. Rule 4 (append-only journals) applies to messages, events and feedback.
-- **Who sees what**: author and owner see a ticket; nobody else of the business; Nova staff see all through the console. Practitioners and receptionists can create and follow their own tickets. Sending is rate limited (5 new tickets and 30 replies per user per hour). Attachment names are escaped, content types checked from the file bytes, images re-encoded to drop metadata. No ticket text is written to the application log.
+- **Who sees what**: author and owner see a ticket; nobody else of the business; Rendivoo staff see all through the console. Practitioners and receptionists can create and follow their own tickets. Sending is rate limited (5 new tickets and 30 replies per user per hour). Attachment names are escaped, content types checked from the file bytes, images re-encoded to drop metadata. No ticket text is written to the application log.
 
 ## 10. Visual and responsive details
 
@@ -110,7 +110,7 @@ One column, same card style as the customer form (docs/21).
 
 ## 12. Decisions to take
 
-1. **Who answers and where**: staff use the Nova Super Admin console (proposed, keeps data in one place), or tickets are forwarded to an external help desk (Zendesk, Freshdesk…) and this module only mirrors them.
+1. **Who answers and where**: staff use the Rendivoo Super Admin console (proposed, keeps data in one place), or tickets are forwarded to an external help desk (Zendesk, Freshdesk…) and this module only mirrors them.
 2. **Response promise and hours**: "within 1 business day", Monday to Friday 09:00–17:00 Brussels time (proposed) — confirm what the team can really hold.
 3. **Languages of the answers**: the team answers in the client's language, or only in fr and en.
 4. **Article authoring**: I draft the ~24 launch articles in fr and en from the real app screens, and nl from fr; the team reviews the wording before release.

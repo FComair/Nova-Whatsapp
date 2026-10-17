@@ -9,7 +9,7 @@ updated: 2026-10-09
 ---
 ## Wachtwoord vergeten
 
-Gebruik op de aanmeldpagina **Wachtwoord vergeten**: Nova stuurt een herstellink naar uw e-mailadres. Kies een wachtwoord van minstens 12 tekens.
+Gebruik op de aanmeldpagina **Wachtwoord vergeten**: Rendivoo stuurt een herstellink naar uw e-mailadres. Kies een wachtwoord van minstens 12 tekens.
 
 ## De code van de tweestapsverificatie wordt geweigerd
 

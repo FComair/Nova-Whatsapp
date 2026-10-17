@@ -50,7 +50,7 @@ final class Keywords
     {
         $map = [];
 
-        foreach ((array) config('nova.locales') as $locale) {
+        foreach ((array) config('rendivoo.locales') as $locale) {
             $names = trans('conversation.keywords.weekdays', [], (string) $locale);
 
             if (! is_array($names)) {
@@ -78,7 +78,7 @@ final class Keywords
     {
         $words = [];
 
-        foreach ((array) config('nova.locales') as $locale) {
+        foreach ((array) config('rendivoo.locales') as $locale) {
             $list = trans('conversation.keywords.'.$group, [], (string) $locale);
 
             if (! is_array($list)) {

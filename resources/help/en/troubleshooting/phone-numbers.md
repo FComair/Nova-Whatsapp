@@ -12,8 +12,8 @@ The number identifies the customer in WhatsApp, and its country code matters: a 
 ## The rule
 
 - **With a country code** (+32 470 12 34 56, +31 6 12345678 or 0032…): the number is saved as typed, whatever your business’s country.
-- **Without a country code** (0470 12 34 56): Nova reads it in **your business’s country**. A number that does not exist in that country is refused rather than attached to another country.
-- If your country is not known and the number could belong to several countries, Nova asks you to add the country code.
+- **Without a country code** (0470 12 34 56): Rendivoo reads it in **your business’s country**. A number that does not exist in that country is refused rather than attached to another country.
+- If your country is not known and the number could belong to several countries, Rendivoo asks you to add the country code.
 
 ## Advice
 

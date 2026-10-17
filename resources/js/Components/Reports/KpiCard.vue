@@ -53,7 +53,7 @@ const directionText = computed(() =>
             <span>{{ label }}</span>
             <InfoTip v-if="help" :text="help" />
         </dt>
-        <dd class="mt-1 break-words font-display text-2xl font-bold text-nova-900 sm:text-3xl" data-testid="kpi-value">{{ value }}</dd>
+        <dd class="mt-1 break-words font-display text-2xl font-bold text-rendivoo-900 sm:text-3xl" data-testid="kpi-value">{{ value }}</dd>
         <dd class="mt-1.5 min-h-[2.25rem] text-xs leading-snug text-neutral-700" data-testid="kpi-change">
             <template v-if="forward">{{ t('reports.compare.forward') }}</template>
             <template v-else-if="change && change.direction !== 'none'">

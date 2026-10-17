@@ -15,7 +15,7 @@ In de details van een afspraak toont de regel **Behandelaar** aan wie ze is toeg
 2. Kies een behandelaar uit de lijst (er verschijnt een zoekveld als de lijst lang is). Enkel actieve behandelaars die die dienst uitvoeren, worden getoond.
 3. Klik op **Opslaan**. Om af te zien, herstelt **Annuleren** de oorspronkelijke behandelaar.
 
-Het uur verandert niet. Als de nieuwe behandelaar dan al bezet is, meldt Nova dat onder het veld en wordt er niets gewijzigd.
+Het uur verandert niet. Als de nieuwe behandelaar dan al bezet is, meldt Rendivoo dat onder het veld en wordt er niets gewijzigd.
 
 ## Wie het kan doen
 

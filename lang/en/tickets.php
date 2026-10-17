@@ -146,7 +146,7 @@ return [
         'reply_heading' => 'Reply to the client',
         'internal_heading' => 'Internal note',
         'reply_banner' => 'PUBLIC: this reply is emailed to :email and shown in their ticket.',
-        'internal_banner' => 'PRIVATE: only Nova staff can see this note. The client is never notified.',
+        'internal_banner' => 'PRIVATE: only Rendivoo staff can see this note. The client is never notified.',
         'reply_label' => 'Your reply',
         'note_label' => 'Your note',
         'reply_help' => 'The client receives an excerpt by email (:email).',
@@ -206,7 +206,7 @@ return [
 
     'thread' => [
         'title' => 'Conversation',
-        'nova_team' => 'Nova team',
+        'nova_team' => 'Rendivoo team',
         'client' => 'Client',
         'system' => 'System',
         'internal_label' => 'Internal note: not visible to the client',
@@ -272,7 +272,7 @@ return [
         'defs' => [
             'open' => ['name' => 'Open tickets', 'text' => 'Tickets that are New, Open, In progress, Waiting on client, Waiting on internal team or Reopened, right now.'],
             'unassigned' => ['name' => 'Unassigned', 'text' => 'Open tickets (as defined above) with no assigned agent.'],
-            'waiting_on_client' => ['name' => 'Waiting on client', 'text' => 'Tickets whose status is “Waiting on client”: Nova needs information or an action from the client.'],
+            'waiting_on_client' => ['name' => 'Waiting on client', 'text' => 'Tickets whose status is “Waiting on client”: Rendivoo needs information or an action from the client.'],
             'overdue' => ['name' => 'Overdue first reply', 'text' => 'Open tickets with no public reply yet whose first-reply deadline has passed. Deadlines come from Global settings, by priority.'],
             'at_risk' => ['name' => 'At-risk first reply', 'text' => 'Open tickets with no public reply yet that used the “at risk” share of their deadline without being overdue.'],
             'resolved' => ['name' => 'Resolved today / this week / this month', 'text' => 'Tickets whose resolution date falls in the current day, week (from Monday) or month. A ticket reopened after resolution is no longer counted.'],

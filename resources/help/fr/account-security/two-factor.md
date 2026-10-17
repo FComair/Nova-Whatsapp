@@ -7,7 +7,7 @@ popular: true
 order: 1
 updated: 2026-10-09
 ---
-La double authentification est **obligatoire** pour le propriétaire et les responsables de site : elle doit être activée pour continuer à utiliser Nova.
+La double authentification est **obligatoire** pour le propriétaire et les responsables de site : elle doit être activée pour continuer à utiliser Rendivoo.
 
 ## Activer
 
@@ -18,6 +18,6 @@ La double authentification est **obligatoire** pour le propriétaire et les resp
 
 ## À chaque connexion
 
-Après votre mot de passe, Nova demande le code de l’application (ou un code de secours). Rien d’autre n’est redemandé pendant la session.
+Après votre mot de passe, Rendivoo demande le code de l’application (ou un code de secours). Rien d’autre n’est redemandé pendant la session.
 
 > **Attention :** sans téléphone ni codes de secours, vous ne pouvez plus vous connecter. Conservez les codes de secours hors de l’application.

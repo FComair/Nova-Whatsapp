@@ -160,10 +160,10 @@ function statusLabel(practitioner: PractitionerItem): string {
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('practitioners.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('practitioners.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('practitioners.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('practitioners.body') }}</p>
 
-        <p class="mt-3 rounded-control bg-primary-50 px-3 py-2 text-sm text-nova-700">
+        <p class="mt-3 rounded-control bg-primary-50 px-3 py-2 text-sm text-rendivoo-700">
             {{
                 plan.limit === null
                     ? t('practitioners.plan_usage_unlimited', { plan: plan.name, used: plan.used })
@@ -181,7 +181,7 @@ function statusLabel(practitioner: PractitionerItem): string {
             <li v-for="practitioner in practitioners" :key="practitioner.id" class="rounded-control border border-line p-4">
                 <div v-if="editing !== practitioner.id" class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="flex flex-wrap items-center gap-2 font-medium text-nova-900">
+                        <p class="flex flex-wrap items-center gap-2 font-medium text-rendivoo-900">
                             <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="md" />
                             <span class="size-3 shrink-0 rounded-full" :style="{ backgroundColor: practitioner.color }" aria-hidden="true" />
                             <span class="break-words">{{ practitioner.name }}</span>
@@ -256,7 +256,7 @@ function statusLabel(practitioner: PractitionerItem): string {
 
                 <!-- Planning hebdomadaire du praticien -->
                 <div v-if="scheduleFor?.practitionerId === practitioner.id" class="mt-4 border-t border-line pt-4">
-                    <h2 class="font-medium text-nova-900">{{ t('practitioners.hours_title', { name: practitioner.name }) }}</h2>
+                    <h2 class="font-medium text-rendivoo-900">{{ t('practitioners.hours_title', { name: practitioner.name }) }}</h2>
                     <p class="mt-1 text-sm text-neutral-600">{{ t('practitioners.hours_body') }}</p>
 
                     <ul v-if="locations.length > 1" class="mt-3 flex flex-wrap gap-2">
@@ -266,7 +266,7 @@ function statusLabel(practitioner: PractitionerItem): string {
                                 class="rounded-control border px-3 py-1.5 text-sm font-medium"
                                 :class="
                                     site.id === scheduleFor.locationId
-                                        ? 'border-primary-600 bg-primary-50 text-nova-900'
+                                        ? 'border-primary-600 bg-primary-50 text-rendivoo-900'
                                         : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                                 "
                                 :aria-pressed="site.id === scheduleFor.locationId"
@@ -302,7 +302,7 @@ function statusLabel(practitioner: PractitionerItem): string {
         </ul>
 
         <form v-if="inviting" class="mt-4 space-y-4 rounded-control border border-primary-600/40 bg-primary-50/40 p-4" novalidate @submit.prevent="sendInvite">
-            <h2 class="font-medium text-nova-900">{{ t('practitioners.invite') }}</h2>
+            <h2 class="font-medium text-rendivoo-900">{{ t('practitioners.invite') }}</h2>
             <p class="text-sm text-neutral-700">{{ t('practitioners.invite_hint', { days: invitationDays }) }}</p>
             <TextField v-model="inviteForm.name" :label="t('practitioners.invite_name')" required :error="inviteForm.errors.name" />
             <TextField

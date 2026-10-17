@@ -105,7 +105,7 @@ function submit(): void {
         </div>
 
         <div v-if="customMode" ref="customField" class="rounded-card bg-primary-50 p-4">
-            <p class="mb-2 text-sm font-semibold text-nova-900">{{ t('services.fields.vat_custom_title') }}</p>
+            <p class="mb-2 text-sm font-semibold text-rendivoo-900">{{ t('services.fields.vat_custom_title') }}</p>
             <TextField
                 v-model="data.vat_rate"
                 inputmode="decimal"

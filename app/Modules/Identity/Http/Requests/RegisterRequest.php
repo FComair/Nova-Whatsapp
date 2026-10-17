@@ -56,7 +56,7 @@ final class RegisterRequest extends FormRequest
             // Conditions et confidentialité : acceptations distinctes et obligatoires, jamais précochées. Le DPA l'est aussi tant que la plateforme l'exige (docs/28).
             'accept_terms' => ['accepted'],
             'accept_privacy' => ['accepted'],
-            'accept_dpa' => config('nova.legal.dpa_required_at_signup') ? ['accepted'] : ['nullable', 'boolean'],
+            'accept_dpa' => config('rendivoo.legal.dpa_required_at_signup') ? ['accepted'] : ['nullable', 'boolean'],
             'legal_versions' => ['required', 'array'],
             'legal_versions.terms' => ['required', 'string', 'max:30'],
             'legal_versions.privacy' => ['required', 'string', 'max:30'],

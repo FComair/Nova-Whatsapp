@@ -49,7 +49,7 @@ function save(): void {
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('onboarding.hours.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('onboarding.hours.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('onboarding.hours.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('onboarding.hours.body') }}</p>
 
         <nav v-if="locations.length > 1" class="mt-5" :aria-label="t('onboarding.hours.site')">
@@ -59,7 +59,9 @@ function save(): void {
                         :href="onboardingStep('horaires', { site: site.id })"
                         class="inline-flex items-center gap-2 rounded-control border px-3 py-1.5 text-sm font-medium"
                         :class="
-                            site.id === selectedId ? 'border-primary-600 bg-primary-50 text-nova-900' : 'border-line-strong text-neutral-700 hover:bg-surface-2'
+                            site.id === selectedId
+                                ? 'border-primary-600 bg-primary-50 text-rendivoo-900'
+                                : 'border-line-strong text-neutral-700 hover:bg-surface-2'
                         "
                         :aria-current="site.id === selectedId ? 'page' : undefined"
                     >

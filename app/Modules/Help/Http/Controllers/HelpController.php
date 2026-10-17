@@ -77,7 +77,7 @@ final class HelpController
 
     /**
      * Avis sur un article : une réponse par personne, article et jour (une deuxième est ignorée sans erreur). Le commentaire
-     * n'est lu que par l'équipe Nova.
+     * n'est lu que par l'équipe Rendivoo.
      */
     public function feedback(Request $request): RedirectResponse
     {

@@ -38,7 +38,7 @@ final class PhoneVerificationController
 
         return Inertia::render('Auth/VerifyPhone', [
             'phoneMasked' => $this->mask((string) $user->phone_e164),
-            'codeLength' => (int) config('nova.security.phone_code_length'),
+            'codeLength' => (int) config('rendivoo.security.phone_code_length'),
         ]);
     }
 
@@ -50,7 +50,7 @@ final class PhoneVerificationController
             return redirect()->route('login');
         }
 
-        $data = $request->validate(['code' => ['required', 'string', 'regex:/^\d{'.(int) config('nova.security.phone_code_length').'}$/']]);
+        $data = $request->validate(['code' => ['required', 'string', 'regex:/^\d{'.(int) config('rendivoo.security.phone_code_length').'}$/']]);
 
         try {
             $result = $phone->verify($user, $data['code']);

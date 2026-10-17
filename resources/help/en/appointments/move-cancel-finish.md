@@ -23,6 +23,6 @@ Once the time has passed, a confirmed appointment can be marked **Completed** or
 
 ## Payment
 
-**Payment** records the status (unpaid, paid on site, partially paid…), the amount collected and the method. Nova does not process payments: it only notes them.
+**Payment** records the status (unpaid, paid on site, partially paid…), the amount collected and the method. Rendivoo does not process payments: it only notes them.
 
-> **If the customer cannot be notified** (they replied STOP or cannot be reached), the action is still done and Nova asks you to contact them directly.
+> **If the customer cannot be notified** (they replied STOP or cannot be reached), the action is still done and Rendivoo asks you to contact them directly.

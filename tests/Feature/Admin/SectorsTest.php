@@ -21,7 +21,7 @@ uses(AuthScenarios::class);
 beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->page = fn () => Livewire::actingAs($this->admin, 'platform')->test(ListSectors::class);
     $this->sector = fn (string $code): PlatformSector => PlatformSector::query()->where('code', $code)->firstOrFail();
     $this->audit = fn (string $action) => DB::connection('pgsql_platform')->table('audit_logs')->where('action', $action)->get();

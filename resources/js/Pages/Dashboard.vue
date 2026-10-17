@@ -76,38 +76,38 @@ function formatDate(iso: string): string {
             <Link :href="routes.billing" class="ml-1 font-semibold underline">{{ t('dashboard.trial_action') }}</Link>
         </AlertBox>
 
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('dashboard.today_title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('dashboard.today_title') }}</h1>
         <p class="mt-1 text-sm capitalize text-neutral-600">{{ formatDate(summary.date) }}</p>
 
         <dl class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6" data-testid="counts">
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_today') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.today }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.today }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_remaining') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.remaining }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.remaining }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_cancelled') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.cancelled }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.cancelled }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_tomorrow') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.tomorrow }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.tomorrow }}</dd>
             </div>
             <div class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_week') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.week }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.week }}</dd>
             </div>
             <div v-if="summary.counts.new_customers !== null" class="rounded-card border border-line bg-surface shadow-xs p-4">
                 <dt class="text-xs font-medium text-neutral-600">{{ t('dashboard.count_new_customers') }}</dt>
-                <dd class="mt-1 font-display text-3xl font-bold text-nova-900">{{ summary.counts.new_customers }}</dd>
+                <dd class="mt-1 font-display text-3xl font-bold text-rendivoo-900">{{ summary.counts.new_customers }}</dd>
             </div>
         </dl>
 
         <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="next">
-            <h2 id="next" class="text-lg font-semibold text-nova-900">{{ t('dashboard.next') }}</h2>
+            <h2 id="next" class="text-lg font-semibold text-rendivoo-900">{{ t('dashboard.next') }}</h2>
             <p v-if="summary.next" class="mt-2 text-neutral-800" data-testid="next">
                 <strong>{{ summary.next.starts }}</strong>
                 {{ summary.next.customer }} · {{ summary.next.service }}
@@ -127,7 +127,7 @@ function formatDate(iso: string): string {
 
         <section class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="agenda">
             <div class="flex items-center justify-between gap-3">
-                <h2 id="agenda" class="text-lg font-semibold text-nova-900">{{ t('dashboard.today_title') }}</h2>
+                <h2 id="agenda" class="text-lg font-semibold text-rendivoo-900">{{ t('dashboard.today_title') }}</h2>
                 <Link :href="routes.planning" class="text-sm font-semibold text-primary-700 underline">{{ t('dashboard.see_planning') }}</Link>
             </div>
 
@@ -139,7 +139,7 @@ function formatDate(iso: string): string {
                     class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-3"
                     :class="{ 'opacity-60': appointment.is_past }"
                 >
-                    <span class="w-24 shrink-0 font-semibold text-nova-900">{{ appointment.starts }}–{{ appointment.ends }}</span>
+                    <span class="w-24 shrink-0 font-semibold text-rendivoo-900">{{ appointment.starts }}–{{ appointment.ends }}</span>
                     <span class="min-w-0 flex-1 text-neutral-800">
                         {{ appointment.customer }} · {{ appointment.service }}
                         <span v-if="appointment.practitioner" class="inline-flex items-center gap-1.5 align-middle text-neutral-600">
@@ -161,7 +161,7 @@ function formatDate(iso: string): string {
         </section>
 
         <section v-if="firstSteps" class="mt-6 rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="steps">
-            <h2 id="steps" class="text-lg font-semibold text-nova-900">{{ t('dashboard.first_steps_title') }}</h2>
+            <h2 id="steps" class="text-lg font-semibold text-rendivoo-900">{{ t('dashboard.first_steps_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('dashboard.first_steps_body') }}</p>
             <ul class="mt-3 space-y-2" data-testid="first-steps">
                 <li v-for="step in firstSteps" :key="step.key" class="flex items-center gap-3 text-sm">

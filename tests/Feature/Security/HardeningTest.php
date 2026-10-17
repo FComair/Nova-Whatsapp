@@ -36,12 +36,12 @@ describe('en-têtes de sécurité', function (): void {
     });
 
     it('la fait respecter en mode « enforce » et peut être coupée', function (): void {
-        config(['nova.security.csp' => 'enforce']);
+        config(['rendivoo.security.csp' => 'enforce']);
         $enforced = $this->get('/connexion');
 
         expect($enforced->headers->get('Content-Security-Policy'))->toContain("script-src 'self'")->and($enforced->headers->has('Content-Security-Policy-Report-Only'))->toBeFalse();
 
-        config(['nova.security.csp' => 'off']);
+        config(['rendivoo.security.csp' => 'off']);
         $off = $this->get('/connexion');
 
         expect($off->headers->has('Content-Security-Policy'))->toBeFalse()->and($off->headers->has('Content-Security-Policy-Report-Only'))->toBeFalse();
@@ -74,7 +74,7 @@ describe('en-têtes de sécurité', function (): void {
 describe('liste d\'adresses IP du Super Admin', function (): void {
     beforeEach(function (): void {
         Filament::setCurrentPanel(Filament::getPanel('admin'));
-        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
         $this->admin->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
         $this->admin->refresh();
         $this->from = fn (string $ip) => $this->withServerVariables(['REMOTE_ADDR' => $ip])->actingAs($this->admin, 'platform')->get('/admin');
@@ -100,14 +100,14 @@ describe('liste d\'adresses IP du Super Admin', function (): void {
     })->with(['198.51.100.7', '203.0.114.1', '2001:db9::1']);
 
     it('se règle par commande, vérifie les adresses et peut être levée', function (): void {
-        $this->artisan('nova:admin-allowlist', ['email' => 'fondateur@nova.test', '--ip' => ['203.0.113.5', '10.0.0.0/8']])->expectsOutputToContain('2 adresse(s) autorisée(s).')->assertSuccessful();
+        $this->artisan('rendivoo:admin-allowlist', ['email' => 'fondateur@rendivoo.test', '--ip' => ['203.0.113.5', '10.0.0.0/8']])->expectsOutputToContain('2 adresse(s) autorisée(s).')->assertSuccessful();
         expect($this->admin->refresh()->ip_allowlist)->toBe(['203.0.113.5', '10.0.0.0/8']);
 
-        $this->artisan('nova:admin-allowlist', ['email' => 'fondateur@nova.test', '--ip' => ['pas-une-ip']])->assertFailed();
-        $this->artisan('nova:admin-allowlist', ['email' => 'inconnu@nova.test'])->assertFailed();
+        $this->artisan('rendivoo:admin-allowlist', ['email' => 'fondateur@rendivoo.test', '--ip' => ['pas-une-ip']])->assertFailed();
+        $this->artisan('rendivoo:admin-allowlist', ['email' => 'inconnu@rendivoo.test'])->assertFailed();
         expect($this->admin->refresh()->ip_allowlist)->toBe(['203.0.113.5', '10.0.0.0/8']);
 
-        $this->artisan('nova:admin-allowlist', ['email' => 'fondateur@nova.test'])->expectsOutputToContain('Restriction levée.')->assertSuccessful();
+        $this->artisan('rendivoo:admin-allowlist', ['email' => 'fondateur@rendivoo.test'])->expectsOutputToContain('Restriction levée.')->assertSuccessful();
         expect($this->admin->refresh()->ip_allowlist)->toBeNull();
     });
 });
@@ -129,13 +129,13 @@ describe('droits de la base', function (): void {
 
 describe('contrôle de mise en production', function (): void {
     it('échoue tant que la configuration est celle du développement et liste les points à corriger', function (): void {
-        expect(Artisan::call('nova:preflight'))->toBe(1)->and(Artisan::output())->toContain('ERREUR')->toContain('APP_ENV doit valoir production')->toContain('BILLING_GATEWAY');
+        expect(Artisan::call('rendivoo:preflight'))->toBe(1)->and(Artisan::output())->toContain('ERREUR')->toContain('APP_ENV doit valoir production')->toContain('BILLING_GATEWAY');
     });
 
     it('refuse une production où la double authentification obligatoire est désactivée', function (): void {
-        config(['nova.security.two_factor_required' => false]);
+        config(['rendivoo.security.two_factor_required' => false]);
 
-        expect(Artisan::call('nova:preflight'))->toBe(1)->and(Artisan::output())->toContain('Double authentification obligatoire')->toContain('NOVA_REQUIRE_2FA');
+        expect(Artisan::call('rendivoo:preflight'))->toBe(1)->and(Artisan::output())->toContain('Double authentification obligatoire')->toContain('NOVA_REQUIRE_2FA');
     });
 
     it('distingue erreurs bloquantes et avertissements', function (): void {
@@ -147,10 +147,10 @@ describe('contrôle de mise en production', function (): void {
 
     it('valide une configuration de production complète', function (): void {
         config([
-            'app.debug' => false, 'nova.security.two_factor_required' => true, 'session.secure' => true, 'session.encrypt' => true, 'nova.phone_code_driver' => 'sms', 'nova.billing.gateway' => 'mollie',
+            'app.debug' => false, 'rendivoo.security.two_factor_required' => true, 'session.secure' => true, 'session.encrypt' => true, 'rendivoo.phone_code_driver' => 'sms', 'rendivoo.billing.gateway' => 'mollie',
             'whatsapp.driver' => 'meta', 'whatsapp.app_secret' => 'secret-reel', 'whatsapp.verify_token' => 'jeton-reel', 'mail.default' => 'smtp', 'mail.mailers.smtp.host' => 'smtp.example.eu',
-            'nova.billing.seller' => ['name' => 'Nova SRL', 'vat_number' => 'BE0123456789', 'address' => 'Rue 1, 1000 Bruxelles'], 'nova.founder_email' => 'fondateur@nova.test',
-            'database.connections.pgsql.password' => 'mot-de-passe-de-production', 'app.url' => 'https://nova.example.eu',
+            'rendivoo.billing.seller' => ['name' => 'Rendivoo SRL', 'vat_number' => 'BE0123456789', 'address' => 'Rue 1, 1000 Bruxelles'], 'rendivoo.founder_email' => 'fondateur@rendivoo.test',
+            'database.connections.pgsql.password' => 'mot-de-passe-de-production', 'app.url' => 'https://rendivoo.example.eu',
         ]);
         $this->app['env'] = 'production';
 

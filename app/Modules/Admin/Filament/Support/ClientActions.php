@@ -121,7 +121,7 @@ final class ClientActions
             TextInput::make('address.country')->label(__('clients.info.address_country'))->maxLength(2)->helperText(__('clients.info.country_help')),
             TextInput::make('country')->label(__('clients.info.country'))->required()->length(2)->helperText(__('clients.info.country_help')),
             Select::make('timezone')->label(__('clients.info.timezone'))->required()->native(false)->searchable()->options(fn (): array => array_combine(timezone_identifiers_list(), timezone_identifiers_list())),
-            Select::make('locale')->label(__('clients.info.locale'))->required()->native(false)->options(fn (): array => collect((array) config('nova.locales'))->mapWithKeys(fn (string $locale): array => [$locale => strtoupper($locale)])->all()),
+            Select::make('locale')->label(__('clients.info.locale'))->required()->native(false)->options(fn (): array => collect((array) config('rendivoo.locales'))->mapWithKeys(fn (string $locale): array => [$locale => strtoupper($locale)])->all()),
             TextInput::make('sector')->label(__('clients.info.sector'))->maxLength(60),
         ];
     }

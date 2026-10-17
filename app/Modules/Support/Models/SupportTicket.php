@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * Demande d'un client à l'équipe Nova (docs/22, docs/29). La référence « NWS-1248 » vient d'une séquence de la base.
+ * Demande d'un client à l'équipe Rendivoo (docs/22, docs/29). La référence « NWS-1248 » vient d'une séquence de la base.
  *
  * @property string $id
  * @property string $org_id

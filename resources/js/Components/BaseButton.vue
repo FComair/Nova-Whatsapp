@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Bouton Nova, forme et interactions alignées sur le Super Admin (Filament) : coins 8 px, ombre légère, aucun soulèvement au survol, seule la couleur change. `md` (40 px) par défaut ; `sm` (32 px) pour les tableaux et barres d'outils.
+ * Bouton Rendivoo, forme et interactions alignées sur le Super Admin (Filament) : coins 8 px, ombre légère, aucun soulèvement au survol, seule la couleur change. `md` (40 px) par défaut ; `sm` (32 px) pour les tableaux et barres d'outils.
  */
 withDefaults(
     defineProps<{
@@ -19,7 +19,7 @@ withDefaults(
         :type="type"
         :disabled="disabled || loading"
         :aria-busy="loading ? 'true' : undefined"
-        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-transparent font-semibold transition duration-150 ease-nova disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500 disabled:shadow-none sm:w-auto"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-transparent font-semibold transition duration-150 ease-rendivoo disabled:cursor-not-allowed disabled:border-transparent disabled:bg-neutral-300 disabled:text-neutral-500 disabled:shadow-none sm:w-auto"
         :class="[
             size === 'md' ? 'min-h-10 px-4 py-2 text-sm' : 'min-h-8 px-3 py-1 text-sm',
             {

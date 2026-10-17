@@ -15,9 +15,9 @@ Document établi après l'étape 8. Trois parties : (1) sécurité, (2) écarts 
 |---|---|
 | Aucun en-tête de sécurité | Middleware `SecurityHeaders` : nosniff, anti-cadre, référent strict, permissions, COOP, HSTS (production + HTTPS), CSP (`NOVA_CSP` : `report-only` par défaut, `enforce`, `off`; panel Super Admin exclu de la CSP) |
 | Adresses IP vues par l'application = celles du proxy | `TRUSTED_PROXIES` (liste ou `*`) dans `bootstrap/app.php` |
-| Colonne `platform_admins.ip_allowlist` inutilisée | `EnforceAdminIpAllowlist` (IPv4/IPv6, CIDR) : refus 403, déconnexion, entrée d'audit `platform.ip_denied` ; commande `nova:admin-allowlist` |
+| Colonne `platform_admins.ip_allowlist` inutilisée | `EnforceAdminIpAllowlist` (IPv4/IPv6, CIDR) : refus 403, déconnexion, entrée d'audit `platform.ip_denied` ; commande `rendivoo:admin-allowlist` |
 | `nova_app` pouvait supprimer des organisations et écrire `migrations` | Migration `2026_10_15_000001_harden_application_role` (REVOKE) |
-| Risque de mise en production avec des réglages de développement | Commande `nova:preflight` (11 erreurs bloquantes, 7 avertissements) |
+| Risque de mise en production avec des réglages de développement | Commande `rendivoo:preflight` (11 erreurs bloquantes, 7 avertissements) |
 
 Tests : `tests/Feature/Security/HardeningTest.php`.
 
@@ -44,7 +44,7 @@ Inscription et vérifications (1A), invitations (1C/E13), connexion et erreurs (
 | 4B | Pas de **pause** (effets expliqués, rendez-vous à venir, message d'absence, 90 jours max, non facturée) |
 | 4A | Pas de règle de « suspension prolongée » ; message configurable `unavailable_message` inutilisé |
 | Suppression de compte | Nous : nom de l'établissement + effet immédiat. Flowchart : saisie de « SUPPRIMER » + lien e-mail valable 24 h, suggestion de pause, avertissement des clients ayant des rendez-vous, rappels J-7/J-1, annulation avec reconfirmation d'identité, déconnexion du numéro Meta |
-| Notifications | Préférences par événement, notifications navigateur, consentements Nova (actualités, amélioration produit : date + source), « mode données sensibles », vue des consentements clients (opt-in/STOP) absents |
+| Notifications | Préférences par événement, notifications navigateur, consentements Rendivoo (actualités, amélioration produit : date + source), « mode données sensibles », vue des consentements clients (opt-in/STOP) absents |
 | Rapports | Activité, clients, bot, financier + export CSV/PDF absents |
 | Retours clients | Liste d'attente, avis, parrainage absents |
 | Campagnes WhatsApp | Opt-in marketing, paliers Meta (E9) absents |
@@ -75,7 +75,7 @@ Inscription et vérifications (1A), invitations (1C/E13), connexion et erreurs (
 **RGPD et juridique (validation par un juriste)**
 9. Durées de conservation : conversations, preuves d'audit, factures (7 ans), clients inactifs.
 10. Effacement d'un client bloqué (intérêt légitime) ; effacement du journal d'audit côté client.
-11. Rôle de Nova (sous-traitant ou responsable) selon les traitements ; textes CGU, confidentialité, DPA.
+11. Rôle de Rendivoo (sous-traitant ou responsable) selon les traitements ; textes CGU, confidentialité, DPA.
 12. Mode de confirmation de la suppression de compte (« SUPPRIMER » + lien e-mail, comme le flowchart, ou nom de l'établissement).
 
 **WhatsApp**

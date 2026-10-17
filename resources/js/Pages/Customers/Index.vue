@@ -238,7 +238,7 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
         <CustomersTabs active="clients" />
         <header class="flex flex-wrap items-end justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-semibold text-nova-900">{{ t('customers.title') }}</h1>
+                <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('customers.title') }}</h1>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('customers.subtitle') }}</p>
             </div>
             <p class="text-sm font-semibold text-neutral-700" aria-live="polite">{{ t('customers.count', { count: pagination.total }) }}</p>
@@ -397,7 +397,7 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
                 <thead>
                     <tr class="border-b border-line bg-surface-2 text-xs uppercase tracking-wide text-neutral-700">
                         <th scope="col" class="w-10 px-4 py-3">
-                            <input type="checkbox" class="nova-check" :checked="allSelected" :aria-label="t('customers.select_all')" @change="toggleAll" />
+                            <input type="checkbox" class="rendivoo-check" :checked="allSelected" :aria-label="t('customers.select_all')" @change="toggleAll" />
                         </th>
                         <th scope="col" class="px-3 py-3" :aria-sort="ariaSort('name')">
                             <button
@@ -435,7 +435,7 @@ const consentVariant = (state: Row['whatsapp']): 'success' | 'danger' | 'neutral
                             <input
                                 v-model="selected"
                                 type="checkbox"
-                                class="nova-check"
+                                class="rendivoo-check"
                                 :value="row.id"
                                 :aria-label="t('customers.select_row', { name: row.name ?? row.phone })"
                             />

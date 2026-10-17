@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 /**
  * Choix de la formule à l'inscription (docs/10). Tout vient de la configuration existante : formules actives de la table `plans` (nom, prix
- * mensuel hors TVA, devise, limites), durée de l'essai (`platform_settings.trial_days`), taux de TVA (`config('nova.billing.vat')`) et
+ * mensuel hors TVA, devise, limites), durée de l'essai (`platform_settings.trial_days`), taux de TVA (`config('rendivoo.billing.vat')`) et
  * formule recommandée SI la plateforme en a désigné une. Rien n'est écrit en dur côté écran.
  *
  * Règles de facturation inchangées : l'inscription ne demande jamais de moyen de paiement et ne crée jamais d'abonnement ; elle enregistre
@@ -59,7 +59,7 @@ final class SignupPlans
                 ...$this->catalog->present($plan, app()->getLocale()),
                 'limits' => $this->limits($plan),
             ])->values()->all(),
-            'vat' => ['rate' => (int) config('nova.billing.vat.home_rate'), 'country' => (string) config('nova.billing.vat.home_country')],
+            'vat' => ['rate' => (int) config('rendivoo.billing.vat.home_rate'), 'country' => (string) config('rendivoo.billing.vat.home_country')],
         ];
     }
 

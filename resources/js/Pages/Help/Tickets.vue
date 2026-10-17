@@ -106,7 +106,7 @@ const scopeOptions = computed(() => [
 
         <header class="flex flex-wrap items-end justify-between gap-3">
             <div>
-                <h1 class="font-display text-2xl font-bold text-nova-900">{{ t('support.tickets.title') }}</h1>
+                <h1 class="font-display text-2xl font-bold text-rendivoo-900">{{ t('support.tickets.title') }}</h1>
                 <p class="mt-1 text-neutral-700">{{ t('support.tickets.subtitle') }}</p>
                 <p class="mt-1 text-sm text-neutral-600">{{ t('support.response_time') }}</p>
             </div>

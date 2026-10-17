@@ -81,7 +81,7 @@ function post(path: string): void {
 
 <template>
     <AppLayout :title="t('billing.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('billing.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('billing.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('billing.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-3xl">{{ page.props.flash.status }}</AlertBox>
@@ -89,7 +89,7 @@ function post(path: string): void {
         <AlertBox v-if="banner" variant="warning" class="mt-4 max-w-3xl">{{ t(`billing.${banner}`) }}</AlertBox>
 
         <section class="mt-6 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="state">
-            <h2 id="state" class="text-lg font-semibold text-nova-900">
+            <h2 id="state" class="text-lg font-semibold text-rendivoo-900">
                 {{
                     t(
                         `billing.status.${subscription && subscription.status !== 'canceled' ? subscription.status : status === 'trial' ? 'trial' : subscription ? 'canceled' : status}`,
@@ -122,7 +122,7 @@ function post(path: string): void {
         </section>
 
         <section class="mt-8 max-w-3xl" aria-labelledby="plans">
-            <h2 id="plans" class="text-lg font-semibold text-nova-900">{{ t('billing.plans_title') }}</h2>
+            <h2 id="plans" class="text-lg font-semibold text-rendivoo-900">{{ t('billing.plans_title') }}</h2>
             <p v-if="kept" class="mt-2 max-w-3xl text-sm text-neutral-700" data-testid="kept-plan">
                 {{ t('billing.kept_plan', { plan: kept.name, price: priceLabel(kept) }) }}
             </p>
@@ -133,7 +133,7 @@ function post(path: string): void {
                     class="flex flex-col rounded-card border bg-surface p-5"
                     :class="subscription?.plan === plan.code && hasActiveSubscription ? 'border-primary-600' : 'border-line'"
                 >
-                    <h3 class="text-lg font-semibold text-nova-900">{{ plan.name }}</h3>
+                    <h3 class="text-lg font-semibold text-rendivoo-900">{{ plan.name }}</h3>
                     <p class="mt-1 text-sm text-neutral-700">{{ priceLabel(plan) }}</p>
                     <p v-if="plan.description" class="mt-1 text-sm text-neutral-600">{{ plan.description }}</p>
                     <ul class="mt-3 flex-1 space-y-1 text-sm text-neutral-700">
@@ -152,7 +152,7 @@ function post(path: string): void {
         </section>
 
         <section class="mt-8 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="method">
-            <h2 id="method" class="text-lg font-semibold text-nova-900">{{ t('billing.method_title') }}</h2>
+            <h2 id="method" class="text-lg font-semibold text-rendivoo-900">{{ t('billing.method_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">
                 {{
                     method
@@ -172,7 +172,7 @@ function post(path: string): void {
         </section>
 
         <section class="mt-8 max-w-3xl" aria-labelledby="invoices">
-            <h2 id="invoices" class="text-lg font-semibold text-nova-900">{{ t('billing.invoices_title') }}</h2>
+            <h2 id="invoices" class="text-lg font-semibold text-rendivoo-900">{{ t('billing.invoices_title') }}</h2>
             <p v-if="!invoices.length" class="mt-2 text-sm text-neutral-600">{{ t('billing.invoices_empty') }}</p>
             <ul v-else class="mt-3 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                 <li v-for="invoice in invoices" :key="invoice.id" class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
@@ -188,7 +188,7 @@ function post(path: string): void {
         </section>
 
         <section class="mt-8 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="identity">
-            <h2 id="identity" class="text-lg font-semibold text-nova-900">{{ t('billing.identity_title') }}</h2>
+            <h2 id="identity" class="text-lg font-semibold text-rendivoo-900">{{ t('billing.identity_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-600">{{ t('billing.identity_hint') }}</p>
             <form class="mt-4 space-y-4" novalidate @submit.prevent="identity.put(`${routes.billing}/identite`, { preserveScroll: true })">
                 <TextField v-model="identity.billing_name" :label="t('billing.identity_name')" :maxlength="255" :error="identity.errors.billing_name" />

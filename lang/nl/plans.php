@@ -57,7 +57,7 @@ return [
         'status' => 'Status',
         'status_help' => 'Een concept is nooit zichtbaar voor klanten. Alleen een actieve formule wordt aan nieuwe abonnees aangeboden.',
         'internal_description' => 'Interne beschrijving',
-        'internal_description_help' => 'Alleen voor het Nova-team.',
+        'internal_description_help' => 'Alleen voor het Rendivoo-team.',
         'public_description' => 'Openbare beschrijving',
         'public_description_help' => 'Korte zin onder de naam, per taal (300 tekens). Valt terug op het Frans.',
         'pricing' => 'Prijs en facturatie',

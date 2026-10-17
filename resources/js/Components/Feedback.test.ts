@@ -101,7 +101,7 @@ describe('ReviewLinks', () => {
         expect(withFeedback.text()).toBe(without.text());
     });
 
-    it('prévient qu’on quitte Nova, que l’avis public est séparé, identique pour tous et compté sans son contenu', () => {
+    it('prévient qu’on quitte Rendivoo, que l’avis public est séparé, identique pour tous et compté sans son contenu', () => {
         const text = links().text();
 
         for (const key of ['feedback.public.leaving', 'feedback.public.separate', 'feedback.public.neutral', 'feedback.public.tracking']) {

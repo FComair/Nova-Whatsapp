@@ -12,7 +12,7 @@ La connexion est réservée au **propriétaire**. Allez dans **Réglages > Whats
 ## Les étapes
 
 1. Lancez la connexion : une fenêtre de Meta s’ouvre pour relier votre compte WhatsApp Business et votre numéro.
-2. Suivez les écrans de Meta jusqu’à la fin. Nova affiche ensuite l’état de la connexion.
+2. Suivez les écrans de Meta jusqu’à la fin. Rendivoo affiche ensuite l’état de la connexion.
 3. Faites approuver vos **messages types** (confirmation, rappel, déplacement, annulation) : WhatsApp exige des modèles approuvés, dans chaque langue, pour écrire à un client en dehors de la fenêtre de 24 heures.
 
 ## Vérifier que tout fonctionne

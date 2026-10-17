@@ -154,7 +154,7 @@ async function submit(): Promise<void> {
                 <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('reports.export.format') }}</legend>
                 <div class="space-y-2">
                     <label v-for="item in ['xlsx', 'csv', 'pdf'] as const" :key="item" class="flex items-start gap-3 text-sm text-neutral-900">
-                        <input v-model="format" type="radio" name="export-format" :value="item" class="nova-check mt-0.5" :data-testid="`format-${item}`" />
+                        <input v-model="format" type="radio" name="export-format" :value="item" class="rendivoo-check mt-0.5" :data-testid="`format-${item}`" />
                         <span>{{ t(`reports.export.formats.${item}`) }}</span>
                     </label>
                 </div>

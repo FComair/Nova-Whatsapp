@@ -87,7 +87,7 @@ final class TemplateManager
     }
 
     /**
-     * Met à jour les statuts depuis Meta pour les modèles que Nova suit.
+     * Met à jour les statuts depuis Meta pour les modèles que Rendivoo suit.
      *
      * @return int nombre de modèles dont le statut a changé
      *

@@ -40,7 +40,7 @@ const localeOptions = computed(() => (['fr', 'nl', 'en'] as const).map((value) =
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('onboarding.company.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('onboarding.company.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('onboarding.company.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('onboarding.company.body') }}</p>
 
         <form class="mt-6 space-y-5" novalidate @submit.prevent="form.post(`${routes.onboarding}/entreprise`)">

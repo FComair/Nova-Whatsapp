@@ -26,13 +26,13 @@ const { categoryName, categoryDescription } = useHelpCategories();
         <HelpTabs />
 
         <section class="rounded-card bg-primary-50 px-5 py-10 text-center sm:px-10 sm:py-14">
-            <h1 class="font-display text-3xl font-bold text-nova-900 sm:text-4xl">{{ t('help.hero_title') }}</h1>
+            <h1 class="font-display text-3xl font-bold text-rendivoo-900 sm:text-4xl">{{ t('help.hero_title') }}</h1>
             <p class="mx-auto mt-2 max-w-xl text-neutral-700">{{ t('help.hero_subtitle') }}</p>
             <div class="mx-auto mt-6 max-w-2xl text-left"><HelpSearch :index="index" /></div>
         </section>
 
         <section class="mt-10" aria-labelledby="help-topics">
-            <h2 id="help-topics" class="text-lg font-semibold text-nova-900">{{ t('help.categories_title') }}</h2>
+            <h2 id="help-topics" class="text-lg font-semibold text-rendivoo-900">{{ t('help.categories_title') }}</h2>
             <ul class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
                 <li v-for="category in categories" :key="category.slug">
                     <Link
@@ -51,7 +51,7 @@ const { categoryName, categoryDescription } = useHelpCategories();
         </section>
 
         <section v-if="popular.length" class="mt-10" aria-labelledby="help-popular">
-            <h2 id="help-popular" class="text-lg font-semibold text-nova-900">{{ t('help.popular') }}</h2>
+            <h2 id="help-popular" class="text-lg font-semibold text-rendivoo-900">{{ t('help.popular') }}</h2>
             <ul class="mt-4 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                 <li v-for="article in popular" :key="`${article.category}/${article.slug}`">
                     <Link
@@ -69,7 +69,7 @@ const { categoryName, categoryDescription } = useHelpCategories();
         </section>
 
         <section class="mt-10 rounded-card border border-line bg-surface p-6 text-center shadow-xs sm:p-8">
-            <h2 class="text-lg font-semibold text-nova-900">{{ t('support.cta.title') }}</h2>
+            <h2 class="text-lg font-semibold text-rendivoo-900">{{ t('support.cta.title') }}</h2>
             <p class="mx-auto mt-1 max-w-xl text-neutral-700">{{ t('support.cta.body') }}</p>
             <div class="mt-4 flex flex-col justify-center gap-3 sm:flex-row">
                 <Link :href="`${routes.help}/contact`">

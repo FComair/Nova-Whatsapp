@@ -12,7 +12,7 @@ const { t } = useT();
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('onboarding.pending.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t(`onboarding.steps.${wizard.step}`) }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t(`onboarding.steps.${wizard.step}`) }}</h1>
 
         <AlertBox variant="info" class="mt-4">
             <strong class="block">{{ t('onboarding.pending.title') }}</strong>

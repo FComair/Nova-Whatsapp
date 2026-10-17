@@ -1,15 +1,15 @@
-# Nova — Identité visuelle et structure du projet (proposition v1, à valider)
+# Rendivoo — Identité visuelle et structure du projet (proposition v1, à valider)
 
 ## Partie A — Identité visuelle
 
-**Principes** : sobre, rassurant, lisible pour des utilisateurs non techniques (coiffeurs, kinés, garagistes). Continuité avec le bleu marine des flowcharts Nova. Aucune police ni ressource chargée depuis un CDN externe (RGPD : pas de transfert d'adresse IP à un tiers) — polices **auto-hébergées**.
+**Principes** : sobre, rassurant, lisible pour des utilisateurs non techniques (coiffeurs, kinés, garagistes). Continuité avec le bleu marine des flowcharts Rendivoo. Aucune police ni ressource chargée depuis un CDN externe (RGPD : pas de transfert d'adresse IP à un tiers) — polices **auto-hébergées**.
 
 ### A.1 Palette (jetons de design)
 
 | Jeton | Valeur | Usage |
 |---|---|---|
-| `nova-900` | `#14213D` | Texte principal, sidebar client |
-| `nova-700` | `#1F3A6B` | Titres, éléments actifs |
+| `rendivoo-900` | `#14213D` | Texte principal, sidebar client |
+| `rendivoo-700` | `#1F3A6B` | Titres, éléments actifs |
 | `primary-600` | `#2A5BD7` | Boutons primaires, liens |
 | `primary-50` | `#EEF3FE` | Fonds de sélection |
 | `accent-500` | `#12A594` | Accent secondaire, succès WhatsApp/bot |

@@ -122,7 +122,7 @@ class MessageTemplateResource extends Resource
     /** @return array<string, string> */
     private static function languageOptions(): array
     {
-        return collect((array) config('nova.locales'))->mapWithKeys(fn (string $language): array => [$language => __("message_templates.languages.{$language}")])->all();
+        return collect((array) config('rendivoo.locales'))->mapWithKeys(fn (string $language): array => [$language => __("message_templates.languages.{$language}")])->all();
     }
 
     /**
@@ -136,7 +136,7 @@ class MessageTemplateResource extends Resource
         $variables = collect(MessageVariables::NAMES)->map(fn (string $name): string => '{{'.$name.'}}')->implode('  ');
         $fields = [];
 
-        foreach ((array) config('nova.locales') as $language) {
+        foreach ((array) config('rendivoo.locales') as $language) {
             $fields[] = Textarea::make('translations.'.$language)
                 ->label(__('message_templates.form.body', ['language' => __("message_templates.languages.{$language}")]))
                 ->rows(5)

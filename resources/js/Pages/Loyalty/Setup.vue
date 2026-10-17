@@ -218,7 +218,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div class="min-w-0">
-                <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.setup.title') }}</h1>
+                <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.setup.title') }}</h1>
                 <p class="mt-1 max-w-2xl text-sm text-neutral-700">{{ t('loyalty.setup.intro') }}</p>
             </div>
             <Badge v-if="status" :variant="programVariant(status)">{{ t(`loyalty.status.${status}`) }}</Badge>
@@ -280,7 +280,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                 <form class="space-y-5 rounded-card border border-line bg-surface p-5 shadow-xs" novalidate @submit.prevent="save(false)">
                     <!-- Étape 1 : nom, langues -->
                     <section v-show="step === 0" class="space-y-4" aria-labelledby="step-program">
-                        <h2 id="step-program" class="font-semibold text-nova-900">{{ t('loyalty.setup.steps.program') }}</h2>
+                        <h2 id="step-program" class="font-semibold text-rendivoo-900">{{ t('loyalty.setup.steps.program') }}</h2>
                         <div role="group" :aria-label="t('loyalty.setup.language')" class="flex flex-wrap items-center gap-2">
                             <span class="text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.language') }}</span>
                             <button
@@ -314,7 +314,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
                     <!-- Étape 2 : gagner des tampons -->
                     <section v-show="step === 1" class="space-y-4" aria-labelledby="step-earn">
-                        <h2 id="step-earn" class="font-semibold text-nova-900">{{ t('loyalty.setup.steps.earn') }}</h2>
+                        <h2 id="step-earn" class="font-semibold text-rendivoo-900">{{ t('loyalty.setup.steps.earn') }}</h2>
                         <TextField
                             v-model="form.required_visits"
                             inputmode="numeric"
@@ -326,12 +326,12 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                             <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.services_mode') }}</legend>
                             <div class="space-y-1.5 text-sm">
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.services_mode" type="radio" value="all" class="nova-check" />{{
+                                    ><input v-model="form.services_mode" type="radio" value="all" class="rendivoo-check" />{{
                                         t('loyalty.setup.services_all')
                                     }}</label
                                 >
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.services_mode" type="radio" value="selected" class="nova-check" />{{
+                                    ><input v-model="form.services_mode" type="radio" value="selected" class="rendivoo-check" />{{
                                         t('loyalty.setup.services_selected')
                                     }}</label
                                 >
@@ -342,7 +342,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                             <label v-for="service in services" :key="service.id" class="flex items-center gap-2 text-sm">
                                 <input
                                     type="checkbox"
-                                    class="nova-check"
+                                    class="rendivoo-check"
                                     :checked="form.earn_services.includes(service.id)"
                                     @change="toggle(form.earn_services, service.id)"
                                 />{{ service.name }}
@@ -365,7 +365,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
                     <!-- Étape 3 : récompense -->
                     <section v-show="step === 2" class="space-y-4" aria-labelledby="step-reward">
-                        <h2 id="step-reward" class="font-semibold text-nova-900">{{ t('loyalty.setup.steps.reward') }}</h2>
+                        <h2 id="step-reward" class="font-semibold text-rendivoo-900">{{ t('loyalty.setup.steps.reward') }}</h2>
                         <SelectField
                             v-model="form.reward_type"
                             :label="t('loyalty.setup.reward_type')"
@@ -428,12 +428,12 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                             <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.reward_services_mode') }}</legend>
                             <div class="space-y-1.5 text-sm">
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.reward_services_mode" type="radio" value="all" class="nova-check" />{{
+                                    ><input v-model="form.reward_services_mode" type="radio" value="all" class="rendivoo-check" />{{
                                         t('loyalty.setup.reward_services_all')
                                     }}</label
                                 >
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.reward_services_mode" type="radio" value="selected" class="nova-check" />{{
+                                    ><input v-model="form.reward_services_mode" type="radio" value="selected" class="rendivoo-check" />{{
                                         t('loyalty.setup.reward_services_selected')
                                     }}</label
                                 >
@@ -444,7 +444,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                             <label v-for="service in services" :key="service.id" class="flex items-center gap-2 text-sm">
                                 <input
                                     type="checkbox"
-                                    class="nova-check"
+                                    class="rendivoo-check"
                                     :checked="form.reward_services.includes(service.id)"
                                     @change="toggle(form.reward_services, service.id)"
                                 />{{ service.name }}
@@ -454,17 +454,17 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
                     <!-- Étape 4 : utilisation, expiration, conditions -->
                     <section v-show="step === 3" class="space-y-4" aria-labelledby="step-redeem">
-                        <h2 id="step-redeem" class="font-semibold text-nova-900">{{ t('loyalty.setup.steps.redeem') }}</h2>
+                        <h2 id="step-redeem" class="font-semibold text-rendivoo-900">{{ t('loyalty.setup.steps.redeem') }}</h2>
                         <fieldset>
                             <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.redeem_timing') }}</legend>
                             <div class="space-y-1.5 text-sm">
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.redeem_timing" type="radio" value="next_visit" class="nova-check" />{{
+                                    ><input v-model="form.redeem_timing" type="radio" value="next_visit" class="rendivoo-check" />{{
                                         t('loyalty.setup.timing_next')
                                     }}</label
                                 >
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.redeem_timing" type="radio" value="any_time" class="nova-check" />{{
+                                    ><input v-model="form.redeem_timing" type="radio" value="any_time" class="rendivoo-check" />{{
                                         t('loyalty.setup.timing_any')
                                     }}</label
                                 >
@@ -477,12 +477,12 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
                             <legend class="mb-1.5 text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.expiry') }}</legend>
                             <div class="space-y-1.5 text-sm">
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.expiry_mode" type="radio" value="none" class="nova-check" />{{
+                                    ><input v-model="form.expiry_mode" type="radio" value="none" class="rendivoo-check" />{{
                                         t('loyalty.setup.expiry_none')
                                     }}</label
                                 >
                                 <label class="flex items-center gap-2"
-                                    ><input v-model="form.expiry_mode" type="radio" value="days" class="nova-check" />{{
+                                    ><input v-model="form.expiry_mode" type="radio" value="days" class="rendivoo-check" />{{
                                         t('loyalty.setup.expiry_days')
                                     }}</label
                                 >
@@ -534,7 +534,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
                     <!-- Étape 5 : aperçu, vérification, activation -->
                     <section v-show="step === 4" class="space-y-5" aria-labelledby="step-review">
-                        <h2 id="step-review" class="font-semibold text-nova-900">{{ t('loyalty.setup.steps.review') }}</h2>
+                        <h2 id="step-review" class="font-semibold text-rendivoo-900">{{ t('loyalty.setup.steps.review') }}</h2>
 
                         <div>
                             <h3 class="text-sm font-semibold text-neutral-900">{{ t('loyalty.setup.checklist_title') }}</h3>
@@ -601,7 +601,7 @@ const previewStamps = computed(() => Math.min(6, Math.max(0, previewProgram.valu
 
             <aside class="lg:sticky lg:top-4 lg:self-start" :aria-label="t('loyalty.setup.summary_title')">
                 <div class="rounded-card border border-line bg-surface p-5 shadow-xs">
-                    <h2 class="mb-3 font-semibold text-nova-900">{{ t('loyalty.setup.summary_title') }}</h2>
+                    <h2 class="mb-3 font-semibold text-rendivoo-900">{{ t('loyalty.setup.summary_title') }}</h2>
                     <RuleSummary :rule="rule" />
                 </div>
             </aside>

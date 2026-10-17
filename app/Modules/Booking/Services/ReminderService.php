@@ -69,7 +69,7 @@ final class ReminderService
             return false;
         }
 
-        $language = in_array($customer->language, (array) config('nova.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
+        $language = in_array($customer->language, (array) config('rendivoo.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
         try {
             $this->sender->send($organization, $booking, $customer, MessageTemplateType::REMINDER, $language);
         } catch (SendRefused|TransportFailed $e) {

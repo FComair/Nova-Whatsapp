@@ -21,4 +21,4 @@ Het aantal resterende dagen verschijnt op het **Dashboard**. Kies een formule vo
 
 ## Als een betaling mislukt
 
-Nova waarschuwt u en probeert opnieuw. Werk uw betaalmethode bij in **Facturatie** om schorsing van uw account te vermijden.
+Rendivoo waarschuwt u en probeert opnieuw. Werk uw betaalmethode bij in **Facturatie** om schorsing van uw account te vermijden.

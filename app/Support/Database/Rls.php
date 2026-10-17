@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
  *
  * Principe : la RLS est la vraie barrière d'isolation entre clients, pas la couche applicative.
  * - `nova_app`      : rôle applicatif client, ne voit que les lignes de l'organisation courante.
+ *   (Le nom public du produit est Rendivoo (anciennement Nova). Les rôles PostgreSQL gardent leur nom historique `nova_*` : ils existent en production, voir docs/42.)
  * - `nova_platform` : rôle Super Admin, lecture transverse (les écritures sont accordées table par table).
  * Sans contexte d'organisation (`app.current_org` vide), aucune ligne n'est visible : échec fermé.
  */

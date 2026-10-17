@@ -16,7 +16,10 @@ use Illuminate\Validation\Rules\Password;
  */
 final class CreatePlatformAdmin extends Command
 {
-    protected $signature = 'nova:create-admin {email : Adresse e-mail du compte} {--support-agent : Agent de support : accès limité aux tickets (jamais aux comptes, à la facturation ni aux réglages)} {--content-editor : Éditeur de contenu : accès limité aux FAQ et à leurs catégories}';
+    protected $signature = 'rendivoo:create-admin {email : Adresse e-mail du compte} {--support-agent : Agent de support : accès limité aux tickets (jamais aux comptes, à la facturation ni aux réglages)} {--content-editor : Éditeur de contenu : accès limité aux FAQ et à leurs catégories}';
+
+    /** Ancien nom (produit rebaptisé Rendivoo) : gardé pour les scripts et tâches planifiées qui l'appellent encore. */
+    protected $aliases = ['nova:create-admin'];
 
     protected $description = 'Crée un compte Super Admin, un agent de support (--support-agent) ou un éditeur de contenu (--content-editor) ; le 2FA est imposé à la première connexion';
 

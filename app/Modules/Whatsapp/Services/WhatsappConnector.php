@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  * enregistré tant que Meta n'a pas confirmé que le numéro et le jeton sont valides. Le jeton est chiffré en base et jamais renvoyé.
  * À exécuter sous le contexte de l'organisation.
  *
- * Non fait : l'inscription intégrée de Meta (« Embedded Signup »), qui évite de manipuler un jeton, exige une application Meta de Nova.
+ * Non fait : l'inscription intégrée de Meta (« Embedded Signup »), qui évite de manipuler un jeton, exige une application Meta de Rendivoo.
  */
 final class WhatsappConnector
 {

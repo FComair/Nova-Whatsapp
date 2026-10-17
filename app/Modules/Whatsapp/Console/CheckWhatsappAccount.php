@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
 
 /**
  * Contrôle de bout en bout, contre la Graph API réelle (`WHATSAPP_DRIVER=meta`), d'un compte WhatsApp Business de TEST : valide le numéro
- * et le jeton, liste les modèles et indique lesquels de Nova existent. N'écrit RIEN en base et ne soumet rien à Meta.
+ * et le jeton, liste les modèles et indique lesquels de Rendivoo existent. N'écrit RIEN en base et ne soumet rien à Meta.
  * Le jeton est saisi de façon masquée (jamais en argument : il finirait dans l'historique du terminal).
  */
 final class CheckWhatsappAccount extends Command
@@ -44,7 +44,7 @@ final class CheckWhatsappAccount extends Command
             return self::FAILURE;
         }
 
-        $this->line('Modèles de Nova chez Meta :');
+        $this->line('Modèles de Rendivoo chez Meta :');
 
         foreach (TemplateCatalog::entries() as $entry) {
             $this->line(sprintf('  %-26s %-3s %s', $entry['name'], $entry['language'], $known[$entry['name'].'|'.$entry['language']] ?? 'absent'));

@@ -27,10 +27,10 @@ final class PhoneChange
         $this->assertNotBlocked($user);
         $this->limiter->hit('phone-change', $user->id);
 
-        $length = (int) config('nova.security.phone_code_length');
+        $length = (int) config('rendivoo.security.phone_code_length');
         $code = str_pad((string) random_int(0, (10 ** $length) - 1), $length, '0', STR_PAD_LEFT);
 
-        Cache::put($this->key($user), ['phone' => $newPhoneE164, 'fingerprint' => $this->fingerprint($user, $newPhoneE164, $code)], now()->addMinutes((int) config('nova.security.phone_code_ttl_minutes')));
+        Cache::put($this->key($user), ['phone' => $newPhoneE164, 'fingerprint' => $this->fingerprint($user, $newPhoneE164, $code)], now()->addMinutes((int) config('rendivoo.security.phone_code_ttl_minutes')));
 
         $this->sender->send($newPhoneE164, $code, $user->locale);
     }
@@ -58,9 +58,9 @@ final class PhoneChange
         }
 
         if (! hash_equals((string) $stored['fingerprint'], $this->fingerprint($user, (string) $stored['phone'], trim($code)))) {
-            RateLimiter::hit($this->failKey($user), (int) config('nova.security.verification_block_minutes') * 60);
+            RateLimiter::hit($this->failKey($user), (int) config('rendivoo.security.verification_block_minutes') * 60);
 
-            if (RateLimiter::tooManyAttempts($this->failKey($user), (int) config('nova.security.phone_code_max_attempts'))) {
+            if (RateLimiter::tooManyAttempts($this->failKey($user), (int) config('rendivoo.security.phone_code_max_attempts'))) {
                 Cache::forget($this->key($user));
                 Audit::record('auth.phone_change.blocked', 'user', actorId: $user->id);
             }
@@ -78,7 +78,7 @@ final class PhoneChange
 
     private function assertNotBlocked(User $user): void
     {
-        if (RateLimiter::tooManyAttempts($this->failKey($user), (int) config('nova.security.phone_code_max_attempts'))) {
+        if (RateLimiter::tooManyAttempts($this->failKey($user), (int) config('rendivoo.security.phone_code_max_attempts'))) {
             throw new TooManyAttempts('E2', RateLimiter::availableIn($this->failKey($user)));
         }
     }

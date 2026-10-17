@@ -7,9 +7,9 @@
         class="nl"
         x-data="{ dirty: false, message: @js(__('admin.legal_files.leave')) }"
         x-init="
-            window.novaLegalLeft = false;
+            window.rendivooLegalLeft = false;
             $wire.$watch('data.file', (value) => { dirty = !!value && Object.keys(value).length > 0 });
-            window.addEventListener('beforeunload', (event) => { if (dirty && !window.novaLegalLeft) { event.preventDefault(); event.returnValue = ''; } });
+            window.addEventListener('beforeunload', (event) => { if (dirty && !window.rendivooLegalLeft) { event.preventDefault(); event.returnValue = ''; } });
         "
     >
         <a class="nl-back" href="{{ $links['back'] }}" @click="if (dirty && !confirm(message)) { $event.preventDefault() }">← {{ __('admin.legal_files.back.document', ['name' => $this->documentName()]) }}</a>

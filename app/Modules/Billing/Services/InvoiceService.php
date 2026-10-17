@@ -42,7 +42,7 @@ final class InvoiceService
             'vat_rate' => $totals['rate'],
             'vat_cents' => $totals['vat'],
             'total_cents' => $totals['total'],
-            'seller_snapshot' => (array) config('nova.billing.seller'),
+            'seller_snapshot' => (array) config('rendivoo.billing.seller'),
             'billing_snapshot' => $this->billingIdentity($organization),
             'issued_at' => now(),
         ]);

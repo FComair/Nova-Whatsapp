@@ -81,7 +81,7 @@ function formatAddress(site: Site): string {
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('onboarding.sites.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('onboarding.sites.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('onboarding.sites.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('onboarding.sites.body') }}</p>
 
         <AlertBox v-if="pageErrors.site" variant="error" class="mt-4">{{ pageErrors.site }}</AlertBox>
@@ -90,9 +90,9 @@ function formatAddress(site: Site): string {
             <li v-for="site in locations" :key="site.id" class="rounded-control border border-line p-4">
                 <div v-if="editing !== site.id" class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <p class="flex flex-wrap items-center gap-2 font-medium text-nova-900">
+                        <p class="flex flex-wrap items-center gap-2 font-medium text-rendivoo-900">
                             <span class="break-words">{{ site.name }}</span>
-                            <span v-if="site.is_default" class="rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-nova-700">
+                            <span v-if="site.is_default" class="rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-rendivoo-700">
                                 {{ t('onboarding.sites.default_badge') }}
                             </span>
                         </p>

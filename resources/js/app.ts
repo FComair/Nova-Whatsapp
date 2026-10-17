@@ -14,7 +14,7 @@ installUnsavedGuard();
 initTheme();
 
 createInertiaApp({
-    title: (title) => (title ? `${title} · Nova` : 'Nova'),
+    title: (title) => (title ? `${title} · Rendivoo` : 'Rendivoo'),
     resolve: (name) => {
         const page = pages[`./Pages/${name}.vue`];
 

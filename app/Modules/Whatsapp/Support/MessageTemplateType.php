@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Whatsapp\Support;
 
 /**
- * Types de messages WhatsApp de la bibliothèque (docs/39). Les quatre premiers sont envoyés automatiquement par Nova
+ * Types de messages WhatsApp de la bibliothèque (docs/39). Les quatre premiers sont envoyés automatiquement par Rendivoo
  * (réservation, rappel, déplacement, annulation) ; les autres sont prêts à l'emploi mais n'ont pas encore de déclencheur dans l'application.
  */
 final class MessageTemplateType
@@ -41,7 +41,7 @@ final class MessageTemplateType
         self::PAYMENT_CONFIRMATION, self::FOLLOW_UP, self::REVIEW_REQUEST, self::RE_ENGAGEMENT, self::PROMOTIONAL, self::INFORMATIONAL, self::CUSTOM,
     ];
 
-    /** Types que Nova envoie lui-même, avec la clé de l'ancien modèle global (config/whatsapp.php) qu'ils remplacent. */
+    /** Types que Rendivoo envoie lui-même, avec la clé de l'ancien modèle global (config/whatsapp.php) qu'ils remplacent. */
     public const AUTOMATIC = [
         self::CONFIRMATION => 'confirmation',
         self::REMINDER => 'reminder',

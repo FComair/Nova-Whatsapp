@@ -7,7 +7,7 @@ popular: false
 order: 2
 updated: 2026-10-09
 ---
-Alles gebeurt in **Instellingen > Beveiliging**. Voor elke wijziging vraagt Nova uw **huidige wachtwoord**.
+Alles gebeurt in **Instellingen > Beveiliging**. Voor elke wijziging vraagt Rendivoo uw **huidige wachtwoord**.
 
 ## Wachtwoord
 
@@ -15,7 +15,7 @@ Minstens 12 tekens, met een hoofdletter, een kleine letter, een cijfer en een sp
 
 ## E-mailadres
 
-Geef het nieuwe adres in: Nova stuurt er een bevestigingslink naartoe en verwittigt het oude. De wijziging gebeurt pas na bevestiging.
+Geef het nieuwe adres in: Rendivoo stuurt er een bevestigingslink naartoe en verwittigt het oude. De wijziging gebeurt pas na bevestiging.
 
 ## Zakelijk telefoonnummer
 

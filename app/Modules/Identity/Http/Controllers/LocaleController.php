@@ -15,7 +15,7 @@ final class LocaleController
 {
     public function update(Request $request): RedirectResponse
     {
-        $data = $request->validate(['locale' => ['required', 'string', Rule::in(config('nova.locales'))]]);
+        $data = $request->validate(['locale' => ['required', 'string', Rule::in(config('rendivoo.locales'))]]);
 
         $request->session()->put('locale', $data['locale']);
 

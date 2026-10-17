@@ -10,7 +10,7 @@ Page `/securite`, accessible à tous les rôles et quel que soit le statut du co
 - **Connexion** : après le mot de passe, une seconde étape (`/connexion/verification`) demande le code ; 5 erreurs renvoient à la connexion ; un code TOTP ne sert qu'une fois (rejeu).
 - **Obligatoire, sans délai de grâce** pour le propriétaire et les responsables de site (`RequireTwoFactor`) : tant qu'elle n'est pas activée, seules la page Sécurité, la langue et la déconnexion restent accessibles. Ces rôles ne peuvent pas la désactiver. Réglage `NOVA_REQUIRE_2FA` (vrai par défaut ; faux dans les tests).
 - Les praticiens et réceptionnistes peuvent l'activer (et la désactiver avec mot de passe + code).
-- **Récupération** : codes de secours ; à défaut, **déblocage d'accès par le support Nova** (voir ci-dessous). Non fait : clés matérielles FIDO2/WebAuthn, code par SMS.
+- **Récupération** : codes de secours ; à défaut, **déblocage d'accès par le support Rendivoo** (voir ci-dessous). Non fait : clés matérielles FIDO2/WebAuthn, code par SMS.
 
 ## E-mail
 Lien signé (24 h, usage unique) envoyé à la **nouvelle** adresse, avis à l'**ancienne** ; rien ne change avant la confirmation. La nouvelle adresse est alors considérée comme vérifiée et l'ancienne est prévenue.

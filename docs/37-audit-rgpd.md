@@ -14,7 +14,7 @@ Conformité **partielle**, pas encore prête pour une mise en production avec de
 | Session Super Admin valable 120 min sans activité | `EnforceAdminIdleTimeout` : déconnexion après `NOVA_ADMIN_IDLE_MINUTES` (60 par défaut, 0 = coupé), entrée `platform.session_expired`, Livewire répond 419 |
 | Ports de développement ouverts sur toutes les interfaces (PostgreSQL, Redis sans mot de passe, Mailpit) | `docker-compose.yml` : tous les ports liés à 127.0.0.1 |
 | Charges utiles des tâches échouées et jetons de réinitialisation conservés | Planifié chaque nuit : `queue:prune-failed --hours=168`, `auth:clear-resets` |
-| Preflight ne contrôlait ni HTTPS ni TLS ni l'IA | `nova:preflight` : erreurs si `APP_URL`, n8n ou l'IA ne sont pas en HTTPS ; avertissements si l'IA est active (sous-traitant à déclarer), si `DB_SSLMODE` n'impose pas TLS, si le délai d'inactivité admin est coupé |
+| Preflight ne contrôlait ni HTTPS ni TLS ni l'IA | `rendivoo:preflight` : erreurs si `APP_URL`, n8n ou l'IA ne sont pas en HTTPS ; avertissements si l'IA est active (sous-traitant à déclarer), si `DB_SSLMODE` n'impose pas TLS, si le délai d'inactivité admin est coupé |
 | Dépendances npm vulnérables, aucun contrôle automatique | `npm audit fix` (0 vulnérabilité), `.github/workflows/security.yml` (composer et npm audit à chaque envoi et chaque semaine), `.github/dependabot.yml` |
 | PDF joints aux demandes d'aide acceptés sans contrôle du contenu actif | `App\Support\Files\PdfInspector` (partagé avec le dépôt de PDF juridiques) : `/JavaScript`, `/JS`, `/Launch`, `/EmbeddedFile`, `/RichMedia` refusés |
 | Rapport d'audit risquant d'être versionné | `/output/` ajouté à `.gitignore` |

@@ -216,8 +216,8 @@ final class OnboardingController
             ...$this->wizard(OnboardingSteps::COMPANY),
             'company' => $organization->only(['name', 'sector', 'country', 'timezone', 'locale']),
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
-            'countries' => config('nova.countries'),
-            'timezones' => app(TimezoneCatalog::class)->byCountry(config('nova.countries')),
+            'countries' => config('rendivoo.countries'),
+            'timezones' => app(TimezoneCatalog::class)->byCountry(config('rendivoo.countries')),
         ]);
     }
 
@@ -233,7 +233,7 @@ final class OnboardingController
                 'is_default' => $location->is_default,
                 'address' => $location->address ?? ['street' => null, 'postal_code' => null, 'city' => null, 'country' => $this->organization()->country],
             ])->all(),
-            'countries' => config('nova.countries'),
+            'countries' => config('rendivoo.countries'),
             'defaultCountry' => $this->organization()->country,
         ]);
     }
@@ -291,13 +291,13 @@ final class OnboardingController
             ])->all(),
             'services' => Service::query()->orderBy('position')->get(['id', 'name'])->map(fn (Service $service): array => ['id' => $service->id, 'name' => $service->name])->all(),
             'locations' => $locations->map(fn (Location $location): array => ['id' => $location->id, 'name' => $location->name])->all(),
-            'colors' => config('nova.practitioner_colors'),
+            'colors' => config('rendivoo.practitioner_colors'),
             'plan' => [
                 'name' => $this->limits->planFor($organization)->name,
                 'limit' => $this->staff->limit($organization),
                 'used' => $this->staff->usedSlots(),
             ],
-            'invitationDays' => (int) config('nova.security.invitation_ttl_days'),
+            'invitationDays' => (int) config('rendivoo.security.invitation_ttl_days'),
             'meLinked' => Practitioner::query()->where('user_id', auth()->id())->exists(),
         ]);
     }

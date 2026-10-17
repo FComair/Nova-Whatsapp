@@ -48,7 +48,7 @@ function logout(): void {
         <header class="sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-[14px]">
             <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
                 <div class="flex min-w-0 items-center gap-3">
-                    <span class="font-display text-xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
+                    <span class="font-display text-xl font-bold tracking-tight text-rendivoo-900">{{ t('common.app_name') }}</span>
                     <span v-if="page.props.auth.organization" class="flex min-w-0 items-center gap-2 border-l border-line pl-3">
                         <ShopAvatar
                             :id="page.props.auth.organization.id"

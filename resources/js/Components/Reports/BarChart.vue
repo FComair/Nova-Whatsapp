@@ -108,7 +108,7 @@ const tooltipLeft = computed(() => (active.value === null ? 0 : ((LEFT + slot.va
                 tabindex="0"
                 role="img"
                 :aria-label="describe(item)"
-                class="outline-none focus-visible:[&>rect.focus]:stroke-nova-900"
+                class="outline-none focus-visible:[&>rect.focus]:stroke-rendivoo-900"
                 @mouseenter="active = index"
                 @focus="active = index"
                 @blur="active = null"
@@ -153,7 +153,7 @@ const tooltipLeft = computed(() => (active.value === null ? 0 : ((LEFT + slot.va
             role="status"
             data-testid="chart-tooltip"
         >
-            <p class="font-semibold text-nova-900">{{ items[active].title }}</p>
+            <p class="font-semibold text-rendivoo-900">{{ items[active].title }}</p>
             <p v-for="(entry, index) in props.series" :key="entry.key" class="text-neutral-800">
                 {{ entry.label }} : {{ format(items[active].values[index]) }}
             </p>

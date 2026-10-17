@@ -14,6 +14,6 @@ A slot is only offered when everything is in place. Check in this order:
 3. **That practitioner performs the requested service**: link the service to the practitioner.
 4. **Booking rules**: a minimum notice that is too long or a horizon that is too short removes slots.
 5. **A linked external calendar** can block busy times.
-6. **The slot is already taken** by another appointment (Nova forbids double-booking the same practitioner).
+6. **The slot is already taken** by another appointment (Rendivoo forbids double-booking the same practitioner).
 
 > **Tip:** for staff, the **New appointment** window only lists practitioners who perform the chosen service; if the list is empty, it is step 3.

@@ -1,4 +1,4 @@
-# Nova — UI aesthetic upgrade plan ("Calm Premium")
+# Rendivoo — UI aesthetic upgrade plan ("Calm Premium")
 
 > **Palette, typography and shapes in this document are superseded by `docs/20-alignement-visuel-site-et-application.md`** (the app now follows the website identity). The structure, rollout, motion and dark-mode mechanics below still apply.
 
@@ -19,7 +19,7 @@ A quiet, confident product for people who open it dozens of times a day (hairdre
 - **Typographic hierarchy does the work** (weight, size, tabular numerals), instead of boxes inside boxes.
 - **Motion is a whisper**: 120–220 ms, ease-out, never blocks, off for people who prefer reduced motion (already honoured in `app.css`).
 
-What stays: the Nova navy and blue, Inter, the teal accent for WhatsApp/bot moments, the three-language labels.
+What stays: the Rendivoo navy and blue, Inter, the teal accent for WhatsApp/bot moments, the three-language labels.
 
 ### 1.2 Colour palette (light)
 

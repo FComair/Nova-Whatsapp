@@ -7,7 +7,7 @@ vi.mock('@inertiajs/vue3', () => ({
             locale: 'nl',
             translations: {
                 errors: { E3: 'Te veel pogingen. Probeer het opnieuw over :minutes minuten.' },
-                common: { app_name: 'Nova' },
+                common: { app_name: 'Rendivoo' },
                 n: { items: ':count klant|:count klanten' },
             },
         },
@@ -16,7 +16,7 @@ vi.mock('@inertiajs/vue3', () => ({
 
 describe('useT', () => {
     it('renvoie le texte traduit', () => {
-        expect(useT().t('common.app_name')).toBe('Nova');
+        expect(useT().t('common.app_name')).toBe('Rendivoo');
     });
 
     it('remplace les paramètres', () => {

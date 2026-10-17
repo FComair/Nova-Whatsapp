@@ -10,7 +10,7 @@ import AuthLayout from '../../Layouts/AuthLayout.vue';
 
 /**
  * Création du compte d'une personne invitée. Elle choisit son mot de passe et accepte les conditions et la politique de confidentialité
- * (le DPA lie l'entreprise à Nova, pas l'invité). L'acceptation est enregistrée par le serveur avec la version affichée ici, dans la même
+ * (le DPA lie l'entreprise à Rendivoo, pas l'invité). L'acceptation est enregistrée par le serveur avec la version affichée ici, dans la même
  * opération que le compte : si elle échoue, le compte n'est pas créé et la personne peut réessayer.
  */
 interface LegalDoc {
@@ -69,7 +69,7 @@ function submit(): void {
             <TextField v-model="form.password_confirmation" type="password" :label="t('invitation.password_confirm')" autocomplete="new-password" required />
 
             <fieldset class="space-y-3 rounded-card border border-line bg-surface p-4" data-testid="legal-acceptance">
-                <legend class="px-1 text-sm font-semibold text-nova-900">{{ t('legal.signup.title') }}</legend>
+                <legend class="px-1 text-sm font-semibold text-rendivoo-900">{{ t('legal.signup.title') }}</legend>
                 <AlertBox v-if="!legalReady" variant="error">{{ t('legal.invitation.unavailable') }}</AlertBox>
                 <AlertBox v-if="errors.legal" variant="error" data-testid="legal-error">{{ errors.legal }}</AlertBox>
                 <CheckboxField

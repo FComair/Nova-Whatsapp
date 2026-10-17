@@ -119,7 +119,7 @@ return [
         'valid' => 'Ce lien ne fonctionne qu’une fois et expire dans :days jours.',
         'mfa' => 'Après avoir choisi votre mot de passe, vous configurerez la double authentification à votre première connexion.',
         'ignore' => 'Si vous n’attendiez pas cet e-mail, ignorez-le : rien ne changera.',
-        'invitation' => ['subject' => 'Votre compte administrateur Nova', 'intro' => 'Vous avez été ajouté à Nova comme :role. Choisissez votre mot de passe pour activer votre compte.', 'action' => 'Choisir mon mot de passe'],
-        'reset' => ['subject' => 'Réinitialisez votre mot de passe administrateur Nova', 'intro' => 'Une réinitialisation du mot de passe a été demandée pour votre compte administrateur Nova (:role).', 'action' => 'Choisir un nouveau mot de passe'],
+        'invitation' => ['subject' => 'Votre compte administrateur Rendivoo', 'intro' => 'Vous avez été ajouté à Rendivoo comme :role. Choisissez votre mot de passe pour activer votre compte.', 'action' => 'Choisir mon mot de passe'],
+        'reset' => ['subject' => 'Réinitialisez votre mot de passe administrateur Rendivoo', 'intro' => 'Une réinitialisation du mot de passe a été demandée pour votre compte administrateur Rendivoo (:role).', 'action' => 'Choisir un nouveau mot de passe'],
     ],
 ];

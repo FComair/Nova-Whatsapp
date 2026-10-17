@@ -30,7 +30,7 @@ final class PractitionerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'min:2', 'max:120'],
-            'color' => ['required', 'string', Rule::in(config('nova.practitioner_colors'))],
+            'color' => ['required', 'string', Rule::in(config('rendivoo.practitioner_colors'))],
             'bio' => ['nullable', 'string', 'max:1000'],
             'service_ids' => ['present', 'array'],
             // `exists` est évalué sous la RLS : un service d'une autre organisation est introuvable.

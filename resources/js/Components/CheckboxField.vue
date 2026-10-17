@@ -18,7 +18,7 @@ const describedBy = computed(() => (props.error ? errorId : undefined));
                 type="checkbox"
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-describedby="describedBy"
-                class="nova-check mt-0.5"
+                class="rendivoo-check mt-0.5"
             />
             <label :for="id" class="text-sm text-neutral-900"
                 ><slot name="label">{{ label }}</slot></label

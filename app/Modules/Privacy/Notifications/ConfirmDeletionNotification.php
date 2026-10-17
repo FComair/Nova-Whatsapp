@@ -25,7 +25,7 @@ final class ConfirmDeletionNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $hours = (int) config('nova.security.email_link_ttl_hours');
+        $hours = (int) config('rendivoo.security.email_link_ttl_hours');
         $url = URL::temporarySignedRoute('account.deletion.confirm', now()->addHours($hours), ['token' => $this->token]);
 
         return (new MailMessage)

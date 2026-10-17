@@ -62,7 +62,7 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/connexion');
 
 if (app()->environment('local')) {
-    // Connexion directe au Super Admin, développement local uniquement (lien signé créé par `php artisan nova:dev-admin-link`).
+    // Connexion directe au Super Admin, développement local uniquement (lien signé créé par `php artisan rendivoo:dev-admin-link`).
     Route::get('/dev/admin-login/{nonce}', DevAdminLoginController::class)->middleware('signed')->name('dev.admin-login');
 }
 
@@ -278,7 +278,7 @@ Route::middleware(['auth', AuthenticateSession::class, SetTenantContext::class, 
         Route::get('/', [HelpController::class, 'index'])->name('help.index');
         Route::get('/recherche', [HelpController::class, 'search'])->name('help.search');
         Route::post('/retour', [HelpController::class, 'feedback'])->middleware('throttle:30,1')->name('help.feedback');
-        // Avis sur Nova (docs/26) : privé à l'équipe, à tout moment ; « Pas maintenant » ; liens d'avis publics facultatifs (Google, Trustpilot).
+        // Avis sur Rendivoo (docs/26) : privé à l'équipe, à tout moment ; « Pas maintenant » ; liens d'avis publics facultatifs (Google, Trustpilot).
         Route::get('/avis', [FeedbackController::class, 'create'])->name('help.reviews');
         Route::post('/avis', [FeedbackController::class, 'store'])->middleware('throttle:10,60')->name('help.feedback.store');
         Route::post('/avis/plus-tard', [FeedbackController::class, 'dismiss'])->middleware('throttle:30,1')->name('help.feedback.dismiss');

@@ -28,12 +28,12 @@ const { t } = useT();
                     <path d="m5 12.5 4.5 4.5L19 7.5" />
                 </svg>
             </span>
-            <h1 class="mt-4 font-display text-2xl font-bold text-nova-900">{{ t('support.sent.title') }}</h1>
+            <h1 class="mt-4 font-display text-2xl font-bold text-rendivoo-900">{{ t('support.sent.title') }}</h1>
             <p class="mt-1 text-neutral-700">{{ t('support.sent.email_note', { email }) }}</p>
 
             <section class="mt-6 rounded-card border border-line bg-surface p-5 text-left shadow-xs" :aria-label="t('support.sent.summary')">
                 <p class="text-sm text-neutral-700">{{ t('support.sent.reference') }}</p>
-                <p class="font-display text-2xl font-bold text-nova-900">#{{ ticket.reference }}</p>
+                <p class="font-display text-2xl font-bold text-rendivoo-900">#{{ ticket.reference }}</p>
                 <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
                     <dt class="font-medium text-neutral-600">{{ t('support.tickets.subject') }}</dt>
                     <dd class="font-semibold text-neutral-900">{{ ticket.subject }}</dd>

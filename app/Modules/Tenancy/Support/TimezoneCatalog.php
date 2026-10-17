@@ -39,7 +39,7 @@ final class TimezoneCatalog
     /** Fuseau principal du pays, proposé par défaut. */
     public function main(string $country): ?string
     {
-        $configured = config('nova.default_timezones.'.strtoupper($country));
+        $configured = config('rendivoo.default_timezones.'.strtoupper($country));
 
         return is_string($configured) ? $configured : (DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, strtoupper($country))[0] ?? null);
     }

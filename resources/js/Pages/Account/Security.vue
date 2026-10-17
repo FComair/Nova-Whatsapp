@@ -59,7 +59,7 @@ function newCodes(): void {
 
 <template>
     <SettingsLayout :title="t('security.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('security.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('security.title') }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('security.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.warning" variant="warning" class="mt-4 max-w-2xl">{{ page.props.flash.warning }}</AlertBox>
@@ -68,7 +68,7 @@ function newCodes(): void {
 
         <!-- Double authentification -->
         <section class="mt-8 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="two-factor">
-            <h2 id="two-factor" class="text-lg font-semibold text-nova-900">
+            <h2 id="two-factor" class="text-lg font-semibold text-rendivoo-900">
                 {{ t('security.two_factor_section') }}
                 <span class="ml-2 text-sm font-medium" :class="twoFactor.enabled ? 'text-success-600' : 'text-neutral-600'">
                     {{ twoFactor.enabled ? t('security.two_factor_on') : t('security.two_factor_off') }}
@@ -79,7 +79,7 @@ function newCodes(): void {
 
             <!-- Codes de secours : affichés une seule fois, juste après l'activation ou le renouvellement. -->
             <div v-if="recoveryCodes" class="mt-4 rounded-control border border-line-strong bg-neutral-50 p-4">
-                <h3 class="font-semibold text-nova-900">{{ t('security.recovery_title') }}</h3>
+                <h3 class="font-semibold text-rendivoo-900">{{ t('security.recovery_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('security.recovery_body') }}</p>
                 <ul class="mt-3 grid grid-cols-2 gap-2 font-mono text-sm" data-testid="recovery-codes">
                     <li v-for="code in recoveryCodes" :key="code">{{ code }}</li>
@@ -146,7 +146,7 @@ function newCodes(): void {
 
         <!-- Mot de passe -->
         <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="password">
-            <h2 id="password" class="text-lg font-semibold text-nova-900">{{ t('security.password_section') }}</h2>
+            <h2 id="password" class="text-lg font-semibold text-rendivoo-900">{{ t('security.password_section') }}</h2>
             <AlertBox v-if="passwordOld" variant="warning" class="mt-3">{{ t('security.password_old') }}</AlertBox>
             <form class="mt-3 space-y-4" novalidate @submit.prevent="changePassword">
                 <TextField
@@ -179,7 +179,7 @@ function newCodes(): void {
 
         <!-- Sessions -->
         <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="sessions">
-            <h2 id="sessions" class="text-lg font-semibold text-nova-900">{{ t('security.sessions_section') }}</h2>
+            <h2 id="sessions" class="text-lg font-semibold text-rendivoo-900">{{ t('security.sessions_section') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('security.sessions_body') }}</p>
             <form class="mt-3 space-y-3" novalidate @submit.prevent="closeSessions">
                 <TextField

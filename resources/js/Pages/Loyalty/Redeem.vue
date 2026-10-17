@@ -111,7 +111,7 @@ function apply(): void {
     <AppLayout :title="t('loyalty.redeem.title')">
         <LoyaltyTabs current="redeem" :can="can" />
 
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.redeem.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.redeem.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-700">{{ t('loyalty.redeem.intro') }}</p>
 
         <AlertBox v-if="errors.reward" variant="error" class="mt-4">{{ errors.reward }}</AlertBox>
@@ -143,7 +143,7 @@ function apply(): void {
         <template v-else-if="!done">
             <!-- 1. Retrouver le client -->
             <section class="mt-5 rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="find-title">
-                <h2 id="find-title" class="font-semibold text-nova-900">{{ t('loyalty.redeem.step_find') }}</h2>
+                <h2 id="find-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.redeem.step_find') }}</h2>
                 <form class="mt-3 flex flex-col items-end gap-3 sm:flex-row" role="search" @submit.prevent="search">
                     <div class="w-full sm:flex-1"><TextField v-model="term" :label="t('loyalty.redeem.search')" /></div>
                     <BaseButton type="submit">{{ t('loyalty.redeem.search_action') }}</BaseButton>
@@ -169,7 +169,7 @@ function apply(): void {
 
             <!-- 2 et 3. Récompense, conditions, rendez-vous -->
             <section v-if="customer && panel" class="mt-5 rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="reward-title">
-                <h2 id="reward-title" class="font-semibold text-nova-900">{{ t('loyalty.redeem.step_reward') }}</h2>
+                <h2 id="reward-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.redeem.step_reward') }}</h2>
                 <p class="mt-2 rounded-lg bg-surface-2 px-3 py-2 text-sm font-medium text-neutral-900" data-testid="identity">
                     {{ t('loyalty.redeem.identity', { name: customer.name ?? t('loyalty.customers.unnamed'), phone: customer.phone }) }}
                 </p>
@@ -189,7 +189,14 @@ function apply(): void {
                             class="flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm"
                             :class="reward?.id === row.id ? 'border-primary-600 bg-primary-50' : 'border-line'"
                         >
-                            <input v-model="rewardId" type="radio" name="reward" :value="row.id" class="nova-check mt-0.5" :checked="reward?.id === row.id" />
+                            <input
+                                v-model="rewardId"
+                                type="radio"
+                                name="reward"
+                                :value="row.id"
+                                class="rendivoo-check mt-0.5"
+                                :checked="reward?.id === row.id"
+                            />
                             <span>
                                 <span class="block font-semibold text-neutral-900">{{ row.description }}</span>
                                 <span class="block text-xs text-neutral-700"
@@ -224,7 +231,7 @@ function apply(): void {
                                     type="radio"
                                     name="booking"
                                     :value="row.id"
-                                    class="nova-check mt-0.5"
+                                    class="rendivoo-check mt-0.5"
                                     :disabled="refusal(row) !== null"
                                 />
                                 <span>
@@ -246,7 +253,7 @@ function apply(): void {
                                     noBookingAllowed ? 'cursor-pointer' : 'opacity-60',
                                 ]"
                             >
-                                <input v-model="bookingId" type="radio" name="booking" value="" class="nova-check mt-0.5" :disabled="!noBookingAllowed" />
+                                <input v-model="bookingId" type="radio" name="booking" value="" class="rendivoo-check mt-0.5" :disabled="!noBookingAllowed" />
                                 <span
                                     >{{ t('loyalty.redeem.no_booking_option')
                                     }}<span v-if="!noBookingAllowed" class="block text-xs text-neutral-700">{{
@@ -259,7 +266,7 @@ function apply(): void {
 
                     <div class="mt-4">
                         <label class="flex items-start gap-3 text-sm"
-                            ><input v-model="otherOffer" type="checkbox" class="nova-check mt-0.5" />{{ t('loyalty.redeem.other_offer') }}</label
+                            ><input v-model="otherOffer" type="checkbox" class="rendivoo-check mt-0.5" />{{ t('loyalty.redeem.other_offer') }}</label
                         >
                         <p v-if="otherOffer && reward && !reward.combinable" class="mt-1 pl-8 text-sm font-medium text-danger-fg" role="alert">
                             {{ t('loyalty.redeem.not_combinable') }}

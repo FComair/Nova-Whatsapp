@@ -42,7 +42,7 @@ it('reste exigé quand le réglage est absent', function (): void {
 });
 
 it('ne contraint plus les clients à activer la 2FA quand l\'interrupteur est coupé', function () use ($set): void {
-    config(['nova.security.two_factor_required' => true]);
+    config(['rendivoo.security.two_factor_required' => true]);
     expect(app(TwoFactor::class)->isRequiredFor(OrgMember::ROLE_OWNER))->toBeTrue();
 
     $set('client_two_factor_required', 0);

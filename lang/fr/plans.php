@@ -57,7 +57,7 @@ return [
         'status' => 'Statut',
         'status_help' => 'Un brouillon n’est jamais visible des clients. Seule une formule active est proposée aux nouveaux abonnés.',
         'internal_description' => 'Description interne',
-        'internal_description_help' => 'Réservée à l’équipe Nova.',
+        'internal_description_help' => 'Réservée à l’équipe Rendivoo.',
         'public_description' => 'Description publique',
         'public_description_help' => 'Courte phrase affichée sous le nom, par langue (300 caractères). À défaut, le français.',
         'pricing' => 'Prix et facturation',

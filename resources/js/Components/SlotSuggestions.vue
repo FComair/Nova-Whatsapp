@@ -19,7 +19,7 @@ function label(suggestion: Suggestion): string {
 
 <template>
     <div v-if="suggestions.length" class="rounded-control border border-primary-200 bg-primary-50 p-3">
-        <p class="text-sm font-semibold text-nova-900">{{ t('planning.form.suggestions') }}</p>
+        <p class="text-sm font-semibold text-rendivoo-900">{{ t('planning.form.suggestions') }}</p>
         <ul class="mt-2 space-y-2">
             <li v-for="suggestion in suggestions" :key="`${suggestion.date}-${suggestion.time}-${suggestion.practitioner_id}`">
                 <button

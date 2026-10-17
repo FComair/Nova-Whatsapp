@@ -7,7 +7,7 @@
     <script>
         (function () {
             try {
-                var p = localStorage.getItem('nova-theme');
+                var p = localStorage.getItem('nova-theme') /* clé historique conservée, voir composables/theme.ts */;
                 var dark = p === 'dark' || (p !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
                 document.documentElement.dataset.theme = dark ? 'dark' : 'light';
             } catch (e) {}
@@ -17,7 +17,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.ts'])
     @inertiaHead
 </head>
-<body class="bg-neutral-50 text-nova-900 antialiased">
+<body class="bg-neutral-50 text-rendivoo-900 antialiased">
     @inertia
 </body>
 </html>

@@ -27,8 +27,8 @@ beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     Cache::flush();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
-    $this->boss->forceFill(['name' => 'Fondatrice Nova'])->save();
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->boss->forceFill(['name' => 'Fondatrice Rendivoo'])->save();
     $this->boss->refresh();
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount(['name' => 'Salon Aurore', 'status' => 'active']);
 
@@ -137,7 +137,7 @@ describe('exactitude des chiffres', function (): void {
         expect($kpi['value'])->toBe(1)->and($kpi['comparison']['previous'])->toBe(1)->and($kpi['comparison']['direction'])->toBe('flat');
     });
 
-    it('sépare le revenu d\'abonnement de Nova de l\'argent des clients', function (): void {
+    it('sépare le revenu d\'abonnement de Rendivoo de l\'argent des clients', function (): void {
         $sub = ($this->subscribe)($this->org->id);
         ($this->pay)($this->org->id, $sub, 10000);
         ($this->pay)($this->org->id, $sub, 5000, 'failed');
@@ -173,7 +173,7 @@ describe('exactitude des chiffres', function (): void {
         expect($data['new_subscriptions']['value'])->toBe(1)->and($data['upgrades']['value'])->toBe(1)->and($data['cancellations']['value'])->toBe(1);
     });
 
-    it('sépare les recettes de rendez-vous et les pourboires, sans les ajouter au revenu de Nova', function (): void {
+    it('sépare les recettes de rendez-vous et les pourboires, sans les ajouter au revenu de Rendivoo', function (): void {
         $customer = (string) Str::uuid();
         ($this->db)()->table('customers')->insert(['id' => $customer, 'org_id' => $this->org->id, 'phone_e164' => '+32470000001', 'reference_number' => 1]);
         $location = ($this->db)()->table('locations')->where('org_id', $this->org->id)->value('id');
@@ -266,7 +266,7 @@ describe('page', function (): void {
 
         $page = Livewire::actingAs($this->boss, 'platform')->test(AdminDashboard::class);
 
-        $page->assertSuccessful()->assertSee('Fondatrice Nova')->assertSee(__('dashboard.kpi.mrr.label'))->assertSee(__('dashboard.kpi.revenue_collected.label'))
+        $page->assertSuccessful()->assertSee('Fondatrice Rendivoo')->assertSee(__('dashboard.kpi.mrr.label'))->assertSee(__('dashboard.kpi.revenue_collected.label'))
             ->assertSee(__('dashboard.sections.alerts'))->assertSee(__('dashboard.revenue.client_money_title'))
             ->assertSeeHtml('role="img"')->assertSeeHtml('aria-labelledby="nd-rev-t')->assertSee(__('dashboard.data_table'));
     });
@@ -294,9 +294,9 @@ describe('page', function (): void {
     });
 
     it('renvoie les agents de support vers les tickets et les éditeurs vers les FAQ', function (): void {
-        $agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+        $agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
         $agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
-        $editor = PlatformAdmin::query()->create(['email' => 'editeur@nova.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
+        $editor = PlatformAdmin::query()->create(['email' => 'editeur@rendivoo.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
         $editor->forceFill(['support_role' => PlatformAdmin::SUPPORT_EDITOR])->save();
 
         Livewire::actingAs($agent->refresh(), 'platform')->test(AdminDashboard::class)->assertRedirect(SupportTicketResource::getUrl());
@@ -304,7 +304,7 @@ describe('page', function (): void {
     });
 
     it('met les chiffres en cache brièvement et ne les montre qu\'au Super Admin', function (): void {
-        $agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+        $agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
         $agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
         $this->actingAs($agent->refresh(), 'platform');
 

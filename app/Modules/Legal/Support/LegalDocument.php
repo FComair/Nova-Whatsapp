@@ -33,7 +33,7 @@ final class LegalDocument
     public const INVITATION_RECOVERED = 'invitation_recovered';
 
     /**
-     * Documents que doit accepter une personne selon son rôle : conditions et confidentialité pour tous, le DPA (qui lie l'entreprise à Nova)
+     * Documents que doit accepter une personne selon son rôle : conditions et confidentialité pour tous, le DPA (qui lie l'entreprise à Rendivoo)
      * seulement pour le propriétaire.
      *
      * @return list<string>

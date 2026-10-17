@@ -34,7 +34,7 @@ final class LoyaltyApiController
             return new JsonResponse(['data' => ['enrolled' => false]]);
         }
 
-        $locale = in_array($customer->language, (array) config('nova.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
+        $locale = in_array($customer->language, (array) config('rendivoo.locales'), true) ? (string) $customer->language : (string) config('app.fallback_locale');
         $rewards = LoyaltyReward::query()->where('customer_id', $customer->id)->where('status', LoyaltyReward::AVAILABLE)->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))->orderBy('earned_at')->get();
 
         return new JsonResponse(['data' => [

@@ -1,6 +1,6 @@
 ---
 title: Uw account exporteren, pauzeren of verwijderen
-summary: Uw gegevens terugkrijgen, uw zaak schorsen of Nova verlaten.
+summary: Uw gegevens terugkrijgen, uw zaak schorsen of Rendivoo verlaten.
 tags: export, gegevens, pauze, account verwijderen, avg
 related: customers/erase-customer, billing/plans-invoices
 popular: false

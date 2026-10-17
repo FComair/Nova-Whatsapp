@@ -103,7 +103,7 @@ it('refuse les données invalides', function (array $override, string $field): v
     'mot de passe sans chiffre' => [['password' => 'Uniquement-Des-Lettres-Longues!'], 'password'],
     'mot de passe sans majuscule' => [['password' => 'sol1de-phrase-pour-test!'], 'password'],
     'mot de passe sans caractere special' => [['password' => 'Sol1dePhrasePourTest'], 'password'],
-    'mot de passe evident decore' => [['password' => 'P@ssw0rd-Nova-2026!'], 'password'],
+    'mot de passe evident decore' => [['password' => 'P@ssw0rd-Rendivoo-2026!'], 'password'],
     'mot de passe tire de l e-mail' => [['email' => 'jeanne.dupont@example.com', 'password' => 'Jeanne.Dupont-2026!'], 'password'],
     'e-mail invalide' => [['email' => 'pas-un-email'], 'email'],
     'téléphone invalide' => [['phone' => '12345'], 'phone'],

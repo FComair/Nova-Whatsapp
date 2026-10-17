@@ -69,7 +69,7 @@ const percent = (rate: number | null): string =>
     <AppLayout :title="t('loyalty.report.title')">
         <LoyaltyTabs current="report" :can="can" />
 
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.report.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.report.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-700">{{ t('loyalty.report.intro') }} {{ formatDate(report.period.from) }} – {{ formatDate(report.period.to) }}.</p>
 
         <form
@@ -111,7 +111,7 @@ const percent = (rate: number | null): string =>
         <dl class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div v-for="key in metrics" :key="key" class="rounded-card border border-line bg-surface p-4 shadow-xs">
                 <dt class="text-xs font-semibold text-neutral-700">{{ t(`loyalty.report.metric.${key}`) }}</dt>
-                <dd class="mt-1 text-2xl font-bold tabular-nums text-nova-900" :data-testid="`metric-${key}`">{{ value(key) }}</dd>
+                <dd class="mt-1 text-2xl font-bold tabular-nums text-rendivoo-900" :data-testid="`metric-${key}`">{{ value(key) }}</dd>
                 <p v-if="key === 'redemption_rate'" class="text-xs text-neutral-700">
                     {{
                         report.metrics.redemption_rate_base > 0
@@ -124,14 +124,14 @@ const percent = (rate: number | null): string =>
         </dl>
 
         <section class="mt-6 rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="series-title">
-            <h2 id="series-title" class="font-semibold text-nova-900">{{ t('loyalty.report.series') }}</h2>
+            <h2 id="series-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.report.series') }}</h2>
             <div class="mt-3">
                 <LoyaltyTrend :series="report.series" :granularity="report.period.granularity" :table-label="t('loyalty.report.series_table')" />
             </div>
         </section>
 
         <section class="mt-6 rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="returning-title">
-            <h2 id="returning-title" class="font-semibold text-nova-900">{{ t('loyalty.report.returning_title') }}</h2>
+            <h2 id="returning-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.report.returning_title') }}</h2>
             <dl class="mt-3 grid gap-3 sm:grid-cols-2">
                 <div class="rounded-xl bg-surface-2 p-3 text-sm">
                     <dt class="font-semibold">{{ t('loyalty.report.returning_enrolled') }}</dt>

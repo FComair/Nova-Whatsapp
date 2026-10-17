@@ -34,7 +34,7 @@ function text(insight: Insight, currency: string): string {
         :aria-label="t('reports.section.insights')"
         data-testid="insights"
     >
-        <h3 class="text-sm font-semibold text-nova-900">{{ t('reports.section.insights') }}</h3>
+        <h3 class="text-sm font-semibold text-rendivoo-900">{{ t('reports.section.insights') }}</h3>
         <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-900">
             <li v-for="insight in insights" :key="insight.key">{{ text(insight, currency ?? 'EUR') }}</li>
         </ul>

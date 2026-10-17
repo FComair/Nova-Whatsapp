@@ -7,7 +7,7 @@ popular: false
 order: 1
 updated: 2026-10-09
 ---
-When Nova cannot notify a customer, the action (create, move, cancel) is still done and a message asks you to contact them directly. Here is what to check.
+When Rendivoo cannot notify a customer, the action (create, move, cancel) is still done and a message asks you to contact them directly. Here is what to check.
 
 ## Possible causes
 

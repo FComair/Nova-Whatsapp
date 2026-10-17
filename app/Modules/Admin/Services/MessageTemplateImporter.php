@@ -74,6 +74,7 @@ final class MessageTemplateImporter
             'type' => $type,
             'slug' => $type,
             'name' => $name,
+            // Préfixe historique « nova_ » conservé : c'est le nom enregistré chez Meta (docs/42).
             'meta_name' => Str::limit('nova_'.preg_replace('/[^a-z0-9_]+/', '_', strtolower($sector.'_'.$type)), 120, ''),
             'category' => MessageTemplateType::category($type),
             'status' => MessageTemplateStatus::DRAFT,
@@ -83,7 +84,7 @@ final class MessageTemplateImporter
             'updated_at' => now(),
         ]);
 
-        foreach ((array) config('nova.locales') as $language) {
+        foreach ((array) config('rendivoo.locales') as $language) {
             $bodies[$language] = MessageTemplateLibrary::body($sector, $type, (string) $language);
             $db->table('message_template_translations')->insert([
                 'id' => (string) Str::uuid7(), 'template_id' => $id, 'language' => $language, 'body' => $bodies[$language], 'created_at' => now(), 'updated_at' => now(),

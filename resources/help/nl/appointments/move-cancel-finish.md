@@ -23,6 +23,6 @@ Zodra het uur voorbij is, kan een bevestigde afspraak als **Afgerond** of **No-s
 
 ## Betaling
 
-**Betaling** registreert de status (onbetaald, ter plaatse betaald, gedeeltelijk betaald…), het ontvangen bedrag en de methode. Nova verwerkt geen betalingen: ze noteert ze enkel.
+**Betaling** registreert de status (onbetaald, ter plaatse betaald, gedeeltelijk betaald…), het ontvangen bedrag en de methode. Rendivoo verwerkt geen betalingen: ze noteert ze enkel.
 
-> **Als de klant niet kan worden verwittigd** (hij antwoordde STOP of is onbereikbaar), wordt de actie toch uitgevoerd en vraagt Nova u hem rechtstreeks te contacteren.
+> **Als de klant niet kan worden verwittigd** (hij antwoordde STOP of is onbereikbaar), wordt de actie toch uitgevoerd en vraagt Rendivoo u hem rechtstreeks te contacteren.

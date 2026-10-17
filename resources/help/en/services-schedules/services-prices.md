@@ -15,7 +15,7 @@ Enter its name, duration and price. Then link each service to the **practitioner
 
 ## Import a price list
 
-Instead of typing everything, you can import a photo or screenshot of your price list. Nova reads the image, shows the lines it found and lets you tick the ones to add or update. Always check the prices before confirming.
+Instead of typing everything, you can import a photo or screenshot of your price list. Rendivoo reads the image, shows the lines it found and lets you tick the ones to add or update. Always check the prices before confirming.
 
 ## Fix a mistake
 

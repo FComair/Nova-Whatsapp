@@ -11,7 +11,7 @@ const lines = computed(() => ruleLines(props.rule, t, locale.value));
 
 <template>
     <div class="space-y-3 text-sm text-neutral-900" data-testid="rule-summary">
-        <p class="text-base font-semibold text-nova-900">{{ lines.earn[0] }} {{ lines.reward[0] }}</p>
+        <p class="text-base font-semibold text-rendivoo-900">{{ lines.earn[0] }} {{ lines.reward[0] }}</p>
         <ul class="list-disc space-y-1 pl-5 text-neutral-800">
             <li v-for="line in [...lines.earn.slice(1), ...lines.reward.slice(1), ...lines.use]" :key="line">{{ line }}</li>
         </ul>

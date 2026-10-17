@@ -50,7 +50,7 @@ const id = useId();
                 <label v-for="color in colors" :key="color" class="cursor-pointer">
                     <input v-model="data.color" type="radio" :name="`${id}-color`" :value="color" class="peer sr-only" :aria-label="color" />
                     <span
-                        class="block size-9 rounded-full border-2 border-white shadow ring-2 ring-transparent peer-checked:ring-nova-900 peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-primary-600"
+                        class="block size-9 rounded-full border-2 border-white shadow ring-2 ring-transparent peer-checked:ring-rendivoo-900 peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-primary-600"
                         :style="{ backgroundColor: color }"
                     />
                 </label>

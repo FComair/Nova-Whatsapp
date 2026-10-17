@@ -1,9 +1,9 @@
 # Assistant de conversation WhatsApp natif (reprise du flux n8n « MASTER ROUTER V2 »)
 
-> **Statut : proposition, en attente de validation du fondateur.** Elle déplace une décision (docs/04 n° 1 : la conversation est portée par n8n). Par défaut **rien ne change** : `CONVERSATION_DRIVER=n8n`. Mettre `CONVERSATION_DRIVER=native` fait répondre Nova elle-même.
+> **Statut : proposition, en attente de validation du fondateur.** Elle déplace une décision (docs/04 n° 1 : la conversation est portée par n8n). Par défaut **rien ne change** : `CONVERSATION_DRIVER=n8n`. Mettre `CONVERSATION_DRIVER=native` fait répondre Rendivoo elle-même.
 
 ## Pourquoi
-Le client final doit retrouver dans Nova **exactement** la conversation du flux n8n (menus, textes, étapes), sans dépendre de n8n, de Google Calendar ni de Google Sheets : Nova est le calendrier de référence.
+Le client final doit retrouver dans Rendivoo **exactement** la conversation du flux n8n (menus, textes, étapes), sans dépendre de n8n, de Google Calendar ni de Google Sheets : Rendivoo est le calendrier de référence.
 
 ## Fonctionnement
 - `InboundProcessor` : si le pilote est `native`, il met `HandleInboundMessage` en file au lieu de `ForwardInboundMessage` (n8n). STOP/START, désabonnement et doublons de message sont traités avant, comme aujourd'hui.

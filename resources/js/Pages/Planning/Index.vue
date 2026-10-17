@@ -260,7 +260,7 @@ function describe(booking: PlanningBooking): string {
 <template>
     <AppLayout :title="t('planning.title')">
         <div class="flex flex-wrap items-end justify-between gap-4">
-            <h1 class="text-2xl font-semibold text-nova-900">{{ t('planning.title') }}</h1>
+            <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('planning.title') }}</h1>
             <BaseButton v-if="location && canCreate" @click="creating = true">{{ t('planning.new') }}</BaseButton>
         </div>
 
@@ -366,7 +366,7 @@ function describe(booking: PlanningBooking): string {
                 <p v-if="!chosenPractitioners.length" class="mt-1 text-sm text-neutral-700">{{ t('planning.views.all_shown') }}</p>
             </div>
 
-            <h2 class="mt-5 text-lg font-semibold text-nova-900">{{ heading }}</h2>
+            <h2 class="mt-5 text-lg font-semibold text-rendivoo-900">{{ heading }}</h2>
 
             <AlertBox v-if="!practitioners?.length" variant="info" class="mt-4">{{ t('planning.no_practitioners') }}</AlertBox>
 
@@ -389,7 +389,7 @@ function describe(booking: PlanningBooking): string {
                         {{ t('planning.legend.open') }}
                     </li>
                     <li class="flex items-center gap-1.5">
-                        <span class="nova-offhours inline-block h-4 w-6 rounded-sm border border-line" aria-hidden="true" />
+                        <span class="rendivoo-offhours inline-block h-4 w-6 rounded-sm border border-line" aria-hidden="true" />
                         {{ t('planning.legend.outside') }}
                     </li>
                 </ul>
@@ -462,7 +462,7 @@ function describe(booking: PlanningBooking): string {
                                     }}</span>
                                 </button>
                             </h3>
-                            <div class="nova-offhours relative" :style="{ height: gridHeight }">
+                            <div class="rendivoo-offhours relative" :style="{ height: gridHeight }">
                                 <div
                                     v-for="(slot, index) in day.working"
                                     :key="index"

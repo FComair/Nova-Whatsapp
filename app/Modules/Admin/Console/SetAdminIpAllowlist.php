@@ -13,7 +13,10 @@ use Illuminate\Console\Command;
  */
 final class SetAdminIpAllowlist extends Command
 {
-    protected $signature = 'nova:admin-allowlist {email : E-mail du Super Admin} {--ip=* : Adresse ou plage CIDR autorisée (répétable)}';
+    protected $signature = 'rendivoo:admin-allowlist {email : E-mail du Super Admin} {--ip=* : Adresse ou plage CIDR autorisée (répétable)}';
+
+    /** Ancien nom (produit rebaptisé Rendivoo) : gardé pour les scripts et tâches planifiées qui l'appellent encore. */
+    protected $aliases = ['nova:admin-allowlist'];
 
     protected $description = 'Restreint un Super Admin à des adresses IP';
 

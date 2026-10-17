@@ -17,7 +17,7 @@ final class AdminMfa
 {
     public static function required(): bool
     {
-        if (app()->environment('local') && config('nova.security.admin_mfa_required') === false) {
+        if (app()->environment('local') && config('rendivoo.security.admin_mfa_required') === false) {
             return false;
         }
 

@@ -7,7 +7,7 @@ popular: false
 order: 2
 updated: 2026-10-09
 ---
-Tout se fait dans **Réglages > Sécurité**. Pour chaque changement, Nova demande votre **mot de passe actuel**.
+Tout se fait dans **Réglages > Sécurité**. Pour chaque changement, Rendivoo demande votre **mot de passe actuel**.
 
 ## Mot de passe
 
@@ -15,7 +15,7 @@ Tout se fait dans **Réglages > Sécurité**. Pour chaque changement, Nova deman
 
 ## Adresse e-mail
 
-Saisissez la nouvelle adresse : Nova envoie un lien de confirmation à cette adresse et prévient l’ancienne. Le changement n’a lieu qu’après confirmation.
+Saisissez la nouvelle adresse : Rendivoo envoie un lien de confirmation à cette adresse et prévient l’ancienne. Le changement n’a lieu qu’après confirmation.
 
 ## Téléphone professionnel
 

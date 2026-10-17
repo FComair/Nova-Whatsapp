@@ -123,7 +123,7 @@ function onBlur(): void {
                 aria-autocomplete="list"
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-describedby="describedBy"
-                class="block w-full rounded-control border-[1.5px] bg-surface py-2.5 pl-3.5 pr-12 text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100"
+                class="block w-full rounded-control border-[1.5px] bg-surface py-2.5 pl-3.5 pr-12 text-base text-neutral-900 transition duration-150 ease-rendivoo focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100"
                 :class="
                     error
                         ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'

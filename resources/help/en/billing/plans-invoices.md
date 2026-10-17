@@ -21,4 +21,4 @@ The days left appear on the **Dashboard**. Choose a plan before it ends to carry
 
 ## If a payment fails
 
-Nova warns you and tries again. Update your payment method in **Billing** to avoid your account being suspended.
+Rendivoo warns you and tries again. Update your payment method in **Billing** to avoid your account being suspended.

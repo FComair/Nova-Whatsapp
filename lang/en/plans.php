@@ -57,7 +57,7 @@ return [
         'status' => 'Status',
         'status_help' => 'A draft is never visible to clients. Only an active plan is offered to new subscribers.',
         'internal_description' => 'Internal description',
-        'internal_description_help' => 'For the Nova team only.',
+        'internal_description_help' => 'For the Rendivoo team only.',
         'public_description' => 'Public description',
         'public_description_help' => 'A short sentence shown under the name, per language (300 characters). Falls back to French.',
         'pricing' => 'Pricing and billing',

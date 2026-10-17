@@ -67,8 +67,8 @@ final class AccountProfileController
                 'city' => (string) ($organization->billing_address['city'] ?? ''),
             ] : null,
             'sectors' => app(SectorCatalog::class)->options(app()->getLocale(), $organization->sector),
-            'countries' => config('nova.countries'),
-            'timezones' => app(TimezoneCatalog::class)->byCountry(config('nova.countries')),
+            'countries' => config('rendivoo.countries'),
+            'timezones' => app(TimezoneCatalog::class)->byCountry(config('rendivoo.countries')),
         ]);
     }
 

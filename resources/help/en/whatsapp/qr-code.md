@@ -12,7 +12,7 @@ The QR code is reserved for the **owner**: **Settings > WhatsApp QR code**.
 ## How it works
 
 1. Create a QR code. A customer scans it with their phone: WhatsApp opens a conversation with your number.
-2. They write, and Nova’s assistant helps them book.
+2. They write, and Rendivoo’s assistant helps them book.
 3. Download the QR code to print on a poster, a counter, a business card or a shop window.
 
 ## See what it brings

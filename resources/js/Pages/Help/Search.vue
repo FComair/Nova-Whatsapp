@@ -47,7 +47,7 @@ const groups = computed(() => {
         </div>
 
         <template v-else>
-            <h1 class="mt-6 text-lg font-semibold text-nova-900">{{ t('help.results_title', { q }) }}</h1>
+            <h1 class="mt-6 text-lg font-semibold text-rendivoo-900">{{ t('help.results_title', { q }) }}</h1>
             <p class="text-sm text-neutral-700" aria-live="polite">{{ t('help.results_count', { count: results.length }) }}</p>
 
             <section v-for="[category, entries] in groups" :key="category" class="mt-6">

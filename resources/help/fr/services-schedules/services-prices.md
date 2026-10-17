@@ -15,7 +15,7 @@ Indiquez son nom, sa durée et son prix. Associez ensuite chaque service aux **p
 
 ## Importer une liste de prix
 
-Plutôt que de tout saisir, vous pouvez importer une photo ou une capture de votre liste de prix. Nova lit l’image, vous montre les lignes trouvées et vous laissez cocher celles à ajouter ou à mettre à jour. Vérifiez toujours les prix avant de valider.
+Plutôt que de tout saisir, vous pouvez importer une photo ou une capture de votre liste de prix. Rendivoo lit l’image, vous montre les lignes trouvées et vous laissez cocher celles à ajouter ou à mettre à jour. Vérifiez toujours les prix avant de valider.
 
 ## Corriger une erreur
 

@@ -194,7 +194,7 @@ final class LoyaltyPrograms
      */
     public function incompleteLanguages(LoyaltyProgram $program): array
     {
-        return array_values(array_filter((array) config('nova.locales'), function (string $locale) use ($program): bool {
+        return array_values(array_filter((array) config('rendivoo.locales'), function (string $locale) use ($program): bool {
             foreach (['name', 'reward_description', 'terms'] as $field) {
                 if (trim((string) ($program->{$field}[$locale] ?? '')) === '') {
                     return true;
@@ -259,7 +259,7 @@ final class LoyaltyPrograms
         foreach (LoyaltyMessages::KINDS as $kind) {
             $settings[$kind]['enabled'] = (bool) ($input[$kind]['enabled'] ?? false);
 
-            foreach ((array) config('nova.locales') as $locale) {
+            foreach ((array) config('rendivoo.locales') as $locale) {
                 $text = trim((string) ($input[$kind]['texts'][$locale] ?? ''));
                 $unknown = LoyaltyMessages::unknownVariables($text);
 
@@ -445,7 +445,7 @@ final class LoyaltyPrograms
     {
         $clean = [];
 
-        foreach ((array) config('nova.locales') as $locale) {
+        foreach ((array) config('rendivoo.locales') as $locale) {
             $clean[$locale] = mb_substr(trim((string) ($texts[$locale] ?? '')), 0, 2000);
         }
 

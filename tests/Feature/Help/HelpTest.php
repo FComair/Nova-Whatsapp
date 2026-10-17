@@ -69,7 +69,7 @@ describe('contenu', function (): void {
     });
 
     it('retire le HTML brut et les liens dangereux, et ancre les titres de niveau 2', function (): void {
-        $dir = sys_get_temp_dir().'/nova-help-'.uniqid();
+        $dir = sys_get_temp_dir().'/rendivoo-help-'.uniqid();
         File::ensureDirectoryExists($dir.'/fr/getting-started');
         File::put($dir.'/fr/getting-started/test.md', "---\ntitle: Test\nsummary: Un résumé de test assez long\ntags: a\n---\n## Première étape\n\n<script>alert(1)</script>\n\n[mal](javascript:alert(1)) et [bien](/aide)\n\n## Deuxième\n");
 
@@ -112,7 +112,7 @@ describe('pages', function (): void {
     it('affiche les articles dans la langue de l\'utilisateur', function (): void {
         $this->asOwner(fn () => $this->owner->forceFill(['locale' => 'en'])->save());
 
-        ($this->help)()->get('/aide/getting-started/first-steps')->assertInertia(fn (Assert $page) => $page->where('article.title', 'Set up Nova in a few steps'));
+        ($this->help)()->get('/aide/getting-started/first-steps')->assertInertia(fn (Assert $page) => $page->where('article.title', 'Set up Rendivoo in a few steps'));
     });
 
     it('affiche une catégorie, la recherche et répond 404 aux adresses inconnues', function (): void {

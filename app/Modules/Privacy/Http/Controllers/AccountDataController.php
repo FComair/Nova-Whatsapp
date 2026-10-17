@@ -80,7 +80,7 @@ final class AccountDataController
                     echo $chunk;
                 }
             });
-        }, 'nova-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json; charset=utf-8', 'Cache-Control' => 'no-store']);
+        }, 'rendivoo-export-'.now()->format('Ymd').'.json', ['Content-Type' => 'application/json; charset=utf-8', 'Cache-Control' => 'no-store']);
     }
 
     public function requestDeletion(Request $request): RedirectResponse
@@ -101,7 +101,7 @@ final class AccountDataController
 
         // Étape 1 sur 2 : un lien de confirmation (24 h, usage unique) est envoyé à l'adresse du propriétaire ; rien n'est encore programmé.
         $token = Str::random(64);
-        $organization->forceFill(['deletion_confirm_token_hash' => hash('sha256', $token), 'deletion_confirm_expires_at' => now()->addHours((int) config('nova.security.email_link_ttl_hours'))])->save();
+        $organization->forceFill(['deletion_confirm_token_hash' => hash('sha256', $token), 'deletion_confirm_expires_at' => now()->addHours((int) config('rendivoo.security.email_link_ttl_hours'))])->save();
 
         $user = $request->user();
         Notification::route('mail', (string) $user?->email)->notify(new ConfirmDeletionNotification($token, $organization->name, (string) $user?->locale));

@@ -4,14 +4,14 @@ Décisions du fondateur : import **en lecture seule**, synchronisation continue,
 
 ## Principe
 
-Le temps occupé d'un calendrier externe bloque les créneaux du praticien, comme un rendez-vous. Nova n'écrit jamais dans l'agenda d'origine. **Seuls des horaires sont conservés** : ni titre, ni lieu, ni participants (testé). L'adresse ICS (souvent un secret qui donne accès à tout le calendrier) et les identifiants CalDAV sont chiffrés au repos et jamais renvoyés au navigateur.
+Le temps occupé d'un calendrier externe bloque les créneaux du praticien, comme un rendez-vous. Rendivoo n'écrit jamais dans l'agenda d'origine. **Seuls des horaires sont conservés** : ni titre, ni lieu, ni participants (testé). L'adresse ICS (souvent un secret qui donne accès à tout le calendrier) et les identifiants CalDAV sont chiffrés au repos et jamais renvoyés au navigateur.
 
 ## Lecture
 
 - **ICS** : abonnement par adresse `https://` ou `webcal://`. **CalDAV** : requête `REPORT calendar-query` sur la période utile, identifiants en Basic Auth.
 - Période lue : de la veille jusqu'à l'horizon de réservation (politiques) + 7 jours (30 jours au minimum).
 - Lecteur iCalendar interne (aucune dépendance) : fuseaux IANA, chemins de fuseau et noms Windows d'Outlook ; récurrences DAILY, WEEKLY, MONTHLY, YEARLY avec INTERVAL, COUNT, UNTIL, BYDAY (avec rang), BYMONTHDAY, BYMONTH ; EXDATE ; occurrences modifiées ou annulées ; heure d'été/hiver ; événements « libres » (TRANSP) et annulés ignorés. Règles non prises en charge (BYSETPOS…) : seule la première occurrence est comptée et le calendrier l'indique à l'écran.
-- Fréquence : toutes les 15 minutes par calendrier (`nova.calendars.sync_minutes`), une heure pour un calendrier en erreur. Bouton « synchroniser maintenant » (une fois par minute).
+- Fréquence : toutes les 15 minutes par calendrier (`rendivoo.calendars.sync_minutes`), une heure pour un calendrier en erreur. Bouton « synchroniser maintenant » (une fois par minute).
 - Échec : les dernières plages connues restent appliquées (on bloque plutôt que de risquer un double rendez-vous) ; après 5 échecs de suite le calendrier passe en « erreur ». Codes d'erreur affichés dans la langue du compte, jamais l'adresse.
 
 ## Sécurité (SSRF)

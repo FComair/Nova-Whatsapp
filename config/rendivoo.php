@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 /**
- * Paramètres métier et de sécurité de Nova.
+ * Paramètres métier et de sécurité de Rendivoo.
+ *
+ * Le nom public du produit est Rendivoo (anciennement Nova). Les variables d'environnement gardent leur nom historique `NOVA_*` (le fichier .env des serveurs
+ * les utilise) : ne les renommez qu'avec une mise à jour coordonnée de chaque environnement (docs/42).
  *
  * Les valeurs marquées « à valider » sont des PROPOSITIONS des flowcharts (documents 1A, 2A, 5A) ou des hypothèses
  * techniques du développement : elles doivent être confirmées par le fondateur avant la mise en production.
@@ -52,7 +55,7 @@ return [
 
         // Double authentification obligatoire pour le propriétaire et les responsables de site (décision 18), sans délai de grâce.
         'two_factor_required' => env('NOVA_REQUIRE_2FA', true),
-        'two_factor_issuer' => 'Nova',
+        'two_factor_issuer' => 'Rendivoo',
 
         // Rappel de renouvellement du mot de passe (décision 18) : recommandé au moins tous les 12 mois.
         'password_max_age_months' => 12,
@@ -68,7 +71,7 @@ return [
 
     // Documents juridiques (docs/28) : les versions et leurs textes vivent en base (legal_document_versions), éditées par le Super Admin.
     // Les textes eux-mêmes sont à faire valider par un juriste. Le DPA est exigé à l'inscription : l'établissement est responsable du traitement
-    // des données de ses clients et Nova est son sous-traitant (RGPD art. 28), ce qui impose un accord écrit.
+    // des données de ses clients et Rendivoo est son sous-traitant (RGPD art. 28), ce qui impose un accord écrit.
     'legal' => [
         'first_version' => '2026-10-01',
         'dpa_required_at_signup' => true,
@@ -90,7 +93,7 @@ return [
     'billing' => [
         'gateway' => env('BILLING_GATEWAY', 'fake'),
         'seller' => [
-            'name' => env('BILLING_SELLER_NAME', 'Nova (raison sociale à renseigner)'),
+            'name' => env('BILLING_SELLER_NAME', 'Rendivoo (raison sociale à renseigner)'),
             'vat_number' => env('BILLING_SELLER_VAT'),
             'address' => env('BILLING_SELLER_ADDRESS'),
         ],
@@ -109,7 +112,7 @@ return [
     // Couleurs proposées pour identifier un praticien dans le planning (contrastes suffisants sur fond blanc).
     'practitioner_colors' => ['#2A5BD7', '#12A594', '#B45309', '#7C3AED', '#DB2777', '#0E7490', '#4D7C0F', '#B91C1C'],
 
-    // Pages publiques d'avis sur Nova (Google, Trustpilot), proposées à tous les clients, sans condition. Adresses https données par
+    // Pages publiques d'avis sur Rendivoo (Google, Trustpilot), proposées à tous les clients, sans condition. Adresses https données par
     // l'environnement, jamais écrites en dur ; sans adresse valide, le lien correspondant n'est pas affiché (voir docs/26).
     'reviews' => [
         'google' => env('NOVA_REVIEW_URL_GOOGLE'),

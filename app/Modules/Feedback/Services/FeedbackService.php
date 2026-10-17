@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Feedback\Services;
 
-use App\Modules\Feedback\Models\NovaFeedback;
+use App\Modules\Feedback\Models\RendivooFeedback;
 use App\Modules\Feedback\Models\ReviewLinkClick;
 use App\Modules\Identity\Models\User;
 use App\Modules\Support\Models\SupportTicket;
@@ -14,7 +14,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Avis privés des clients sur Nova et invitations après un échange avec le support (docs/26).
+ * Avis privés des clients sur Rendivoo et invitations après un échange avec le support (docs/26).
  *
  * - Un avis accepte toutes les notes de 1 à 5 : aucune note n'ouvre ou ne ferme quoi que ce soit.
  * - Rattaché à un ticket, il vaut « ticket » (résolu ou fermé) ou « intervention » (l'équipe a répondu, le ticket est en cours) ;
@@ -29,11 +29,11 @@ final class FeedbackService
     /**
      * @throws UniqueConstraintViolationException si cette personne a déjà donné son avis sur ce ticket
      */
-    public function submit(User $user, Organization $organization, int $rating, ?string $comment, ?SupportTicket $ticket): NovaFeedback
+    public function submit(User $user, Organization $organization, int $rating, ?string $comment, ?SupportTicket $ticket): RendivooFeedback
     {
         $comment = $comment === null ? null : trim($comment);
 
-        return NovaFeedback::query()->create([
+        return RendivooFeedback::query()->create([
             'org_id' => $organization->id,
             'user_id' => $user->id,
             'ticket_id' => $ticket?->id,
@@ -74,7 +74,7 @@ final class FeedbackService
         $key = $ticket->user_id === $user->id ? $this->promptKey($ticket) : null;
 
         if ($key === null
-            || NovaFeedback::query()->where('user_id', $user->id)->where('ticket_id', $ticket->id)->exists()
+            || RendivooFeedback::query()->where('user_id', $user->id)->where('ticket_id', $ticket->id)->exists()
             || DB::table('feedback_prompt_dismissals')->where('user_id', $user->id)->where('prompt_key', $key)->exists()) {
             return null;
         }
@@ -84,7 +84,7 @@ final class FeedbackService
 
     public function hasFeedbackFor(User $user, SupportTicket $ticket): bool
     {
-        return NovaFeedback::query()->where('user_id', $user->id)->where('ticket_id', $ticket->id)->exists();
+        return RendivooFeedback::query()->where('user_id', $user->id)->where('ticket_id', $ticket->id)->exists();
     }
 
     /** « Pas maintenant » : l'invitation de ce moment ne revient pas (l'avis reste possible à tout moment depuis l'aide). */
@@ -96,7 +96,7 @@ final class FeedbackService
     /** Le client ouvre un lien d'avis public : on note la plateforme, rien d'autre. L'avis privé indiqué doit être le sien. */
     public function recordClick(User $user, Organization $organization, string $platform, ?string $feedbackId): void
     {
-        $own = $feedbackId !== null && NovaFeedback::query()->whereKey($feedbackId)->where('user_id', $user->id)->exists();
+        $own = $feedbackId !== null && RendivooFeedback::query()->whereKey($feedbackId)->where('user_id', $user->id)->exists();
 
         ReviewLinkClick::query()->create(['org_id' => $organization->id, 'user_id' => $user->id, 'feedback_id' => $own ? $feedbackId : null, 'platform' => $platform]);
     }

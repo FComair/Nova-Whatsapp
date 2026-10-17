@@ -42,7 +42,7 @@ watch(
         class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-deep/55"
         @cancel.prevent="emit('cancel')"
     >
-        <h2 :id="titleId" class="text-lg font-semibold text-nova-900">{{ title }}</h2>
+        <h2 :id="titleId" class="text-lg font-semibold text-rendivoo-900">{{ title }}</h2>
         <p :id="bodyId" class="mt-2 text-sm text-neutral-700">{{ body }}</p>
 
         <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">

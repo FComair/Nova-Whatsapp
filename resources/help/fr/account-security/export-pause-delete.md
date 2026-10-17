@@ -1,6 +1,6 @@
 ---
 title: Exporter, mettre en pause ou supprimer votre compte
-summary: Récupérer vos données, suspendre l’établissement ou quitter Nova.
+summary: Récupérer vos données, suspendre l’établissement ou quitter Rendivoo.
 tags: export, données, pause, supprimer le compte, rgpd
 related: customers/erase-customer, billing/plans-invoices
 popular: false

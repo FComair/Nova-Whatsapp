@@ -7,7 +7,7 @@ popular: true
 order: 1
 updated: 2026-10-09
 ---
-Tweestapsverificatie is **verplicht** voor de eigenaar en vestigingsverantwoordelijken: ze moet aanstaan om Nova te blijven gebruiken.
+Tweestapsverificatie is **verplicht** voor de eigenaar en vestigingsverantwoordelijken: ze moet aanstaan om Rendivoo te blijven gebruiken.
 
 ## Inschakelen
 
@@ -18,6 +18,6 @@ Tweestapsverificatie is **verplicht** voor de eigenaar en vestigingsverantwoorde
 
 ## Bij elke aanmelding
 
-Na uw wachtwoord vraagt Nova de appcode (of een herstelcode). Tijdens de sessie wordt niets anders opnieuw gevraagd.
+Na uw wachtwoord vraagt Rendivoo de appcode (of een herstelcode). Tijdens de sessie wordt niets anders opnieuw gevraagd.
 
 > **Opgelet:** zonder uw telefoon of herstelcodes kunt u niet meer aanmelden. Bewaar de herstelcodes buiten de app.

@@ -7,7 +7,7 @@ Bibliothèque centralisée de modèles de messages WhatsApp, **un jeu indépenda
 | Question | Constat |
 |---|---|
 | Où sont les textes ? | `lang/{fr,nl,en}/whatsapp.php` (4 modèles, **globaux**). Noms Meta : `config/whatsapp.php` (4 de réservation, 5 de fidélité). |
-| Où est l'approbation ? | Uniquement chez Meta. `TemplateManager` soumet les modèles manquants (permission `whatsapp.templates`) et `whatsapp:sync-templates` met à jour les statuts toutes les heures. Aucune validation interne par Nova. |
+| Où est l'approbation ? | Uniquement chez Meta. `TemplateManager` soumet les modèles manquants (permission `whatsapp.templates`) et `whatsapp:sync-templates` met à jour les statuts toutes les heures. Aucune validation interne par Rendivoo. |
 | Statuts | `pending`, `approved`, `rejected`, `paused` (table `whatsapp_templates`, **par établissement**). Pas de brouillon ni d'archivé. |
 | Qui crée / édite / approuve ? | Personne ne crée ni n'édite (textes dans le code). Le propriétaire soumet ; Meta approuve ou refuse. |
 | Déclencheurs | Confirmation, déplacement, annulation (`BookingNotifier`, y compris pause d'établissement), rappel (`ReminderService`), 5 messages de fidélité (`LoyaltyMessenger`, inchangés). |
@@ -45,6 +45,6 @@ Bienvenue, confirmation, rappel, modification, annulation, rappel de paiement, c
 
 - Tout est importé en brouillon : rien n'est approuvé tant que le Super Admin ne l'a pas fait. Les 4 modèles globaux assurent la continuité.
 - Séparation des tâches : le même administrateur peut créer et approuver (le journal garde l'auteur et le décideur).
-- Les messages sans déclencheur (bienvenue, paiement, suivi, avis, relance, promotion, information) sont gérés et approuvables, mais Nova ne les envoie pas encore.
+- Les messages sans déclencheur (bienvenue, paiement, suivi, avis, relance, promotion, information) sont gérés et approuvables, mais Rendivoo ne les envoie pas encore.
 - Le prestataire ne modifie jamais un modèle approuvé : il n'a pas d'écran d'édition ; sa permission `whatsapp.templates` ne fait que soumettre à Meta les modèles du secteur.
 - Les modèles de fidélité (docs/27) restent hors de cette bibliothèque pour l'instant.

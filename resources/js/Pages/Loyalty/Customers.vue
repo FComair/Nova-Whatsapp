@@ -57,7 +57,7 @@ watch(status, () => visit());
     <AppLayout :title="t('loyalty.customers.title')">
         <LoyaltyTabs current="customers" :can="can" />
 
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.customers.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.customers.title') }}</h1>
 
         <div class="mt-4 grid gap-3 sm:grid-cols-[2fr_1fr]">
             <TextField v-model="search" :label="t('loyalty.customers.search')" :hint="t('loyalty.customers.search_hint')" inputmode="text" />

@@ -141,7 +141,7 @@ const offTable = computed(() => ({
                 class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-xs sm:p-5 lg:col-span-2 print:break-inside-avoid print:shadow-none"
                 :aria-label="t('reports.section.comparison')"
             >
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.section.comparison') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.section.comparison') }}</h3>
                 <p v-if="over" class="mt-1 text-xs text-neutral-700">{{ t('reports.practitioner.utilization_cap') }}</p>
                 <div class="mt-3">
                     <p v-if="report.rows.length === 0" class="rounded-control bg-neutral-50 px-4 py-6 text-center text-sm text-neutral-700">
@@ -204,7 +204,7 @@ const offTable = computed(() => ({
                 class="min-w-0 rounded-card border border-line bg-surface p-4 shadow-xs sm:p-5 lg:col-span-2 print:break-inside-avoid print:shadow-none"
                 :aria-label="t('reports.section.time_off')"
             >
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.section.time_off') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.section.time_off') }}</h3>
                 <p v-if="report.time_off.length === 0" class="mt-3 text-sm text-neutral-700">{{ t('reports.practitioner.time_off_none') }}</p>
                 <div v-else class="mt-3"><DataTable :caption="t('reports.section.time_off')" :columns="offTable.columns" :rows="offTable.rows" /></div>
             </section>
