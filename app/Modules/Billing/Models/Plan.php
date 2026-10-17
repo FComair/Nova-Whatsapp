@@ -51,6 +51,9 @@ class Plan extends Model
 {
     use HasUuids;
 
+    // Explicite : sans cela, une sous-classe (PlatformPlan, Super Admin) déduirait la table « platform_plans » de son nom.
+    protected $table = 'plans';
+
     public const DRAFT = 'draft';
 
     public const ACTIVE = 'active';
