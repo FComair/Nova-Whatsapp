@@ -15,7 +15,7 @@ Geef de naam, de duur en de prijs in. Koppel elke dienst daarna aan de **behande
 
 ## Een prijslijst importeren
 
-In plaats van alles in te typen, kunt u een foto of schermafbeelding van uw prijslijst importeren. Nova leest de afbeelding, toont de gevonden regels en laat u aanvinken welke u toevoegt of bijwerkt. Controleer de prijzen altijd voor u bevestigt.
+In plaats van alles in te typen, kunt u een foto of schermafbeelding van uw prijslijst importeren. Rendivoo leest de afbeelding, toont de gevonden regels en laat u aanvinken welke u toevoegt of bijwerkt. Controleer de prijzen altijd voor u bevestigt.
 
 ## Een fout herstellen
 

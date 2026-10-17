@@ -13,7 +13,7 @@ use InvalidArgumentException;
  * Consentements d'un client : chaque changement est une nouvelle ligne datée (journal en ajout seul), jamais une modification.
  *
  * Deux finalités : `appointment` (confirmations, rappels, changements) et `marketing` (messages promotionnels, qui n'existent pas
- * encore dans Nova mais dont le consentement est déjà consigné). Un STOP reçu sur WhatsApp retire les deux ; un START ne rend que
+ * encore dans Rendivoo mais dont le consentement est déjà consigné). Un STOP reçu sur WhatsApp retire les deux ; un START ne rend que
  * `appointment` : le marketing demande toujours un accord explicite.
  */
 final class ConsentRecorder

@@ -225,7 +225,7 @@ describe('rôle Super Admin (pgsql_platform)', function (): void {
 
     it('est le seul à accéder aux comptes Super Admin', function (): void {
         $this->asOwner(fn () => DB::table('platform_admins')->insert([
-            'id' => (string) Str::uuid7(), 'email' => 'fondateur@nova.test', 'password' => 'x',
+            'id' => (string) Str::uuid7(), 'email' => 'fondateur@rendivoo.test', 'password' => 'x',
             'created_at' => now(), 'updated_at' => now(),
         ]));
 

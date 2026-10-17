@@ -1,4 +1,4 @@
-# Nova — Support tickets in the Super Admin (spec, phase 3 of docs/22)
+# Rendivoo — Support tickets in the Super Admin (spec, phase 3 of docs/22)
 
 Status: built. Same conventions as docs/22 (client side of the same tickets), docs/02 (Super Admin: separate guard, 2FA, no impersonation) and CLAUDE.md. Dates DD/MM/YYYY. UI text in fr / nl / en (`lang/*/tickets.php`). No existing Super Admin screen was redesigned: the only changes to them are a menu group, one extra block of global settings and the hiding of screens from support agents (§5).
 
@@ -47,8 +47,8 @@ Related appointment / customer / service / conversation: stored as **links** (ki
 | `new` | New | Created, nobody has touched it | Open |
 | `open` | Open | Triaged or assigned, not yet being worked | Open |
 | `in_progress` | In progress | The team is working on it | In progress |
-| `waiting_on_you` | **Waiting on client** | Nova needs information or an action **from the client** | Waiting on you |
-| `waiting_internal` | **Waiting on internal team** | Nova waits for another team (billing, engineering…). Nothing to do for the client | In progress |
+| `waiting_on_you` | **Waiting on client** | Rendivoo needs information or an action **from the client** | Waiting on you |
+| `waiting_internal` | **Waiting on internal team** | Rendivoo waits for another team (billing, engineering…). Nothing to do for the client | In progress |
 | `resolved` | Resolved | The team considers the issue solved; the ticket is not closed yet and can be reopened (client within 14 days, team any time) | Resolved |
 | `closed` | Closed | Finished. The client can no longer reply (new request needed); the team can reopen | Closed |
 | `reopened` | Reopened | Reopened after resolution or closure | Open |
@@ -91,7 +91,7 @@ Menu group **Support** (first group of the menu): **Tickets** (badge = tickets w
 
 1. **Summary card**: status, priority, SLA and "needs a reply" badges, tags (removable ×), client account (link to the account for Super Admins), requester and language, assigned agent, category and area, source, created / last update / first reply (or deadline) / resolved / closed, related items (removable ×).
 2. **Conversation** (chronological): client messages (grey, left), **replies sent to the client** (green, right, label "Reply sent to the client"), **internal notes** (amber, dashed border, lock icon, label "Internal note: not visible to the client"), system lines (centered: status change, assignment, priority, tag, link, reopening, closure; internal ones marked "internal"). Attachments listed under each message, downloaded through a checked route.
-3. **Reply box**: two-position switch **Reply to client** / **Internal note**. The mode changes the box's colour and border, its heading and a banner: *PUBLIC: this reply is emailed to … and shown in their ticket* (green) vs *PRIVATE: only Nova staff can see this note* (amber), and the submit button (**Send reply** / **Save internal note**). Fields: text (required), status after sending (reply only; default automatic), attachments (3 files, 5 MB, PNG / JPG / PDF). Plain text, like the rest of the platform's messages. On a closed ticket the box is replaced by "This ticket is closed — reopen it to continue".
+3. **Reply box**: two-position switch **Reply to client** / **Internal note**. The mode changes the box's colour and border, its heading and a banner: *PUBLIC: this reply is emailed to … and shown in their ticket* (green) vs *PRIVATE: only Rendivoo staff can see this note* (amber), and the submit button (**Send reply** / **Save internal note**). Fields: text (required), status after sending (reply only; default automatic), attachments (3 files, 5 MB, PNG / JPG / PDF). Plain text, like the rest of the platform's messages. On a closed ticket the box is replaced by "This ticket is closed — reopen it to continue".
 4. **Header actions**: Assign, Change status, Priority, Mark as resolved, Reopen (resolved / closed only), and a **More** menu: Add a tag, Link a ticket or record, Request help from another team, Close ticket. Resolve, reopen and close ask for confirmation and say who will be emailed.
 5. **Internal help request**: choose a team (Billing, Engineering, Product, Management, Other) and describe the need. The ticket moves to *Waiting on internal team*, an internal note records the request, nothing reaches the client.
 
@@ -135,7 +135,7 @@ Every status and priority has an icon and a word (no colour-only meaning). The r
 | Who | Rights |
 |---|---|
 | **Super Admin** (every account without support role; separate guard, 2FA) | All tickets of all accounts, all actions, assign to anyone, reports, CSV export, global settings, all other Super Admin screens |
-| **Support agent** (`platform_admins.support_role = 'agent'`; created with `php artisan nova:create-admin <email> --support-agent`) | Tickets assigned to them **and unassigned tickets**; can reply, note, set status / priority, tag, link, assign (including to themselves), request help, bulk-act within that scope. Reports limited to that scope. **No** export. **No** access to accounts, invoices, audit log, sectors, legal versions, settings, feedback (menu hidden, URL refused). Opens on the ticket list after login |
+| **Support agent** (`platform_admins.support_role = 'agent'`; created with `php artisan rendivoo:create-admin <email> --support-agent`) | Tickets assigned to them **and unassigned tickets**; can reply, note, set status / priority, tag, link, assign (including to themselves), request help, bulk-act within that scope. Reports limited to that scope. **No** export. **No** access to accounts, invoices, audit log, sectors, legal versions, settings, feedback (menu hidden, URL refused). Opens on the ticket list after login |
 | **Client** | Only their own tickets (the owner also sees the business's); the 5 client statuses; never internal notes, events, tags, links, assignee, team priority |
 
 Enforcement (never only in the interface):
@@ -225,7 +225,7 @@ Manual check before release: send a test ticket from Help › Contact, open it i
 
 ## 11. Operations
 
-- Create an agent: `php artisan nova:create-admin agent@example.com --support-agent` (2FA configured at first login).
+- Create an agent: `php artisan rendivoo:create-admin agent@example.com --support-agent` (2FA configured at first login).
 - Hourly job: `support:watch-sla` (scheduled in `routes/console.php`).
 - Tunable without a deployment: Global settings → five support targets.
 - Existing tickets from before this version keep no first-reply data (no backfill: row-level security hides them from migrations); new rules apply from their next change.

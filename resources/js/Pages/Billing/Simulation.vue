@@ -17,7 +17,7 @@ function choose(card: 'ok' | 'declined'): void {
 
 <template>
     <AppLayout :title="t('billing.simulation_title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('billing.simulation_title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('billing.simulation_title') }}</h1>
         <AlertBox variant="warning" class="mt-4 max-w-xl">{{ t('billing.simulation_body') }}</AlertBox>
         <div class="mt-6 flex max-w-xl flex-col gap-3 sm:flex-row">
             <BaseButton @click="choose('ok')">{{ t('billing.simulation_ok') }}</BaseButton>

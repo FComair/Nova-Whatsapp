@@ -1,6 +1,6 @@
 ---
 title: Export, pause or delete your account
-summary: Get your data back, suspend your business or leave Nova.
+summary: Get your data back, suspend your business or leave Rendivoo.
 tags: export, data, pause, delete account, gdpr
 related: customers/erase-customer, billing/plans-invoices
 popular: false

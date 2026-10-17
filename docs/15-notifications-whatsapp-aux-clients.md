@@ -28,4 +28,4 @@ Noms configurables : `WHATSAPP_TEMPLATE_CONFIRMATION`, `WHATSAPP_TEMPLATE_RESCHE
 - en : « Hello, {{1}} has to cancel your appointment ({{2}}) on {{3}} at {{4}}. We apologise for the inconvenience and will contact you to arrange a new one. »
 
 ## Pas encore fait
-Réponse du client à ces messages (relève du bot et de n8n), notification aux clients lors de la suppression du compte (docs/13), préférences de notification par établissement, soumission et suivi d'approbation des modèles dans Nova (étape E6), message de confirmation lors d'une réservation faite par le client lui-même via le bot (géré côté n8n).
+Réponse du client à ces messages (relève du bot et de n8n), notification aux clients lors de la suppression du compte (docs/13), préférences de notification par établissement, soumission et suivi d'approbation des modèles dans Rendivoo (étape E6), message de confirmation lors d'une réservation faite par le client lui-même via le bot (géré côté n8n).

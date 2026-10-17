@@ -19,6 +19,6 @@ Klik in **Agenda** op **Nieuwe afspraak**.
 
 ## Als het tijdslot niet vrij is
 
-Nova weigert een tijdslot buiten de openingsuren of dat al bezet is en stelt de volgende drie vrije tijdsloten van dezelfde behandelaar voor. Een geblokkeerde klant kan geen afspraken krijgen.
+Rendivoo weigert een tijdslot buiten de openingsuren of dat al bezet is en stelt de volgende drie vrije tijdsloten van dezelfde behandelaar voor. Een geblokkeerde klant kan geen afspraken krijgen.
 
 > **Goed om te weten:** als personeel wordt u niet beperkt door de minimale termijn of de boekingshorizon: enkel openingsuren en dubbele boekingen tellen.

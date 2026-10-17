@@ -120,7 +120,7 @@ describe('export', function (): void {
         $response = ($this->as)()->post('/compte/donnees/export', ['password' => OWNER_PASSWORD]);
 
         $response->assertOk()->assertHeader('Content-Type', 'application/json; charset=utf-8');
-        expect($response->headers->get('Content-Disposition'))->toContain('nova-export-'.now()->format('Ymd').'.json');
+        expect($response->headers->get('Content-Disposition'))->toContain('rendivoo-export-'.now()->format('Ymd').'.json');
 
         $data = json_decode($response->streamedContent(), true, flags: JSON_THROW_ON_ERROR);
 

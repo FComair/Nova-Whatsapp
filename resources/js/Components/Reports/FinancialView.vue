@@ -157,7 +157,7 @@ const statusItems = computed(() =>
         </div>
 
         <section :aria-label="t('reports.section.service_amounts')">
-            <h3 class="mb-2 text-sm font-semibold text-nova-900">{{ t('reports.section.service_amounts') }}</h3>
+            <h3 class="mb-2 text-sm font-semibold text-rendivoo-900">{{ t('reports.section.service_amounts') }}</h3>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
                 <KpiCard
                     :label="t('reports.metric.booked_value')"
@@ -228,7 +228,7 @@ const statusItems = computed(() =>
         </section>
 
         <section :aria-label="t('reports.section.tips_group')" data-testid="tips-section">
-            <h3 class="mb-2 text-sm font-semibold text-nova-900">{{ t('reports.section.tips_group') }}</h3>
+            <h3 class="mb-2 text-sm font-semibold text-rendivoo-900">{{ t('reports.section.tips_group') }}</h3>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-3">
                 <KpiCard
                     :label="t('reports.metric.tips')"
@@ -253,7 +253,7 @@ const statusItems = computed(() =>
         </section>
 
         <section :aria-label="t('reports.section.totals_group')" data-testid="total-paid-section">
-            <h3 class="mb-2 text-sm font-semibold text-nova-900">{{ t('reports.section.totals_group') }}</h3>
+            <h3 class="mb-2 text-sm font-semibold text-rendivoo-900">{{ t('reports.section.totals_group') }}</h3>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
                 <KpiCard
                     :label="t('reports.metric.total_paid')"

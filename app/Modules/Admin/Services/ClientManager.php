@@ -66,7 +66,7 @@ final class ClientManager
             }
         }
 
-        if (isset($clean['locale']) && ! in_array($clean['locale'], (array) config('nova.locales'), true)) {
+        if (isset($clean['locale']) && ! in_array($clean['locale'], (array) config('rendivoo.locales'), true)) {
             throw new InvalidArgumentException('Langue inconnue.');
         }
 

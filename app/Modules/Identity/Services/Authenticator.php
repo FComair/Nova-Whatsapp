@@ -33,8 +33,8 @@ final class Authenticator
     {
         $email = mb_strtolower(trim($email));
         $unknownKey = 'login-unknown:'.hash('sha256', $email.'|'.request()->ip());
-        $max = (int) config('nova.security.login_max_attempts');
-        $lockSeconds = (int) config('nova.security.login_lock_minutes') * 60;
+        $max = (int) config('rendivoo.security.login_max_attempts');
+        $lockSeconds = (int) config('rendivoo.security.login_lock_minutes') * 60;
 
         $user = User::query()->where('email', $email)->first();
 
@@ -87,7 +87,7 @@ final class Authenticator
         $user->forceFill(['failed_login_count' => 0, 'locked_until' => now()->addSeconds($lockSeconds)])->save();
 
         Audit::record('auth.login.locked', 'user', actorId: $user->id, reason: "{$max} échecs consécutifs");
-        $user->notify(new SuspiciousLoginNotification((int) config('nova.security.login_lock_minutes')));
+        $user->notify(new SuspiciousLoginNotification((int) config('rendivoo.security.login_lock_minutes')));
 
         throw new TooManyAttempts('E3', $lockSeconds);
     }

@@ -304,7 +304,7 @@ final class LoyaltyEngine
     /**
      * Fusion de deux fiches clients en double : le solde, les récompenses disponibles et la date de dernière visite passent sur la fiche
      * conservée ; la fiche absorbée sort du programme. Le journal reste intact : deux lignes « ajustement » expliquent le transfert.
-     * Aucune fonction de fusion n'existe encore dans Nova : ce service est prêt pour elle.
+     * Aucune fonction de fusion n'existe encore dans Rendivoo : ce service est prêt pour elle.
      */
     public function mergeCustomers(Customer $from, Customer $into, string $actorId): void
     {

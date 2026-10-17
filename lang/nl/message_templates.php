@@ -85,7 +85,7 @@ return [
         'sector_help' => 'Het sjabloon hoort bij deze sector alleen: het verschijnt niet in andere sectoren en is er niet bruikbaar.',
         'sector_locked' => 'De sector verandert niet meer na het aanmaken. Dupliceer het sjabloon voor een andere sector.',
         'type' => 'Berichttype',
-        'type_help' => 'Bevestiging, herinnering, wijziging en annulering worden automatisch door Nova verstuurd; de andere zijn klaar voor gebruik.',
+        'type_help' => 'Bevestiging, herinnering, wijziging en annulering worden automatisch door Rendivoo verstuurd; de andere zijn klaar voor gebruik.',
         'name' => 'Interne naam',
         'category' => 'Meta-categorie',
         'category_help' => 'Laat leeg voor de gebruikelijke categorie van het type. “Marketing” is voor aanbiedingen en heractivering.',

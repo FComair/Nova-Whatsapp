@@ -31,7 +31,7 @@ final class AccountStatusNotification extends Notification
         string $locale,
         private readonly ?CarbonInterface $trialEnd = null,
     ) {
-        $this->locale(in_array($locale, (array) config('nova.locales'), true) ? $locale : (string) config('app.fallback_locale'));
+        $this->locale(in_array($locale, (array) config('rendivoo.locales'), true) ? $locale : (string) config('app.fallback_locale'));
     }
 
     /**

@@ -37,12 +37,12 @@ function primary(step: SetupStepData): boolean {
             <span class="font-semibold text-neutral-900" aria-current="page">{{ title }}</span>
         </nav>
 
-        <h1 class="text-2xl font-semibold text-nova-900">{{ title }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ title }}</h1>
         <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t(`setup.categories.${category.key}.intro`) }}</p>
 
         <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="progress">
             <div class="flex items-baseline justify-between gap-4">
-                <h2 id="progress" class="text-base font-semibold text-nova-900">{{ t('setup.progress_title') }}</h2>
+                <h2 id="progress" class="text-base font-semibold text-rendivoo-900">{{ t('setup.progress_title') }}</h2>
                 <span class="text-sm font-semibold text-neutral-600">{{
                     t('setup.progress', { done: String(category.done), total: String(category.total) })
                 }}</span>

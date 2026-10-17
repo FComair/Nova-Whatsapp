@@ -41,7 +41,7 @@ const fill = (series: SeriesDef): string => (series.pattern === 'solid' ? series
                     </svg>
                     <span class="truncate text-neutral-800">{{ part.label }}</span>
                 </span>
-                <span class="shrink-0 font-semibold text-nova-900">
+                <span class="shrink-0 font-semibold text-rendivoo-900">
                     {{ formatCount(part.value, locale) }}
                     <span class="font-normal text-neutral-700">({{ formatRate(total > 0 ? part.value / total : null, locale) }})</span>
                 </span>

@@ -17,14 +17,14 @@ final class VatCalculator
 {
     public function rateFor(Organization $organization): int
     {
-        $home = (string) config('nova.billing.vat.home_country');
+        $home = (string) config('rendivoo.billing.vat.home_country');
         $vatNumber = trim((string) $organization->billing_vat_number);
 
-        if ($organization->country !== $home && $vatNumber !== '' && in_array($organization->country, (array) config('nova.billing.vat.eu_countries'), true)) {
+        if ($organization->country !== $home && $vatNumber !== '' && in_array($organization->country, (array) config('rendivoo.billing.vat.eu_countries'), true)) {
             return 0;
         }
 
-        return (int) config('nova.billing.vat.home_rate');
+        return (int) config('rendivoo.billing.vat.home_rate');
     }
 
     /**

@@ -81,7 +81,7 @@ function rotate(): void {
 
 <template>
     <SettingsLayout :title="t('calendars.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('calendars.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('calendars.title') }}</h1>
         <p class="mt-2 max-w-3xl text-sm text-neutral-700">{{ t('calendars.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4 max-w-3xl">{{ page.props.flash.status }}</AlertBox>
@@ -94,7 +94,7 @@ function rotate(): void {
         </details>
 
         <section v-for="practitioner in practitioners" :key="practitioner.id" class="mt-8 max-w-3xl" :aria-label="practitioner.name">
-            <h2 class="flex items-center gap-2.5 text-lg font-semibold text-nova-900">
+            <h2 class="flex items-center gap-2.5 text-lg font-semibold text-rendivoo-900">
                 <PractitionerAvatar :id="practitioner.id" :name="practitioner.name" :version="practitioner.photo_version" size="md" />
                 {{ practitioner.name }}
             </h2>

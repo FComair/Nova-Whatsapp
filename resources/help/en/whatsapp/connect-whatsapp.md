@@ -12,7 +12,7 @@ Connecting is reserved for the **owner**. Go to **Settings > WhatsApp**.
 ## The steps
 
 1. Start the connection: a Meta window opens to link your WhatsApp Business account and your number.
-2. Follow Meta’s screens to the end. Nova then shows the connection status.
+2. Follow Meta’s screens to the end. Rendivoo then shows the connection status.
 3. Get your **message templates** approved (confirmation, reminder, rescheduled, cancellation): WhatsApp requires approved templates, in each language, to write to a customer outside the 24-hour window.
 
 ## Check that everything works

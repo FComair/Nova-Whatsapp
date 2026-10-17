@@ -17,7 +17,7 @@ beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     ['org' => $this->org] = $this->activatedAccount();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->boss->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
     $this->boss = $this->boss->refresh();
     $this->back = fn (string $name, array $parameters = []) => AdminBack::for(Route::getRoutes()->getByName('filament.admin.'.$name)?->bind(request()->create(route('filament.admin.'.$name, $parameters))));
@@ -60,14 +60,14 @@ describe('destination et libellé', function (): void {
 describe('dans la page', function (): void {
     it('affiche « Retour » en haut de la fiche client et de la liste, avec la confirmation de départ', function (): void {
         $list = $this->actingAs($this->boss, 'platform')->get('/admin/organizations')->assertOk();
-        $list->assertSee(__('admin.back.dashboard'))->assertSee(route('filament.admin.pages.admin-dashboard'), false)->assertSee(__('admin.back.unsaved.message'))->assertSee('class="nova-back"', false);
+        $list->assertSee(__('admin.back.dashboard'))->assertSee(route('filament.admin.pages.admin-dashboard'), false)->assertSee(__('admin.back.unsaved.message'))->assertSee('class="rendivoo-back"', false);
 
         $this->actingAs($this->boss, 'platform')->get('/admin/organizations/'.$this->org->id)->assertOk()
             ->assertSee(__('admin.back.clients'))->assertSee(route('filament.admin.resources.organizations.index'), false);
     });
 
     it('ne montre pas de retour sur le tableau de bord', function (): void {
-        $this->actingAs($this->boss, 'platform')->get('/admin')->assertOk()->assertDontSee('class="nova-back"', false);
+        $this->actingAs($this->boss, 'platform')->get('/admin')->assertOk()->assertDontSee('class="rendivoo-back"', false);
     });
 
     it('reste dans l\'espace Super Admin : l\'adresse du retour ne vient jamais de la requête', function (): void {

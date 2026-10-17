@@ -24,12 +24,13 @@ use Illuminate\Support\Str;
  *
  * - Période lue : de la veille jusqu'à l'horizon de réservation (politiques) + 7 jours.
  * - Seuls des horaires sont conservés (aucun titre, lieu ni participant).
- * - Les événements issus du flux sortant de Nova sont ignorés (pas de double comptage si le calendrier réimporte notre flux).
+ * - Les événements issus du flux sortant de Rendivoo sont ignorés (pas de double comptage si le calendrier réimporte notre flux).
  * - Échec : les dernières plages connues restent utilisées (on bloque plutôt que de risquer un double-rendez-vous) ;
  *   après 5 échecs consécutifs le calendrier passe en « erreur » et n'est plus réessayé qu'une fois par heure.
  */
 final class CalendarSync
 {
+    // Identifiant historique, volontairement conservé : les agendas déjà abonnés reconnaissent leurs rendez-vous par cet UID (produit rebaptisé Rendivoo, docs/42).
     public const FEED_UID_SUFFIX = '@feed.nova';
 
     public const MAX_SLOTS = 5000;
@@ -94,14 +95,14 @@ final class CalendarSync
 
     /**
      * Calendriers à synchroniser maintenant : jamais synchronisés, ou dont l'intervalle est écoulé
-     * (`nova.calendars.sync_minutes`, une heure pour ceux en erreur). Les calendriers en pause sont ignorés.
+     * (`rendivoo.calendars.sync_minutes`, une heure pour ceux en erreur). Les calendriers en pause sont ignorés.
      *
      * @return Collection<int, ExternalCalendar>
      */
     public function due(): Collection
     {
-        $regular = CarbonImmutable::now()->subMinutes((int) config('nova.calendars.sync_minutes', 15));
-        $errored = CarbonImmutable::now()->subMinutes((int) config('nova.calendars.error_retry_minutes', 60));
+        $regular = CarbonImmutable::now()->subMinutes((int) config('rendivoo.calendars.sync_minutes', 15));
+        $errored = CarbonImmutable::now()->subMinutes((int) config('rendivoo.calendars.error_retry_minutes', 60));
 
         return ExternalCalendar::query()->where('status', '!=', 'paused')->where(function ($query) use ($regular, $errored): void {
             $query->whereNull('last_synced_at')

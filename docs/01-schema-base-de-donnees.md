@@ -1,4 +1,4 @@
-# Nova — Schéma de base de données (proposition v1, à valider)
+# Rendivoo — Schéma de base de données (proposition v1, à valider)
 
 Statut : **proposition**. Sources : spec backend FR, flowcharts 1–5, plan de tarification, décisions du fondateur (17 réponses).
 Légende : **[Spec]** repris de la spec · **[Flow]** exigé par un flowchart · **[Décision]** décidé par le fondateur · **[Reco]** recommandation à valider.
@@ -98,7 +98,7 @@ Notes : Doctena et Rosa = import de fichier ou lien ICS uniquement (aucun accès
 | `faq_entries` | id, org_id, locale, question, answer, position [Business plan, spec §7]. |
 | `support_tickets`, `ticket_messages` | id, org_id, user_id, subject, status, priority, context jsonb (journal d'échec E5/E12), assigned_to = fondateur [Flow 2B, E5, E12]. |
 
-## 9. Facturation Nova → client
+## 9. Facturation Rendivoo → client
 
 | Table | Détail |
 |---|---|

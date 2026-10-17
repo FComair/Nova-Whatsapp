@@ -28,7 +28,7 @@ const name = computed(() => categoryName(props.category.slug));
         <header class="mt-4 flex items-start gap-4">
             <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-xl bg-mint text-primary-700"><HelpIcon :name="category.icon" /></span>
             <div>
-                <h1 class="font-display text-2xl font-bold text-nova-900">{{ name }}</h1>
+                <h1 class="font-display text-2xl font-bold text-rendivoo-900">{{ name }}</h1>
                 <p class="mt-1 text-neutral-700">{{ categoryDescription(category.slug) }}</p>
             </div>
         </header>

@@ -25,11 +25,11 @@ final class SendLimiter
             throw new TooManyAttempts('E2', RateLimiter::availableIn($cooldownKey));
         }
 
-        if (RateLimiter::tooManyAttempts($hourKey, (int) config('nova.security.resend_per_hour'))) {
+        if (RateLimiter::tooManyAttempts($hourKey, (int) config('rendivoo.security.resend_per_hour'))) {
             throw new TooManyAttempts('E2', RateLimiter::availableIn($hourKey));
         }
 
-        RateLimiter::hit($cooldownKey, (int) config('nova.security.resend_cooldown_seconds'));
+        RateLimiter::hit($cooldownKey, (int) config('rendivoo.security.resend_cooldown_seconds'));
         RateLimiter::hit($hourKey, 3600);
     }
 }

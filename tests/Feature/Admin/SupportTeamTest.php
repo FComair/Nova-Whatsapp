@@ -38,11 +38,11 @@ beforeEach(function (): void {
     Storage::fake('local');
     Notification::fake();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
-    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT, 'name' => 'Agnès Agent'])->save();
     $this->agent->refresh();
-    $this->colleague = PlatformAdmin::query()->create(['email' => 'collegue@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->colleague = PlatformAdmin::query()->create(['email' => 'collegue@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->colleague->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT, 'name' => 'Colin Collègue'])->save();
     $this->colleague->refresh();
 
@@ -180,9 +180,9 @@ describe('suppression en lot', function (): void {
 
 describe('création et invitation d\'un agent', function (): void {
     it('crée un agent invité, envoie l\'invitation et consigne l\'audit', function (): void {
-        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'Nina@Nova.test', 'phone' => '+32 470 00 00 00', 'internal_notes' => 'Équipe soir', 'permissions' => [SupportPermissions::MANAGE_TAGS => false]]);
+        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'Nina@Rendivoo.test', 'phone' => '+32 470 00 00 00', 'internal_notes' => 'Équipe soir', 'permissions' => [SupportPermissions::MANAGE_TAGS => false]]);
 
-        expect($agent)->status->toBe('invited')->support_role->toBe('agent')->email->toBe('nina@nova.test')->name->toBe('Nina Nouvelle')
+        expect($agent)->status->toBe('invited')->support_role->toBe('agent')->email->toBe('nina@rendivoo.test')->name->toBe('Nina Nouvelle')
             ->and($agent->permissions)->toMatchArray([SupportPermissions::MANAGE_TAGS => false, SupportPermissions::DELETE_TICKETS => false])
             ->and($agent->canAccessPanel(Filament::getPanel('admin')))->toBeFalse();
         Notification::assertSentTo($agent, SupportAgentInvitation::class);
@@ -190,7 +190,7 @@ describe('création et invitation d\'un agent', function (): void {
     });
 
     it('active le compte avec le lien d\'invitation, une seule fois', function (): void {
-        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'nina@nova.test']);
+        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'nina@rendivoo.test']);
         $url = '';
         Notification::assertSentTo($agent, SupportAgentInvitation::class, function (SupportAgentInvitation $mail) use ($agent, &$url): bool {
             $url = (string) $mail->toMail($agent)->actionUrl;
@@ -211,7 +211,7 @@ describe('création et invitation d\'un agent', function (): void {
     });
 
     it('refuse un lien expiré, un lien falsifié et renvoyer l\'invitation invalide l\'ancien lien', function (): void {
-        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'nina@nova.test']);
+        $agent = ($this->team)()->create($this->boss, ['name' => 'Nina Nouvelle', 'email' => 'nina@rendivoo.test']);
         $first = '';
         Notification::assertSentTo($agent, SupportAgentInvitation::class, function (SupportAgentInvitation $mail) use ($agent, &$first): bool {
             $first = (string) $mail->toMail($agent)->actionUrl;
@@ -231,9 +231,9 @@ describe('création et invitation d\'un agent', function (): void {
     });
 
     it('refuse un e-mail déjà pris et un utilisateur qui n\'est pas Super Admin', function (): void {
-        expect(fn () => ($this->team)()->create($this->boss, ['name' => 'Doublon', 'email' => 'agent@nova.test']))->toThrow(TeamRefused::class)
-            ->and(fn () => ($this->team)()->create($this->agent, ['name' => 'Pirate', 'email' => 'pirate@nova.test']))->toThrow(TeamRefused::class)
-            ->and(PlatformAdmin::query()->where('email', 'pirate@nova.test')->exists())->toBeFalse();
+        expect(fn () => ($this->team)()->create($this->boss, ['name' => 'Doublon', 'email' => 'agent@rendivoo.test']))->toThrow(TeamRefused::class)
+            ->and(fn () => ($this->team)()->create($this->agent, ['name' => 'Pirate', 'email' => 'pirate@rendivoo.test']))->toThrow(TeamRefused::class)
+            ->and(PlatformAdmin::query()->where('email', 'pirate@rendivoo.test')->exists())->toBeFalse();
     });
 
     it('envoie une réinitialisation du mot de passe à un agent actif', function (): void {
@@ -249,7 +249,7 @@ describe('création et invitation d\'un agent', function (): void {
         ($this->console)()->assign($this->boss, $ticket, $this->agent->id);
 
         Livewire::actingAs($this->boss, 'platform')->test(ListSupportAgents::class)
-            ->callAction('create', data: ['name' => 'Nina Nouvelle', 'email' => 'nina@nova.test', 'permissions' => [SupportPermissions::MANAGE_TAGS]])->assertHasNoActionErrors()
+            ->callAction('create', data: ['name' => 'Nina Nouvelle', 'email' => 'nina@rendivoo.test', 'permissions' => [SupportPermissions::MANAGE_TAGS]])->assertHasNoActionErrors()
             ->assertSee('Nina Nouvelle')->assertSee('Agnès Agent')->assertSee('Colin Collègue')
             ->assertCanSeeTableRecords(PlatformAdmin::query()->where('support_role', 'agent')->get());
 
@@ -335,7 +335,7 @@ describe('statuts : suspension, retrait, réactivation', function (): void {
 describe('assignation', function (): void {
     it('n\'assigne pas à un agent invité, suspendu ou retiré', function (): void {
         $ticket = ($this->open)();
-        $invited = ($this->team)()->create($this->boss, ['name' => 'Nina', 'email' => 'nina@nova.test']);
+        $invited = ($this->team)()->create($this->boss, ['name' => 'Nina', 'email' => 'nina@rendivoo.test']);
 
         expect(array_keys(SupportAccess::assignees()))->toContain($this->agent->id)->not->toContain($invited->id)
             ->and(fn () => ($this->console)()->assign($this->boss, $ticket, $invited->id))->toThrow(AuthorizationException::class);

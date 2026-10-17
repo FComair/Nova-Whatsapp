@@ -1,6 +1,6 @@
 /**
  * Inscription intégrée de Meta (« Embedded Signup », docs/17) : le module de Meta n'est chargé qu'au clic de l'utilisateur
- * (c'est à ce moment seulement que Meta reçoit son adresse IP), puis le navigateur renvoie à Nova un code à usage unique
+ * (c'est à ce moment seulement que Meta reçoit son adresse IP), puis le navigateur renvoie à Rendivoo un code à usage unique
  * et les identifiants du numéro et du compte. Le jeton est échangé côté serveur : il ne passe jamais par le navigateur.
  */
 

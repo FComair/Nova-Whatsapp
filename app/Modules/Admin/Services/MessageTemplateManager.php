@@ -331,7 +331,7 @@ final class MessageTemplateManager
     {
         $clean = [];
 
-        foreach ((array) config('nova.locales') as $language) {
+        foreach ((array) config('rendivoo.locales') as $language) {
             $body = trim((string) ($translations[$language] ?? ''));
 
             if ($body !== '') {
@@ -383,6 +383,7 @@ final class MessageTemplateManager
     /** Nom Meta : minuscules, chiffres et tirets bas ; préfixé par le secteur, ce qui isole les secteurs jusque chez Meta. */
     private function metaName(string $sectorCode, string $slug): string
     {
+        // Préfixe historique « nova_ » conservé : c'est le nom enregistré chez Meta (produit rebaptisé Rendivoo, docs/42).
         $name = 'nova_'.preg_replace('/[^a-z0-9_]+/', '_', strtolower($sectorCode.'_'.$slug));
 
         return Str::limit((string) $name, 120, '');

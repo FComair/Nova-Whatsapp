@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
  *  - SUR LA PÉRIODE (comparés à la période précédente équivalente) : nouveaux clients, clients actifs, abonnements démarrés / résiliés,
  *    encaissements, paiements refusés, rendez-vous, messages WhatsApp, tickets, avis.
  *
- * Les recettes des clients (rendez-vous, pourboires) ne sont JAMAIS ajoutées au revenu de Nova (abonnements) : trois blocs distincts.
+ * Les recettes des clients (rendez-vous, pourboires) ne sont JAMAIS ajoutées au revenu de Rendivoo (abonnements) : trois blocs distincts.
  */
 class DashboardMetrics
 {

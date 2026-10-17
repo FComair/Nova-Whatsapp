@@ -12,7 +12,7 @@ Koppelen is voorbehouden aan de **eigenaar**. Ga naar **Instellingen > WhatsApp*
 ## De stappen
 
 1. Start de koppeling: er opent een venster van Meta om uw WhatsApp Business-account en uw nummer te koppelen.
-2. Volg de schermen van Meta tot het einde. Nova toont daarna de status van de koppeling.
+2. Volg de schermen van Meta tot het einde. Rendivoo toont daarna de status van de koppeling.
 3. Laat uw **berichtsjablonen** goedkeuren (bevestiging, herinnering, verplaatsing, annulering): WhatsApp eist goedgekeurde sjablonen, in elke taal, om een klant buiten het venster van 24 uur te schrijven.
 
 ## Controleren of alles werkt

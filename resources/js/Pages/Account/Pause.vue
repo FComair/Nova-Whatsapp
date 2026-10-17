@@ -37,7 +37,7 @@ function resume(): void {
 
 <template>
     <SettingsLayout :title="t('pause.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('pause.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('pause.title') }}</h1>
 
         <AlertBox v-if="errors.pause" variant="error" class="mt-4 max-w-2xl">{{ errors.pause }}</AlertBox>
 
@@ -53,7 +53,7 @@ function resume(): void {
             <p class="mt-2 max-w-2xl text-sm text-neutral-700">{{ t('pause.intro') }}</p>
 
             <section class="mt-6 max-w-2xl rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="effects">
-                <h2 id="effects" class="text-lg font-semibold text-nova-900">{{ t('pause.effects_title') }}</h2>
+                <h2 id="effects" class="text-lg font-semibold text-rendivoo-900">{{ t('pause.effects_title') }}</h2>
                 <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-700">
                     <li>{{ t('pause.effect_dashboard') }}</li>
                     <li>{{ t('pause.effect_bot') }}</li>

@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * Inscription intégrée de Meta (« Embedded Signup », décision du fondateur) : l'établissement connecte son numéro dans une fenêtre Meta,
- * sans manipuler d'identifiant ni de jeton. Le navigateur renvoie à Nova un code à usage unique et les identifiants du numéro et du compte ;
- * Nova échange le code contre un jeton (avec le secret de l'application Meta, qui ne quitte jamais le serveur), enregistre le compte
- * comme pour une connexion manuelle (vérification auprès de Meta, jeton chiffré) puis abonne le compte aux webhooks de Nova.
+ * sans manipuler d'identifiant ni de jeton. Le navigateur renvoie à Rendivoo un code à usage unique et les identifiants du numéro et du compte ;
+ * Rendivoo échange le code contre un jeton (avec le secret de l'application Meta, qui ne quitte jamais le serveur), enregistre le compte
+ * comme pour une connexion manuelle (vérification auprès de Meta, jeton chiffré) puis abonne le compte aux webhooks de Rendivoo.
  *
  * Désactivé tant que l'application Meta n'est pas configurée (`META_APP_ID`, `META_EMBEDDED_SIGNUP_CONFIG_ID`, `WHATSAPP_APP_SECRET`).
  * Les appels réels ne sont pas testés contre Meta (docs/17) : seuls les contrats le sont, avec des réponses simulées.
@@ -23,7 +23,7 @@ final class EmbeddedSignup
 {
     public function __construct(private readonly WhatsappConnector $connector) {}
 
-    /** Vrai quand l'application Meta de Nova est configurée : le bouton « Se connecter avec Meta » n'apparaît qu'alors. */
+    /** Vrai quand l'application Meta de Rendivoo est configurée : le bouton « Se connecter avec Meta » n'apparaît qu'alors. */
     public function enabled(): bool
     {
         return filled(config('whatsapp.embedded_signup.app_id')) && filled(config('whatsapp.embedded_signup.config_id')) && filled(config('whatsapp.app_secret'));
@@ -79,7 +79,7 @@ final class EmbeddedSignup
         return $response->successful() && is_string($token) && $token !== '' ? $token : throw new ConnectionRefused('invalid_credentials');
     }
 
-    /** Abonne le compte aux notifications de Nova (messages entrants, statuts des modèles). Un échec n'annule pas la connexion. */
+    /** Abonne le compte aux notifications de Rendivoo (messages entrants, statuts des modèles). Un échec n'annule pas la connexion. */
     private function subscribe(WhatsappAccount $account): void
     {
         try {

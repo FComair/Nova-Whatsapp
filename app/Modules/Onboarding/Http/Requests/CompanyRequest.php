@@ -35,10 +35,10 @@ final class CompanyRequest extends FormRequest
             'name' => ['required', 'string', 'min:2', 'max:120'],
             // Secteurs actifs ; l'établissement peut garder son secteur actuel même s'il a été désactivé depuis.
             'sector' => ['required', 'string', Rule::in(app(SectorCatalog::class)->codes(app(CurrentTenant::class)->organization()?->sector))],
-            'country' => ['required', 'string', Rule::in(config('nova.countries'))],
+            'country' => ['required', 'string', Rule::in(config('rendivoo.countries'))],
             // Le fuseau doit appartenir au pays choisi : c'est la référence unique des heures du compte.
             'timezone' => ['required', 'string', fn (string $attribute, mixed $value, Closure $fail) => is_string($value) && app(TimezoneCatalog::class)->accepts($this->string('country')->toString(), $value) ? null : $fail(__('validation.in', ['attribute' => $attribute]))],
-            'locale' => ['required', 'string', Rule::in(config('nova.locales'))],
+            'locale' => ['required', 'string', Rule::in(config('rendivoo.locales'))],
         ];
     }
 }

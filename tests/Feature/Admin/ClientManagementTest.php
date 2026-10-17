@@ -30,7 +30,7 @@ beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     Notification::fake();
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount(['name' => 'Salon Aurore', 'status' => 'trial', 'trial_ends_at' => now()->addDays(5)]);
 
     $this->set = fn (string $orgId, array $values) => DB::connection('pgsql_owner')->table('organizations')->where('id', $orgId)->update($values);
@@ -213,7 +213,7 @@ describe('rapports', function (): void {
 
 describe('accès', function (): void {
     it('refuse les rapports et la liste aux rôles de support restreints', function (): void {
-        $agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+        $agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
         $agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
 
         $this->actingAs($agent, 'platform');

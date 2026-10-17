@@ -34,7 +34,7 @@ it('publie les rendez-vous confirmés du praticien au format iCalendar', functio
     $ics = $response->getContent();
 
     expect($ics)->toStartWith("BEGIN:VCALENDAR\r\n")->toContain("UID:{$booking->id}@feed.nova")->toContain('DTSTART:20260602T080000Z')->toContain('DTEND:20260602T083000Z')
-        ->toContain('SUMMARY:Rendez-vous Nova : Coupe')->toContain('STATUS:CONFIRMED')->toContain('X-WR-CALNAME:Nova · Léa');
+        ->toContain('SUMMARY:Rendez-vous Rendivoo : Coupe')->toContain('STATUS:CONFIRMED')->toContain('X-WR-CALNAME:Rendivoo · Léa');
 });
 
 it('ne contient aucune donnée de client, ni note', function (): void {
@@ -66,7 +66,7 @@ it('écrit le titre dans la langue de l\'établissement', function (string $loca
     app(TenantContext::class)->clear();
 
     expect(($this->fetch)($token)->getContent())->toContain($summary);
-})->with([['fr', 'SUMMARY:Rendez-vous Nova : Coupe'], ['nl', 'SUMMARY:Nova-afspraak: Coupe'], ['en', 'SUMMARY:Nova appointment: Coupe']]);
+})->with([['fr', 'SUMMARY:Rendez-vous Rendivoo : Coupe'], ['nl', 'SUMMARY:Rendivoo-afspraak: Coupe'], ['en', 'SUMMARY:Rendivoo appointment: Coupe']]);
 
 it('coupe les lignes longues à 75 octets sans casser un caractère', function (): void {
     $this->asOwner(fn () => $this->service->forceFill(['name' => str_repeat('Coiffure très élégante ', 4)])->save());
@@ -115,7 +115,7 @@ describe('jeton', function (): void {
         $token = $this->feeds->tokenFor($this->org, $marc);
         app(TenantContext::class)->clear();
 
-        expect(($this->fetch)($token)->getContent())->not->toContain('BEGIN:VEVENT')->toContain('Nova · Marc');
+        expect(($this->fetch)($token)->getContent())->not->toContain('BEGIN:VEVENT')->toContain('Rendivoo · Marc');
     });
 });
 

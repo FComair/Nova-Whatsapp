@@ -9,7 +9,7 @@ updated: 2026-10-09
 ---
 ## Mot de passe oublié
 
-Sur la page de connexion, utilisez **Mot de passe oublié** : Nova envoie un lien de réinitialisation à votre adresse e-mail. Choisissez un mot de passe d’au moins 12 caractères.
+Sur la page de connexion, utilisez **Mot de passe oublié** : Rendivoo envoie un lien de réinitialisation à votre adresse e-mail. Choisissez un mot de passe d’au moins 12 caractères.
 
 ## Le code de la double authentification est refusé
 

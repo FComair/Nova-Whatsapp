@@ -85,7 +85,7 @@ async function signUpWithMeta(): Promise<void> {
         <AlertBox v-if="errors.whatsapp" variant="error">{{ errors.whatsapp }}</AlertBox>
 
         <section v-if="section !== 'templates'" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="connection">
-            <h2 id="connection" class="text-lg font-semibold text-nova-900">{{ t('whatsapp.connection_title') }}</h2>
+            <h2 id="connection" class="text-lg font-semibold text-rendivoo-900">{{ t('whatsapp.connection_title') }}</h2>
 
             <p v-if="account" class="mt-2 text-sm font-medium text-success-600" data-testid="connected">
                 {{ t('whatsapp.connected_as', { phone: account.display_phone ?? account.phone_number_id }) }}
@@ -93,13 +93,13 @@ async function signUpWithMeta(): Promise<void> {
             <p v-else class="mt-2 text-sm text-neutral-700">{{ t('whatsapp.not_connected') }}</p>
 
             <div v-if="embedded" class="mt-4 rounded-control border border-line bg-neutral-50 p-4" data-testid="embedded">
-                <h3 class="font-semibold text-nova-900">{{ t('whatsapp.embedded_title') }}</h3>
+                <h3 class="font-semibold text-rendivoo-900">{{ t('whatsapp.embedded_title') }}</h3>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('whatsapp.embedded_notice') }}</p>
                 <AlertBox v-if="signupError" variant="warning" class="mt-3">{{ signupError }}</AlertBox>
                 <BaseButton class="mt-3" :loading="signingUp" @click="signUpWithMeta">{{ t('whatsapp.embedded_button') }}</BaseButton>
             </div>
 
-            <h3 v-if="embedded" class="mt-6 font-semibold text-nova-900">{{ t('whatsapp.manual_title') }}</h3>
+            <h3 v-if="embedded" class="mt-6 font-semibold text-rendivoo-900">{{ t('whatsapp.manual_title') }}</h3>
             <p class="mt-1 text-sm text-neutral-600">{{ t('whatsapp.help') }}</p>
 
             <form class="mt-4 space-y-4" novalidate @submit.prevent="submitConnection">
@@ -144,7 +144,7 @@ async function signUpWithMeta(): Promise<void> {
         </section>
 
         <section v-if="section !== 'connection'" class="rounded-card border border-line bg-surface shadow-xs p-5" aria-labelledby="templates">
-            <h2 id="templates" class="text-lg font-semibold text-nova-900">{{ t('whatsapp.templates_title') }}</h2>
+            <h2 id="templates" class="text-lg font-semibold text-rendivoo-900">{{ t('whatsapp.templates_title') }}</h2>
             <p class="mt-1 text-sm text-neutral-700">{{ t('whatsapp.templates_intro') }}</p>
 
             <p v-if="!account" class="mt-3 text-sm text-neutral-600">{{ t('whatsapp.templates_need_connection') }}</p>

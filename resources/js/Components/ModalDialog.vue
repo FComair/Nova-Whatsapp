@@ -58,7 +58,7 @@ watch(
             </svg>
             {{ t('common.back') }}
         </button>
-        <h2 :id="titleId" class="mt-1 text-lg font-semibold text-nova-900">{{ title }}</h2>
+        <h2 :id="titleId" class="mt-1 text-lg font-semibold text-rendivoo-900">{{ title }}</h2>
         <div class="mt-4"><slot /></div>
     </dialog>
 </template>

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Avis PRIVÉ d'un client sur Nova, vu par le Super Admin (lecture seule, toutes organisations). Ce n'est pas un avis Google ou
+ * Avis PRIVÉ d'un client sur Rendivoo, vu par le Super Admin (lecture seule, toutes organisations). Ce n'est pas un avis Google ou
  * Trustpilot : les avis publics sont écrits par les clients sur ces plateformes et ne passent jamais par ici.
  *
  * @property string $id

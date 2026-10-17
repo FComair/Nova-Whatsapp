@@ -34,7 +34,7 @@ Code : `app/Modules/Team/` (`Support/Capabilities`, `Services/TeamManager`, `Htt
 | Rapports | `reports.view` / `.all_data` / `.financial` / `.staff` / `.export` / `.configure` | Voir ; toute l'activité (sinon la sienne) ; montants ; comparer les praticiens ; exporter ; réglages |
 | Paiements | `payments.record` | Enregistrer paiements et pourboires |
 | Réglages | `settings.business` / `.practitioners` / `.integrations` / `.billing` / `.team` | Profil de l'entreprise ; praticiens ; tous les calendriers ; facturation et abonnement ; équipe |
-| Support | `support.use` | Contacter le support Nova, suivre ses tickets |
+| Support | `support.use` | Contacter le support Rendivoo, suivre ses tickets |
 
 **Non proposé, faute de fonction** (ne protégerait rien) : conversations WhatsApp, envoi manuel de messages, analyses WhatsApp, liste d'attente, remboursements, journal d'activité du compte, gestion des sites après l'assistant, indicateurs du tableau de bord (un seul résumé du jour), export des clients, transfert de propriété, photo d'un assistant (la photo existe pour les praticiens). À ajouter avec la fonction correspondante.
 

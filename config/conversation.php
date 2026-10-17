@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /**
- * Assistant conversationnel WhatsApp de Nova (docs/18) : le parcours de réservation du client final, venu du flux n8n
- * « MASTER ROUTER V2 », exécuté dans Nova.
+ * Assistant conversationnel WhatsApp de Rendivoo (docs/18) : le parcours de réservation du client final, venu du flux n8n
+ * « MASTER ROUTER V2 », exécuté dans Rendivoo.
  *
  * Aucune valeur secrète ici : tout vient de l'environnement.
  */
 return [
 
-    // `n8n` : chaque message entrant est transmis à n8n (comportement historique, docs/06). `native` : Nova répond lui-même.
+    // `n8n` : chaque message entrant est transmis à n8n (comportement historique, docs/06). `native` : Rendivoo répond lui-même.
     'driver' => env('CONVERSATION_DRIVER', 'n8n'),
 
     // Nombre d'éléments par page dans les menus numérotés (services, praticiens, créneaux), comme dans le flux n8n.

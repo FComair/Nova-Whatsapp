@@ -9,7 +9,7 @@ updated: 2026-10-09
 ---
 Un client peut à tout moment écrire **STOP** (ou « arrêt », « stoppen », « unsubscribe », « désabonner »).
 
-## Ce que fait Nova
+## Ce que fait Rendivoo
 
 - Le client ne reçoit **plus aucun message automatique** : ni confirmation, ni rappel, ni message promotionnel.
 - Il reçoit une confirmation de sa désinscription, dans sa langue.
@@ -20,4 +20,4 @@ Un client peut à tout moment écrire **STOP** (ou « arrêt », « stoppen », 
 
 Si le client écrit **START** (ou « commencer », « starten », « begin »), les messages liés à ses rendez-vous reprennent. Les messages promotionnels restent désactivés tant qu’il n’a pas donné un accord explicite.
 
-> **Dans le planning :** si vous déplacez ou annulez le rendez-vous d’un client désinscrit, l’action est faite et Nova vous demande de le prévenir directement.
+> **Dans le planning :** si vous déplacez ou annulez le rendez-vous d’un client désinscrit, l’action est faite et Rendivoo vous demande de le prévenir directement.

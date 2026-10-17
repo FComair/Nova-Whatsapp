@@ -12,7 +12,7 @@ import AlertBox from './AlertBox.vue';
  */
 const page = usePage<SharedProps>();
 const { t } = useT();
-const key = 'nova.legal-notice-dismissed';
+const key = 'rendivoo.legal-notice-dismissed';
 
 function dismissed(): boolean {
     try {

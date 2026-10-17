@@ -7,7 +7,7 @@ namespace App\Modules\Whatsapp\Support;
 use App\Modules\Whatsapp\Models\MessageTemplate;
 
 /**
- * Les modèles de messages que Nova fait suivre chez Meta pour un établissement.
+ * Les modèles de messages que Rendivoo fait suivre chez Meta pour un établissement.
  *
  * - Les quatre modèles globaux (rappel, confirmation, déplacement, annulation) dans chaque langue de l'interface : noms
  *   `config('whatsapp.templates')`, textes `lang/{fr,nl,en}/whatsapp.php`. Ils restent la base tant que le secteur n'a rien d'approuvé.
@@ -28,7 +28,7 @@ final class TemplateCatalog
         $entries = [];
 
         foreach (self::KEYS as $key) {
-            foreach ((array) config('nova.locales') as $language) {
+            foreach ((array) config('rendivoo.locales') as $language) {
                 $entries[$key.'|'.$language] = [
                     'key' => $key,
                     'name' => (string) config("whatsapp.templates.{$key}"),

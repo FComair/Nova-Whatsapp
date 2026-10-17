@@ -98,14 +98,14 @@ return [
     ],
     'mail' => [
         'greeting' => 'Bonjour :name,',
-        'invitation' => ['subject' => 'Votre accès au support Nova', 'intro' => 'Vous êtes invité(e) à rejoindre l’équipe de support Nova. Choisissez votre mot de passe pour activer votre compte.', 'action' => 'Choisir mon mot de passe'],
-        'reset' => ['subject' => 'Réinitialisez votre mot de passe du support Nova', 'intro' => 'Un administrateur Nova vous a envoyé un lien pour choisir un nouveau mot de passe.', 'action' => 'Choisir un nouveau mot de passe'],
+        'invitation' => ['subject' => 'Votre accès au support Rendivoo', 'intro' => 'Vous êtes invité(e) à rejoindre l’équipe de support Rendivoo. Choisissez votre mot de passe pour activer votre compte.', 'action' => 'Choisir mon mot de passe'],
+        'reset' => ['subject' => 'Réinitialisez votre mot de passe du support Rendivoo', 'intro' => 'Un administrateur Rendivoo vous a envoyé un lien pour choisir un nouveau mot de passe.', 'action' => 'Choisir un nouveau mot de passe'],
         'valid' => 'Ce lien ne fonctionne qu’une fois et expire dans :days jours.',
         'mfa' => 'À votre première connexion, il vous sera demandé de configurer la double authentification.',
         'ignore' => 'Si vous n’attendiez pas cet e-mail, ignorez-le.',
     ],
     'invitation' => [
-        'title' => 'Accès au support Nova',
+        'title' => 'Accès au support Rendivoo',
         'invalid_title' => 'Lien non valide',
         'invalid' => 'Ce lien est invalide, expiré ou déjà utilisé. Demandez un nouveau lien à un Super Admin.',
         'heading' => 'Bienvenue, :name',

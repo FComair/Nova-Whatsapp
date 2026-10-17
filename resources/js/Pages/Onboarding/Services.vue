@@ -103,7 +103,7 @@ function confirmDelete(): void {
 
 <template>
     <OnboardingLayout :wizard="wizard" :title="t('services.title')">
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('services.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('services.title') }}</h1>
         <p class="mt-1 text-sm text-neutral-600">{{ t('services.body') }}</p>
 
         <AlertBox variant="warning" class="mt-4">{{ t('services.indicative_notice') }}</AlertBox>
@@ -131,17 +131,17 @@ function confirmDelete(): void {
 
         <!-- Méthodes de création (flowchart 1B, étape 4) -->
         <div v-if="showMethods" class="mt-6">
-            <h2 class="text-base font-semibold text-nova-900">{{ t('services.methods_title') }}</h2>
+            <h2 class="text-base font-semibold text-rendivoo-900">{{ t('services.methods_title') }}</h2>
             <ul class="mt-3 grid gap-4 md:grid-cols-3">
                 <li v-if="template" class="flex flex-col rounded-control border border-primary-600/40 bg-primary-50/40 p-4">
-                    <h3 class="font-medium text-nova-900">{{ t('services.template_title') }}</h3>
+                    <h3 class="font-medium text-rendivoo-900">{{ t('services.template_title') }}</h3>
                     <p class="mt-1 flex-1 text-sm text-neutral-700">{{ t('services.template_body', { count: template.count }) }}</p>
                     <BaseButton class="mt-4" :loading="templateForm.processing" @click="templateForm.post(`${base}/modele`, { preserveScroll: true })">
                         {{ t('services.template_action') }}
                     </BaseButton>
                 </li>
                 <li class="flex flex-col rounded-control border border-line p-4">
-                    <h3 class="font-medium text-nova-900">{{ t('services.manual_title') }}</h3>
+                    <h3 class="font-medium text-rendivoo-900">{{ t('services.manual_title') }}</h3>
                     <p class="mt-1 flex-1 text-sm text-neutral-700">{{ t('services.manual_body') }}</p>
                     <BaseButton class="mt-4" variant="secondary" @click="startNew">{{ t('services.manual_action') }}</BaseButton>
                 </li>
@@ -161,7 +161,7 @@ function confirmDelete(): void {
                 <li v-for="service in services" :key="service.id" class="rounded-control border border-line p-4">
                     <div v-if="editing !== service.id" class="flex flex-wrap items-start justify-between gap-3">
                         <div class="min-w-0">
-                            <p class="break-words font-medium text-nova-900">{{ service.name }}</p>
+                            <p class="break-words font-medium text-rendivoo-900">{{ service.name }}</p>
                             <p class="mt-1 text-sm text-neutral-600">
                                 <span v-if="service.category">{{ service.category }} · </span>
                                 {{ service.duration_minutes }} {{ t('services.minutes') }} ·

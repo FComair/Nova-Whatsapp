@@ -130,7 +130,7 @@ final class ReportExporter
      */
     public function xlsx(array $tables): string
     {
-        $path = tempnam(sys_get_temp_dir(), 'nova-report-');
+        $path = tempnam(sys_get_temp_dir(), 'rendivoo-report-');
         Xlsx::write(array_map(fn (array $table): array => ['name' => $table['sheet'] ?? $table['title']] + $table, $tables), $path);
 
         return $path;

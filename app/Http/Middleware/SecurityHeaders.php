@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  * - Toujours : pas de détection de type (nosniff), interdiction d'être affiché dans un cadre, politique de référent stricte,
  *   fonctions du navigateur inutiles désactivées, isolation de la fenêtre.
  * - HSTS : en production, sur les requêtes HTTPS.
- * - CSP (politique de contenu) : `nova.security.csp` = `report-only` (défaut : signale sans bloquer), `enforce` ou `off`. Le panel
+ * - CSP (politique de contenu) : `rendivoo.security.csp` = `report-only` (défaut : signale sans bloquer), `enforce` ou `off`. Le panel
  *   Super Admin (Filament/Livewire, qui exige des scripts en ligne) est exclu de la CSP, pas des autres en-têtes.
  */
 final class SecurityHeaders
@@ -34,7 +34,7 @@ final class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        $mode = (string) config('nova.security.csp', 'report-only');
+        $mode = (string) config('rendivoo.security.csp', 'report-only');
 
         if ($mode !== 'off' && ! $request->is('admin', 'admin/*', 'livewire/*') && str_contains((string) $response->headers->get('Content-Type'), 'text/html')) {
             $response->headers->set($mode === 'enforce' ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only', $this->policy($this->allowsMetaSignup($request)));

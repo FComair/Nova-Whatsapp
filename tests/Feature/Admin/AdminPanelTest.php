@@ -21,7 +21,7 @@ uses(AuthScenarios::class);
 beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->withMfa = function (): PlatformAdmin {
         $this->admin->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
 
@@ -152,14 +152,14 @@ describe('liste des clients', function (): void {
     })->with([['fr', 'Clients'], ['nl', 'Klanten'], ['en', 'Customers']]);
 });
 
-describe('commande nova:create-admin', function (): void {
+describe('commande rendivoo:create-admin', function (): void {
     it('crée un Super Admin sans configurer son 2FA (imposé à la première connexion)', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'associe@nova.test'])
+        $this->artisan('rendivoo:create-admin', ['email' => 'associe@rendivoo.test'])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'Un-mot-de-passe-tres-solide-2026!')
             ->expectsQuestion('Confirmez le mot de passe', 'Un-mot-de-passe-tres-solide-2026!')
             ->assertSuccessful();
 
-        $row = DB::connection('pgsql_owner')->table('platform_admins')->where('email', 'associe@nova.test')->first();
+        $row = DB::connection('pgsql_owner')->table('platform_admins')->where('email', 'associe@rendivoo.test')->first();
 
         expect($row)->not->toBeNull()
             ->and($row->app_authentication_secret)->toBeNull()
@@ -167,23 +167,23 @@ describe('commande nova:create-admin', function (): void {
     });
 
     it('refuse un mot de passe faible', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'faible@nova.test'])
+        $this->artisan('rendivoo:create-admin', ['email' => 'faible@rendivoo.test'])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'court')
             ->expectsQuestion('Confirmez le mot de passe', 'court')
             ->assertFailed();
 
-        expect(DB::connection('pgsql_owner')->table('platform_admins')->where('email', 'faible@nova.test')->exists())->toBeFalse();
+        expect(DB::connection('pgsql_owner')->table('platform_admins')->where('email', 'faible@rendivoo.test')->exists())->toBeFalse();
     });
 
     it('refuse un e-mail déjà utilisé', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'fondateur@nova.test'])
+        $this->artisan('rendivoo:create-admin', ['email' => 'fondateur@rendivoo.test'])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'Un-mot-de-passe-tres-solide-2026!')
             ->expectsQuestion('Confirmez le mot de passe', 'Un-mot-de-passe-tres-solide-2026!')
             ->assertFailed();
     });
 
     it('refuse une confirmation différente', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'autre@nova.test'])
+        $this->artisan('rendivoo:create-admin', ['email' => 'autre@rendivoo.test'])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'Un-mot-de-passe-tres-solide-2026!')
             ->expectsQuestion('Confirmez le mot de passe', 'Autre-chose-de-tres-solide-2026!')
             ->assertFailed();

@@ -32,7 +32,7 @@ beforeEach(function (): void {
     Notification::fake();
     Cache::flush();
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => ADMIN_PASSWORD]);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => ADMIN_PASSWORD]);
 
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount(['name' => 'Salon Aurore', 'status' => 'active']);
 
@@ -167,9 +167,9 @@ describe('langue du propriétaire', function (): void {
             return $mail->subject === $subject && str_contains(implode(' ', $mail->introLines), 'Impayés répétés');
         });
     })->with([
-        ['fr', 'Votre compte Nova « Salon Aurore » a été suspendu'],
-        ['nl', 'Uw Nova-account « Salon Aurore » is opgeschort'],
-        ['en', 'Your Nova account « Salon Aurore » has been suspended'],
+        ['fr', 'Votre compte Rendivoo « Salon Aurore » a été suspendu'],
+        ['nl', 'Uw Rendivoo-account « Salon Aurore » is opgeschort'],
+        ['en', 'Your Rendivoo account « Salon Aurore » has been suspended'],
     ]);
 });
 

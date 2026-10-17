@@ -12,7 +12,7 @@ Le QR code est réservé au **propriétaire** : **Réglages > QR code WhatsApp**
 ## Comment ça marche
 
 1. Créez un QR code. Un client le scanne avec son téléphone : WhatsApp s’ouvre sur une conversation avec votre numéro.
-2. Il écrit, et l’assistant de Nova l’aide à réserver.
+2. Il écrit, et l’assistant de Rendivoo l’aide à réserver.
 3. Téléchargez le QR code pour l’imprimer sur une affiche, un comptoir, une carte de visite ou une vitrine.
 
 ## Suivre ce que ça rapporte

@@ -78,9 +78,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Prestataire de paiement : 'fake' tant que le fondateur n'a pas choisi (aucun débit réel possible).
-        $this->app->singleton(PaymentGateway::class, fn (): PaymentGateway => match (config('nova.billing.gateway')) {
+        $this->app->singleton(PaymentGateway::class, fn (): PaymentGateway => match (config('rendivoo.billing.gateway')) {
             'fake' => new FakeGateway,
-            default => throw new InvalidArgumentException('Prestataire de paiement inconnu : '.config('nova.billing.gateway')),
+            default => throw new InvalidArgumentException('Prestataire de paiement inconnu : '.config('rendivoo.billing.gateway')),
         });
 
         // Canal WhatsApp : 'meta' en production, 'fake' (aucun appel réseau) en développement et en test.
@@ -94,9 +94,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Canal d'envoi du code téléphonique : `log` en développement. Le canal de production reste à décider.
-        $this->app->bind(PhoneCodeSender::class, fn (): PhoneCodeSender => match (config('nova.phone_code_driver')) {
+        $this->app->bind(PhoneCodeSender::class, fn (): PhoneCodeSender => match (config('rendivoo.phone_code_driver')) {
             'log' => new LogPhoneCodeSender,
-            default => throw new InvalidArgumentException('Pilote d\'envoi de code inconnu : '.config('nova.phone_code_driver')),
+            default => throw new InvalidArgumentException('Pilote d\'envoi de code inconnu : '.config('rendivoo.phone_code_driver')),
         });
     }
 

@@ -61,7 +61,7 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
                 :aria-invalid="error ? 'true' : undefined"
                 :aria-describedby="describedBy"
                 :list="suggestions?.length ? listId : undefined"
-                class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-nova placeholder:text-neutral-500 focus:outline-none focus:ring-2 disabled:bg-surface-2 disabled:text-muted"
+                class="block w-full rounded-control border-[1.5px] bg-surface px-3.5 py-2.5 text-base text-neutral-900 transition duration-150 ease-rendivoo placeholder:text-neutral-500 focus:outline-none focus:ring-2 disabled:bg-surface-2 disabled:text-muted"
                 :class="[
                     error
                         ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'
@@ -77,7 +77,7 @@ const describedBy = computed(() => [props.hint ? hintId : null, props.error ? er
             <button
                 v-if="isPassword"
                 type="button"
-                class="absolute inset-y-0 right-0 rounded-r-control px-3 text-sm font-semibold text-primary-700 hover:text-nova-700"
+                class="absolute inset-y-0 right-0 rounded-r-control px-3 text-sm font-semibold text-primary-700 hover:text-rendivoo-700"
                 :aria-pressed="revealed"
                 :aria-label="revealed ? t('common.hide_password') : t('common.show_password')"
                 @click="revealed = !revealed"

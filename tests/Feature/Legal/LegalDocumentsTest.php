@@ -29,7 +29,7 @@ function legalCleanup(): void
 {
     // Les versions publiées sont figées (même pour le propriétaire de la base) : on coupe le déclencheur le temps de nettoyer les versions ajoutées par un test.
     DB::connection('pgsql_owner')->unprepared("ALTER TABLE legal_document_versions DISABLE TRIGGER legal_versions_freeze; DELETE FROM legal_document_versions WHERE version <> '2026-10-01'; ALTER TABLE legal_document_versions ENABLE TRIGGER legal_versions_freeze;");
-    config(['nova.legal.dpa_required_at_signup' => true]);
+    config(['rendivoo.legal.dpa_required_at_signup' => true]);
 }
 
 beforeEach(function (): void {
@@ -98,7 +98,7 @@ describe('inscription', function (): void {
     });
 
     it('enregistre pour chaque document la version, l\'horodatage, l\'IP, l\'agent utilisateur, la langue et le contexte, plus une entrée d\'audit', function (): void {
-        $this->withHeader('User-Agent', 'NovaTest/1.0')->withServerVariables(['REMOTE_ADDR' => '203.0.113.7'])->withHeader('Accept-Language', 'en')->post('/inscription', $this->validRegistration())->assertRedirect('/verification-email');
+        $this->withHeader('User-Agent', 'RendivooTest/1.0')->withServerVariables(['REMOTE_ADDR' => '203.0.113.7'])->withHeader('Accept-Language', 'en')->post('/inscription', $this->validRegistration())->assertRedirect('/verification-email');
 
         $user = $this->asOwner(fn () => User::query()->where('email', 'nouveau@example.com')->firstOrFail());
         $rows = ($this->consents)($user);
@@ -107,7 +107,7 @@ describe('inscription', function (): void {
             ->and(collect($rows)->pluck('document_version')->unique()->all())->toBe(['2026-10-01'])
             ->and(collect($rows)->pluck('source')->unique()->all())->toBe(['signup'])
             ->and(collect($rows)->pluck('ip')->unique()->all())->toBe(['203.0.113.7'])
-            ->and(collect($rows)->pluck('user_agent')->unique()->all())->toBe(['NovaTest/1.0'])
+            ->and(collect($rows)->pluck('user_agent')->unique()->all())->toBe(['RendivooTest/1.0'])
             ->and(collect($rows)->pluck('locale')->unique()->all())->toBe(['en'])
             ->and(collect($rows)->every(fn ($row) => $row->granted_at !== null))->toBeTrue();
 
@@ -119,7 +119,7 @@ describe('inscription', function (): void {
     });
 
     it('le DPA n\'est exigé que si la plateforme l\'exige : sinon la case est facultative et n\'enregistre rien tant qu\'elle n\'est pas cochée', function (): void {
-        config(['nova.legal.dpa_required_at_signup' => false]);
+        config(['rendivoo.legal.dpa_required_at_signup' => false]);
 
         $this->post('/inscription', $this->validRegistration(['accept_dpa' => false]))->assertRedirect('/verification-email');
         $user = $this->asOwner(fn () => User::query()->where('email', 'nouveau@example.com')->firstOrFail());
@@ -177,7 +177,7 @@ describe('pages publiques', function (): void {
             expect($props['html'])->toContain('id="'.$item['id'].'"');
         }
 
-        expect($props['html'])->not->toContain('{{company}}')->and($props['html'])->toContain((string) config('nova.billing.seller.name'));
+        expect($props['html'])->not->toContain('{{company}}')->and($props['html'])->toContain((string) config('rendivoo.billing.seller.name'));
     });
 
     it('suivent la langue de l\'interface, retombent sur le français avec un avis, et fonctionnent en anglais', function (): void {
@@ -309,12 +309,12 @@ describe('Réglages › Juridique', function (): void {
     it('enregistre une acceptation avec son contexte, une seule fois, et la dit dans l\'historique', function (): void {
         [$user] = ($this->account)(withConsents: false);
 
-        ($this->as)()->withHeader('User-Agent', 'NovaTest/1.0')->post('/reglages/juridique/accepter', ['documents' => ['terms-of-use', 'privacy-policy']])->assertSessionHasNoErrors()->assertSessionHas('status');
+        ($this->as)()->withHeader('User-Agent', 'RendivooTest/1.0')->post('/reglages/juridique/accepter', ['documents' => ['terms-of-use', 'privacy-policy']])->assertSessionHasNoErrors()->assertSessionHas('status');
         ($this->as)()->post('/reglages/juridique/accepter', ['documents' => ['terms-of-use']])->assertSessionHas('status', 'Rien à enregistrer.');
 
         $rows = ($this->consents)($user);
         expect(collect($rows)->pluck('type')->all())->toBe(['privacy', 'terms'])->and(collect($rows)->pluck('source')->unique()->all())->toBe(['settings'])
-            ->and(collect($rows)->pluck('user_agent')->unique()->all())->toBe(['NovaTest/1.0'])
+            ->and(collect($rows)->pluck('user_agent')->unique()->all())->toBe(['RendivooTest/1.0'])
             ->and($this->asOwner(fn () => DB::table('audit_logs')->where('action', 'legal.accepted')->where('actor_id', $user->id)->count()))->toBe(2);
     });
 
@@ -425,7 +425,7 @@ describe('nouvelle version et nouvelle acceptation', function (): void {
 describe('publication par le Super Admin', function (): void {
     beforeEach(function (): void {
         Filament::setCurrentPanel(Filament::getPanel('admin'));
-        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
         $this->admin->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
         $this->admin = $this->admin->refresh();
         $this->panel = fn () => Livewire::actingAs($this->admin, 'platform')->test(ListLegalVersions::class);

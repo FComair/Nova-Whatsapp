@@ -174,7 +174,7 @@ describe('double authentification : connexion', function (): void {
 });
 
 describe('double authentification obligatoire (propriétaire et responsables)', function (): void {
-    beforeEach(fn () => config(['nova.security.two_factor_required' => true]));
+    beforeEach(fn () => config(['rendivoo.security.two_factor_required' => true]));
 
     it('enferme le propriétaire sur la page Sécurité tant qu\'elle n\'est pas activée, sans délai', function (string $uri): void {
         $this->signedIn($this->user, $this->org)->get($uri)->assertRedirect('/securite');

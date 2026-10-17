@@ -30,7 +30,7 @@ beforeEach(function (): void {
     Notification::fake();
     Cache::flush();
 
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => SUPPORT_PASSWORD]);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => SUPPORT_PASSWORD]);
 
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount(['name' => 'Salon Aurore', 'status' => 'active']);
 

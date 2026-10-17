@@ -200,7 +200,7 @@ const previewStyle = (size: number) => {
 <template>
     <div class="space-y-4" data-testid="logo-cropper">
         <div>
-            <h3 class="text-base font-semibold text-nova-900">{{ t('logo.crop.title') }}</h3>
+            <h3 class="text-base font-semibold text-rendivoo-900">{{ t('logo.crop.title') }}</h3>
             <p class="mt-1 text-sm text-neutral-700">{{ t('logo.crop.help') }}</p>
             <p :id="`${id}-keys`" class="mt-1 text-xs text-neutral-600">{{ t('logo.crop.keyboard') }}</p>
         </div>

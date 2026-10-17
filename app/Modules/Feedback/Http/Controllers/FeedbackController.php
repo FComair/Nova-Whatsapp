@@ -17,7 +17,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Avis des clients sur Nova (docs/26) : formulaire privé à l'équipe (à tout moment ou à propos d'un ticket), invitation « Pas
+ * Avis des clients sur Rendivoo (docs/26) : formulaire privé à l'équipe (à tout moment ou à propos d'un ticket), invitation « Pas
  * maintenant », et liens d'avis publics facultatifs. Tous les rôles, comme le reste de l'aide ; rien n'est exigé pour continuer.
  */
 final class FeedbackController
@@ -71,7 +71,7 @@ final class FeedbackController
 
     /**
      * Lien d'avis public : on note que la personne l'ouvre (la plateforme seulement), puis elle est envoyée sur Google ou Trustpilot,
-     * où elle écrit elle-même son avis. Rien n'y est publié par Nova ; aucun lien n'existe sans adresse configurée.
+     * où elle écrit elle-même son avis. Rien n'y est publié par Rendivoo ; aucun lien n'existe sans adresse configurée.
      */
     public function link(Request $request, string $platform): RedirectResponse
     {

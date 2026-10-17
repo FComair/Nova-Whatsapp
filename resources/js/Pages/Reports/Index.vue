@@ -114,7 +114,7 @@ function saveManagers(value: boolean): void {
     <AppLayout :title="t('reports.title')">
         <div class="mx-auto max-w-6xl">
             <header class="mb-5">
-                <h1 class="text-2xl font-semibold text-nova-900" data-testid="reports-title">{{ t('reports.title') }}</h1>
+                <h1 class="text-2xl font-semibold text-rendivoo-900" data-testid="reports-title">{{ t('reports.title') }}</h1>
                 <p class="mt-1 text-sm text-neutral-700">{{ t('reports.subtitle') }}</p>
             </header>
 
@@ -128,7 +128,7 @@ function saveManagers(value: boolean): void {
                             :class="
                                 category === view
                                     ? 'border-primary-600 text-primary-700'
-                                    : 'border-transparent text-neutral-700 hover:border-neutral-300 hover:text-nova-900'
+                                    : 'border-transparent text-neutral-700 hover:border-neutral-300 hover:text-rendivoo-900'
                             "
                             :aria-current="category === view ? 'page' : undefined"
                             :data-testid="`tab-${view}`"
@@ -177,7 +177,9 @@ function saveManagers(value: boolean): void {
                 </div>
 
                 <div v-else-if="empty" class="rounded-card border border-line bg-surface p-8 text-center shadow-xs" data-testid="reports-empty">
-                    <h2 class="text-lg font-semibold text-nova-900">{{ filtered ? t('reports.empty.filtered_title') : t('reports.empty.no_data_title') }}</h2>
+                    <h2 class="text-lg font-semibold text-rendivoo-900">
+                        {{ filtered ? t('reports.empty.filtered_title') : t('reports.empty.no_data_title') }}
+                    </h2>
                     <p class="mt-1 text-sm text-neutral-700">{{ filtered ? t('reports.empty.filtered_body') : t('reports.empty.no_data_body') }}</p>
                     <BaseButton v-if="filtered" class="mt-4" variant="secondary" @click="reset">{{ t('reports.empty.reset') }}</BaseButton>
                 </div>
@@ -200,7 +202,7 @@ function saveManagers(value: boolean): void {
                 :aria-label="t('reports.settings.title')"
                 data-testid="reports-settings"
             >
-                <h2 class="text-sm font-semibold text-nova-900">{{ t('reports.settings.title') }}</h2>
+                <h2 class="text-sm font-semibold text-rendivoo-900">{{ t('reports.settings.title') }}</h2>
                 <div class="mt-2"><CheckboxField :model-value="managers" :label="t('reports.settings.label')" @update:model-value="saveManagers" /></div>
                 <p class="mt-1 text-xs text-neutral-700">{{ t('reports.settings.help') }}</p>
             </section>

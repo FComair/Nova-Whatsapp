@@ -33,7 +33,7 @@ beforeEach(function (): void {
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount();
     $this->asOwner(fn () => $this->owner->forceFill(['locale' => 'fr'])->save());
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->manager = fn (): FaqManager => app(FaqManager::class);
     $this->categories = fn (): FaqCategoryManager => app(FaqCategoryManager::class);
     $this->cat = fn (string $slug = 'novelties'): PlatformFaqCategory => PlatformFaqCategory::query()->where('slug', $slug)->first()
@@ -444,9 +444,9 @@ describe('import des articles livrés en fichiers', function (): void {
 
 describe('droits', function (): void {
     it('distingue Super Admin, éditeur de contenu et agent de support', function (): void {
-        $editor = PlatformAdmin::query()->create(['email' => 'editeur@nova.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
+        $editor = PlatformAdmin::query()->create(['email' => 'editeur@rendivoo.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
         $editor->forceFill(['support_role' => PlatformAdmin::SUPPORT_EDITOR])->save();
-        $agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+        $agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
         $agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
         $access = fn (PlatformAdmin $admin): array => [SupportAccess::canManageFaq($admin), SupportAccess::canUseTickets($admin), SupportAccess::isRestricted($admin)];
 

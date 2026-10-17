@@ -7,7 +7,7 @@ popular: true
 order: 1
 updated: 2026-10-09
 ---
-Two-step verification is **mandatory** for the owner and site managers: it must be on to keep using Nova.
+Two-step verification is **mandatory** for the owner and site managers: it must be on to keep using Rendivoo.
 
 ## Turn it on
 
@@ -18,6 +18,6 @@ Two-step verification is **mandatory** for the owner and site managers: it must 
 
 ## At every sign-in
 
-After your password, Nova asks for the app code (or a recovery code). Nothing else is asked again during the session.
+After your password, Rendivoo asks for the app code (or a recovery code). Nothing else is asked again during the session.
 
 > **Careful:** without your phone or recovery codes you cannot sign in. Keep the recovery codes outside the app.

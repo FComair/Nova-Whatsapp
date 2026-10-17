@@ -34,7 +34,7 @@ final class InviteRequest extends FormRequest
             'name' => ['required', 'string', 'min:2', 'max:120'],
             'email' => [
                 'required', 'string', 'email:rfc', 'max:255',
-                // Un compte Nova existe déjà pour cette adresse : le rattachement d'un compte existant n'est pas géré à ce stade.
+                // Un compte Rendivoo existe déjà pour cette adresse : le rattachement d'un compte existant n'est pas géré à ce stade.
                 Rule::unique('users', 'email'),
                 // Une seule invitation en attente par adresse (évalué sous la RLS : propre à l'organisation).
                 Rule::unique('invitations', 'email')->whereNull('used_at')->whereNull('revoked_at'),

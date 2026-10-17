@@ -10,7 +10,7 @@ use DateTimeZone;
 use Throwable;
 
 /**
- * Lecteur d'iCalendar (RFC 5545) limité à ce dont Nova a besoin : les horaires occupés.
+ * Lecteur d'iCalendar (RFC 5545) limité à ce dont Rendivoo a besoin : les horaires occupés.
  *
  * Il extrait les VEVENT (identifiant, début, fin, récurrence, exceptions, annulation, disponibilité « libre ») et ignore tout
  * le reste, y compris les alarmes. Aucun texte d'événement n'est lu au-delà de ces champs : pas de titre, de lieu ni de participants.

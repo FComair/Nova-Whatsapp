@@ -6,7 +6,7 @@ use App\Modules\Admin\Filament\Resources\FeedbackResource;
 use App\Modules\Admin\Filament\Resources\FeedbackResource\Pages\ListFeedback;
 use App\Modules\Admin\Models\PlatformAdmin;
 use App\Modules\Admin\Models\PlatformFeedback;
-use App\Modules\Feedback\Models\NovaFeedback;
+use App\Modules\Feedback\Models\RendivooFeedback;
 use App\Modules\Feedback\Services\ReviewLinks;
 use App\Modules\Identity\Models\User;
 use App\Modules\Support\Models\SupportTicket;
@@ -24,17 +24,17 @@ use Tests\Support\AuthScenarios;
 uses(AuthScenarios::class);
 
 /**
- * Avis des clients sur Nova (docs/26) : avis privé de 1 à 5 étoiles à tout moment ou à propos d'un ticket, invitations discrètes et
+ * Avis des clients sur Rendivoo (docs/26) : avis privé de 1 à 5 étoiles à tout moment ou à propos d'un ticket, invitations discrètes et
  * refusables, liens d'avis publics facultatifs et identiques pour tous (aucun filtrage selon la note, aucune contrepartie), lecture
  * par le Super Admin séparée de tout avis public.
  */
-const GOOGLE = 'https://g.page/r/nova-whatsapp/review';
-const TRUSTPILOT = 'https://www.trustpilot.com/evaluate/nova-whatsapp.example';
+const GOOGLE = 'https://g.page/r/rendivoo/review';
+const TRUSTPILOT = 'https://www.trustpilot.com/evaluate/rendivoo.example';
 
 beforeEach(function (): void {
     ['user' => $this->owner, 'org' => $this->org] = $this->activatedAccount();
     Storage::fake('local');
-    config(['nova.reviews.google' => GOOGLE, 'nova.reviews.trustpilot' => TRUSTPILOT]);
+    config(['rendivoo.reviews.google' => GOOGLE, 'rendivoo.reviews.trustpilot' => TRUSTPILOT]);
 
     $this->as = fn (?User $user = null) => $this->signedIn($user ?? $this->owner, $this->org);
     $this->colleague = $this->asOwner(function (): User {
@@ -54,7 +54,7 @@ beforeEach(function (): void {
     };
     $this->staff = fn (SupportTicket $ticket, ?string $status = null) => $this->asOwner(fn () => app(TicketDesk::class)->staffReply(SupportTicket::query()->findOrFail($ticket->id), null, 'Nous regardons cela.', $status));
     $this->give = fn (array $data, ?User $user = null) => ($this->as)($user)->post('/aide/avis', $data);
-    $this->all = fn (): array => $this->asOwner(fn () => NovaFeedback::query()->orderBy('created_at')->get()->all());
+    $this->all = fn (): array => $this->asOwner(fn () => RendivooFeedback::query()->orderBy('created_at')->get()->all());
     $this->prompt = fn (SupportTicket $ticket, ?User $user = null) => ($this->props)('/aide/tickets/'.$ticket->reference(), $user)['feedback_prompt'];
     $this->props = fn (string $url, ?User $user = null): array => Assert::fromTestResponse(($this->as)($user)->get($url)->assertOk())->toArray()['props'];
 });
@@ -319,17 +319,17 @@ describe('liens d\'avis publics', function (): void {
     });
 
     it('n\'expose que des liens configurés : jamais d\'adresse inventée ou écrite en dur', function (): void {
-        config(['nova.reviews.google' => null, 'nova.reviews.trustpilot' => '']);
+        config(['rendivoo.reviews.google' => null, 'rendivoo.reviews.trustpilot' => '']);
 
         expect(($this->props)('/aide/avis')['links'])->toBe([]);
 
-        config(['nova.reviews.trustpilot' => TRUSTPILOT]);
+        config(['rendivoo.reviews.trustpilot' => TRUSTPILOT]);
         expect(($this->props)('/aide/avis')['links'])->toBe(['trustpilot']);
         expect(json_encode(($this->props)('/aide/avis')))->not->toContain('trustpilot.com')->not->toContain('g.page');
     });
 
     it('ignore une adresse configurée qui n\'est pas en https ou n\'appartient pas à la plateforme', function (string $platform, string $url): void {
-        config(["nova.reviews.{$platform}" => $url]);
+        config(["rendivoo.reviews.{$platform}" => $url]);
 
         expect(app(ReviewLinks::class)->url($platform))->toBeNull()->and(app(ReviewLinks::class)->available())->not->toContain($platform);
     })->with([
@@ -373,7 +373,7 @@ describe('liens d\'avis publics', function (): void {
     it('répond 404 pour une plateforme inconnue ou sans adresse configurée', function (): void {
         ($this->as)()->get('/aide/avis/lien/facebook')->assertNotFound();
 
-        config(['nova.reviews.google' => null]);
+        config(['rendivoo.reviews.google' => null]);
         ($this->as)()->get('/aide/avis/lien/google')->assertNotFound();
         expect($this->asOwner(fn () => DB::table('review_link_clicks')->count()))->toBe(0);
     });
@@ -396,7 +396,7 @@ describe('liens d\'avis publics', function (): void {
 describe('lecture par le Super Admin', function (): void {
     beforeEach(function (): void {
         Filament::setCurrentPanel(Filament::getPanel('admin'));
-        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+        $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
         $this->admin->saveAppAuthenticationSecret('JBSWY3DPEHPK3PXP');
         $this->admin = $this->admin->refresh();
     });

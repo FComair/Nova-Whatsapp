@@ -1,10 +1,10 @@
-# Contributing to Nova WhatsApp
+# Contributing to Rendivoo
 
 Project rules (isolation between customers by PostgreSQL RLS, append-only logs, translations, no secrets…) are in `CLAUDE.md` and `docs/`. Read them before changing the data layer.
 
 ## 1. Work in a Codespace
 
-1. Create a Codespace from `r4ladmin/Nova-Whatsapp` (see **Developing in GitHub Codespaces** in the README). The application is running when it opens (port 8000).
+1. Create a Codespace from `r4ladmin/Rendivoo` (see **Developing in GitHub Codespaces** in the README). The application is running when it opens (port 8000).
 2. Never develop on `main` directly.
 
 ## 2. Create a branch

@@ -24,7 +24,7 @@ const percent = computed(() => Math.round((props.wizard.steps.filter((step) => s
 
             <!-- Mobile : progression compacte. Bureau : liste complète des étapes. -->
             <div class="mt-5 md:hidden">
-                <p class="text-sm font-semibold text-nova-900">
+                <p class="text-sm font-semibold text-rendivoo-900">
                     {{ t('onboarding.progress', { current: position, total: wizard.total }) }} · {{ t(`onboarding.steps.${wizard.step}`) }}
                 </p>
                 <div
@@ -58,7 +58,7 @@ const percent = computed(() => Math.round((props.wizard.steps.filter((step) => s
                             v-if="step.available && step.status !== 'todo'"
                             :href="onboardingStep(step.slug)"
                             class="font-medium hover:underline"
-                            :class="step.key === wizard.step ? 'text-nova-900' : 'text-primary-700'"
+                            :class="step.key === wizard.step ? 'text-rendivoo-900' : 'text-primary-700'"
                             :aria-current="step.key === wizard.step ? 'step' : undefined"
                         >
                             {{ t(`onboarding.steps.${step.key}`) }}

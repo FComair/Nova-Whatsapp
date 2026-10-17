@@ -163,7 +163,7 @@ final class DeletionPipeline
         }
 
         $request->forceFill(['alerted_at' => now()])->save();
-        $founder = config('nova.founder_email');
+        $founder = config('rendivoo.founder_email');
 
         if (is_string($founder) && $founder !== '') {
             Notification::route('mail', $founder)->notify(new DeletionFailedNotification($request->org_id, $job->step, (string) $job->last_error));

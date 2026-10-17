@@ -32,5 +32,5 @@ Le jeton est saisi de façon masquée (jamais en argument).
 
 - Textes de confirmation STOP/START (`lang/*/whatsapp.php`) et mots-clés reconnus.
 - **Durée de conservation** des conversations (aujourd'hui illimitée : la purge automatique reste à faire).
-- Rôle de Nova (sous-traitant) et information des clients finaux sur l'usage d'un assistant automatisé.
+- Rôle de Rendivoo (sous-traitant) et information des clients finaux sur l'usage d'un assistant automatisé.
 - Modèles de messages (rappels, confirmations hors fenêtre) : à soumettre à Meta.

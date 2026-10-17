@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Avis PRIVÉS des clients sur Nova (docs/26), en lecture seule : note, commentaire, date, origine (général, après une réponse du support,
+ * Avis PRIVÉS des clients sur Rendivoo (docs/26), en lecture seule : note, commentaire, date, origine (général, après une réponse du support,
  * ticket), référence du ticket, compte client et plateformes d'avis public dont le client a ouvert le lien. Séparé de tout avis public :
  * ces notes ne sont jamais présentées comme des notes Google ou Trustpilot.
  */

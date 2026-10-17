@@ -111,7 +111,7 @@ class PlanResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $locales = (array) config('nova.locales');
+        $locales = (array) config('rendivoo.locales');
 
         return $schema->columns(['default' => 1, 'xl' => 3])->components([
             Group::make([
@@ -184,7 +184,7 @@ class PlanResource extends Resource
     /** @return array<string, string> code pays => nom */
     private static function countryOptions(): array
     {
-        return collect((array) config('nova.countries'))->mapWithKeys(fn (string $country): array => [$country => (string) __('ui.onboarding.company.countries.'.$country)])->all();
+        return collect((array) config('rendivoo.countries'))->mapWithKeys(fn (string $country): array => [$country => (string) __('ui.onboarding.company.countries.'.$country)])->all();
     }
 
     /** Champ en euros à l'écran, en centimes en base. */

@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 /**
  * Prestataire simulé (développement et tests) : aucun appel réseau, aucun vrai paiement.
  *
- * La page « hébergée » est une page de Nova (`/facturation/simulation`) où l'on choisit une carte valide ou refusée.
+ * La page « hébergée » est une page de Rendivoo (`/facturation/simulation`) où l'on choisit une carte valide ou refusée.
  * Jetons : `pm_fake_ok` (débit accepté), `pm_fake_declined` (débit refusé), `pm_fake_broken` (échec après acceptation à la saisie).
  * Les débits demandés sont consignés dans `$charges` pour les tests.
  */
@@ -44,7 +44,7 @@ final class FakeGateway implements PaymentGateway
     /**
      * Simule le choix du propriétaire sur la page du prestataire (appelée par la page de simulation et par les tests).
      *
-     * @return string adresse de retour vers Nova
+     * @return string adresse de retour vers Rendivoo
      */
     public function simulateChoice(string $ref, string $methodRef): string
     {

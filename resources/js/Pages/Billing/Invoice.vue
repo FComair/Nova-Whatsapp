@@ -57,7 +57,7 @@ function address(party: Party): string {
         </div>
 
         <article class="mt-4 max-w-3xl rounded-card border border-line bg-surface shadow-xs p-6 print:border-0 print:p-0">
-            <h1 class="text-2xl font-semibold text-nova-900">{{ t('billing.invoice_title', { number: invoice.number }) }}</h1>
+            <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('billing.invoice_title', { number: invoice.number }) }}</h1>
             <p class="mt-1 text-sm text-neutral-600">
                 {{ t('billing.invoice_date') }} : {{ date(invoice.issued_at) }} · {{ t('billing.invoice_period') }} : {{ date(invoice.period_start) }} –
                 {{ date(invoice.period_end) }}

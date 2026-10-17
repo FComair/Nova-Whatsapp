@@ -61,7 +61,7 @@ function submitReverse(rewardId: string): void {
 <template>
     <section class="space-y-5" aria-labelledby="loyalty-panel-title" data-testid="loyalty-panel">
         <div class="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="loyalty-panel-title" class="text-lg font-semibold text-nova-900">{{ t('loyalty.customer.title') }}</h2>
+            <h2 id="loyalty-panel-title" class="text-lg font-semibold text-rendivoo-900">{{ t('loyalty.customer.title') }}</h2>
             <Badge v-if="program" :variant="programVariant(program.status)">{{ t(`loyalty.status.${program.status}`) }}</Badge>
         </div>
 

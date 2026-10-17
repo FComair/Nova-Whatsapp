@@ -35,10 +35,10 @@ beforeEach(function (): void {
     Storage::fake('local');
     Notification::fake();
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
-    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
-    $this->colleague = PlatformAdmin::query()->create(['email' => 'collegue@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->colleague = PlatformAdmin::query()->create(['email' => 'collegue@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->colleague->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
 
     foreach (['boss', 'agent', 'colleague'] as $name) {
@@ -85,12 +85,12 @@ describe('accès', function (): void {
     });
 
     it('crée un agent de support avec --support-agent', function (): void {
-        $this->artisan('nova:create-admin', ['email' => 'nouvel.agent@nova.test', '--support-agent' => true])
+        $this->artisan('rendivoo:create-admin', ['email' => 'nouvel.agent@rendivoo.test', '--support-agent' => true])
             ->expectsQuestion('Mot de passe (16 caractères minimum)', 'Un-Mot-De-Passe-Solide-2026!')
             ->expectsQuestion('Confirmez le mot de passe', 'Un-Mot-De-Passe-Solide-2026!')
             ->assertSuccessful();
 
-        expect(PlatformAdmin::query()->where('email', 'nouvel.agent@nova.test')->first())->support_role->toBe('agent');
+        expect(PlatformAdmin::query()->where('email', 'nouvel.agent@rendivoo.test')->first())->support_role->toBe('agent');
     });
 });
 
@@ -285,7 +285,7 @@ describe('détail d\'un ticket', function (): void {
 
         ($this->page)($ticket)->assertSuccessful()
             ->assertSee($ticket->reference())->assertSee('Les rappels ne partent pas')->assertSee($this->org->name)->assertSee('contact@example.com')
-            ->assertSee('agent@nova.test')->assertSee('Depuis hier, aucun rappel WhatsApp')->assertSee('Nous regardons votre dossier.')
+            ->assertSee('agent@rendivoo.test')->assertSee('Depuis hier, aucun rappel WhatsApp')->assertSee('Nous regardons votre dossier.')
             ->assertSee(__('tickets.thread.internal_label'))->assertSee('Piste : jeton Meta expiré.')->assertSee(__('tickets.thread.sent_label'))
             ->assertSee(__('tickets.priorities.high'))->assertSee(__('tickets.composer.reply_banner', ['email' => 'contact@example.com']));
         expect(DB::connection('pgsql_platform')->table('audit_logs')->where('action', 'support.ticket.viewed')->count())->toBe(1);

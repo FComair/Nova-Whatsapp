@@ -25,7 +25,7 @@ Un seul état dérivé par client (`ClientDirectory::STATE_SQL`), évalué dans 
 4. **Actif** : abonnement `active` (même si une résiliation est programmée en fin de période).
 5. **Expiré** : suspendu à la fin de l'essai (`system.trial_ended`).
 6. **Essai** : compte en essai.
-7. **Aucun** : autre cas (par exemple suspendu ou en suppression programmée par Nova).
+7. **Aucun** : autre cas (par exemple suspendu ou en suppression programmée par Rendivoo).
 
 Le **statut du compte** (`organizations.status`) reste affiché à part : l'état d'abonnement et le statut sont deux notions distinctes.
 **MRR** = prix mensuel de la formule des clients actifs ou impayés. **Renouvellement** = fin d'essai (essai) ou fin de période / résiliation programmée (abonnement).
@@ -69,7 +69,7 @@ Clients par formule et par état, nouveaux clients par mois, essais commencés e
 - **Facturation annuelle, pause d'abonnement par l'équipe** : non offertes.
 - **Imitation de connexion (impersonation)** : exclue par la règle 3 du projet.
 - **Création manuelle d'un client, archivage** : le client s'inscrit lui-même ; la suppression passe par le circuit existant (programmée, annulable).
-- **Gestion des utilisateurs du client** (rôles, invitations) : lecture seule ; le propriétaire gère son équipe ; l'équipe Nova dispose du déblocage d'accès.
+- **Gestion des utilisateurs du client** (rôles, invitations) : lecture seule ; le propriétaire gère son équipe ; l'équipe Rendivoo dispose du déblocage d'accès.
 - **Export XLSX / PDF** : seul le CSV existe.
 - **Limites de rendez-vous et de conversations** : mesurées et affichées, pas encore appliquées. Stockage et appels d'API ne sont pas suivis.
 

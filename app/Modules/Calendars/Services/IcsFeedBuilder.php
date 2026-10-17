@@ -19,14 +19,14 @@ final class IcsFeedBuilder
 {
     public function build(Organization $organization, Practitioner $practitioner): string
     {
-        $locale = in_array($organization->locale, (array) config('nova.locales'), true) ? $organization->locale : (string) config('app.fallback_locale');
+        $locale = in_array($organization->locale, (array) config('rendivoo.locales'), true) ? $organization->locale : (string) config('app.fallback_locale');
         $now = CarbonImmutable::now();
 
         $bookings = Booking::query()->where('practitioner_id', $practitioner->id)->where('status', Booking::CONFIRMED)
             ->where('starts_at', '>=', $now->subDays(7))->where('starts_at', '<=', $now->addDays(180))->orderBy('starts_at')->get();
         $services = Service::query()->whereIn('id', $bookings->pluck('service_id'))->pluck('name', 'id');
 
-        $lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Nova//Rendez-vous//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:'.$this->escape('Nova · '.$practitioner->name)];
+        $lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Rendivoo//Rendez-vous//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:'.$this->escape('Rendivoo · '.$practitioner->name)];
 
         foreach ($bookings as $booking) {
             array_push(

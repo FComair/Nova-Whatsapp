@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Feedback\Services;
 
 /**
- * Pages publiques d'avis sur Nova (Google, Trustpilot). Les adresses viennent de la configuration (config/nova.php, donc de
+ * Pages publiques d'avis sur Rendivoo (Google, Trustpilot). Les adresses viennent de la configuration (config/rendivoo.php, donc de
  * l'environnement) et ne sont jamais écrites en dur ni inventées : une adresse absente ou invalide (pas en https, ou n'appartenant pas
  * à la plateforme) n'est pas proposée. Tous les clients voient les mêmes liens, dans le même ordre, quelle que soit leur note.
  */
@@ -22,7 +22,7 @@ final class ReviewLinks
 
     public function url(string $platform): ?string
     {
-        $url = config("nova.reviews.{$platform}");
+        $url = config("rendivoo.reviews.{$platform}");
 
         if (! in_array($platform, self::PLATFORMS, true) || ! is_string($url) || trim($url) === '') {
             return null;

@@ -29,7 +29,7 @@ use Illuminate\Support\Str;
 /**
  * Abonnement, facturation mensuelle, relances d'impayé et fin d'essai (docs/01 §9, flowcharts 3C, 4A, E7).
  *
- * Nova pilote la facturation ; le prestataire de paiement ne fait que recueillir un moyen de paiement et le débiter (jeton seulement).
+ * Rendivoo pilote la facturation ; le prestataire de paiement ne fait que recueillir un moyen de paiement et le débiter (jeton seulement).
  * Tout s'exécute sous le contexte de l'organisation (RLS). Aucune durée n'est en dur : essai, nombre et délai des relances viennent
  * de `platform_settings`.
  *
@@ -395,10 +395,10 @@ final class BillingService
         return $this->invoices->issue($organization, $subscription, $lines, $start, $end, $plan);
     }
 
-    /** Taux de TVA du pays d'établissement de Nova : celui des prix affichés « TVA comprise ». */
+    /** Taux de TVA du pays d'établissement de Rendivoo : celui des prix affichés « TVA comprise ». */
     private function homeRate(): int
     {
-        return (int) config('nova.billing.vat.home_rate');
+        return (int) config('rendivoo.billing.vat.home_rate');
     }
 
     /** Le compte devient actif avec la formule payée ; une suspension décidée par la plateforme n'est JAMAIS levée par un paiement. */
@@ -465,6 +465,6 @@ final class BillingService
 
     private function invoiceLocale(Organization $organization): string
     {
-        return in_array($organization->locale, (array) config('nova.locales'), true) ? $organization->locale : (string) config('app.fallback_locale');
+        return in_array($organization->locale, (array) config('rendivoo.locales'), true) ? $organization->locale : (string) config('app.fallback_locale');
     }
 }

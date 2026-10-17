@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Journal d'activité d'un client (docs/31 §7) : ce que le client, l'équipe Nova ou le système ont fait sur son compte (journal d'audit,
+ * Journal d'activité d'un client (docs/31 §7) : ce que le client, l'équipe Rendivoo ou le système ont fait sur son compte (journal d'audit,
  * en ajout seul). Filtres : type d'événement, période, acteur, personne ; recherche dans l'action, le motif et les valeurs.
  */
 class ActivityRelationManager extends RelationManager

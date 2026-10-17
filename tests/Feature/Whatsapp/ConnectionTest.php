@@ -308,7 +308,7 @@ describe('tableau de bord', function (): void {
 });
 
 describe('contrôle d\'un compte de test (whatsapp:check)', function (): void {
-    it('valide le numéro, liste les modèles de Nova et n\'écrit rien', function (): void {
+    it('valide le numéro, liste les modèles de Rendivoo et n\'écrit rien', function (): void {
         $this->transport->library = [new TemplateInfo('appointment_reminder', 'fr', 'approved')];
 
         $this->artisan('whatsapp:check', ['phone_number_id' => '104500000000001', 'waba_id' => '204500000000002'])

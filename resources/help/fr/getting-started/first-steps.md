@@ -1,6 +1,6 @@
 ---
-title: Configurer Nova en quelques étapes
-summary: Ce qu’il faut renseigner pour que Nova réponde à vos clients et prenne des rendez-vous.
+title: Configurer Rendivoo en quelques étapes
+summary: Ce qu’il faut renseigner pour que Rendivoo réponde à vos clients et prenne des rendez-vous.
 tags: démarrage, configuration, assistant, début
 related: getting-started/roles, whatsapp/connect-whatsapp, services-schedules/opening-hours
 popular: true

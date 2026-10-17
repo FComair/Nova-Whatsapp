@@ -21,4 +21,4 @@ Le bouton **Filtres** propose le statut, les rendez-vous (à venir, jamais venu,
 
 Des vues prêtes à l’emploi (rendez-vous à venir, sans visite depuis 90 jours, nouveaux, avec une absence, messages refusés) sont proposées. **Enregistrer cette vue** garde vos filtres et vos colonnes ; le propriétaire et les responsables de site peuvent la partager avec l’équipe. Le bouton **Colonnes** choisit ce qui s’affiche.
 
-> **La valeur** est calculée à partir des montants encaissés (ou des prix) des rendez-vous terminés. Nova ne gère pas les paiements.
+> **La valeur** est calculée à partir des montants encaissés (ou des prix) des rendez-vous terminés. Rendivoo ne gère pas les paiements.

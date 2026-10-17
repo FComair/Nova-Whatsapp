@@ -12,10 +12,10 @@ Page `/whatsapp` (propriétaire uniquement) et étapes 7 « WhatsApp » et 8 « 
 ## Messages types (étape 8, E6)
 - Quatre messages (rappel, confirmation, déplacement, annulation) × trois langues (fr, nl, en) = **12 modèles**, catégorie « utilitaire ». Noms réglables (`WHATSAPP_TEMPLATE_*`), textes dans `lang/{fr,nl,en}/whatsapp.php` (docs/15 : textes à valider ; Meta les approuve tels quels).
 - **Soumettre les messages manquants** : chaque modèle jamais soumis est envoyé à Meta (un échec n'arrête pas les autres) ; statut « en attente ». **Actualiser les statuts** à la demande, et automatiquement **toutes les heures** (`whatsapp:sync-templates`, comptes essai/actif/impayé uniquement). Statuts : non soumis, en attente de Meta, approuvé, refusé (avec le motif), suspendu par Meta.
-- Seuls les modèles de Nova sont suivis ; les autres modèles du compte Meta sont ignorés.
+- Seuls les modèles de Rendivoo sont suivis ; les autres modèles du compte Meta sont ignorés.
 
 ## Hypothèses et limites (à valider)
-- **Connexion manuelle** : l'établissement fournit des identifiants Meta. L'inscription intégrée de Meta (**Embedded Signup**, sans jeton à manipuler) exige une **application Meta enregistrée au nom de Nova** : le fondateur a décidé de la lancer, démarches et suite dans docs/17.
+- **Connexion manuelle** : l'établissement fournit des identifiants Meta. L'inscription intégrée de Meta (**Embedded Signup**, sans jeton à manipuler) exige une **application Meta enregistrée au nom de Rendivoo** : le fondateur a décidé de la lancer, démarches et suite dans docs/17.
 - Un modèle **refusé** n'est pas resoumis automatiquement (Meta interdit de réutiliser le même nom tel quel) : corriger le texte et changer le nom, ou passer par le support.
 - Les appels réels à la Graph API (vérification, création et liste de modèles) ne sont **pas testés contre Meta** : seuls le canal simulé et les contrats le sont. Protocole de test réel et commande whatsapp:check : docs/17.
 - Étape 9 (réservation de test) : pas encore construite ; l'assistant ne peut donc pas encore se terminer.

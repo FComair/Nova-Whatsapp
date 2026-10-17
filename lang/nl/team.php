@@ -98,14 +98,14 @@ return [
     ],
     'mail' => [
         'greeting' => 'Hallo :name,',
-        'invitation' => ['subject' => 'Uw Nova-supporttoegang', 'intro' => 'U bent uitgenodigd om het Nova-supportteam te vervoegen. Kies uw wachtwoord om uw account te activeren.', 'action' => 'Mijn wachtwoord kiezen'],
-        'reset' => ['subject' => 'Reset uw Nova-supportwachtwoord', 'intro' => 'Een Nova-beheerder heeft u een link gestuurd om een nieuw wachtwoord te kiezen.', 'action' => 'Een nieuw wachtwoord kiezen'],
+        'invitation' => ['subject' => 'Uw Rendivoo-supporttoegang', 'intro' => 'U bent uitgenodigd om het Rendivoo-supportteam te vervoegen. Kies uw wachtwoord om uw account te activeren.', 'action' => 'Mijn wachtwoord kiezen'],
+        'reset' => ['subject' => 'Reset uw Rendivoo-supportwachtwoord', 'intro' => 'Een Rendivoo-beheerder heeft u een link gestuurd om een nieuw wachtwoord te kiezen.', 'action' => 'Een nieuw wachtwoord kiezen'],
         'valid' => 'Deze link werkt één keer en verloopt over :days dagen.',
         'mfa' => 'Bij uw eerste aanmelding wordt u gevraagd tweestapsverificatie in te stellen.',
         'ignore' => 'Verwachtte u deze e-mail niet, negeer hem dan.',
     ],
     'invitation' => [
-        'title' => 'Nova-supporttoegang',
+        'title' => 'Rendivoo-supporttoegang',
         'invalid_title' => 'Link niet geldig',
         'invalid' => 'Deze link is ongeldig, verlopen of al gebruikt. Vraag een Super Admin om een nieuwe.',
         'heading' => 'Welkom, :name',

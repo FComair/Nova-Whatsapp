@@ -39,12 +39,12 @@ beforeEach(function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     Storage::fake('local');
 
-    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+    $this->boss = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
     $this->boss->refresh();
-    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@nova.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
+    $this->agent = PlatformAdmin::query()->create(['email' => 'agent@rendivoo.test', 'password' => 'mot-de-passe-de-lagent-2026!']);
     $this->agent->forceFill(['support_role' => PlatformAdmin::SUPPORT_AGENT])->save();
     $this->agent->refresh();
-    $this->editor = PlatformAdmin::query()->create(['email' => 'editeur@nova.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
+    $this->editor = PlatformAdmin::query()->create(['email' => 'editeur@rendivoo.test', 'password' => 'mot-de-passe-de-lediteur-2026!']);
     $this->editor->forceFill(['support_role' => PlatformAdmin::SUPPORT_EDITOR])->save();
     $this->editor->refresh();
 

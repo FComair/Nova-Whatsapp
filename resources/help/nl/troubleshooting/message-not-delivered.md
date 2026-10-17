@@ -7,7 +7,7 @@ popular: false
 order: 1
 updated: 2026-10-09
 ---
-Als Nova een klant niet kan verwittigen, wordt de actie (maken, verplaatsen, annuleren) toch uitgevoerd en vraagt een melding u hem rechtstreeks te contacteren. Dit moet u controleren.
+Als Rendivoo een klant niet kan verwittigen, wordt de actie (maken, verplaatsen, annuleren) toch uitgevoerd en vraagt een melding u hem rechtstreeks te contacteren. Dit moet u controleren.
 
 ## Mogelijke oorzaken
 

@@ -32,7 +32,7 @@ const deadline = computed(() => {
 
 <template>
     <AppLayout :title="t(`account.status.${status}`)">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t(`account.status.${status}`) }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t(`account.status.${status}`) }}</h1>
 
         <AlertBox :variant="status === 'pending_deletion' ? 'error' : 'warning'" class="mt-5 max-w-2xl">
             {{ t(`account.body.${status}`) }}

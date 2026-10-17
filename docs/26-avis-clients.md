@@ -1,8 +1,8 @@
 # 26. Avis des clients et avis publics
 
 ## Deux choses distinctes
-1. **Avis privé à Nova** (`nova_feedback`) : 1 à 5 étoiles + commentaire facultatif (2000 caractères max), envoyé à l'équipe, jamais publié.
-2. **Avis public** (Google, Trustpilot) : écrit et publié par le client lui-même sur ces plateformes. Nova ne publie rien et ne le laisse jamais entendre. Aucune note publique n'est stockée ni affichée par Nova.
+1. **Avis privé à Rendivoo** (`nova_feedback`) : 1 à 5 étoiles + commentaire facultatif (2000 caractères max), envoyé à l'équipe, jamais publié.
+2. **Avis public** (Google, Trustpilot) : écrit et publié par le client lui-même sur ces plateformes. Rendivoo ne publie rien et ne le laisse jamais entendre. Aucune note publique n'est stockée ni affichée par Rendivoo.
 
 Les deux sont stockés et affichés séparément : le Super Admin ne voit que les avis privés (et quelles plateformes publiques ont été ouvertes), jamais présentés comme des notes Google ou Trustpilot.
 
@@ -16,9 +16,9 @@ Les deux sont stockés et affichés séparément : le Super Admin ne voit que le
 - Toutes les notes sont acceptées (1 à 5). Échec : le texte et la note restent dans le formulaire.
 
 ## Liens d'avis publics (neutres)
-- URL **uniquement configurées** : `NOVA_REVIEW_URL_GOOGLE`, `NOVA_REVIEW_URL_TRUSTPILOT` (`config/nova.php` → `reviews`). Aucune valeur par défaut, aucun lien inventé. Une adresse non https ou hors des domaines de la plateforme (`ReviewLinks`) est ignorée ; sans adresse valable l'option est masquée.
+- URL **uniquement configurées** : `NOVA_REVIEW_URL_GOOGLE`, `NOVA_REVIEW_URL_TRUSTPILOT` (`config/rendivoo.php` → `reviews`). Aucune valeur par défaut, aucun lien inventé. Une adresse non https ou hors des domaines de la plateforme (`ReviewLinks`) est ignorée ; sans adresse valable l'option est masquée.
 - **Mêmes options, même ordre (Google puis Trustpilot), pour tout le monde**, quelle que soit la note. Aucun filtrage selon la satisfaction, aucun routage selon la note, aucune contrepartie, aucune sollicitation sélective.
-- Ouverture dans un nouvel onglet (`target=_blank`, `rel=noopener noreferrer`) avec la mention qu'on quitte Nova WhatsApp.
+- Ouverture dans un nouvel onglet (`target=_blank`, `rel=noopener noreferrer`) avec la mention qu'on quitte Rendivoo.
 - Suivi : le lien passe par `GET /aide/avis/lien/{platform}`, qui note l'ouverture (plateforme seulement, `review_link_clicks`) puis redirige vers l'adresse configurée telle quelle, sans y ajouter de paramètre. Ce suivi est annoncé dans l'interface. Nous ne savons jamais si un avis a été écrit ni ce qu'il contient.
 
 ## Super Admin

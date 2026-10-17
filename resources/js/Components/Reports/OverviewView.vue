@@ -44,7 +44,7 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
     <div class="space-y-6" data-testid="overview-report">
         <section v-if="overview.appointments" :aria-label="t('reports.overview.appointments_lead')">
             <div class="mb-2 flex items-baseline justify-between gap-3">
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.category.appointments') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.category.appointments') }}</h3>
                 <Link :href="links.appointments" class="text-sm font-semibold text-primary-700 underline print:hidden">{{ t('reports.overview.go') }}</Link>
             </div>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -77,7 +77,7 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
 
         <section v-if="overview.customers" :aria-label="t('reports.overview.customers_lead')">
             <div class="mb-2 flex items-baseline justify-between gap-3">
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.category.customers') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.category.customers') }}</h3>
                 <Link :href="links.customers" class="text-sm font-semibold text-primary-700 underline print:hidden">{{ t('reports.overview.go') }}</Link>
             </div>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -110,7 +110,7 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
 
         <section v-if="overview.financial" :aria-label="t('reports.overview.financial_lead')">
             <div class="mb-2 flex items-baseline justify-between gap-3">
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.category.financial') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.category.financial') }}</h3>
                 <Link :href="links.financial" class="text-sm font-semibold text-primary-700 underline print:hidden">{{ t('reports.overview.go') }}</Link>
             </div>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
@@ -161,7 +161,7 @@ const empty = computed(() => (appointments.value?.metrics.total?.value ?? 0) ===
 
         <section v-if="overview.practitioners" :aria-label="t('reports.overview.practitioners_lead')">
             <div class="mb-2 flex items-baseline justify-between gap-3">
-                <h3 class="text-base font-semibold text-nova-900">{{ t('reports.category.practitioners') }}</h3>
+                <h3 class="text-base font-semibold text-rendivoo-900">{{ t('reports.category.practitioners') }}</h3>
                 <Link :href="links.practitioners" class="text-sm font-semibold text-primary-700 underline print:hidden">{{ t('reports.overview.go') }}</Link>
             </div>
             <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">

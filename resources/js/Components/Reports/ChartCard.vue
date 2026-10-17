@@ -25,7 +25,7 @@ const id = useId();
         data-testid="chart-card"
     >
         <div class="flex flex-wrap items-start justify-between gap-3">
-            <h3 :id="id" class="text-base font-semibold text-nova-900">{{ title }}</h3>
+            <h3 :id="id" class="text-base font-semibold text-rendivoo-900">{{ title }}</h3>
             <div
                 v-if="!hideToggle && !empty && !printing"
                 class="inline-flex rounded-full border border-line-strong p-0.5 text-xs font-semibold print:hidden"

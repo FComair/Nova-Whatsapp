@@ -14,7 +14,7 @@ final class DeletionCompletedNotification extends Notification
 {
     public function __construct(private readonly string $organizationName, string $locale)
     {
-        $this->locale(in_array($locale, (array) config('nova.locales'), true) ? $locale : (string) config('app.fallback_locale'));
+        $this->locale(in_array($locale, (array) config('rendivoo.locales'), true) ? $locale : (string) config('app.fallback_locale'));
     }
 
     /**

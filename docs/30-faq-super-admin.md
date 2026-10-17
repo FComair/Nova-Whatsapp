@@ -1,4 +1,4 @@
-# Nova — FAQ / Help centre management in the Super Admin (spec)
+# Rendivoo — FAQ / Help centre management in the Super Admin (spec)
 
 Status: built. Extends the Help centre of docs/22 (articles, search, feedback — unchanged for clients) with content managed by the team. Same conventions as docs/29 and CLAUDE.md. UI text in fr / nl / en (`lang/*/faq.php`), dates DD/MM/YYYY. No existing Super Admin screen was redesigned: the changes are a new menu group, the `editor` role, and the access trait renamed `SuperAdminOnly` (was `HiddenFromSupportAgents`).
 
@@ -112,7 +112,7 @@ Statuses and language states always carry an icon **and** a word; language butto
 | Role | FAQ |
 |---|---|
 | Super Admin | everything |
-| **Content editor** (`platform_admins.support_role = 'editor'`; `php artisan nova:create-admin <email> --content-editor`) | FAQ articles and categories only; no tickets, accounts, billing, settings; opens on the FAQ list after login; never notified about tickets and cannot be assigned tickets |
+| **Content editor** (`platform_admins.support_role = 'editor'`; `php artisan rendivoo:create-admin <email> --content-editor`) | FAQ articles and categories only; no tickets, accounts, billing, settings; opens on the FAQ list after login; never notified about tickets and cannot be assigned tickets |
 | Support agent | no FAQ access (tickets only, docs/29) |
 
 Every action by a platform account writes one `audit_logs` line (append-only, actor, IP, user agent) with before / after where practical: `faq.created`, `faq.updated` (field → [before, after]: category, address, order, popular, publication, tags, related), `faq.published`, `faq.unpublished`, `faq.archived`, `faq.restored`, `faq.deleted` (slug, category, questions), `faq.duplicated`, `faq.translation_added`, `faq.translation_updated` (language, fields changed), `faq.order_changed`, `faq.bulk` (operation, done, skipped), `faq_category.created` / `.updated` / `.deleted` / `.order_changed` / `.articles_moved`, and the system line `faq.imported`. Text of translations is not copied into the audit log: the **version history** keeps every saved text.

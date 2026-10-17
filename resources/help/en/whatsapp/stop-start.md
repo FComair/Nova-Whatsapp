@@ -9,7 +9,7 @@ updated: 2026-10-09
 ---
 A customer can write **STOP** at any time (or “arrêt”, “stoppen”, “unsubscribe”, “désabonner”).
 
-## What Nova does
+## What Rendivoo does
 
 - The customer receives **no more automatic messages**: no confirmation, no reminder, no promotional message.
 - They get a confirmation of their opt-out, in their language.
@@ -20,4 +20,4 @@ A customer can write **STOP** at any time (or “arrêt”, “stoppen”, “un
 
 If the customer writes **START** (or “commencer”, “starten”, “begin”), messages about their appointments resume. Promotional messages stay off until they give explicit consent.
 
-> **In the schedule:** if you move or cancel the appointment of an opted-out customer, the action is done and Nova asks you to tell them directly.
+> **In the schedule:** if you move or cancel the appointment of an opted-out customer, the action is done and Rendivoo asks you to tell them directly.

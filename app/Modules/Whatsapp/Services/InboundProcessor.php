@@ -131,7 +131,7 @@ final class InboundProcessor
 
         // Client désabonné : aucune réponse automatique tant qu'il n'a pas dit START.
         if ($customer->whatsapp_opted_out_at === null) {
-            // Pilote de conversation : « n8n » (défaut) transmet à n8n ; « native » fait répondre l'assistant intégré à Nova.
+            // Pilote de conversation : « n8n » (défaut) transmet à n8n ; « native » fait répondre l'assistant intégré à Rendivoo.
             if (config('conversation.driver') === 'native') {
                 HandleInboundMessage::dispatch($organization->id, $message->id);
             } else {
@@ -149,7 +149,7 @@ final class InboundProcessor
         Audit::record($optOut ? 'customer.whatsapp_opt_out' : 'customer.whatsapp_opt_in', 'system', null, $organization->id, 'customers', $customer->id);
 
         $key = $optOut ? 'whatsapp.opt_out_confirmed' : 'whatsapp.opt_in_confirmed';
-        $locale = in_array($customer->language, (array) config('nova.locales'), true) ? $customer->language : (string) config('app.fallback_locale');
+        $locale = in_array($customer->language, (array) config('rendivoo.locales'), true) ? $customer->language : (string) config('app.fallback_locale');
 
         try {
             $this->sender->sendText($organization, $customer, App::currentLocale() === $locale ? __($key) : __($key, [], $locale), ignoreOptOut: true);

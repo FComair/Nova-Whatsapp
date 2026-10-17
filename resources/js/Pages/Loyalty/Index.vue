@@ -46,7 +46,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
         <AlertBox v-if="page.props.flash.status" variant="success" class="mb-4">{{ page.props.flash.status }}</AlertBox>
 
         <section v-if="program === null" class="rounded-card border border-line bg-surface p-8 text-center shadow-xs" data-testid="loyalty-empty">
-            <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.empty.not_set_up') }}</h1>
+            <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.empty.not_set_up') }}</h1>
             <p class="mx-auto mt-2 max-w-xl text-neutral-700">{{ can.configure ? t('loyalty.empty.not_set_up_body') : t('loyalty.empty.not_set_up_staff') }}</p>
             <Link
                 v-if="can.configure"
@@ -61,7 +61,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
             <section class="rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="program-title">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <h1 id="program-title" class="text-xl font-semibold text-nova-900">{{ program.name || t('loyalty.title') }}</h1>
+                        <h1 id="program-title" class="text-xl font-semibold text-rendivoo-900">{{ program.name || t('loyalty.title') }}</h1>
                         <p class="mt-1 text-sm text-neutral-700">{{ t(`loyalty.status_help.${program.status}`) }}</p>
                     </div>
                     <Badge :variant="programVariant(program.status)">{{ t(`loyalty.status.${program.status}`) }}</Badge>
@@ -104,7 +104,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
                 <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
                     <div v-for="key in kpis" :key="key" class="rounded-card border border-line bg-surface p-4 shadow-xs">
                         <dt class="text-xs font-semibold text-neutral-700" :title="t(`loyalty.index.help.${key}`)">{{ t(`loyalty.index.kpi.${key}`) }}</dt>
-                        <dd class="mt-1 text-2xl font-bold tabular-nums text-nova-900" :data-testid="`kpi-${key}`">{{ overview[key] }}</dd>
+                        <dd class="mt-1 text-2xl font-bold tabular-nums text-rendivoo-900" :data-testid="`kpi-${key}`">{{ overview[key] }}</dd>
                         <p class="mt-1 text-xs text-neutral-600">{{ t(`loyalty.index.help.${key}`) }}</p>
                     </div>
                 </dl>
@@ -116,7 +116,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
 
             <div v-if="overview" class="grid gap-6 lg:grid-cols-2">
                 <section class="rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="close-title">
-                    <h2 id="close-title" class="font-semibold text-nova-900">{{ t('loyalty.index.close.title') }}</h2>
+                    <h2 id="close-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.index.close.title') }}</h2>
                     <p v-if="overview.close.length === 0" class="mt-3 text-sm text-neutral-700">{{ t('loyalty.index.close.empty') }}</p>
                     <ul v-else class="mt-3 divide-y divide-line">
                         <li v-for="row in overview.close" :key="row.customer_id" class="flex items-center justify-between gap-3 py-2 text-sm">
@@ -134,7 +134,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
                 </section>
 
                 <section class="rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="trend-title">
-                    <h2 id="trend-title" class="font-semibold text-nova-900">{{ t('loyalty.index.performance.title') }}</h2>
+                    <h2 id="trend-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.index.performance.title') }}</h2>
                     <p class="text-xs text-neutral-700">{{ t('loyalty.index.performance.period') }}</p>
                     <div class="mt-3">
                         <LoyaltyTrend
@@ -151,7 +151,7 @@ const hasAny = computed(() => (props.overview?.enrolled ?? 0) > 0 || (props.over
             </div>
 
             <section class="rounded-card border border-line bg-surface p-5 shadow-xs" aria-labelledby="activity-title">
-                <h2 id="activity-title" class="font-semibold text-nova-900">{{ t('loyalty.index.activity.title') }}</h2>
+                <h2 id="activity-title" class="font-semibold text-rendivoo-900">{{ t('loyalty.index.activity.title') }}</h2>
                 <p v-if="recent.length === 0" class="mt-3 text-sm text-neutral-700">{{ t('loyalty.empty.no_activity') }}</p>
                 <ActivityList v-else :entries="recent" show-customer class="mt-2" />
             </section>

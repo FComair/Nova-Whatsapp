@@ -516,7 +516,7 @@ final class PlanManager
     {
         $clean = [];
 
-        foreach ((array) config('nova.locales') as $language) {
+        foreach ((array) config('rendivoo.locales') as $language) {
             $text = trim((string) ($texts[$language] ?? ''));
 
             if ($text !== '') {

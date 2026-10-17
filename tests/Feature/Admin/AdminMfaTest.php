@@ -11,10 +11,10 @@ use App\Modules\Admin\Support\AdminMfa;
 const MFA_PASSWORD = 'mot-de-passe-du-fondateur-2026!';
 
 beforeEach(function (): void {
-    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => MFA_PASSWORD]);
+    $this->admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => MFA_PASSWORD]);
     $this->setUp2fa = function (string $environment, bool $flag): void {
         $this->app['env'] = $environment;
-        config(['nova.security.admin_mfa_required' => $flag]);
+        config(['rendivoo.security.admin_mfa_required' => $flag]);
     };
 });
 

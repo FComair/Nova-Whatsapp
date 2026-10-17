@@ -48,8 +48,8 @@ const cards = computed(() => [
             >
                 <input v-model="model" type="radio" :name="name" :value="card.code" class="sr-only" :aria-describedby="`${name}-${card.code}`" />
                 <span class="flex items-start justify-between gap-2">
-                    <span class="font-semibold text-nova-900">{{ card.title }}</span>
-                    <span v-if="card.recommended" class="rounded-full bg-amber px-2 py-0.5 text-xs font-bold text-nova-900" data-testid="recommended">{{
+                    <span class="font-semibold text-rendivoo-900">{{ card.title }}</span>
+                    <span v-if="card.recommended" class="rounded-full bg-amber px-2 py-0.5 text-xs font-bold text-rendivoo-900" data-testid="recommended">{{
                         t('register.recommended')
                     }}</span>
                 </span>

@@ -32,7 +32,7 @@ final class SiteRequest extends FormRequest
             'street' => ['nullable', 'string', 'max:160'],
             'postal_code' => ['nullable', 'string', 'max:12'],
             'city' => ['nullable', 'string', 'max:100'],
-            'country' => ['required', 'string', Rule::in(config('nova.countries'))],
+            'country' => ['required', 'string', Rule::in(config('rendivoo.countries'))],
         ];
     }
 

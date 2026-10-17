@@ -54,7 +54,7 @@ function accept(slugs: string[]): void {
 
 <template>
     <SettingsLayout :title="t('legal.settings.title')">
-        <h1 class="text-2xl font-semibold text-nova-900">{{ t('legal.settings.title') }}</h1>
+        <h1 class="text-2xl font-semibold text-rendivoo-900">{{ t('legal.settings.title') }}</h1>
         <p class="mt-1 max-w-2xl text-sm text-neutral-700">{{ t('legal.settings.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4">{{ page.props.flash.status }}</AlertBox>
@@ -68,7 +68,7 @@ function accept(slugs: string[]): void {
             <li v-for="row in documents" :key="row.code" class="rounded-card border border-line bg-surface p-5 shadow-xs" :data-testid="`legal-${row.slug}`">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <h2 class="font-semibold text-nova-900">{{ row.title || t(`legal.documents.${row.code}`) }}</h2>
+                        <h2 class="font-semibold text-rendivoo-900">{{ row.title || t(`legal.documents.${row.code}`) }}</h2>
                         <p v-if="row.version" class="text-sm text-neutral-700">
                             {{ t('legal.settings.current') }} : {{ t('legal.page.version', { version: row.version }) }} ·
                             {{ t('legal.page.effective', { date: formatDate(row.effective_on ?? '') }) }}

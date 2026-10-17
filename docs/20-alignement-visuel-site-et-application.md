@@ -1,7 +1,7 @@
-# Nova — aligning the app with the website ("Calm SaaS, one deep teal")
+# Rendivoo — aligning the app with the website ("Calm SaaS, one deep teal")
 
 Status: steps 1 and 2 are built (website tokens, self-hosted fonts, pill buttons, fields, dialogs, top bar, KPI figures); dark mode, calendar details and the remaining pages are still to do. Scope: look and feel only; no change to features, page structure, labels or flows.
-Source of truth: the artifact **"Nova WhatsApp Website"** (https://claude.ai/artifact/7UK5KyqsVSQo5zT1gEJ5J8), mainly its `System` board ("Design system and site map") and the CSS of the `Home` board. Every value below is taken from there, then adapted for a dense product. Contrast figures are computed (WCAG 2.x), not estimated.
+Source of truth: the artifact **"Rendivoo Website"** (https://claude.ai/artifact/7UK5KyqsVSQo5zT1gEJ5J8), mainly its `System` board ("Design system and site map") and the CSS of the `Home` board. Every value below is taken from there, then adapted for a dense product. Contrast figures are computed (WCAG 2.x), not estimated.
 
 This spec **supersedes the palette, type and shape choices of `docs/19`** (navy + blue + Inter). The mechanics of docs/19 stay valid: semantic tokens, rollout in steps, contrast test, motion rules, dark mode built from tokens.
 
@@ -17,7 +17,7 @@ Steps 0 and 1 of docs/19 are in the app (commit `0a26940`) with a navy-and-blue 
 
 | | App today (docs/19, built) | Website (source of truth) | App after this spec |
 |---|---|---|---|
-| Primary | `#2A5BD7` blue | `#0E6B6B` Nova Teal | `#0E6B6B` |
+| Primary | `#2A5BD7` blue | `#0E6B6B` Rendivoo Teal | `#0E6B6B` |
 | Structure colour | `#14213D` navy | `#0B2B2E` Deep Ink | `#0B2B2E` |
 | Page background | `#F6F8FB` cool grey | `#F6F8F5` Canvas (warm-green) | `#F6F8F5` |
 | Accent | `#0B7A6D` teal (WhatsApp only) | `#F0A23A` Spark Amber | amber as accent (see §1) |
@@ -36,7 +36,7 @@ Good news: because docs/19 moved the app to semantic tokens (`bg-surface`, `bord
 
 | Token | Hex | Website name | Use in the app |
 |---|---|---|---|
-| `primary` | `#0E6B6B` | Nova Teal | Primary buttons, links, active nav, selection, focus |
+| `primary` | `#0E6B6B` | Rendivoo Teal | Primary buttons, links, active nav, selection, focus |
 | `primary-hover` | `#0A5656` | Teal Dark | Hover/pressed, text on mint |
 | `deep` | `#0B2B2E` | Deep Ink | Dark panels (sign-in side, empty-state hero, dark mode base) |
 | `ink` | `#10201F` | Ink | Headings, key values |
@@ -61,7 +61,7 @@ Status (text on tint), all ≥ 5.5:1:
 | Info | `#0A5656` | `#DDF1EA` (Mint) | info | 7.2:1 |
 | Neutral | `#3F5150` | `#E8F0EC` | minus-circle | 7.2:1 |
 
-Verified pairs: ink on canvas 15.8:1 · body on surface 8.4:1 · muted on surface 5.8:1 (on canvas 5.4:1) · white on Nova Teal 6.3:1 · white on Teal Dark 8.5:1 · teal link on white 6.3:1 · Teal Dark on Mint 7.2:1.
+Verified pairs: ink on canvas 15.8:1 · body on surface 8.4:1 · muted on surface 5.8:1 (on canvas 5.4:1) · white on Rendivoo Teal 6.3:1 · white on Teal Dark 8.5:1 · teal link on white 6.3:1 · Teal Dark on Mint 7.2:1.
 
 Rules (same discipline as the site):
 - **Teal does the work**: one primary action per view, links, the active state. Everything else is neutral.
@@ -193,7 +193,7 @@ Additions for the product, same easing and subtlety: row hover and selection (12
 
 ## 8. Implementation
 
-1. **Re-point the tokens** in `resources/css/app.css`: `primary-*` → teal scale (`600 #0E6B6B`, `700 #0A5656`, `50 #E8F0EC`/`100 #DDF1EA`), `nova-900` → `#0B2B2E`, `canvas`/`line`/`muted`/`field-border`/status pairs as above, radii (`control 12`, `card 16`, `modal 20`, `pill 999`), shadows and easing from the site; add the dark overrides. The contrast test (`resources/js/design/tokens.test.ts`) is extended with every pair in this document and must pass before merge.
+1. **Re-point the tokens** in `resources/css/app.css`: `primary-*` → teal scale (`600 #0E6B6B`, `700 #0A5656`, `50 #E8F0EC`/`100 #DDF1EA`), `rendivoo-900` → `#0B2B2E`, `canvas`/`line`/`muted`/`field-border`/status pairs as above, radii (`control 12`, `card 16`, `modal 20`, `pill 999`), shadows and easing from the site; add the dark overrides. The contrast test (`resources/js/design/tokens.test.ts`) is extended with every pair in this document and must pass before merge.
 2. **Fonts**: add the two `@fontsource-variable` packages, set `--font-sans` (Instrument Sans) and `--font-display` (Bricolage Grotesque); apply `font-display` to `h1`–`h3` and the KPI value through a single `.font-display` utility.
 3. **Components**: `BaseButton` becomes pill-shaped with a `size` prop (`md` 44 / `sm` 36); fields get the 12 px radius and 1.5 px border; `Badge`, cards, dialogs and the top bar take their values from the tokens. Pages are untouched except where a title or KPI needs the display font.
 4. **Rollout** (each step shippable): tokens and fonts → base components → layouts (top bar, settings menu, bottom bar) → pages in order of daily use (Calendar, Dashboard, Services, Settings, Templates, Reports) → dark mode and theme switch → motion polish.

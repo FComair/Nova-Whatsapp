@@ -37,7 +37,7 @@ final class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'locale' => $locale,
-            'locales' => config('nova.locales'),
+            'locales' => config('rendivoo.locales'),
             // Groupe de traductions « ui » (lang/{locale}/ui.php) fourni tel quel au front ; les e-mails restent côté serveur.
             'translations' => fn (): array => app('translator')->getLoader()->load($locale, 'ui'),
             // Évalué au rendu de la page, DANS le contexte d'organisation : share() est appelé avant les middlewares de route,

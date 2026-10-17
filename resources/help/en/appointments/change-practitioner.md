@@ -15,7 +15,7 @@ In an appointment’s details, the **Practitioner** line shows who it is assigne
 2. Pick a practitioner from the list (a search box appears when the list is long). Only active practitioners who perform that service are listed.
 3. Click **Save**. To back out, **Cancel** restores the original practitioner.
 
-The time does not change. If the new practitioner is already busy at that time, Nova says so under the field and nothing is changed.
+The time does not change. If the new practitioner is already busy at that time, Rendivoo says so under the field and nothing is changed.
 
 ## Who can do it
 

@@ -8,7 +8,7 @@ describe('initiales du repli', () => {
     });
 
     it("prend les deux premières lettres d'un nom d'un seul mot", () => {
-        expect(shopInitials('Nova')).toBe('NO');
+        expect(shopInitials('Rendivoo')).toBe('NO');
         expect(shopInitials('X')).toBe('X');
     });
 

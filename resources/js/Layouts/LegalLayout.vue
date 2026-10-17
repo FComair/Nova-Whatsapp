@@ -16,7 +16,7 @@ const { t } = useT();
 
     <div class="min-h-screen bg-canvas px-4 py-6 sm:px-6">
         <header class="mx-auto flex max-w-5xl items-center justify-between gap-3 print:hidden">
-            <Link href="/" class="text-2xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</Link>
+            <Link href="/" class="text-2xl font-bold tracking-tight text-rendivoo-900">{{ t('common.app_name') }}</Link>
             <div class="flex items-center gap-2">
                 <ThemeSwitcher />
                 <LanguageSwitcher />

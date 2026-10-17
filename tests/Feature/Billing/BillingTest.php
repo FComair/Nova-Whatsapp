@@ -82,7 +82,7 @@ describe('souscription', function (): void {
             ->and($invoice)->number->toBe('NOVA-2026-000001')->status->toBe('paid')->subtotal_cents->toBe(2999)->vat_rate->toBe(21)->vat_cents->toBe(630)->total_cents->toBe(3629)
             ->and($invoice->paid_at)->not->toBeNull()
             ->and($invoice->plan_name)->toBe($this->basic->name)
-            ->and($invoice->lines)->toHaveCount(1)->and($invoice->lines[0]->description)->toContain('Abonnement Nova Basic')
+            ->and($invoice->lines)->toHaveCount(1)->and($invoice->lines[0]->description)->toContain('Abonnement Rendivoo Basic')
             ->and($org)->status->toBe('active')->plan_id->toBe($this->basic->id)
             ->and($this->gateway->charges)->toHaveCount(1)->and($this->gateway->charges[0]['amount'])->toBe(3629)
             ->and(($this->in)(fn () => Payment::query()->sole()))->status->toBe('succeeded')->amount_cents->toBe(3629);
@@ -105,7 +105,7 @@ describe('souscription', function (): void {
         ($this->subscribe)();
 
         expect(($this->in)(fn () => Invoice::query()->with('lines')->sole()->lines[0]->description))->toContain($text);
-    })->with([['fr', 'Abonnement Nova Basic'], ['nl', 'Nova-abonnement Basic'], ['en', 'Nova subscription Basic']]);
+    })->with([['fr', 'Abonnement Rendivoo Basic'], ['nl', 'Rendivoo-abonnement Basic'], ['en', 'Rendivoo subscription Basic']]);
 
     it('ne stocke que le jeton du prestataire, chiffré, et de quoi reconnaître la carte', function (): void {
         ($this->subscribe)();
@@ -314,7 +314,7 @@ describe('annulation', function (): void {
 
         expect(($this->sub)()->status)->toBe('canceled')->and(($this->orgRow)())->status->toBe('suspended')->suspension_reason->toBe('system.subscription_ended')
             ->and(DB::connection('pgsql_owner')->table('invoices')->count())->toBe(1);
-        Notification::assertSentOnDemand(BillingNotification::class, fn (BillingNotification $n): bool => str_contains(json_encode($n->toMail(new stdClass)->subject), 'Nova'));
+        Notification::assertSentOnDemand(BillingNotification::class, fn (BillingNotification $n): bool => str_contains(json_encode($n->toMail(new stdClass)->subject), 'Rendivoo'));
     });
 
     it('peut être annulée avant la fin de la période', function (): void {
@@ -547,7 +547,7 @@ describe('isolation et sécurité', function (): void {
 describe('RGPD', function (): void {
     it('programme la suppression même si le serveur d\'e-mail est injoignable', function (): void {
         config(['mail.default' => 'smtp', 'mail.mailers.smtp.host' => '127.0.0.1', 'mail.mailers.smtp.port' => 1]);
-        $admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+        $admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
 
         app(OrganizationLifecycle::class)->scheduleDeletion(PlatformOrganization::query()->findOrFail($this->org->id), $admin->id, null);
 
@@ -557,7 +557,7 @@ describe('RGPD', function (): void {
     it('pseudonymise les factures, supprime les moyens de paiement, garde les montants et les paiements', function (): void {
         ($this->subscribe)();
         $this->asOwner(fn () => $this->org->forceFill(['billing_name' => 'Aurore SRL'])->save());
-        $admin = PlatformAdmin::query()->create(['email' => 'fondateur@nova.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
+        $admin = PlatformAdmin::query()->create(['email' => 'fondateur@rendivoo.test', 'password' => 'mot-de-passe-du-fondateur-2026!']);
         app(OrganizationLifecycle::class)->scheduleDeletion(PlatformOrganization::query()->findOrFail($this->org->id), $admin->id, 'Demande écrite du propriétaire');
         DB::connection('pgsql_owner')->table('organizations')->where('id', $this->org->id)->update(['deletion_scheduled_for' => now()->subMinute()]);
 

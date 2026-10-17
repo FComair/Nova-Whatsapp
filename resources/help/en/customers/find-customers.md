@@ -21,4 +21,4 @@ The **Filters** button offers status, appointments (upcoming, never visited, no 
 
 Ready-made views (upcoming appointment, no visit for 90 days, new, with a no-show, refused messages) are provided. **Save this view** keeps your filters and columns; the owner and site managers can share it with the team. The **Columns** button chooses what is shown.
 
-> **Value** is computed from the amounts collected (or prices) of completed appointments. Nova does not process payments.
+> **Value** is computed from the amounts collected (or prices) of completed appointments. Rendivoo does not process payments.

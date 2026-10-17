@@ -32,7 +32,7 @@ use RuntimeException;
  */
 class DevelopmentSeeder extends Seeder
 {
-    public const OWNER_EMAIL = 'owner@nova.test';
+    public const OWNER_EMAIL = 'owner@rendivoo.test';
 
     public const OWNER_PASSWORD = 'nova-dev-only';
 

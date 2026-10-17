@@ -2,6 +2,7 @@ import { ref } from 'vue';
 
 export type ThemePreference = 'light' | 'dark' | 'system';
 
+// Clé historique, volontairement conservée : la renommer ferait perdre à chacun son choix de thème (produit rebaptisé Rendivoo, docs/42).
 export const THEME_STORAGE_KEY = 'nova-theme';
 export const THEME_PREFERENCES: readonly ThemePreference[] = ['light', 'dark', 'system'];
 

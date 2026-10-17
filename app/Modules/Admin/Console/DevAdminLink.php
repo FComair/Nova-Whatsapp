@@ -20,7 +20,10 @@ final class DevAdminLink extends Command
 {
     public const MINUTES = 10;
 
-    protected $signature = 'nova:dev-admin-link {email? : E-mail du Super Admin (le premier par défaut)}';
+    protected $signature = 'rendivoo:dev-admin-link {email? : E-mail du Super Admin (le premier par défaut)}';
+
+    /** Ancien nom (produit rebaptisé Rendivoo) : gardé pour les scripts et tâches planifiées qui l'appellent encore. */
+    protected $aliases = ['nova:dev-admin-link'];
 
     protected $description = 'Lien de connexion directe au Super Admin (développement local uniquement)';
 
@@ -36,7 +39,7 @@ final class DevAdminLink extends Command
         $admin = $email === null ? PlatformAdmin::query()->orderBy('created_at')->first() : PlatformAdmin::query()->where('email', mb_strtolower((string) $email))->first();
 
         if ($admin === null) {
-            $this->error('Aucun Super Admin trouvé. Créez-en un : php artisan nova:create-admin');
+            $this->error('Aucun Super Admin trouvé. Créez-en un : php artisan rendivoo:create-admin');
 
             return self::FAILURE;
         }

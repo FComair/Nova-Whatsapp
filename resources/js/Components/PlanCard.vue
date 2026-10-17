@@ -26,15 +26,15 @@ const MARKS = { included: '✓', limited: '◐', unavailable: '✕' } as const;
     >
         <span
             v-if="plan.recommended"
-            class="absolute -top-3 right-4 rounded-full bg-amber px-2.5 py-0.5 text-xs font-bold text-nova-900"
+            class="absolute -top-3 right-4 rounded-full bg-amber px-2.5 py-0.5 text-xs font-bold text-rendivoo-900"
             data-testid="recommended"
             >{{ t('pricing.recommended') }}</span
         >
 
-        <h2 class="text-lg font-semibold text-nova-900">{{ plan.name }}</h2>
+        <h2 class="text-lg font-semibold text-rendivoo-900">{{ plan.name }}</h2>
         <p v-if="plan.description" class="mt-1 text-sm text-neutral-700">{{ plan.description }}</p>
 
-        <p class="mt-4 font-display text-3xl font-bold text-nova-900" data-testid="price">
+        <p class="mt-4 font-display text-3xl font-bold text-rendivoo-900" data-testid="price">
             {{ price.main }}<span v-if="price.period" class="text-base font-medium text-neutral-700"> / {{ price.period }}</span>
         </p>
         <p v-if="price.tax" class="mt-1 text-xs text-muted">{{ price.tax }}</p>

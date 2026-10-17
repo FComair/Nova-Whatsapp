@@ -71,7 +71,7 @@ function save(): void {
     <AppLayout :title="t('loyalty.messages.title')">
         <LoyaltyTabs current="messages" :can="can" />
 
-        <h1 class="text-xl font-semibold text-nova-900">{{ t('loyalty.messages.title') }}</h1>
+        <h1 class="text-xl font-semibold text-rendivoo-900">{{ t('loyalty.messages.title') }}</h1>
         <p class="mt-1 max-w-3xl text-sm text-neutral-700">{{ t('loyalty.messages.intro') }}</p>
 
         <AlertBox v-if="page.props.flash.status" variant="success" class="mt-4">{{ page.props.flash.status }}</AlertBox>
@@ -109,7 +109,7 @@ function save(): void {
             >
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <h2 :id="`title-${kind}`" class="font-semibold text-nova-900">{{ t(`loyalty.messages.kinds.${kind}.title`) }}</h2>
+                        <h2 :id="`title-${kind}`" class="font-semibold text-rendivoo-900">{{ t(`loyalty.messages.kinds.${kind}.title`) }}</h2>
                         <p class="text-sm text-neutral-700">{{ t(`loyalty.messages.kinds.${kind}.when`) }}</p>
                     </div>
                     <label class="flex items-center gap-2 text-sm font-semibold text-neutral-900">
@@ -117,7 +117,7 @@ function save(): void {
                             v-if="form.settings[kind]"
                             v-model="form.settings[kind].enabled"
                             type="checkbox"
-                            class="nova-check"
+                            class="rendivoo-check"
                             :data-testid="`enable-${kind}`"
                         />
                         {{ t('loyalty.messages.enabled') }}

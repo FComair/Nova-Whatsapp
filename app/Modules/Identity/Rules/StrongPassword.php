@@ -20,7 +20,7 @@ final class StrongPassword implements DataAwareRule, ValidationRule
     /** Mots courants interdits, y compris quand ils ne sont que décorés (année, chiffres, symbole). */
     private const COMMON = [
         'password', 'motdepasse', 'wachtwoord', 'passw0rd', 'admin', 'administrateur', 'azerty', 'qwerty', 'qwertz', 'welcome', 'bienvenue',
-        'letmein', 'iloveyou', 'monkey', 'dragon', 'soleil', 'nova', 'whatsapp', 'chatbot', 'changeme', 'secret', 'abc123', '123456', 'football',
+        'letmein', 'iloveyou', 'monkey', 'dragon', 'soleil', 'nova', 'rendivoo', 'whatsapp', 'chatbot', 'changeme', 'secret', 'abc123', '123456', 'football',
     ];
 
     /** @var array<string, mixed> */
@@ -50,10 +50,10 @@ final class StrongPassword implements DataAwareRule, ValidationRule
             return;
         }
 
-        $composition = validator(['p' => $value], ['p' => Password::min((int) config('nova.security.password_min_length'))->mixedCase()->numbers()->symbols()]);
+        $composition = validator(['p' => $value], ['p' => Password::min((int) config('rendivoo.security.password_min_length'))->mixedCase()->numbers()->symbols()]);
 
         if ($composition->fails()) {
-            $fail(__('ui.password.weak', ['min' => (int) config('nova.security.password_min_length')]));
+            $fail(__('ui.password.weak', ['min' => (int) config('rendivoo.security.password_min_length')]));
 
             return;
         }

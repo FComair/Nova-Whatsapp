@@ -5,8 +5,8 @@
  */
 return [
     'invoice' => [
-        'subscription' => 'Nova-abonnement :plan (:from – :to)',
-        'setup_fee' => 'Opstartkosten Nova :plan',
+        'subscription' => 'Rendivoo-abonnement :plan (:from – :to)',
+        'setup_fee' => 'Opstartkosten Rendivoo :plan',
         'upgrade' => 'Wijziging van formule: :from naar :to (aanvulling naar rato)',
     ],
 ];

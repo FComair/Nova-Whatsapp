@@ -1,6 +1,8 @@
-# Nova Chatbot : règles du projet
+# Rendivoo : règles du projet
 
 Documents de référence : `docs/01-schema-base-de-donnees.md`, `docs/02-roles-et-permissions.md`, `docs/03-identite-visuelle-et-structure-projet.md`. Sources fonctionnelles : spec backend FR et flowcharts « Parcours utilisateur PDF » (dossier parent).
+
+> Le produit s'appelle **Rendivoo** (anciennement Nova). Base `nova`, rôles `nova_*`, variables `NOVA_*`, en-têtes `X-Nova-*` et quelques autres identifiants gardent leur nom historique : ne les renommez pas sans lire `docs/42-marque-rendivoo.md`.
 
 ## Environnement
 Tout tourne dans Docker (PHP, Postgres 16, Redis, Mailpit). Ne pas installer PHP/Composer sur la machine.

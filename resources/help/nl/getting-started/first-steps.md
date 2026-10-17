@@ -1,6 +1,6 @@
 ---
-title: Nova in enkele stappen instellen
-summary: Wat u moet invullen zodat Nova uw klanten kan antwoorden en afspraken kan inplannen.
+title: Rendivoo in enkele stappen instellen
+summary: Wat u moet invullen zodat Rendivoo uw klanten kan antwoorden en afspraken kan inplannen.
 tags: start, configuratie, assistent, beginnen
 related: getting-started/roles, whatsapp/connect-whatsapp, services-schedules/opening-hours
 popular: true

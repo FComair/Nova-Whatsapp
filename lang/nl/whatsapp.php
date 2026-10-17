@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Automatische WhatsApp-berichten van Nova aan eindklanten (taal van de klant, standaard Frans).
+ * Automatische WhatsApp-berichten van Rendivoo aan eindklanten (taal van de klant, standaard Frans).
  */
 return [
     // Valeur de {{customer_name}} quand le client n'a pas de nom enregistré.

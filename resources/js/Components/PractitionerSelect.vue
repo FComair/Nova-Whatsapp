@@ -129,7 +129,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onOutside));
             :aria-activedescendant="open && active >= 0 ? optionId(active) : undefined"
             :aria-invalid="error ? 'true' : undefined"
             :aria-describedby="error ? errorId : undefined"
-            class="flex min-h-[46px] w-full items-center gap-2.5 rounded-control border-[1.5px] bg-surface px-3.5 py-2 text-left text-base text-neutral-900 transition duration-150 ease-nova focus:outline-none focus:ring-2"
+            class="flex min-h-[46px] w-full items-center gap-2.5 rounded-control border-[1.5px] bg-surface px-3.5 py-2 text-left text-base text-neutral-900 transition duration-150 ease-rendivoo focus:outline-none focus:ring-2"
             :class="
                 error
                     ? 'border-danger-fg focus:border-danger-fg focus:ring-danger-fg/20'

@@ -25,7 +25,7 @@ final class ResetPasswordNotification extends Notification
 
     public function toMail(User $notifiable): MailMessage
     {
-        $minutes = (int) config('nova.security.password_reset_ttl_minutes');
+        $minutes = (int) config('rendivoo.security.password_reset_ttl_minutes');
 
         $url = url(route('password.reset', ['token' => $this->token, 'email' => $notifiable->email], false));
 

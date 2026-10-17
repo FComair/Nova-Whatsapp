@@ -14,6 +14,6 @@ Een tijdslot wordt enkel aangeboden als alles klopt. Controleer in deze volgorde
 3. **Die behandelaar voert de gevraagde dienst uit**: koppel de dienst aan de behandelaar.
 4. **Boekingsregels**: een te lange minimale termijn of een te korte horizon schrapt tijdsloten.
 5. **Een gekoppelde externe agenda** kan bezette momenten blokkeren.
-6. **Het tijdslot is al bezet** door een andere afspraak (Nova verbiedt dubbele boeking van dezelfde behandelaar).
+6. **Het tijdslot is al bezet** door een andere afspraak (Rendivoo verbiedt dubbele boeking van dezelfde behandelaar).
 
 > **Tip:** voor het personeel toont het venster **Nieuwe afspraak** enkel behandelaars die de gekozen dienst uitvoeren; is de lijst leeg, dan is het stap 3.

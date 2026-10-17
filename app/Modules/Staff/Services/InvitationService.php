@@ -41,7 +41,7 @@ final class InvitationService
      */
     public function invite(Organization $organization, string $name, string $email, ?string $invitedBy): array
     {
-        $colors = config('nova.practitioner_colors');
+        $colors = config('rendivoo.practitioner_colors');
 
         $created = $this->manager->create($organization, [
             'name' => $name,
@@ -68,7 +68,7 @@ final class InvitationService
         $overLimit = false;
 
         if ($data['role'] === OrgMember::ROLE_PRACTITIONER) {
-            $colors = config('nova.practitioner_colors');
+            $colors = config('rendivoo.practitioner_colors');
             $created = $this->manager->create($organization, [
                 'name' => $data['name'],
                 'color' => $colors[Practitioner::query()->count() % count($colors)],
@@ -235,7 +235,7 @@ final class InvitationService
                 'invited_by' => $invitedBy,
                 'email' => $email,
                 'token_hash' => Invitation::hash($token),
-                'expires_at' => now()->addDays((int) config('nova.security.invitation_ttl_days')),
+                'expires_at' => now()->addDays((int) config('rendivoo.security.invitation_ttl_days')),
                 'role' => $extra['role'] ?? OrgMember::ROLE_PRACTITIONER,
                 'name' => $extra['name'] ?? $practitioner?->name,
                 'phone' => $extra['phone'] ?? null,

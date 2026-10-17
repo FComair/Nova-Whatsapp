@@ -1,6 +1,6 @@
 ---
-title: Set up Nova in a few steps
-summary: What to fill in so Nova can answer your customers and take appointments.
+title: Set up Rendivoo in a few steps
+summary: What to fill in so Rendivoo can answer your customers and take appointments.
 tags: start, setup, onboarding, assistant
 related: getting-started/roles, whatsapp/connect-whatsapp, services-schedules/opening-hours
 popular: true

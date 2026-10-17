@@ -102,7 +102,7 @@ describe('envoi, remplacement et retrait', function (): void {
 
     it('accepte une photo choisie à la création du praticien', function (): void {
         ($this->as)()->post('/configuration/praticiens', [
-            'name' => 'Nina', 'color' => config('nova.practitioner_colors')[0], 'service_ids' => [], 'photo' => ($this->photo)(),
+            'name' => 'Nina', 'color' => config('rendivoo.practitioner_colors')[0], 'service_ids' => [], 'photo' => ($this->photo)(),
         ])->assertSessionHasNoErrors();
 
         $nina = $this->asOwner(fn () => Practitioner::query()->where('name', 'Nina')->firstOrFail());
@@ -112,7 +112,7 @@ describe('envoi, remplacement et retrait', function (): void {
 
     it('refuse la création quand la photo est invalide, sans créer le praticien', function (): void {
         ($this->as)()->post('/configuration/praticiens', [
-            'name' => 'Nina', 'color' => config('nova.practitioner_colors')[0], 'service_ids' => [], 'photo' => UploadedFile::fake()->create('cv.pdf', 10, 'application/pdf'),
+            'name' => 'Nina', 'color' => config('rendivoo.practitioner_colors')[0], 'service_ids' => [], 'photo' => UploadedFile::fake()->create('cv.pdf', 10, 'application/pdf'),
         ])->assertSessionHasErrors('photo');
 
         expect($this->asOwner(fn () => Practitioner::query()->where('name', 'Nina')->exists()))->toBeFalse();

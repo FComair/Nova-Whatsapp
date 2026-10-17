@@ -23,6 +23,6 @@ Quand l’heure est passée, un rendez-vous confirmé peut être marqué **Termi
 
 ## Paiement
 
-**Paiement** enregistre l’état (non payé, payé sur place, partiellement payé…), le montant encaissé et le moyen. Nova ne traite aucun paiement : elle ne fait que le noter.
+**Paiement** enregistre l’état (non payé, payé sur place, partiellement payé…), le montant encaissé et le moyen. Rendivoo ne traite aucun paiement : elle ne fait que le noter.
 
-> **Si le client ne peut pas être prévenu** (il a répondu STOP ou n’est pas joignable), l’action est quand même faite et Nova vous demande de le contacter directement.
+> **Si le client ne peut pas être prévenu** (il a répondu STOP ou n’est pas joignable), l’action est quand même faite et Rendivoo vous demande de le contacter directement.

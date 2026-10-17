@@ -146,7 +146,7 @@ return [
         'reply_heading' => 'Antwoorden aan de klant',
         'internal_heading' => 'Interne notitie',
         'reply_banner' => 'OPENBAAR: dit antwoord wordt per e-mail naar :email gestuurd en is zichtbaar in zijn ticket.',
-        'internal_banner' => 'PRIVÉ: alleen het Nova-team ziet deze notitie. De klant wordt nooit verwittigd.',
+        'internal_banner' => 'PRIVÉ: alleen het Rendivoo-team ziet deze notitie. De klant wordt nooit verwittigd.',
         'reply_label' => 'Uw antwoord',
         'note_label' => 'Uw notitie',
         'reply_help' => 'De klant ontvangt een uittreksel per e-mail (:email).',
@@ -206,7 +206,7 @@ return [
 
     'thread' => [
         'title' => 'Gesprek',
-        'nova_team' => 'Nova-team',
+        'nova_team' => 'Rendivoo-team',
         'client' => 'Klant',
         'system' => 'Systeem',
         'internal_label' => 'Interne notitie: onzichtbaar voor de klant',
@@ -272,7 +272,7 @@ return [
         'defs' => [
             'open' => ['name' => 'Open tickets', 'text' => 'Tickets met status Nieuw, Open, In behandeling, Wacht op klant, Wacht op intern team of Heropend, op dit moment.'],
             'unassigned' => ['name' => 'Niet toegewezen', 'text' => 'Open tickets (zie hierboven) zonder toegewezen agent.'],
-            'waiting_on_client' => ['name' => 'Wacht op klant', 'text' => 'Tickets met status “Wacht op klant”: Nova wacht op informatie of een actie van de klant.'],
+            'waiting_on_client' => ['name' => 'Wacht op klant', 'text' => 'Tickets met status “Wacht op klant”: Rendivoo wacht op informatie of een actie van de klant.'],
             'overdue' => ['name' => 'Eerste antwoord te laat', 'text' => 'Open tickets zonder openbaar antwoord waarvan de deadline voor het eerste antwoord verstreken is. Deadlines komen uit de Algemene instellingen, per prioriteit.'],
             'at_risk' => ['name' => 'Eerste antwoord in gevaar', 'text' => 'Open tickets zonder openbaar antwoord die het “in gevaar”-deel van hun deadline verbruikten zonder te laat te zijn.'],
             'resolved' => ['name' => 'Opgelost vandaag / deze week / deze maand', 'text' => 'Tickets waarvan de oplossingsdatum in de huidige dag, week (vanaf maandag) of maand valt. Een na oplossing heropend ticket telt niet meer mee.'],

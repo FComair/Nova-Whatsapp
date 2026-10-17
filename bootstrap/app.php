@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Super Admin ne serve que le panel. Vide en développement : toutes les adresses, comme avant.
         then: function (): void {
             $web = Route::middleware('web');
-            $domain = config('nova.app_domain');
+            $domain = config('rendivoo.app_domain');
 
             if (is_string($domain) && $domain !== '') {
                 $web->domain($domain);

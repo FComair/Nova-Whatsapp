@@ -21,4 +21,4 @@ Le nombre de jours restants s’affiche sur le **Tableau de bord**. Choisissez u
 
 ## Si un paiement échoue
 
-Nova vous prévient et réessaie. Mettez à jour votre moyen de paiement dans **Facturation** pour éviter la suspension du compte.
+Rendivoo vous prévient et réessaie. Mettez à jour votre moyen de paiement dans **Facturation** pour éviter la suspension du compte.

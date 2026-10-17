@@ -31,7 +31,7 @@ watch(
         class="m-auto w-[calc(100%-2rem)] max-w-md rounded-modal border border-line bg-surface p-6 shadow-xl backdrop:bg-deep/55"
         @cancel.prevent="answerUnsaved('cancel')"
     >
-        <h2 :id="titleId" class="text-lg font-semibold text-nova-900">{{ t('unsaved.message') }}</h2>
+        <h2 :id="titleId" class="text-lg font-semibold text-rendivoo-900">{{ t('unsaved.message') }}</h2>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
             <BaseButton variant="primary" @click="answerUnsaved('save')">{{ t('unsaved.save') }}</BaseButton>

@@ -131,7 +131,7 @@ return new class extends Migration
             DB::table('legal_document_versions')->insert([
                 'id' => (string) Str::uuid7(),
                 'document' => $code,
-                'version' => (string) config('nova.legal.first_version', '2026-10-01'),
+                'version' => (string) config('rendivoo.legal.first_version', '2026-10-01'),
                 'effective_on' => '2026-01-01',
                 'status' => 'published',
                 'requires_acceptance' => true,

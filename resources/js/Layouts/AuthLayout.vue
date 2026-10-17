@@ -21,7 +21,7 @@ const { t } = useT();
 
     <div class="flex min-h-screen flex-col px-4 py-6 sm:px-6">
         <header class="mx-auto flex w-full items-center justify-between" :class="wide ? 'max-w-4xl' : 'max-w-md'">
-            <span class="text-2xl font-bold tracking-tight text-nova-900">{{ t('common.app_name') }}</span>
+            <span class="text-2xl font-bold tracking-tight text-rendivoo-900">{{ t('common.app_name') }}</span>
             <div class="flex items-center gap-2">
                 <ThemeSwitcher />
                 <LanguageSwitcher />
@@ -30,7 +30,7 @@ const { t } = useT();
 
         <main id="contenu" class="mx-auto flex w-full flex-1 flex-col justify-center py-8" :class="wide ? 'max-w-4xl' : 'max-w-md'">
             <div class="rounded-card border border-line bg-surface shadow-xs p-6 shadow-sm sm:p-8">
-                <h1 class="text-2xl font-semibold text-nova-900">{{ title }}</h1>
+                <h1 class="text-2xl font-semibold text-rendivoo-900">{{ title }}</h1>
                 <p v-if="subtitle" class="mt-2 text-neutral-600">{{ subtitle }}</p>
 
                 <AlertBox v-if="page.props.flash.status" variant="success" class="mt-5">{{ page.props.flash.status }}</AlertBox>

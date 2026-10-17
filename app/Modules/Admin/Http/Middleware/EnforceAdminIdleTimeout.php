@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Déconnecte le Super Admin après une période d'inactivité (RGPD art. 32 : les sessions à privilèges ne restent pas ouvertes) et refuse toute session
  * ouverte avant un « déconnecter partout » (`sessions_revoked_at`, docs/38).
  *
- * La durée vient de `nova.security.admin_idle_minutes` (60 par défaut, 0 = désactivé) ; elle est plus courte que la durée de session
+ * La durée vient de `rendivoo.security.admin_idle_minutes` (60 par défaut, 0 = désactivé) ; elle est plus courte que la durée de session
  * générale (`SESSION_LIFETIME`). Chaque requête repousse l'échéance ; une requête Livewire expirée reçoit « page expirée » (419), ce qui
  * renvoie l'agent vers la connexion.
  */
@@ -29,7 +29,7 @@ final class EnforceAdminIdleTimeout
 
     public function handle(Request $request, Closure $next): Response
     {
-        $limit = (int) config('nova.security.admin_idle_minutes', 60);
+        $limit = (int) config('rendivoo.security.admin_idle_minutes', 60);
         $guard = Auth::guard('platform');
 
         if ($guard->check() && $this->revoked($request, $guard->user())) {

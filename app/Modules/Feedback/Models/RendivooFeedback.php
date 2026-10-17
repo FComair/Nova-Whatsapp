@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * Avis PRIVÉ d'un client à l'équipe Nova (docs/26) : une note de 1 à 5 et un commentaire facultatif. Jamais publié, jamais présenté
+ * Avis PRIVÉ d'un client à l'équipe Rendivoo (docs/26) : une note de 1 à 5 et un commentaire facultatif. Jamais publié, jamais présenté
  * comme un avis Google ou Trustpilot. Journal en ajout seul.
  *
  * @property string $id
@@ -22,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property string $locale
  * @property Carbon $created_at
  */
-final class NovaFeedback extends Model
+final class RendivooFeedback extends Model
 {
     use HasUuids;
 

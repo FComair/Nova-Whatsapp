@@ -85,7 +85,7 @@ return [
         'sector_help' => 'Le modèle appartient à ce secteur seulement : il n’apparaît pas dans les autres et n’y est pas utilisable.',
         'sector_locked' => 'Le secteur ne change plus après la création. Pour un autre secteur, dupliquez le modèle.',
         'type' => 'Type de message',
-        'type_help' => 'Confirmation, rappel, modification et annulation sont envoyés automatiquement par Nova ; les autres sont prêts à l’emploi.',
+        'type_help' => 'Confirmation, rappel, modification et annulation sont envoyés automatiquement par Rendivoo ; les autres sont prêts à l’emploi.',
         'name' => 'Nom interne',
         'category' => 'Catégorie Meta',
         'category_help' => 'Laissez vide pour la catégorie habituelle du type. « Marketing » est réservé aux offres et relances.',

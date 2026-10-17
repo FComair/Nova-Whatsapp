@@ -19,6 +19,6 @@ In **Schedule**, click **New appointment**.
 
 ## If the slot is not free
 
-Nova refuses a slot outside opening hours or already taken, and suggests the next three free slots for the same practitioner. A blocked customer cannot be given appointments.
+Rendivoo refuses a slot outside opening hours or already taken, and suggests the next three free slots for the same practitioner. A blocked customer cannot be given appointments.
 
 > **Good to know:** as staff you are not limited by the minimum notice or the booking horizon: only opening hours and double bookings count.

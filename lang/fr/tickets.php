@@ -146,7 +146,7 @@ return [
         'reply_heading' => 'Répondre au client',
         'internal_heading' => 'Note interne',
         'reply_banner' => 'PUBLIC : cette réponse est envoyée par e-mail à :email et visible dans son ticket.',
-        'internal_banner' => 'PRIVÉ : seule l\'équipe Nova voit cette note. Le client n\'est jamais prévenu.',
+        'internal_banner' => 'PRIVÉ : seule l\'équipe Rendivoo voit cette note. Le client n\'est jamais prévenu.',
         'reply_label' => 'Votre réponse',
         'note_label' => 'Votre note',
         'reply_help' => 'Le client reçoit un extrait par e-mail (:email).',
@@ -206,7 +206,7 @@ return [
 
     'thread' => [
         'title' => 'Conversation',
-        'nova_team' => 'Équipe Nova',
+        'nova_team' => 'Équipe Rendivoo',
         'client' => 'Client',
         'system' => 'Système',
         'internal_label' => 'Note interne : invisible pour le client',
@@ -272,7 +272,7 @@ return [
         'defs' => [
             'open' => ['name' => 'Tickets ouverts', 'text' => 'Tickets Nouveau, Ouvert, En cours, En attente du client, En attente de l\'équipe interne ou Rouvert, à l\'instant.'],
             'unassigned' => ['name' => 'Non assignés', 'text' => 'Tickets ouverts (voir ci-dessus) sans agent assigné.'],
-            'waiting_on_client' => ['name' => 'En attente du client', 'text' => 'Tickets à l\'état « En attente du client » : Nova attend une information ou une action du client.'],
+            'waiting_on_client' => ['name' => 'En attente du client', 'text' => 'Tickets à l\'état « En attente du client » : Rendivoo attend une information ou une action du client.'],
             'overdue' => ['name' => 'Première réponse en retard', 'text' => 'Tickets ouverts sans réponse publique dont l\'échéance de première réponse est dépassée. Les échéances viennent des Paramètres globaux, par priorité.'],
             'at_risk' => ['name' => 'Première réponse à risque', 'text' => 'Tickets ouverts sans réponse publique qui ont consommé la part « à risque » de leur échéance sans être en retard.'],
             'resolved' => ['name' => 'Résolus aujourd\'hui / cette semaine / ce mois', 'text' => 'Tickets dont la date de résolution tombe dans le jour, la semaine (depuis lundi) ou le mois en cours. Un ticket rouvert après résolution n\'est plus compté.'],

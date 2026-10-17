@@ -12,8 +12,8 @@ Het nummer identificeert de klant in WhatsApp en zijn landcode telt: een 06 is e
 ## De regel
 
 - **Met landcode** (+32 470 12 34 56, +31 6 12345678 of 0032…): het nummer wordt bewaard zoals ingevoerd, ongeacht het land van uw zaak.
-- **Zonder landcode** (0470 12 34 56): Nova leest het in **het land van uw zaak**. Een nummer dat in dat land niet bestaat, wordt geweigerd in plaats van aan een ander land gekoppeld.
-- Is uw land niet bekend en kan het nummer bij meerdere landen horen, dan vraagt Nova de landcode toe te voegen.
+- **Zonder landcode** (0470 12 34 56): Rendivoo leest het in **het land van uw zaak**. Een nummer dat in dat land niet bestaat, wordt geweigerd in plaats van aan een ander land gekoppeld.
+- Is uw land niet bekend en kan het nummer bij meerdere landen horen, dan vraagt Rendivoo de landcode toe te voegen.
 
 ## Advies
 

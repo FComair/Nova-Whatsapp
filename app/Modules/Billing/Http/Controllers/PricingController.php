@@ -40,7 +40,7 @@ final class PricingController
         return [
             'plans' => $this->catalog->publicListing()->map(fn (Plan $plan): array => [...$this->catalog->present($plan, $locale), 'cta' => $this->cta($plan)])->values()->all(),
             'trial' => ['days' => $this->settings->integer('trial_days'), 'url' => '/inscription'],
-            'vat' => ['rate' => (int) config('nova.billing.vat.home_rate'), 'country' => (string) config('nova.billing.vat.home_country')],
+            'vat' => ['rate' => (int) config('rendivoo.billing.vat.home_rate'), 'country' => (string) config('rendivoo.billing.vat.home_country')],
         ];
     }
 

@@ -1,4 +1,4 @@
-# Nova : registre des décisions et des écarts de conception
+# Rendivoo : registre des décisions et des écarts de conception
 
 Ce document tient à jour ce qui a été **confirmé par le fondateur**, ce qui relève d'une **hypothèse de développement** (à valider) et les **écarts** entre la conception initiale (`docs/01` à `03`) et le code.
 
@@ -30,7 +30,7 @@ Ce document tient à jour ce qui a été **confirmé par le fondateur**, ce qui 
 
 ## 2. Hypothèses de développement (à valider)
 
-Valeurs regroupées dans `config/nova.php`. Les flowcharts les marquent « à valider » ou ne les précisent pas.
+Valeurs regroupées dans `config/rendivoo.php`. Les flowcharts les marquent « à valider » ou ne les précisent pas.
 
 | Paramètre | Valeur retenue | Source |
 |---|---|---|
@@ -103,7 +103,7 @@ Valeurs regroupées dans `config/nova.php`. Les flowcharts les marquent « à va
 | Invitation par lien (3b) | Lien valable **3 jours** (décision du fondateur, les flowcharts ne précisent pas). Une nouvelle invitation invalide l'ancienne (E13) | Flowchart 5B/E13. |
 | Sécurité du lien | Jeton de 48 caractères, **jamais stocké** (empreinte SHA-256 seule) ; lecture publique via une fonction SQL étroite ; même écran E13 pour un lien inconnu, expiré, utilisé ou remplacé | Ne rien révéler sur les jetons. |
 | Compte du praticien invité | Créé à l'acceptation ; e-mail considéré vérifié (lien reçu) ; **pas de téléphone** ni de vérification SMS ; langue = celle de l'entreprise | Le SMS de vérification n'est demandé qu'à l'inscription du propriétaire. |
-| Adresse déjà connue | Une invitation est **refusée** si un compte Nova existe déjà pour l'adresse | **Limite connue** : le rattachement d'un compte existant (praticien dans deux entreprises) n'est pas géré à ce stade. |
+| Adresse déjà connue | Une invitation est **refusée** si un compte Rendivoo existe déjà pour l'adresse | **Limite connue** : le rattachement d'un compte existant (praticien dans deux entreprises) n'est pas géré à ce stade. |
 | Espace praticien | `/mon-profil` : le praticien règle ses services et son planning ; sa fiche est retrouvée par son compte, jamais par un identifiant | Il ne peut pas toucher aux fiches des autres. |
 | Praticien invité et limite du plan | Créé en brouillon si la limite est atteinte, l'invitation part quand même | Cohérent avec E8. |
 
@@ -129,7 +129,7 @@ Choix : une ligne de politiques **par organisation** (pas par site), créée à 
 | Double réservation | Contrainte d'exclusion PostgreSQL par praticien sur `[blocked_from, blocked_until[` (statuts `pending`, `confirmed`) ; conflit converti en erreur E10 avec les 3 prochains créneaux | Sûr même en cas de requêtes simultanées. Deux rendez-vous bout à bout sont acceptés |
 | Marges de service | Le créneau bloqué = rendez-vous élargi des marges avant/après du service | Spec §4.3 |
 | Capacité > 1 et surbooking | **Non effectifs en v1** : un praticien = un rendez-vous à la fois. L'option de surbooking est enregistrée mais sans effet | Cours collectifs et surbooking exigent un autre modèle (à arbitrer avec le fondateur avant de les activer) |
-| Créneaux proposés | Grille de 15 min (`nova.booking.slot_step_minutes`) ; jamais dans le passé, même pour le personnel | Hypothèse : pas de 15 min |
+| Créneaux proposés | Grille de 15 min (`rendivoo.booking.slot_step_minutes`) ; jamais dans le passé, même pour le personnel | Hypothèse : pas de 15 min |
 | Disponibilité exceptionnelle | Ajoute du temps au praticien mais reste bornée par l'ouverture du site | Hypothèse prudente ; un site fermé ne reçoit pas de rendez-vous |
 | Exceptions du site | Fermeture (jour férié) ou plages qui **remplacent** les horaires du jour | Docs/01 §4.4 |
 | Personnel vs client | Le personnel ignore délai minimum et horizon, pas les horaires ni la contrainte anti double réservation ; le client respecte la fenêtre d'annulation, le commerce peut toujours annuler | Flowcharts 2B/2D |
@@ -233,7 +233,7 @@ Détail : `docs/10-facturation.md`.
 | Sujet | Choix | Pourquoi / à valider |
 |---|---|---|
 | Prestataire de paiement | Interface `PaymentGateway`, prestataire **simulé** | **Choix du fondateur toujours ouvert** ; aucun débit réel possible |
-| Pilotage | Nova facture et débite un jeton enregistré | Indépendant du prestataire ; aucune donnée de carte chez Nova |
+| Pilotage | Rendivoo facture et débite un jeton enregistré | Indépendant du prestataire ; aucune donnée de carte chez Rendivoo |
 | Durée de l'essai | 14 jours | **Hypothèse à valider** (`platform_settings`) |
 | Fin d'essai sans abonnement | Compte suspendu (flowchart 4A) | Données conservées |
 | Relances | 3 tentatives, une tous les 3 jours, puis suspension | **Hypothèse** (flowchart E7 sans chiffres) |
@@ -241,7 +241,7 @@ Détail : `docs/10-facturation.md`.
 | Montée / descente | Montée immédiate au prorata, descente à l'échéance | Flowchart 3C ; **prorata à valider** |
 | Annulation | Fin de période payée, puis suspension | **À valider** : suspension ou suppression programmée ? |
 | TVA | 21 % BE ; autoliquidation UE avec n° de TVA ; sinon 21 % | **À faire valider par un comptable**, VIES à ajouter |
-| Identité du vendeur | Variables d'environnement, **non renseignées** | **Raison sociale, TVA et adresse de Nova à fournir** avant toute facture réelle |
+| Identité du vendeur | Variables d'environnement, **non renseignées** | **Raison sociale, TVA et adresse de Rendivoo à fournir** avant toute facture réelle |
 | Suspension par la plateforme | Jamais levée par un paiement | Sécurité |
 | Conservation | Factures pseudonymisées 7 ans | Obligation comptable ; durée à confirmer |
 
@@ -260,7 +260,7 @@ Numérotation de la partie 3 de `docs/11`.
 | 15 | Calendriers : 15 min, 5 par praticien, journées entières / `TRANSP` | **Validé** (état actuel) |
 | 17 | Rappels : minimum 24 h, 3 tentatives | **Validé** (état actuel) |
 | 18 | Mots de passe et 2FA des clients | **Validé**, voir ci-dessous |
-| 1, 2, 3, 4, 6, 11, 13, 16 | Paiement, SMS, vendeur/TVA, e-mail fondateur, prorata et fin d'abonnement, rôle de Nova, STOP/START, sites et capacité | **À revoir plus tard** |
+| 1, 2, 3, 4, 6, 11, 13, 16 | Paiement, SMS, vendeur/TVA, e-mail fondateur, prorata et fin d'abonnement, rôle de Rendivoo, STOP/START, sites et capacité | **À revoir plus tard** |
 | 9 | Durées de conservation | **Validé** (propositions de docs/09 : conversations, preuves d'audit, factures 7 ans, clients inactifs) ; la purge automatique reste à construire |
 
 ### Pause : fin de période et rendez-vous (décisions du fondateur)
@@ -270,9 +270,9 @@ Numérotation de la partie 3 de `docs/11`.
 - Tableau de bord : « résumé du jour » (docs/14) ; notifications WhatsApp des changements faits depuis le planning (case « prévenir le client », docs/15) ; textes des trois modèles Meta **validés comme base** (soumission à Meta à faire).
 
 ### WhatsApp : décisions du fondateur
-- **Embedded Signup** : démarches Meta à lancer par le fondateur ; le code côté Nova est prêt derrière la configuration (META_APP_ID, META_EMBEDDED_SIGNUP_CONFIG_ID, WHATSAPP_APP_SECRET), docs/17.
+- **Embedded Signup** : démarches Meta à lancer par le fondateur ; le code côté Rendivoo est prêt derrière la configuration (META_APP_ID, META_EMBEDDED_SIGNUP_CONFIG_ID, WHATSAPP_APP_SECRET), docs/17.
 - **SDK JavaScript de Meta** : validé (point RGPD : Meta reçoit l'adresse IP) ; chargé uniquement au clic, avec avertissement, et autorisé par la politique de contenu seulement sur les pages de connexion WhatsApp.
-- **Facturation des conversations WhatsApp** : **Nova refacture** ; mesure mensuelle par catégorie et pays en place (whatsapp_usage) ; **prix refacturé et lignes de facture à décider** (docs/16).
+- **Facturation des conversations WhatsApp** : **Rendivoo refacture** ; mesure mensuelle par catégorie et pays en place (whatsapp_usage) ; **prix refacturé et lignes de facture à décider** (docs/16).
 
 ### Politique de mot de passe (décision 18) : implémentée
 - 12 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial (`StrongPassword`, appliqué à l'inscription, à l'invitation et à la réinitialisation).
@@ -283,7 +283,7 @@ Numérotation de la partie 3 de `docs/11`.
 
 ### 2FA des clients (décision 18) : implémentée (docs/12-securite-du-compte.md)
 TOTP + codes de secours, **obligatoire sans délai de grâce** pour le propriétaire et les responsables de site (« administrateur » = ces deux rôles, validé). Non fait : clés FIDO2/WebAuthn, code par SMS.
-Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le support Nova après vérification d'identité** (validé) ; action « Débloquer l'accès » du Super Admin, implémentée.
+Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le support Rendivoo après vérification d'identité** (validé) ; action « Débloquer l'accès » du Super Admin, implémentée.
 
 ## 4. Points de vigilance connus
 
@@ -291,7 +291,7 @@ Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le s
 - **Inscription** : le message E1 (« e-mail déjà associé à un compte ») révèle qu'un compte existe. C'est le comportement voulu par le flowchart 5A ; il est limité par débit. À arbitrer si vous préférez une réponse neutre.
 - **E-mail dans l'URL de réinitialisation** : le lien de réinitialisation contient l'adresse e-mail en paramètre (usage standard de Laravel). Alternative possible : jeton seul, e-mail ressaisi.
 - **Validation juridique** : textes des CGU, de la confidentialité et du DPA ; durées de rétention ; rôle sous-traitant / responsable de traitement.
-- **Assistant de conversation natif (proposition, docs/18)** : reprend le flux n8n « MASTER ROUTER V2 » dans Nova (`CONVERSATION_DRIVER=native`). Il **déplace la décision n° 1** (le moteur WhatsApp reste dans n8n) : n8n reste le pilote par défaut tant que le fondateur n'a pas validé. Textes nl/en, modèle de langage (RGPD) et comportements inventés listés dans docs/18.
+- **Assistant de conversation natif (proposition, docs/18)** : reprend le flux n8n « MASTER ROUTER V2 » dans Rendivoo (`CONVERSATION_DRIVER=native`). Il **déplace la décision n° 1** (le moteur WhatsApp reste dans n8n) : n8n reste le pilote par défaut tant que le fondateur n'a pas validé. Textes nl/en, modèle de langage (RGPD) et comportements inventés listés dans docs/18.
 
 ## 5. Fuseau horaire unique du prestataire (décision du fondateur, 2026-10-16)
 
@@ -311,6 +311,6 @@ Perte de l'appareil **et** des codes de secours : **déblocage d'accès par le s
 
 - Ordre : (1) nom saisi dans la plateforme, par le prestataire ou donné par le client, puis (2) nom de la liste de clients (c'est la même fiche : `display_name`, `name`, prénom + nom) ; **le nom de profil WhatsApp n'arrive qu'en dernier recours** (`Customer::contactName`).
 - Le profil WhatsApp n'est plus jamais écrit dans `customers.name` : il vit dans `customers.whatsapp_profile_name` (mis à jour à chaque message, exporté et effacé avec la fiche). Le nom que le client donne dans la réservation par WhatsApp est enregistré dans la fiche tant qu'elle n'a pas de nom (jamais d'écrasement d'un nom saisi par le prestataire).
-- Appliqué au bot, aux variables `{{customer_name}}` des modèles WhatsApp (et à la formule neutre « cher client » à défaut de tout nom), aux messages de fidélité et au nom transmis à n8n. Le planning, la liste de clients et leur recherche n'affichent que le nom de la fiche. Nova n'a pas d'écran de liste, de chat, d'en-tête ou de recherche de conversations : les conversations se déroulent dans WhatsApp, le bot et n8n.
+- Appliqué au bot, aux variables `{{customer_name}}` des modèles WhatsApp (et à la formule neutre « cher client » à défaut de tout nom), aux messages de fidélité et au nom transmis à n8n. Le planning, la liste de clients et leur recherche n'affichent que le nom de la fiche. Rendivoo n'a pas d'écran de liste, de chat, d'en-tête ou de recherche de conversations : les conversations se déroulent dans WhatsApp, le bot et n8n.
 - Les fiches existantes dont `name` vient d'un ancien surnom WhatsApp sont laissées telles quelles (indiscernables d'un vrai nom) ; le prestataire les corrige à la main.
 - **Numéro → fiche** : d'abord `phone_e164` (unique par établissement), puis `whatsapp_phone` ; si les deux désignent des fiches différentes, celle dont `phone_e164` correspond l'emporte et l'ambiguïté est tracée (`customer.number_ambiguous`). Une contrainte d'unicité sur `whatsapp_phone` reste à ajouter après contrôle des doublons existants en production. À vérifier côté n8n : si le flux écrit lui-même le nom de profil via l'API (`customer_name`), il recrée l'ancien défaut.

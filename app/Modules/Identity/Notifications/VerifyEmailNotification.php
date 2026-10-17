@@ -24,7 +24,7 @@ final class VerifyEmailNotification extends Notification
 
     public function toMail(User $notifiable): MailMessage
     {
-        $hours = (int) config('nova.security.email_link_ttl_hours');
+        $hours = (int) config('rendivoo.security.email_link_ttl_hours');
 
         $url = URL::temporarySignedRoute(
             'verification.verify',

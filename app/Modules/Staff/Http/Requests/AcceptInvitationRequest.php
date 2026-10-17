@@ -11,7 +11,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Acceptation d'une invitation : mot de passe et acceptation des conditions (le DPA lie l'entreprise à Nova, pas le praticien).
+ * Acceptation d'une invitation : mot de passe et acceptation des conditions (le DPA lie l'entreprise à Rendivoo, pas le praticien).
  */
 final class AcceptInvitationRequest extends FormRequest
 {

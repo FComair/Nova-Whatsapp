@@ -17,7 +17,7 @@ final readonly class TemplateInfo
         public ?string $metaId = null,
     ) {}
 
-    /** Statuts de Meta (APPROVED, PENDING, REJECTED, PAUSED, DISABLED, IN_APPEAL…) ramenés aux quatre statuts de Nova. */
+    /** Statuts de Meta (APPROVED, PENDING, REJECTED, PAUSED, DISABLED, IN_APPEAL…) ramenés aux quatre statuts de Rendivoo. */
     public static function fromMeta(string $name, string $language, string $status, ?string $reason, ?string $id): self
     {
         $normalised = match (strtoupper($status)) {

@@ -19,6 +19,6 @@ Dans **Planning**, cliquez sur **Nouveau rendez-vous**.
 
 ## Si le créneau n’est pas libre
 
-Nova refuse un créneau hors horaires ou déjà occupé et propose les trois prochains créneaux libres du même praticien. Un client bloqué ne peut pas recevoir de rendez-vous.
+Rendivoo refuse un créneau hors horaires ou déjà occupé et propose les trois prochains créneaux libres du même praticien. Un client bloqué ne peut pas recevoir de rendez-vous.
 
 > **À savoir :** en tant que personnel, vous n’êtes pas limité par le délai minimum de réservation ni par l’horizon : seuls les horaires et les doubles réservations comptent.

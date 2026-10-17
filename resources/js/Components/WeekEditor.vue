@@ -38,7 +38,7 @@ function update(index: number, day: DayState): void {
                         class="size-5 rounded border-line-strong text-primary-600"
                         @change="update(index, setOpen(day, ($event.target as HTMLInputElement).checked))"
                     />
-                    <label :for="`${id}-open-${day.weekday}`" class="font-medium capitalize text-nova-900">{{ weekdayNames[index] }}</label>
+                    <label :for="`${id}-open-${day.weekday}`" class="font-medium capitalize text-rendivoo-900">{{ weekdayNames[index] }}</label>
                     <span class="text-sm" :class="day.open ? 'text-success-600' : 'text-neutral-500'">
                         {{ day.open ? t('onboarding.hours.open') : t('onboarding.hours.closed') }}
                     </span>

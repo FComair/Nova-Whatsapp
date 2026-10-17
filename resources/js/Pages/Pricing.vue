@@ -22,7 +22,7 @@ const columns = computed(() => (props.plans.length >= 3 ? 'lg:grid-cols-3' : pro
 <template>
     <LegalLayout :title="t('pricing.title')">
         <div class="mx-auto max-w-5xl">
-            <h1 class="text-3xl font-bold text-nova-900">{{ t('pricing.title') }}</h1>
+            <h1 class="text-3xl font-bold text-rendivoo-900">{{ t('pricing.title') }}</h1>
             <p class="mt-2 max-w-2xl text-neutral-700">{{ t('pricing.subtitle', { days: trial.days }) }}</p>
 
             <p v-if="plans.length === 0" class="mt-8 rounded-card border border-line bg-surface p-5 text-neutral-800" data-testid="no-plans">

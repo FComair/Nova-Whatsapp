@@ -119,7 +119,7 @@ return [
         'valid' => 'This link works once and expires in :days days.',
         'mfa' => 'After choosing your password you will set up two-factor authentication at your first sign-in.',
         'ignore' => 'If you did not expect this email, ignore it: nothing will change.',
-        'invitation' => ['subject' => 'Your Nova admin account', 'intro' => 'You have been added to Nova as :role. Choose your password to activate your account.', 'action' => 'Choose my password'],
-        'reset' => ['subject' => 'Reset your Nova admin password', 'intro' => 'A password reset was requested for your Nova admin account (:role).', 'action' => 'Choose a new password'],
+        'invitation' => ['subject' => 'Your Rendivoo admin account', 'intro' => 'You have been added to Rendivoo as :role. Choose your password to activate your account.', 'action' => 'Choose my password'],
+        'reset' => ['subject' => 'Reset your Rendivoo admin password', 'intro' => 'A password reset was requested for your Rendivoo admin account (:role).', 'action' => 'Choose a new password'],
     ],
 ];

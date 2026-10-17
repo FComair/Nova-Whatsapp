@@ -54,7 +54,7 @@ function submit(): void {
         <HelpTabs />
 
         <div class="mx-auto max-w-2xl">
-            <h1 class="font-display text-2xl font-bold text-nova-900">{{ t('support.title') }}</h1>
+            <h1 class="font-display text-2xl font-bold text-rendivoo-900">{{ t('support.title') }}</h1>
             <p class="mt-1 text-neutral-700">{{ t('support.intro') }}</p>
 
             <AlertBox variant="info" class="mt-4">
@@ -74,7 +74,7 @@ function submit(): void {
                 />
 
                 <section v-if="suggestions.length" class="rounded-card bg-primary-50 p-4" aria-live="polite">
-                    <p class="text-sm font-semibold text-nova-900">{{ t('support.suggestions') }}</p>
+                    <p class="text-sm font-semibold text-rendivoo-900">{{ t('support.suggestions') }}</p>
                     <ul class="mt-2 space-y-1.5">
                         <li v-for="entry in suggestions" :key="`${entry.category}/${entry.slug}`">
                             <a

@@ -16,12 +16,12 @@ return [
     'graph_url' => env('WHATSAPP_GRAPH_URL', 'https://graph.facebook.com'),
     'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v21.0'),
 
-    // Jeton de vérification de l'URL du webhook (choisi par Nova, saisi dans la console Meta) et secret de l'application Meta
+    // Jeton de vérification de l'URL du webhook (choisi par Rendivoo, saisi dans la console Meta) et secret de l'application Meta
     // (signature X-Hub-Signature-256 des notifications).
     'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
     'app_secret' => env('WHATSAPP_APP_SECRET'),
 
-    // Inscription intégrée de Meta (Embedded Signup, docs/17) : identifiants PUBLICS de l'application Meta de Nova. Le secret de l'application est pp_secret.
+    // Inscription intégrée de Meta (Embedded Signup, docs/17) : identifiants PUBLICS de l'application Meta de Rendivoo. Le secret de l'application est pp_secret.
     // Vide tant que l'application Meta n'est pas créée : le bouton « Se connecter avec Meta » n'est alors pas proposé.
     'embedded_signup' => [
         'app_id' => env('META_APP_ID'),

@@ -43,7 +43,7 @@ function toggleBlock(): void {
 <template>
     <AppLayout :title="customer.name ?? customer.phone">
         <div class="flex flex-wrap items-center gap-3">
-            <h1 class="text-2xl font-semibold text-nova-900">{{ customer.name ?? t('customers.unnamed') }}</h1>
+            <h1 class="text-2xl font-semibold text-rendivoo-900">{{ customer.name ?? t('customers.unnamed') }}</h1>
             <span v-if="customer.is_blocked" class="rounded-full bg-danger-50 px-2.5 py-0.5 text-xs font-semibold text-danger-700">{{
                 t('customers.blocked_badge')
             }}</span>
@@ -53,7 +53,7 @@ function toggleBlock(): void {
 
         <div class="mt-6 grid gap-8 lg:grid-cols-2">
             <section aria-labelledby="details">
-                <h2 id="details" class="text-lg font-semibold text-nova-900">{{ t('customers.details') }}</h2>
+                <h2 id="details" class="text-lg font-semibold text-rendivoo-900">{{ t('customers.details') }}</h2>
                 <form class="mt-4 space-y-4" novalidate @submit.prevent="form.put(`${routes.customers}/${customer.id}`, { preserveScroll: true })">
                     <TextField :model-value="customer.phone" :label="t('customers.phone')" :hint="t('customers.phone_hint')" disabled />
                     <TextField v-model="form.name" :label="t('customers.name')" :maxlength="120" :error="form.errors.name" />
@@ -85,7 +85,7 @@ function toggleBlock(): void {
             </section>
 
             <section aria-labelledby="history">
-                <h2 id="history" class="text-lg font-semibold text-nova-900">{{ t('customers.history') }}</h2>
+                <h2 id="history" class="text-lg font-semibold text-rendivoo-900">{{ t('customers.history') }}</h2>
                 <p v-if="!history.length" class="mt-4 text-sm text-neutral-600">{{ t('customers.no_history') }}</p>
                 <ul v-else class="mt-4 divide-y divide-line rounded-card border border-line bg-surface shadow-xs">
                     <li v-for="item in history" :key="item.id" class="px-4 py-3 text-sm">

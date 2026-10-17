@@ -25,18 +25,18 @@ final class MessageVariables
     private const SAMPLES = [
         'fr' => [
             'business_name' => 'Salon Aurore', 'customer_name' => 'Marie', 'service_name' => 'Coupe', 'practitioner_name' => 'Julie',
-            'date' => 'jeudi 15/10/2026', 'time' => '14:00', 'address' => 'Rue de la Loi 16, 1000 Bruxelles', 'booking_link' => 'https://nova.example/r/aurore',
-            'amount' => '45,00 €', 'payment_link' => 'https://nova.example/p/4f2a', 'review_link' => 'https://nova.example/a/4f2a',
+            'date' => 'jeudi 15/10/2026', 'time' => '14:00', 'address' => 'Rue de la Loi 16, 1000 Bruxelles', 'booking_link' => 'https://rendivoo.example/r/aurore',
+            'amount' => '45,00 €', 'payment_link' => 'https://rendivoo.example/p/4f2a', 'review_link' => 'https://rendivoo.example/a/4f2a',
         ],
         'nl' => [
             'business_name' => 'Salon Aurore', 'customer_name' => 'Marie', 'service_name' => 'Knippen', 'practitioner_name' => 'Julie',
-            'date' => 'donderdag 15/10/2026', 'time' => '14:00', 'address' => 'Wetstraat 16, 1000 Brussel', 'booking_link' => 'https://nova.example/r/aurore',
-            'amount' => '€ 45,00', 'payment_link' => 'https://nova.example/p/4f2a', 'review_link' => 'https://nova.example/a/4f2a',
+            'date' => 'donderdag 15/10/2026', 'time' => '14:00', 'address' => 'Wetstraat 16, 1000 Brussel', 'booking_link' => 'https://rendivoo.example/r/aurore',
+            'amount' => '€ 45,00', 'payment_link' => 'https://rendivoo.example/p/4f2a', 'review_link' => 'https://rendivoo.example/a/4f2a',
         ],
         'en' => [
             'business_name' => 'Salon Aurore', 'customer_name' => 'Marie', 'service_name' => 'Haircut', 'practitioner_name' => 'Julie',
-            'date' => 'Thursday 15/10/2026', 'time' => '14:00', 'address' => '16 Rue de la Loi, 1000 Brussels', 'booking_link' => 'https://nova.example/r/aurore',
-            'amount' => '€45.00', 'payment_link' => 'https://nova.example/p/4f2a', 'review_link' => 'https://nova.example/a/4f2a',
+            'date' => 'Thursday 15/10/2026', 'time' => '14:00', 'address' => '16 Rue de la Loi, 1000 Brussels', 'booking_link' => 'https://rendivoo.example/r/aurore',
+            'amount' => '€45.00', 'payment_link' => 'https://rendivoo.example/p/4f2a', 'review_link' => 'https://rendivoo.example/a/4f2a',
         ],
     ];
 

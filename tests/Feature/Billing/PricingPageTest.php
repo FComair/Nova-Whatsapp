@@ -98,7 +98,7 @@ describe('visibilité à l\'inscription', function (): void {
     });
 
     it('n\'offre à l\'inscription que les formules qu\'on peut acheter en ligne', function (): void {
-        ($this->plan)(['code' => 'devis', 'plan_type' => 'custom', 'price_cents' => 0, 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:v@nova.test']);
+        ($this->plan)(['code' => 'devis', 'plan_type' => 'custom', 'price_cents' => 0, 'cta_type' => 'contact_sales', 'cta_url' => 'mailto:v@rendivoo.test']);
 
         expect(($this->signupCodes)())->not->toContain('devis')->and(($this->codes)())->toContain('devis');
     });
