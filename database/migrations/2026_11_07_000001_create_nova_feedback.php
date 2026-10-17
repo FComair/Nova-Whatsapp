@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Avis des clients sur Nova (docs/26).
+ * Avis des clients sur Rendivoo (docs/26).
  *
- * - `nova_feedback` : avis PRIVÉ à l'équipe Nova (note de 1 à 5, commentaire facultatif), jamais publié. Journal en ajout seul.
+ * - `nova_feedback` : avis PRIVÉ à l'équipe Rendivoo (note de 1 à 5, commentaire facultatif), jamais publié. Journal en ajout seul.
  *   Il peut se rattacher à un ticket (`ticket_id`) ; une seule fois par personne et par ticket.
  * - `review_link_clicks` : le client a ouvert le lien d'avis public Google ou Trustpilot (la plateforme, rien d'autre : ce qu'il y
  *   écrit ne nous est jamais connu). Strictement séparé des avis privés ; ajout seul.
  * - `feedback_prompt_dismissals` : « Pas maintenant » sur une invitation, pour ne pas la reproposer.
- * Isolation par établissement (RLS) ; l'équipe Nova lit tout (nova_platform), n'écrit rien.
+ * Isolation par établissement (RLS) ; l'équipe Rendivoo lit tout (nova_platform), n'écrit rien.
  */
 return new class extends Migration
 {

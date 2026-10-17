@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Schema;
  *   programme ensuite ne change jamais une récompense déjà obtenue).
  * - `loyalty_ledger` : journal en AJOUT SEUL de tout ce qui compte (tampons gagnés ou annulés, ajustements, récompenses
  *   attribuées, utilisées, annulées, changements de configuration). Un tampon par rendez-vous et par programme, garanti par la base.
- * Isolation par établissement (RLS) ; l'équipe Nova lit, n'écrit rien.
+ * Isolation par établissement (RLS) ; l'équipe Rendivoo lit, n'écrit rien.
  */
 return new class extends Migration
 {

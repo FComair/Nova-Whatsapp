@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Mesure de la consommation WhatsApp par établissement (décision du fondateur : Nova refacture les conversations). Compteur mensuel par
+ * Mesure de la consommation WhatsApp par établissement (décision du fondateur : Rendivoo refacture les conversations). Compteur mensuel par
  * catégorie (modèle « utility », réponse libre « service ») et par pays du destinataire, les tarifs de Meta variant avec ces deux critères.
  * Aucune donnée personnelle : seulement des compteurs, conservés comme les autres données de facturation (docs/09).
  * Le prix refacturé n'est pas encore fixé : il vivra dans `platform_settings`, jamais dans le code.

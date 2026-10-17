@@ -55,7 +55,7 @@ return new class extends Migration
         DB::statement('ALTER TABLE external_busy_slots ADD CONSTRAINT external_busy_slots_range_check CHECK (ends_at > starts_at)');
         Rls::enableTenantTable('external_busy_slots');
 
-        // Flux ICS sortant d'un praticien (ses rendez-vous Nova, sans donnée de client), lu par ses autres outils. Adresse secrète
+        // Flux ICS sortant d'un praticien (ses rendez-vous Rendivoo, sans donnée de client), lu par ses autres outils. Adresse secrète
         // par jeton : l'empreinte sert à la retrouver, le jeton chiffré permet de le réafficher au propriétaire.
         Schema::create('calendar_feeds', function (Blueprint $table): void {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));

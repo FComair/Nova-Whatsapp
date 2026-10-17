@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Formule recommandée à l'inscription (docs/10) : aucune par défaut. Elle n'est affichée comme telle que si l'établissement
- * Nova l'a désignée explicitement (au plus une, garanti par la base).
+ * Rendivoo l'a désignée explicitement (au plus une, garanti par la base).
  */
 return new class extends Migration
 {

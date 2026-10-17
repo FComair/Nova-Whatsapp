@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Tickets de support (docs/22, phase 2) : une demande du client à l'équipe Nova, sa conversation et son historique.
+ * Tickets de support (docs/22, phase 2) : une demande du client à l'équipe Rendivoo, sa conversation et son historique.
  *
  * - `support_tickets` : la demande. Référence « NWS-1001… » donnée par une séquence globale. L'application (nova_app) ne peut
  *   modifier que l'état, la lecture et les dates ; priorité interne et assignation restent à l'équipe (nova_platform).
