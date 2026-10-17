@@ -51,7 +51,7 @@ return new class extends Migration
         DB::statement('CREATE UNIQUE INDEX whatsapp_messages_wa_id_unique ON whatsapp_messages (org_id, wa_message_id) WHERE wa_message_id IS NOT NULL');
         Rls::enableTenantTable('whatsapp_messages');
 
-        // Désabonnement (STOP) du client final : plus aucun message de Nova tant qu'il ne se réabonne pas.
+        // Désabonnement (STOP) du client final : plus aucun message de Rendivoo tant qu'il ne se réabonne pas.
         Schema::table('customers', function (Blueprint $table): void {
             $table->timestampTz('whatsapp_opted_out_at')->nullable();
         });
