@@ -145,7 +145,7 @@ final class LoyaltyMessenger
 
     private function firstName(Customer $customer): string
     {
-        $name = trim((string) ($customer->first_name ?? $customer->name ?? ''));
+        $name = trim((string) ($customer->first_name ?? $customer->listName() ?? $customer->whatsapp_profile_name ?? ''));
 
         return $name === '' ? '' : (string) strtok($name, ' ');
     }

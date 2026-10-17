@@ -49,7 +49,7 @@ final class ForwardInboundMessage implements ShouldQueue
 
             return json_encode([
                 'organization_id' => $this->orgId,
-                'customer' => ['id' => $customer->id, 'phone' => $customer->phone_e164, 'name' => $customer->name, 'language' => $customer->language],
+                'customer' => ['id' => $customer->id, 'phone' => $customer->phone_e164, 'name' => $customer->contactName(), 'language' => $customer->language],
                 'message' => ['id' => $message->id, 'type' => $message->type, 'text' => $message->body_enc, 'received_at' => $message->created_at->utc()->toIso8601String()],
             ], JSON_THROW_ON_ERROR);
         });

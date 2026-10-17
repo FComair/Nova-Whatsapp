@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $first_name
  * @property string|null $last_name
  * @property string|null $display_name
+ * @property string|null $whatsapp_profile_name nom de profil WhatsApp : dernier recours, jamais le nom de la fiche
  * @property Carbon|null $date_of_birth
  * @property string|null $whatsapp_phone
  * @property array<string, mixed>|null $address
@@ -51,6 +52,34 @@ class Customer extends Model
                 $customer->is_blocked = $customer->status === 'blocked';
             }
         });
+    }
+
+    /**
+     * Nom enregistré dans la fiche (liste de clients) : le nom d'affichage s'il existe, sinon le nom, sinon prénom et nom. Jamais le profil WhatsApp.
+     */
+    public function listName(): ?string
+    {
+        foreach ([$this->display_name, $this->name, trim((string) $this->first_name.' '.(string) $this->last_name)] as $candidate) {
+            $candidate = trim((string) $candidate);
+
+            if ($candidate !== '') {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Nom à utiliser dans les conversations et messages WhatsApp (docs/41) :
+     *  1. le nom saisi dans la plateforme (par le prestataire ou donné par le client) et 2. le nom de la liste de clients — qui sont la même fiche ;
+     *  3. seulement à défaut, le nom de profil WhatsApp.
+     */
+    public function contactName(): ?string
+    {
+        $profile = trim((string) $this->whatsapp_profile_name);
+
+        return $this->listName() ?? ($profile === '' ? null : $profile);
     }
 
     /** Référence lisible : C-1042. */
