@@ -13,6 +13,7 @@ use App\Modules\Admin\Support\AdminAccess;
 use App\Modules\Tenancy\Models\Sector;
 use BackedEnum;
 use Closure;
+use DomainException;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Facades\Filament;
@@ -110,8 +111,7 @@ class SectorResource extends Resource
             Toggle::make('is_active')
                 ->label(__('admin.sectors.form.active_label'))
                 ->helperText(__('admin.sectors.form.active_help'))
-                ->default(true)
-                ->disabled($sector?->is_default === true),
+                ->default(true),
             Section::make(__('admin.sectors.form.translations'))
                 ->description(__('admin.sectors.form.translations_help'))
                 ->collapsed()
@@ -167,9 +167,7 @@ class SectorResource extends Resource
                     ->fillForm(fn (PlatformSector $record): array => $record->only(['name', 'is_active', 'name_fr', 'name_nl', 'name_en', 'notes']))
                     ->schema(fn (PlatformSector $record): array => self::formSchema($record))
                     ->action(function (array $data, PlatformSector $record): void {
-                        app(SectorManager::class)->update($record, $data, self::adminId());
-
-                        Notification::make()->success()->title(__('admin.sectors.saved.updated'))->send();
+                        self::attempt(fn () => app(SectorManager::class)->update($record, $data, self::adminId()), 'admin.sectors.saved.updated');
                     }),
                 ActionGroup::make([
                     Action::make('activate')
@@ -177,22 +175,18 @@ class SectorResource extends Resource
                         ->icon('heroicon-o-play-circle')
                         ->visible(fn (PlatformSector $record): bool => ! $record->is_active && AdminAccess::can('settings.edit'))
                         ->action(function (PlatformSector $record): void {
-                            app(SectorManager::class)->setActive($record, true, self::adminId());
-
-                            Notification::make()->success()->title(__('admin.sectors.saved.activated'))->send();
+                            self::attempt(fn () => app(SectorManager::class)->setActive($record, true, self::adminId()), 'admin.sectors.saved.activated');
                         }),
                     Action::make('deactivate')
                         ->label(__('admin.sectors.deactivate'))
                         ->icon('heroicon-o-pause-circle')
-                        ->visible(fn (PlatformSector $record): bool => $record->is_active && ! $record->is_default && AdminAccess::can('settings.edit'))
+                        ->visible(fn (PlatformSector $record): bool => $record->is_active && AdminAccess::can('settings.edit'))
                         ->requiresConfirmation()
                         ->modalHeading(fn (PlatformSector $record): string => __('admin.sectors.confirm.deactivate_title', ['name' => $record->name]))
                         ->modalDescription(fn (PlatformSector $record): string => self::impact($record, 'deactivate'))
                         ->modalSubmitActionLabel(__('admin.sectors.confirm.deactivate_button'))
                         ->action(function (PlatformSector $record): void {
-                            app(SectorManager::class)->setActive($record, false, self::adminId());
-
-                            Notification::make()->success()->title(__('admin.sectors.saved.deactivated'))->send();
+                            self::attempt(fn () => app(SectorManager::class)->setActive($record, false, self::adminId()), 'admin.sectors.saved.deactivated');
                         }),
                     Action::make('delete')
                         ->label(__('admin.sectors.delete'))
@@ -225,6 +219,22 @@ class SectorResource extends Resource
     private static function used(PlatformSector $sector): int
     {
         return $sector->merchants_count ?? app(SectorManager::class)->merchants($sector);
+    }
+
+    /**
+     * Exécute une opération du gestionnaire ; un refus métier (dernier secteur actif…) s'affiche comme message d'erreur, jamais en page d'erreur.
+     */
+    private static function attempt(Closure $operation, string $successKey): void
+    {
+        try {
+            $operation();
+        } catch (DomainException $e) {
+            Notification::make()->danger()->title($e->getMessage())->persistent()->send();
+
+            return;
+        }
+
+        Notification::make()->success()->title(__($successKey))->send();
     }
 
     private static function adminId(): string

@@ -57,9 +57,13 @@ final class SectorManager
         DB::connection(PlatformAudit::CONNECTION)->transaction(function () use ($sector, $data, $adminId): void {
             $sector->fill($this->fields($data));
 
-            // Le secteur par défaut reste toujours actif ; pour les autres, l'état se règle ici comme avec activer / désactiver.
-            if (! $sector->is_default && array_key_exists('is_active', $data)) {
+            // L'état se règle ici comme avec activer / désactiver, pour tous les secteurs, « Autre » compris.
+            if (array_key_exists('is_active', $data)) {
                 $sector->is_active = (bool) $data['is_active'];
+
+                if (! $sector->is_active && $sector->getOriginal('is_active')) {
+                    $this->assertNotLastActive($sector);
+                }
             }
 
             $diff = collect($sector->getDirty())->except(['updated_at', 'name_key'])->map(fn ($new, string $key): array => [$sector->getOriginal($key), $new])->all();
@@ -77,15 +81,28 @@ final class SectorManager
         });
     }
 
+    /**
+     * Au moins un secteur reste actif : sans lui, l'inscription n'aurait plus aucun choix. Vaut pour tous les secteurs, « Autre » compris
+     * (il n'est plus protégé à part : il peut être désactivé comme les autres, tant qu'un autre secteur reste proposé).
+     */
+    private function assertNotLastActive(PlatformSector $sector): void
+    {
+        $others = DB::connection(PlatformAudit::CONNECTION)->table('sectors')->where('is_active', true)->where('id', '<>', $sector->id)->count();
+
+        if ($others === 0) {
+            throw new DomainException(__('admin.sectors.errors.last_active'));
+        }
+    }
+
     public function setActive(PlatformSector $sector, bool $active, string $adminId): void
     {
         AdminAccess::authorize($adminId, 'settings.edit');
-        if ($sector->is_default && ! $active) {
-            throw new DomainException('Le secteur par défaut ne peut pas être désactivé.');
-        }
-
         if ($sector->is_active === $active) {
             return;
+        }
+
+        if (! $active) {
+            $this->assertNotLastActive($sector);
         }
 
         DB::connection(PlatformAudit::CONNECTION)->transaction(function () use ($sector, $active, $adminId): void {

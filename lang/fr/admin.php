@@ -261,7 +261,7 @@ return [
             'notes' => 'Notes internes',
             'notes_help' => 'Visibles uniquement par les administrateurs.',
         ],
-        'errors' => ['name_taken' => 'Un secteur portant ce nom existe déjà.'],
+        'errors' => ['name_taken' => 'Un secteur portant ce nom existe déjà.', 'last_active' => 'Au moins un secteur doit rester actif, sinon plus aucun secteur ne serait proposé à l’inscription. Activez un autre secteur avant de désactiver celui-ci.'],
         'confirm' => [
             'deactivate_title' => 'Désactiver « :name » ?',
             'deactivate_used' => '{1} Ce secteur est utilisé par 1 établissement. Le désactiver empêchera les nouveaux établissements de le choisir, mais les établissements existants gardent leur secteur actuel.|[2,*] Ce secteur est utilisé par :count établissements. Le désactiver empêchera les nouveaux établissements de le choisir, mais les établissements existants gardent leur secteur actuel.',

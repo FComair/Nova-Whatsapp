@@ -206,19 +206,68 @@ describe('suppression', function (): void {
     });
 });
 
-describe('secteur par défaut', function (): void {
-    it('ne peut être ni désactivé ni supprimé', function (): void {
+describe('secteur « Autre »', function (): void {
+    it('se désactive et se réactive depuis la liste comme les autres secteurs, avec trace', function (): void {
         $other = ($this->sector)('other');
 
-        ($this->page)()->assertTableActionHidden('delete', $other)->assertTableActionHidden('deactivate', $other);
+        ($this->page)()->assertTableActionVisible('deactivate', $other)->callTableAction('deactivate', $other);
+        expect(($this->sector)('other')->is_active)->toBeFalse()->and(($this->audit)('sector.deactivated'))->toHaveCount(1);
 
-        expect(fn () => app(SectorManager::class)->setActive($other, false, $this->admin->id))->toThrow(DomainException::class)
-            ->and(fn () => app(SectorManager::class)->delete($other, $this->admin->id))->toThrow(DomainException::class);
+        ($this->page)()->assertTableActionVisible('activate', ($this->sector)('other'))->assertTableActionHidden('deactivate', ($this->sector)('other'))->callTableAction('activate', ($this->sector)('other'));
+        expect(($this->sector)('other')->is_active)->toBeTrue()->and(($this->audit)('sector.activated'))->toHaveCount(1);
     });
 
-    it('reste actif même si le formulaire tente de le désactiver', function (): void {
+    it('se désactive aussi depuis le formulaire de modification, et l\'état persiste', function (): void {
         ($this->page)()->callTableAction('edit', ($this->sector)('other'), data: ['name' => 'Other', 'is_active' => false]);
 
+        expect(($this->sector)('other')->is_active)->toBeFalse()
+            ->and(DB::connection('pgsql_owner')->table('sectors')->where('code', 'other')->value('is_active'))->toBeFalse();
+
+        ($this->page)()->callTableAction('edit', ($this->sector)('other'), data: ['name' => 'Other', 'is_active' => true]);
         expect(($this->sector)('other')->is_active)->toBeTrue();
+    });
+
+    it('n\'est plus proposé à l\'inscription une fois désactivé, mais reste choisi par les établissements qui l\'ont', function (): void {
+        app(SectorManager::class)->setActive(($this->sector)('other'), false, $this->admin->id);
+        $catalog = app(\App\Modules\Tenancy\Services\SectorCatalog::class);
+
+        expect($catalog->codes())->not->toContain('other')->and(collect($catalog->options('fr'))->pluck('value')->all())->not->toContain('other')
+            ->and($catalog->codes('other'))->toContain('other')
+            ->and(collect($catalog->options('fr', 'other'))->pluck('value')->all())->toContain('other');
+    });
+
+    it('ne touche pas aux établissements qui utilisent « Autre »', function (): void {
+        ($this->merchants)('other', 3);
+
+        app(SectorManager::class)->setActive(($this->sector)('other'), false, $this->admin->id);
+
+        expect(DB::connection('pgsql_owner')->table('organizations')->where('sector', 'other')->count())->toBe(3)
+            ->and(($this->audit)('sector.deactivated')->first()->diff)->toContain('"merchants":3');
+    });
+
+    it('garde au moins un secteur actif, quel qu\'il soit', function (): void {
+        DB::connection('pgsql_owner')->table('sectors')->where('code', '<>', 'other')->update(['is_active' => false]);
+
+        expect(fn () => app(SectorManager::class)->setActive(($this->sector)('other'), false, $this->admin->id))->toThrow(DomainException::class, __('admin.sectors.errors.last_active'));
+
+        ($this->page)()->callTableAction('deactivate', ($this->sector)('other'));
+        expect(($this->sector)('other')->is_active)->toBeTrue();
+    });
+
+    it('reste impossible à supprimer : il reçoit les établissements des secteurs supprimés', function (): void {
+        $other = ($this->sector)('other');
+
+        ($this->page)()->assertTableActionHidden('delete', $other);
+
+        expect(fn () => app(SectorManager::class)->delete($other, $this->admin->id))->toThrow(DomainException::class);
+    });
+
+    it('reçoit encore les établissements d\'un secteur supprimé, même désactivé', function (): void {
+        ($this->merchants)('garage', 2);
+        app(SectorManager::class)->setActive(($this->sector)('other'), false, $this->admin->id);
+
+        app(SectorManager::class)->delete(($this->sector)('garage'), $this->admin->id);
+
+        expect(DB::connection('pgsql_owner')->table('organizations')->where('sector', 'other')->count())->toBe(2);
     });
 });

@@ -261,7 +261,7 @@ return [
             'notes' => 'Internal notes',
             'notes_help' => 'Only admins see this.',
         ],
-        'errors' => ['name_taken' => 'A sector with this name already exists.'],
+        'errors' => ['name_taken' => 'A sector with this name already exists.', 'last_active' => 'At least one sector must stay active, otherwise registration would have no sector to offer. Activate another sector before deactivating this one.'],
         'confirm' => [
             'deactivate_title' => 'Deactivate “:name”?',
             'deactivate_used' => '{1} This sector is used by 1 merchant. Deactivating it will prevent new merchants from selecting it, but existing merchants will keep their current sector.|[2,*] This sector is used by :count merchants. Deactivating it will prevent new merchants from selecting it, but existing merchants will keep their current sector.',
