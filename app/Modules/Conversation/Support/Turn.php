@@ -117,7 +117,8 @@ final class Turn
     /** Le nom connu du client, ou une chaîne vide. */
     public function name(): string
     {
-        return trim((string) $this->customer->name);
+        // Nom de la fiche d'abord, nom de profil WhatsApp seulement à défaut (Customer::contactName).
+        return $this->customer->contactName() ?? '';
     }
 
     /** « Marie » précédé d'une espace quand le nom est connu (pour « Bonjour Marie, »), sinon rien. */

@@ -122,6 +122,19 @@ it('utilise la langue de repli quand le modèle n\'existe pas dans la langue du 
     expect($this->transport->templates[0]['template'])->toBe('nova_hairdressing_reminder')->and($this->transport->templates[0]['language'])->toBe('fr');
 });
 
+it('met dans {{customer_name}} le nom de la fiche, le profil WhatsApp seulement à défaut, puis une formule neutre', function (?string $name, ?string $profile, string $expected): void {
+    ($this->approve)('hairdressing');
+    ($this->metaApprove)('hairdressing');
+    $this->asOwner(fn () => $this->customer->forceFill(['name' => $name, 'display_name' => null, 'first_name' => null, 'last_name' => null, 'whatsapp_profile_name' => $profile])->save());
+
+    expect(($this->remind)())->toBe(1);
+    expect($this->transport->templates[0]['parameters'][0])->toBe($expected);
+})->with([
+    'nom de la fiche' => ['Marie Dupont', '✨ Sunshine', 'Marie Dupont'],
+    'profil en dernier recours' => [null, '✨ Sunshine', '✨ Sunshine'],
+    'aucun nom' => [null, null, 'cher client'],
+]);
+
 describe('modèles à soumettre à Meta', function (): void {
     it('liste les quatre modèles globaux tant que le secteur n\'a rien d\'approuvé', function (): void {
         $rows = collect(TemplateCatalog::entries('hairdressing'));

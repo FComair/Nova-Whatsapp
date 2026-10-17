@@ -123,13 +123,55 @@ describe('messages entrants', function (): void {
             $customer = Customer::query()->where('phone_e164', '+32470999111')->sole();
             $message = WhatsappMessage::query()->sole();
 
-            expect($customer->name)->toBe('Nina')
+            // Le profil WhatsApp n'est jamais le nom de la fiche : il est gardé à part, en dernier recours.
+            expect($customer->name)->toBeNull()->and($customer->whatsapp_profile_name)->toBe('Nina')->and($customer->contactName())->toBe('Nina')
                 ->and($message)->direction->toBe('in')->status->toBe('received')->type->toBe('text')->body_enc->toBe('Bonjour, un rendez-vous ?')->wa_message_id->toBe('wamid.NEW')
                 ->and($message->customer_id)->toBe($customer->id);
         });
 
         expect($this->asOwner(fn () => DB::table('whatsapp_messages')->value('body_enc')))->not->toContain('rendez-vous');
         Queue::assertPushed(ForwardInboundMessage::class, fn (ForwardInboundMessage $job): bool => $job->orgId === $this->org->id);
+    });
+
+    it('ne remplace jamais le nom de la fiche par le profil WhatsApp, et le garde à jour à part', function (): void {
+        Queue::fake();
+        $this->asOwner(fn () => $this->customer->forceFill(['name' => 'Marie Dupont'])->save());
+
+        ($this->hook)(metaPayload('32470123456', 'Bonjour', 'wamid.P1', name: '✨ Sunshine'))->assertOk();
+        ($this->hook)(metaPayload('32470123456', 'Re', 'wamid.P2', name: 'Sunny'))->assertOk();
+
+        waInOrg($this->org, function (): void {
+            $customer = Customer::query()->findOrFail($this->customer->id);
+
+            expect($customer->name)->toBe('Marie Dupont')->and($customer->contactName())->toBe('Marie Dupont')->and($customer->whatsapp_profile_name)->toBe('Sunny');
+        });
+    });
+
+    it('retrouve la fiche par le numéro WhatsApp distinct de son téléphone, sans créer de doublon', function (): void {
+        Queue::fake();
+        $this->asOwner(fn () => Customer::query()->create(['org_id' => $this->org->id, 'phone_e164' => '+3225551234', 'whatsapp_phone' => '+32470888777', 'name' => 'Sophie Martin']));
+
+        ($this->hook)(metaPayload('32470888777', 'Bonjour', 'wamid.W1', name: 'Soso'))->assertOk();
+
+        waInOrg($this->org, function (): void {
+            $customer = Customer::query()->where('phone_e164', '+3225551234')->sole();
+
+            expect(Customer::query()->where('phone_e164', '+32470888777')->exists())->toBeFalse()
+                ->and(WhatsappMessage::query()->sole()->customer_id)->toBe($customer->id)->and($customer->contactName())->toBe('Sophie Martin');
+        });
+    });
+
+    it('préfère la fiche dont le téléphone correspond quand le numéro désigne deux fiches, et le trace', function (): void {
+        Queue::fake();
+        $this->asOwner(function (): void {
+            Customer::query()->create(['org_id' => $this->org->id, 'phone_e164' => '+3225551234', 'whatsapp_phone' => '+32470888777', 'name' => 'Fiche A']);
+            Customer::query()->create(['org_id' => $this->org->id, 'phone_e164' => '+32470888777', 'name' => 'Fiche B']);
+        });
+
+        ($this->hook)(metaPayload('32470888777', 'Bonjour', 'wamid.W2'))->assertOk();
+
+        waInOrg($this->org, fn () => expect(WhatsappMessage::query()->sole()->customer_id)->toBe(Customer::query()->where('name', 'Fiche B')->value('id')));
+        expect($this->asOwner(fn () => DB::table('audit_logs')->where('action', 'customer.number_ambiguous')->count()))->toBe(1);
     });
 
     it('retrouve un client existant sans créer de doublon', function (): void {

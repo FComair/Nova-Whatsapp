@@ -28,7 +28,7 @@ final class BookingMessageValues
 
         return [
             'business_name' => (string) $organization->name,
-            'customer_name' => filled($customer->name) ? (string) $customer->name : (string) trans('whatsapp.customer_fallback', [], $language),
+            'customer_name' => $customer->contactName() ?? (string) trans('whatsapp.customer_fallback', [], $language),
             'service_name' => (string) Service::query()->whereKey($booking->service_id)->value('name'),
             'practitioner_name' => (string) Practitioner::query()->whereKey($booking->practitioner_id)->value('name'),
             'date' => $local->locale($language)->isoFormat('dddd DD/MM/YYYY'),

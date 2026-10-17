@@ -398,7 +398,7 @@ final class BookingFlow extends Flow
         $name = $turn->conv->string('name');
         $email = $turn->conv->string('email');
 
-        if ($name !== null && $turn->name() === '') {
+        if ($name !== null && $turn->customer->listName() === null) {
             $updates['name'] = $name;
         }
 

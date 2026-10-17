@@ -46,6 +46,7 @@ final class CustomerErasure
                 'first_name' => null,
                 'last_name' => null,
                 'display_name' => null,
+                'whatsapp_profile_name' => null,
                 'date_of_birth' => null,
                 'whatsapp_phone' => null,
                 'address' => null,

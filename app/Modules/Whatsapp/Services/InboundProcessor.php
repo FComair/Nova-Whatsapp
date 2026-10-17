@@ -105,7 +105,7 @@ final class InboundProcessor
 
         $type = Str::limit((string) ($raw['type'] ?? 'text'), 20, '');
         $text = $type === 'text' ? Str::limit((string) ($raw['text']['body'] ?? ''), 4096, '') : null;
-        $customer = $this->customers->findOrCreate($organization, '+'.$from, isset($names[$from]) ? (string) $names[$from] : null);
+        $customer = $this->customers->findOrCreateFromWhatsapp($organization, '+'.$from, isset($names[$from]) ? (string) $names[$from] : null);
 
         try {
             $message = WhatsappMessage::query()->create([
